@@ -2,44 +2,42 @@
 :root {
     /* Light Theme (Pure White & Modern Grays) */
     --body-bg: #ffffff;
-    --text-color-primary: #333333; /* Darker gray for text */
-    --container-bg: #f7f7f7; /* Very light gray for main container */
-    --grid-bg: #e0e0e0; /* Light gray for grid lines/gaps */
-    --grid-cell-bg: #f0f0f0; /* Very light gray for empty cells */
-    --score-box-bg: #e9e9e9; /* Light gray for score boxes */
+    --text-color-primary: #333333;
+    --container-bg: #f7f7f7;
+    --grid-bg: #e0e0e0;
+    --grid-cell-bg: #f0f0f0;
+    --score-box-bg: #e9e9e9;
     --score-box-text: #333333;
-    --button-bg: #6c757d; /* Neutral gray for buttons */
+    --button-bg: #6c757d;
     --button-text: #ffffff;
     --button-hover-bg: #5a6268;
     --modal-bg: rgba(0,0,0,0.6);
-    --modal-content-bg: #ffffff; /* White modal content */
+    --modal-content-bg: #ffffff;
     --modal-text-color: #333333;
-    --border-color: var(--grid-bg); /* Use grid-bg for subtle border */
+    --border-color: var(--grid-bg);
 
-    /* Tile specific colors (Light Theme - Modern Grayscale with Accent) */
-    --tile-default-bg: #ffffff; /* White tiles */
+    --tile-default-bg: #ffffff;
     --tile-default-text: #555555;
     --tile-2-bg: #f8f9fa;   --tile-2-text: #495057;
     --tile-4-bg: #e9ecef;   --tile-4-text: #495057;
     --tile-8-bg: #dee2e6;   --tile-8-text: #343a40;
     --tile-16-bg: #ced4da;  --tile-16-text: #343a40;
     --tile-32-bg: #adb5bd;  --tile-32-text: #ffffff;
-    --tile-64-bg: #6c757d;  --tile-64-text: #ffffff; /* Matches button color */
+    --tile-64-bg: #6c757d;  --tile-64-text: #ffffff;
     --tile-128-bg: #495057; --tile-128-text: #ffffff;
     --tile-256-bg: #343a40; --tile-256-text: #ffffff;
     --tile-512-bg: #212529; --tile-512-text: #ffffff;
-    --tile-1024-bg: #007bff;--tile-1024-text: #ffffff; /* Accent: Blue */
-    --tile-2048-bg: #fd7e14;--tile-2048-text: #ffffff; /* Accent: Orange */
-    --tile-super-bg: #dc3545; --tile-super-text: #ffffff; /* Accent: Red for > 2048 */
-
+    --tile-1024-bg: #007bff;--tile-1024-text: #ffffff;
+    --tile-2048-bg: #fd7e14;--tile-2048-text: #ffffff;
+    --tile-super-bg: #dc3545; --tile-super-text: #ffffff;
 
     --font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
-    --border-radius: 12px; /* Slightly more rounded */
-    --gap-size: 10px; /* Adjusted gap */
+    --border-radius: 12px;
+    --gap-size: 10px;
     --grid-side-length-desktop: 400px;
 }
 
-/* Dark Theme Variables (Dark Blue - Unchanged from previous) */
+/* Dark Theme Variables (Dark Blue) */
 body.dark-theme {
     --body-bg: #0d1117;
     --container-bg: #161b22;
@@ -87,8 +85,8 @@ body {
     background-color: var(--body-bg);
     color: var(--text-color-primary);
     margin: 0;
-    padding: 15px; /* Uniform padding */
-    padding-top: 60px; /* Space for top-bar */
+    padding: 15px;
+    padding-top: 60px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -100,28 +98,28 @@ body {
 
 .top-bar {
     position: fixed;
-    top: 12px; /* Adjusted position */
+    top: 12px;
     right: 12px;
     z-index: 1001;
 }
 
 #theme-switcher {
-    background-color: var(--container-bg); /* Match container for subtlety */
-    border: 1px solid var(--grid-bg); /* Subtle border */
-    padding: 0;
-    font-size: 1.3em; /* Smaller icon */
+    background-color: var(--container-bg);
+    border: 1px solid var(--grid-bg);
+    padding: 0; /* Padding removed to let width/height define size */
+    font-size: 1.1em; /* Smaller icon size */
     cursor: pointer;
     color: var(--text-color-primary);
     outline: none;
     transition: color 0.3s ease, transform 0.2s ease, background-color 0.3s ease, border-color 0.3s ease;
     line-height: 1;
-    border-radius: 20px; /* More rounded, pill-like or circle */
-    width: 32px; /* Explicit small size */
-    height: 32px;
+    border-radius: 50%; /* Perfectly circular */
+    width: 30px;  /* Smaller explicit size */
+    height: 30px; /* Smaller explicit size */
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Softer shadow */
 }
 #theme-switcher:hover {
     transform: scale(1.1);
@@ -138,7 +136,7 @@ body.dark-theme #theme-switcher::before {
     background-color: var(--container-bg);
     padding: 20px;
     border-radius: var(--border-radius);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08); /* Softer shadow */
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -150,51 +148,51 @@ body.dark-theme #theme-switcher::before {
 header {
     width: 100%;
     display: flex;
-    flex-direction: column; /* h1 on top */
+    flex-direction: column;
     align-items: center;
     margin-bottom: 20px;
 }
 
 header h1 {
-    font-size: 3em; /* Adjusted size */
-    margin: 0 0 15px 0; /* Spacing */
+    font-size: 3em;
+    margin: 0 0 15px 0;
     font-weight: bold;
     color: var(--text-color-primary);
 }
 
 .game-controls-wrapper {
     display: flex;
-    flex-direction: row; /* Side-by-side */
+    flex-direction: row;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-between; /* Pushes scores left, button right */
     width: 100%;
-    gap: 10px; /* Gap between scores container and new game button */
+    gap: 10px;
 }
 
 .scores-container {
     display: flex;
-    flex-direction: row; /* Score boxes side-by-side */
-    gap: 8px; /* Gap between score boxes */
+    flex-direction: row;
+    gap: 8px;
     align-items: center;
 }
 
 .score-box {
     background-color: var(--score-box-bg);
     color: var(--score-box-text);
-    padding: 8px 12px; /* Adjusted padding */
-    border-radius: calc(var(--border-radius) - 4px); /* Slightly less rounded than container */
-    font-size: 1em; /* Adjusted font size */
-    min-width: 80px; /* Adjusted min-width */
+    padding: 8px 12px;
+    border-radius: calc(var(--border-radius) - 4px);
+    font-size: 1em;
+    min-width: 80px;
     text-align: center;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.btn#new-game-button { /* Specific styling for new game button in this layout */
-    padding: 8px 15px; /* Adjusted padding */
-    font-size: 1em;   /* Adjusted font size */
+.btn#new-game-button {
+    padding: 8px 15px;
+    font-size: 1em;
 }
 
-.btn { /* General button style from before */
+.btn {
     background-color: var(--button-bg);
     color: var(--button-text);
     border: none;
@@ -206,7 +204,7 @@ header h1 {
 }
 .btn:hover {
     background-color: var(--button-hover-bg);
-    transform: translateY(-1px); /* Subtle hover effect */
+    transform: translateY(-1px);
 }
 .btn:active {
     transform: translateY(0px);
@@ -224,11 +222,12 @@ header h1 {
     position: relative;
     transition: background-color 0.3s ease;
     padding: var(--gap-size);
+    touch-action: none; /* Crucial for preventing scroll on swipe inside grid */
 }
 
 .grid-cell {
     background-color: var(--grid-cell-bg);
-    border-radius: calc(var(--border-radius) / 1.8); /* Consistent rounding */
+    border-radius: calc(var(--border-radius) / 1.8);
     transition: background-color 0.3s ease;
 }
 
@@ -238,7 +237,7 @@ header h1 {
     justify-content: center;
     align-items: center;
     font-weight: bold;
-    border-radius: calc(var(--border-radius) / 1.5); /* More rounded tiles */
+    border-radius: calc(var(--border-radius) / 1.5);
     transition: transform 0.15s cubic-bezier(0.25, 0.1, 0.25, 1), 
                 background-color 0.15s ease-in-out, 
                 color 0.15s ease-in-out, 
@@ -299,7 +298,7 @@ header h1 {
 
 .modal-content {
     background-color: var(--modal-content-bg);
-    padding: 25px 35px; /* Adjusted padding */
+    padding: 25px 35px;
     border-radius: var(--border-radius);
     text-align: center;
     box-shadow: 0 5px 20px rgba(0,0,0,0.25);
@@ -313,22 +312,22 @@ header h1 {
 
 .modal-content h2 {
     margin-top: 0;
-    font-size: 1.8em; /* Adjusted size */
+    font-size: 1.8em;
     margin-bottom: 10px;
 }
 .modal-content p {
-    font-size: 1.1em; /* Adjusted size */
+    font-size: 1.1em;
     margin-bottom: 20px;
 }
-.modal-content .btn { /* Ensure modal button also uses new sizing */
+.modal-content .btn {
     padding: 10px 20px;
     font-size: 1em;
 }
 
 footer {
-    margin-top: 25px; /* Adjusted spacing */
+    margin-top: 25px;
     padding-bottom: 15px;
-    font-size: 0.85em; /* Adjusted size */
+    font-size: 0.85em;
     color: var(--text-color-primary);
     transition: color 0.3s ease;
 }
@@ -337,7 +336,7 @@ footer {
 @media (max-width: 520px) {
     body {
         padding: 10px;
-        padding-top: 50px; /* Adjust for smaller theme switcher */
+        padding-top: 50px;
     }
     .container {
         padding: 15px;
@@ -346,23 +345,23 @@ footer {
         font-size: 2.5em;
     }
     .game-controls-wrapper {
-        /* Elements will shrink due to flex properties, maintaining side-by-side */
-        /* If absolutely necessary, could reduce gap or font sizes further here */
+        /* Flex properties will try to keep them side-by-side */
+        /* May need to adjust font/padding more if they wrap undesirably */
     }
     .score-box {
-        font-size: 0.85em; /* Smaller score text on mobile */
+        font-size: 0.85em;
         padding: 6px 8px;
         min-width: 70px;
     }
     .btn#new-game-button {
-        font-size: 0.85em; /* Smaller button text */
+        font-size: 0.85em;
         padding: 7px 10px;
     }
 
     .grid-container {
         width: 90vw; 
         height: 90vw;
-        max-width: calc(var(--grid-side-length-desktop) * 0.9); /* Cap at 90% of desktop size */
+        max-width: calc(var(--grid-side-length-desktop) * 0.9);
         max-height: calc(var(--grid-side-length-desktop) * 0.9);
         margin-left: auto;
         margin-right: auto;
@@ -370,7 +369,7 @@ footer {
     }
     
     .modal-content {
-        width: 88%; /* Slightly wider modal */
+        width: 88%;
         padding: 20px;
     }
     .modal-content h2 { font-size: 1.6em; }
@@ -381,12 +380,17 @@ footer {
     }
 }
 
-@media (max-width: 360px) { /* Even smaller screens */
+@media (max-width: 380px) { /* Further refined for very small screens */
     header h1 {
         font-size: 2.2em;
     }
     .game-controls-wrapper {
-        gap: 5px; /* Reduce gap further */
+        gap: 5px;
+        /* Could switch to flex-direction: column here if absolutely necessary */
+        /* flex-direction: column; align-items: center; */
+    }
+    .scores-container {
+        /* If wrapper is column, scores might need to be centered or full width */
     }
     .score-box {
         font-size: 0.75em;
@@ -396,14 +400,17 @@ footer {
      .btn#new-game-button {
         font-size: 0.75em;
         padding: 6px 8px;
+        /* If wrapper is column, button might need margin-top */
+        /* margin-top: 8px; */
     }
     .grid-container {
         padding: calc(var(--gap-size) * 0.6);
-        gap: calc(var(--gap-size) * 0.7); /* Reduce inner gaps too */
+        gap: calc(var(--gap-size) * 0.7);
     }
     #theme-switcher {
-        font-size: 1.2em;
+        font-size: 1em; /* Even smaller icon */
         width: 28px;
         height: 28px;
     }
 }
+
