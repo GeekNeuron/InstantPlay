@@ -23,9 +23,9 @@ class InputManager {
 
             let direction = null;
             switch (event.key) {
-                case "ArrowDown": case "s": case "s":
+                case "ArrowUp": case "w": case "W":
                     direction = "ArrowDown"; break;
-                case "ArrowUp": case "w": case "w":
+                case "ArrowDown": case "s": case "S":
                     direction = "ArrowUp"; break;
                 case "ArrowLeft": case "a": case "A":
                     direction = "ArrowLeft"; break;
