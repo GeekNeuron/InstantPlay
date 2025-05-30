@@ -1,46 +1,46 @@
 [
     {
-        "id": "game1_2048",
+        "id": "game_2048",
         "name_en": "2048",
         "name_fa": "۲۰۴۸",
-        "description_en": "The classic 2048 puzzle game. Can you reach the 2048 tile?",
-        "description_fa": "بازی پازل ۲۰۴۸. آیا می‌توانید به کاشی ۲۰۴۸ برسید؟",
-        "thumbnail_url": "assets/images/2048.png",
+        "description_en": "Slide tiles to combine numbers and reach the 2048 tile. A classic addictive puzzle game.",
+        "description_fa": "کاشی‌ها را حرکت دهید تا اعداد را ترکیب کرده و به کاشی ۲۰۴۸ برسید. یک بازی پازل کلاسیک و اعتیادآور.",
+        "thumbnail_url": "assets/images/2048_thumb.png",
         "game_url": "games/2048/index.html",
         "genre_en": "Puzzle",
         "genre_fa": "پازل"
     },
     {
-        "id": "game2_minesweeper",
+        "id": "game_minesweeper",
         "name_en": "Minesweeper",
-        "name_fa": "مینروب",
-        "description_en": "A fast-paced hexagonal puzzle game. Match colors before the stack fills!",
-        "description_fa": "یک بازی پازل شش ضلعی سرعتی. رنگ‌ها را قبل از پر شدن ستون، مچ کنید!",
-        "thumbnail_url": "assets/images/minesweeper.png",
+        "name_fa": "مین روب (Minesweeper)",
+        "description_en": "Clear the board without detonating any mines. A classic game of logic and deduction.",
+        "description_fa": "صفحه را بدون منفجر کردن هیچ مینی پاک کنید. یک بازی کلاسیک منطقی و استنتاجی.",
+        "thumbnail_url": "assets/images/minesweeper_thumb.png",
         "game_url": "games/minesweeper/index.html",
         "genre_en": "Puzzle",
         "genre_fa": "پازل"
     },
     {
-        "id": "game3_tetris",
+        "id": "game_tetris",
         "name_en": "Tetris",
-        "name_fa": "تتریس",
-        "description_en": "Jump, run, and collect coins in this exciting 2D platformer.",
-        "description_fa": "در این پلتفرمر دو بعدی هیجان‌انگیز بپر، بدو و سکه جمع کن.",
-        "thumbnail_url": "assets/images/tetris.png",
+        "name_fa": "تتریس (Tetris)",
+        "description_en": "Arrange the falling tetrominoes to create complete horizontal lines without any gaps.",
+        "description_fa": "قطعات چهارخانه‌ای (تترومینوها) در حال سقوط را طوری بچینید که خطوط افقی کامل و بدون فاصله ایجاد کنید.",
+        "thumbnail_url": "assets/images/tetris_thumb.png",
         "game_url": "games/tetris/index.html",
-        "genre_en": "Platformer",
-        "genre_fa": "سکوبازی"
+        "genre_en": "Puzzle",
+        "genre_fa": "پازل"
     },
     {
-        "id": "game3_sudoku",
+        "id": "game_sudoku",
         "name_en": "Sudoku",
-        "name_fa": "سودوکو",
-        "description_en": "Jump, run, and collect coins in this exciting 2D platformer.",
-        "description_fa": "در این پلتفرمر دو بعدی هیجان‌انگیز بپر، بدو و سکه جمع کن.",
-        "thumbnail_url": "assets/images/sudoku.png",
+        "name_fa": "سودوکو (Sudoku)",
+        "description_en": "Fill a 9x9 grid with numbers so that each row, column, and 3x3 section contain all digits from 1 to 9.",
+        "description_fa": "یک جدول ۹x۹ را با اعداد پر کنید به طوری که هر سطر، ستون و هر بخش ۳x۳ شامل تمام ارقام از ۱ تا ۹ باشد.",
+        "thumbnail_url": "assets/images/sudoku_thumb.png",
         "game_url": "games/sudoku/index.html",
-        "genre_en": "Platformer",
-        "genre_fa": "سکوبازی"
-    },
+        "genre_en": "Puzzle",
+        "genre_fa": "پازل"
+    }
 ]
