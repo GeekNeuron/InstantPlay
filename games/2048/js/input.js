@@ -99,7 +99,7 @@ class InputManager {
             } else {
                 // سوایپ عمودی (با منطق اصلی جهت‌گیری)
                 if (absDeltaY > swipeThreshold) { 
-                    direction = (deltaY > 0) ? "ArrowDown" : "ArrowUp"; 
+                    direction = (deltaY > 0) ? "ArrowUp" : "ArrowDown"; 
                 }
             }
             
