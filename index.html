@@ -6,12 +6,14 @@
     <title data-translate-key="site_title">InstantPlay</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap" rel="stylesheet"> 
     
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body class=""> <div id="loading-overlay" class="loading-overlay" style="display: none;">
+<body class="">
+
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
         <div class="spinner"></div>
     </div>
 
@@ -19,14 +21,14 @@
 
     <header>
         <div class="container">
-            <h1 data-translate-key="site_title_header">Game Portal Ultimate</h1>
+            <h1 data-translate-key="site_title_header">InstantPlay</h1>
             <nav>
                 <div class="settings-controls">
                     <button id="dark-mode-toggle" aria-label="Toggle Dark Mode" title="Toggle Dark Mode">
                         <i class="fas fa-moon"></i> <span data-translate-key="dark_mode_label" class="sr-only">Dark Mode</span>
                     </button>
                     <label for="language-select" data-translate-key="language_label" class="sr-only">Language:</label>
-                    <select id="language-select">
+                    <select id="language-select" aria-label="Select language">
                         <option value="en">English</option>
                         <option value="fa">فارسی</option>
                     </select>
@@ -39,36 +41,38 @@
         <div class="container">
             <div class="toolbar">
                 <div class="search-container">
+                    <label for="search-input" class="sr-only" data-translate-key="search_label">Search Games</label>
                     <input type="text" id="search-input" placeholder="Search games..." data-translate-placeholder-key="search_placeholder">
-                    <i class="fas fa-search search-icon"></i>
+                    <i class="fas fa-search search-icon" aria-hidden="true"></i>
                 </div>
                 <div class="filter-sort-controls">
                      <label for="genre-filter" data-translate-key="genre_label" class="sr-only">Genre:</label>
-                     <select id="genre-filter">
+                     <select id="genre-filter" aria-label="Filter by genre">
                         <option value="all" data-translate-key="all_genres">All Genres</option>
-                        </select>
+                     </select>
                      <label for="sort-by" data-translate-key="sort_by_label" class="sr-only">Sort By:</label>
-                     <select id="sort-by">
+                     <select id="sort-by" aria-label="Sort games by">
                         <option value="name_asc" data-translate-key="sort_name_asc">Name (A-Z)</option>
                         <option value="name_desc" data-translate-key="sort_name_desc">Name (Z-A)</option>
                      </select>
                 </div>
                 <div class="backup-restore-controls">
                     <button id="export-settings-button" data-translate-key="export_settings_button">Export Settings</button>
-                    <label for="import-settings-input" class="import-button-label" data-translate-key="import_settings_button">Import Settings</label>
+                    <label for="import-settings-input" class="import-button-label" data-translate-key="import_settings_button" role="button" tabindex="0">Import Settings</label>
                     <input type="file" id="import-settings-input" accept=".json" style="display:none;">
                 </div>
             </div>
 
-            <section id="favorites-section" class="favorites-section" style="display:none;">
-                <h2 data-translate-key="favorites_header">My Favorite Games</h2>
-                <div id="favorites-list-container" class="game-grid"></div>
+            <section id="favorites-section" class="favorites-section" style="display:none;" aria-labelledby="favorites-title">
+                <h2 id="favorites-title" data-translate-key="favorites_header">My Favorite Games</h2>
+                <div id="favorites-list-container" class="game-grid">
+                    </div>
                 <hr class="favorites-separator" />
             </section>
 
             <h2 data-translate-key="all_games_header" id="all_games_main_header">All Games</h2>
             <div id="game-list-container" class="game-grid">
-                <p id="no-games-found" style="display:none;" data-translate-key="no_games_found">No games found.</p>
+                <p id="no-games-found" style="display:none;" data-translate-key="no_games_found" role="status">No games found.</p>
             </div>
         </div>
     </main>
@@ -78,17 +82,6 @@
             <p data-translate-key="footer_text">© 2025 GeekNeuron.</p>
         </div>
     </footer>
-
-    <div id="game-modal" class="modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-        <div class="modal-content">
-            <button class="modal-close-button" aria-label="Close" data-translate-aria-label="close_button_label">&times;</button>
-            <img id="modal-img" src="" alt="Game Screenshot" class="modal-img">
-            <h2 id="modal-title">Game Title</h2>
-            <p id="modal-genre" class="modal-genre"></p>
-            <p id="modal-description">Game description goes here...</p>
-            <a id="modal-play-button" href="#" class="play-button modal-play-button" target="_blank" data-translate-key="play_game_button">Play Game!</a>
-        </div>
-    </div>
 
     <script src="main.js"></script>
 </body>
