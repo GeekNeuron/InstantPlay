@@ -1,22 +1,27 @@
 /* General Styles */
 :root {
-    /* Light Theme (Default) - This section remains unchanged */
-    --primary-bg: #f4f7f9;       
-    --secondary-bg: #ffffff;     
-    --text-color: #212529;       
-    --text-muted-color: #6c757d; 
-    --header-bg: #343a40;        
-    --header-text-color: #f8f9fa;
-    --accent-color: #007bff;     
-    --accent-hover-color: #0056b3;
-    --border-color: #dee2e6;     
-    --star-color: #f1c40f;       
+    /* Light Theme (Default) - This section remains as it was in the "good" version */
+    --primary-bg: #f0f2f5;
+    --secondary-bg: #ffffff;
+    --text-color: #333333;
+    --text-muted-color: #555555;
+    --accent-color: #3498db;
+    --accent-hover-color: #2980b9;
+    --header-bg: #2c3e50;
+    --header-text-color: #ecf0f1;
+    --card-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    --card-hover-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    --card-selected-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    --border-color: #e0e0e0;
+    --button-bg: var(--accent-color); /* Default button bg for light theme */
+    --button-text-color: #ffffff; /* Default button text for light theme */
+    --star-color: #f1c40f;
     --icon-color: var(--text-muted-color);
-    --toast-success-bg: #28a745;
-    --toast-error-bg: #dc3545;
-    --toast-info-bg: #17a2b8;
+    --toast-success-bg: #2ecc71;
+    --toast-error-bg: #e74c3c;
+    --toast-info-bg: #3498db;
     --toast-text-color: #ffffff;
-    --thumbnail-bg: #e9ecef;     
+    --thumbnail-bg: #e9ecef;
 }
 
 body {
@@ -40,36 +45,70 @@ html[dir="rtl"] textarea {
     font-family: 'Vazirmatn', sans-serif;
 }
 
-/* === Dark Blue Theme === */
+/* === Custom Dark Blue Theme (User Provided) === */
 body.dark-mode {
-    --primary-bg: #0a192f;       /* پس‌زمینه اصلی صفحه - آبی نفتی بسیار تیره */
-    --secondary-bg: #172a45;     /* پس‌زمینه عناصر (کارت‌ها، تولبار) - آبی نفتی کمی روشن‌تر */
-    --text-color: #ccd6f6;       /* رنگ متن اصلی - آبی بسیار روشن/خاکستری روشن */
-    --text-muted-color: #8892b0; /* رنگ متن فرعی - آبی خاکستری متوسط */
-
-    --header-bg: #071021;        /* پس‌زمینه هدر - آبی نفتی تیره‌تر */
-    --header-text-color: #e6f1ff;/* رنگ متن هدر - تقریبا سفید */
+    --primary-bg: #0d1117;          /* User's --body-bg */
+    --secondary-bg: #161b22;        /* User's --container-bg (for cards, toolbar) */
+    --text-color: #c9d1d9;          /* User's --text-color-primary */
+    --text-muted-color: #8892b0;    /* A suitable muted text for this theme */
     
-    --accent-color: #64ffda;     /* رنگ تاکید اصلی - یک سبزآبی روشن برای کنتراست با آبی تیره */
-    --accent-hover-color: #52d1b8;/* رنگ تاکید هنگام هاور */
+    --header-bg: #0a0f14;           /* Darker than primary-bg for header */
+    --header-text-color: #c9d1d9;   /* Same as primary text color */
     
-    --border-color: #233554;     /* رنگ بوردرها - آبی نفتی برای جداسازی */
+    --accent-color: #3282b8;        /* User's --button-bg */
+    --accent-hover-color: #1d4357;  /* User's --button-hover-bg */
     
-    --star-color: #f1c40f;       /* رنگ ستاره علاقه‌مندی‌ها (طلایی همچنان مناسب است) */
-    --icon-color: var(--text-muted-color); /* آیکون‌ها از رنگ متن فرعی استفاده می‌کنند */
+    --border-color: #161b22;        /* User's --border-color (derived from their --container-bg) */
+    
+    --star-color: #f1c40f;          /* Gold star color remains */
+    --icon-color: #8892b0;          /* Using the muted text color for icons */
 
-    --toast-success-bg: #1e6a40; /* سبز تیره‌تر برای Toast موفقیت */
-    --toast-error-bg: #a32a33;   /* قرمز تیره‌تر برای Toast خطا */
-    --toast-info-bg: #1d588f;    /* آبی تیره‌تر برای Toast اطلاعات */
-    --toast-text-color: #e6f1ff; /* متن روشن برای Toast ها */
+    --toast-success-bg: #1e6a40;    /* Dark green for success toast */
+    --toast-error-bg: #a32a33;      /* Dark red for error toast */
+    --toast-info-bg: #1d588f;       /* Darker blue for info toast */
+    --toast-text-color: #c9d1d9;    /* Light text for toasts */
 
-    --thumbnail-bg: #102a43;     /* پس‌زمینه برای تصاویر بندانگشتی - آبی نفتی متوسط */
+    --thumbnail-bg: #1e2732;        /* User's --grid-bg (for thumbnail placeholder) */
 
-    /* Shadow colors can also be adjusted if needed, e.g., using hsla with blue tones */
-    --card-shadow: 0 4px 8px rgba(2, 12, 27, 0.7); /* سایه تیره‌تر با کمی رنگ آبی */
-    --card-hover-shadow: 0 6px 12px rgba(2, 12, 27, 0.8);
-    --card-selected-shadow: 0 8px 16px rgba(2, 12, 27, 0.9);
+    --card-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    --card-hover-shadow: 0 6px 15px rgba(0,0,0,0.6);
+    --card-selected-shadow: 0 8px 20px rgba(0,0,0,0.7);
+
+    /* Variables from user's theme not directly mapped but can be used if needed:
+       --grid-cell-bg: #2c3a47;
+       --score-box-bg: #274c77;
+       --score-box-text: #e0e6eb;
+       --modal-bg: rgba(10, 10, 15, 0.7); (Modal for game details is removed)
+       --modal-content-bg: #161b22;
+       --modal-text-color: #c9d1d9;
+       --theme-switcher-bg-dark-active: #e0e0e0; (For theme switcher button itself, if styled)
+       --theme-switcher-border-dark-active: #cccccc;
+    */
 }
+
+/* Specific button styling for dark mode as per user request */
+body.dark-mode .backup-restore-controls button,
+body.dark-mode .import-button-label {
+    background-color: #ffffff !important; /* سفید خالص */
+    color: #0d1117 !important;           /* رنگ متن تیره (مانند پس‌زمینه اصلی تم تاریک) */
+    border: 1px solid #0d1117;       /* Optional: a border to make it pop */
+}
+body.dark-mode .backup-restore-controls button:hover,
+body.dark-mode .import-button-label:hover {
+    background-color: #f0f0f0 !important; /* کمی خاکستری هنگام هاور */
+}
+
+body.dark-mode .lets-play-button {
+    background-color: var(--accent-color) !important; /* User's --button-bg: #3282b8 */
+    color: #ffffff !important;                        /* User's --button-text */
+}
+body.dark-mode .lets-play-button:hover {
+    background-color: var(--accent-hover-color) !important; /* User's --button-hover-bg: #1d4357 */
+}
+
+
+/* --- The rest of your style.css (layout, components, media queries) remains the same --- */
+/* --- from the version you referred to as "good before the last theme fix attempt" --- */
 
 body.modal-open { 
     overflow: hidden; 
@@ -98,14 +137,13 @@ header {
     background-color: var(--header-bg);
     color: var(--header-text-color);
     padding: 1rem 0;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* This shadow might need adjustment for dark blue */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     position: sticky;
     top: 0;
     z-index: 1000;
 }
-/* Example of adjusting shadow for dark theme */
-body.dark-mode header {
-    box-shadow: 0 2px 4px rgba(2, 12, 27, 0.5);
+body.dark-mode header { /* Ensure header shadow is visible on dark theme */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
 }
 
 
@@ -133,15 +171,15 @@ header h1 {
     padding: 0.5rem 0.8rem;
     border-radius: 5px;
     border: 1px solid var(--border-color);
-    background-color: var(--secondary-bg); /* Will use dark blue in dark mode */
-    color: var(--text-color); /* Will use light text in dark mode */
+    background-color: var(--secondary-bg); 
+    color: var(--text-color); 
     cursor: pointer;
     transition: background-color 0.2s ease, border-color 0.2s ease;
 }
-.settings-controls button { /* Specific for dark mode toggle button style */
+.settings-controls button { 
      background-color: transparent;
      border: none;
-     color: var(--header-text-color); /* Uses header text color */
+     color: var(--header-text-color); 
      font-size: 1rem;
 }
 .settings-controls button .fas {
@@ -153,7 +191,7 @@ html[dir="rtl"] .settings-controls button .fas {
 }
 .settings-controls select:hover,
 .settings-controls button:hover {
-    border-color: var(--accent-color); /* Accent color for hover border */
+    border-color: var(--accent-color); 
 }
 
 .toolbar {
@@ -183,7 +221,7 @@ html[dir="rtl"] .settings-controls button .fas {
     border: 1px solid var(--border-color);
     border-radius: 5px;
     font-size: 1rem;
-    background-color: var(--primary-bg); /* Uses main dark blue in dark mode */
+    background-color: var(--primary-bg); 
     color: var(--text-color);
 }
 
@@ -213,13 +251,15 @@ html[dir="rtl"] #search-input {
      border: 1px solid var(--border-color);
      border-radius: 5px;
      font-size: 0.9rem;
-     background-color: var(--primary-bg); /* Uses main dark blue in dark mode */
+     background-color: var(--primary-bg); 
      color: var(--text-color);
      cursor: pointer;
      flex-grow: 1; 
      min-width: 150px; 
 }
 
+/* Backup/Restore buttons will now use the default button variables from :root or body.dark-mode */
+/* The specific white background for dark mode is handled above */
 .backup-restore-controls {
     display: flex;
     gap: 0.5rem;
@@ -229,8 +269,8 @@ html[dir="rtl"] #search-input {
 .backup-restore-controls button,
 .import-button-label {
     padding: 0.75rem 1rem;
-    background-color: var(--button-bg); /* Uses accent color */
-    color: var(--button-text-color); /* Should be light for dark blue accent */
+    background-color: var(--button-bg); 
+    color: var(--button-text-color); 
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -240,17 +280,12 @@ html[dir="rtl"] #search-input {
     text-align: center;
     white-space: nowrap; 
 }
-/* Adjust button text color for dark blue accent if needed */
-body.dark-mode .backup-restore-controls button,
-body.dark-mode .import-button-label {
-    color: #071021; /* Dark text for light accent color like #64ffda */
-}
-
 
 .backup-restore-controls button:hover,
 .import-button-label:hover {
     background-color: var(--accent-hover-color);
 }
+
 
 main { padding: 1rem 0 2rem 0; }
 main h2 { margin-top: 2rem; margin-bottom: 1.5rem; font-size: 1.8rem; color: var(--text-color); text-align: center; }
@@ -315,7 +350,7 @@ html[dir="rtl"] .favorite-button { right: auto; left: 10px; }
     display: inline-block;
     padding: 0.75rem 1.5rem;
     background-color: var(--accent-color); 
-    color: var(--button-text-color);
+    color: var(--button-text-color); 
     text-decoration: none;
     border-radius: 5px;
     font-weight: bold;
@@ -323,9 +358,9 @@ html[dir="rtl"] .favorite-button { right: auto; left: 10px; }
     border: none;
     cursor: pointer;
 }
-body.dark-mode .lets-play-button {
-    color: #071021; /* Dark text for light accent color like #64ffda */
-}
+/* Text color for Let's Play button in dark mode (if accent is light) */
+/* body.dark-mode .lets-play-button { color: #0d1117; } /* Example if accent was very light */
+
 .lets-play-button:hover {
     background-color: var(--accent-hover-color);
     transform: scale(1.05);
@@ -337,9 +372,9 @@ body.dark-mode .lets-play-button {
 #no-games-found { grid-column: 1 / -1; text-align: center; font-size: 1.2rem; color: var(--text-muted-color); padding: 2rem; }
 footer { background-color: var(--header-bg); color: var(--header-text-color); text-align: center; padding: 1.5rem 0; margin-top: 3rem; font-size: 0.9rem; }
 
-.loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); /* Darker overlay for dark blue theme */ display: flex; justify-content: center; align-items: center; z-index: 9999; }
-body.dark-mode .loading-overlay { background-color: rgba(2, 12, 27, 0.8); }
-.spinner { border: 8px solid var(--secondary-bg); /* Spinner border matches card bg */ border-top: 8px solid var(--accent-color); border-radius: 50%; width: 60px; height: 60px; animation: spin 1s linear infinite; }
+.loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); display: flex; justify-content: center; align-items: center; z-index: 9999; }
+body.dark-mode .loading-overlay { background-color: rgba(13, 17, 23, 0.8); } /* Using primary dark bg for overlay */
+.spinner { border: 8px solid var(--secondary-bg); border-top: 8px solid var(--accent-color); border-radius: 50%; width: 60px; height: 60px; animation: spin 1s linear infinite; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
 .toast-container { position: fixed; top: 80px; right: 20px; z-index: 1050; display: flex; flex-direction: column; gap: 10px; }
@@ -353,9 +388,7 @@ html[dir="rtl"] .toast { transform: translateX(-100%); padding-right: 15px; padd
 html[dir="rtl"] .toast-close-button { right: auto; left: 10px; }
 .toast-close-button:hover { opacity: 1; }
 
-/* Modal was removed for game details */
 .modal { display: none !important; } 
-
 
 #dark-mode-toggle .fa-sun { display: none; }
 body.dark-mode #dark-mode-toggle .fa-moon { display: none; }
