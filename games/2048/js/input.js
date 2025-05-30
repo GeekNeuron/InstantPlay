@@ -41,10 +41,12 @@ class InputManager {
         window.addEventListener("keydown", keydownHandler);
 
         let touchstartX = 0;
-        touchstartY = 0;
+        let touchstartY = 0;
         let touchendX = 0;
         let touchendY = 0;
-        
+        // let touchstartTime = 0; // Not strictly needed for this version of swipe logic
+
+        // Attach touch listeners directly to the grid container
         const gameArea = document.querySelector('.grid-container'); 
 
         const touchstartHandler = (event) => {
@@ -52,7 +54,10 @@ class InputManager {
 
             touchstartX = event.changedTouches[0].screenX;
             touchstartY = event.changedTouches[0].screenY;
+            // touchstartTime = new Date().getTime();
             this.isSwiping = true; 
+            // `touch-action: none` on .grid-container in CSS handles scroll prevention.
+            // No need for event.preventDefault() here if passive:true is used.
         };
 
         const touchendHandler = (event) => {
@@ -86,22 +91,16 @@ class InputManager {
             
             let direction = null;
             if (absDeltaX > absDeltaY) {
-                // Horizontal swipe
                 if (absDeltaX > swipeThreshold) { 
                     direction = (deltaX > 0) ? "ArrowRight" : "ArrowLeft";
                 }
             } else {
-                // Vertical swipe
                 if (absDeltaY > swipeThreshold) { 
-                    // *** REVERTED to original logic ***
-                    // deltaY > 0 means finger moved physically down screen.
-                    // This should map to the game's "ArrowDown" command.
-                    direction = (deltaY > 0) ? "ArrowDown" : "ArrowUp"; 
+                    direction = (deltaY > 0) ? "ArrowDown" : "ArrowUp";
                 }
             }
             
             if (direction) {
-                // console.log(`Swipe detected. Physical deltaY: ${deltaY}, Sending game direction: ${direction}`);
                 if (this.game.gameOverModal.classList.contains('show')) {
                     return; 
                 }
