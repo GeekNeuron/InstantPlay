@@ -1,3 +1,4 @@
+
 /* Global Resets and Base Styles */
 *,
 *::before,
@@ -9,73 +10,76 @@
 
 :root {
     /* Light Theme Variables (All White Theme) */
-    --bg-color-light: #ffffff;                     /* پس‌زمینه اصلی صفحه */
-    --text-color-light: #212529;                   /* رنگ متن اصلی (مشکی ملایم) */
-    --container-bg-light: #f8f9fa;                 /* پس‌زمینه کانتینر (سفید مایل به خاکستری) */
-    --container-border-light: #dee2e6;             /* حاشیه کانتینر */
-    --header-text-light: #212529;                  /* رنگ عنوان سودوکو */
+    --bg-color-light: #ffffff;
+    --text-color-light: #212529;
+    --container-bg-light: #f8f9fa;
+    --container-border-light: #dee2e6;
+    --header-text-light: #212529;
 
-    --cell-bg-light: #ffffff;                      /* پس‌زمینه سلول‌های خالی/ورودی */
+    --cell-bg-light: #ffffff;
     --cell-input-bg-light: #ffffff;
-    --cell-border-light: #ced4da;                  /* حاشیه پیش‌فرض سلول */
-    --cell-readonly-bg-light: #e9ecef;             /* پس‌زمینه سلول‌های فقط خواندنی */
-    --cell-readonly-text-light: #495057;           /* متن سلول‌های فقط خواندنی */
-    --cell-selected-bg-light: #cfe2ff;             /* پس‌زمینه سلول انتخاب شده (آبی روشن) */
-    --cell-highlight-bg-light: #e7f0ff;            /* پس‌زمینه هایلایت سطر/ستون/باکس */
-    --cell-error-bg-light: #f8d7da;                /* پس‌زمینه سلول خطا */
-    --cell-error-text-light: #721c24;              /* متن سلول خطا */
-    --input-error-border-light: #dc3545;           /* حاشیه ورودی خطا */
+    --cell-border-light: #ced4da;
+    --cell-readonly-bg-light: #e9ecef;
+    --cell-readonly-text-light: #495057;
+    --cell-selected-bg-light: #cfe2ff;
+    --cell-highlight-bg-light: #e7f0ff;
+    --cell-error-bg-light: #f8d7da;
+    --cell-error-text-light: #721c24;
+    --input-error-border-light: #dc3545;
 
-    --grid-strong-border-light: #495057;           /* خطوط جداکننده ۳x۳ (خاکستری تیره‌تر) */
+    --grid-strong-border-light: #495057;
 
-    --button-primary-bg-light: #007bff;            /* دکمه اصلی (آبی) */
+    --button-primary-bg-light: #007bff;
     --button-primary-text-light: #ffffff;
     --button-primary-hover-bg-light: #0056b3;
-    --button-secondary-bg-light: #6c757d;          /* دکمه ثانویه (خاکستری) */
+    --button-secondary-bg-light: #6c757d;
     --button-secondary-text-light: #ffffff;
     --button-secondary-hover-bg-light: #545b62;
+    --button-border-radius: 8px; /* Increased border-radius */
 
     --select-bg-light: #ffffff;
     --select-border-light: #ced4da;
     --select-text-light: #495057;
+    --select-border-radius: 8px; /* Increased border-radius */
 
-    --theme-switcher-light: #212529;               /* دکمه تغییر تم (مشکی) */
-    --input-focus-border-light: #86b7fe;           /* حاشیه فوکوس ورودی (آبی) */
+
+    --theme-switcher-light: #212529;
+    --input-focus-border-light: #86b7fe;
 
     /* Dark Theme Variables (User Provided Palette) */
-    --bg-color-dark: #0d1117;                      /* --body-bg */
-    --text-color-dark: #c9d1d9;                    /* --text-color-primary */
-    --container-bg-dark: #161b22;                  /* --container-bg */
-    --container-border-dark: #21262d;              /* مشابه --container-bg یا کمی تیره‌تر */
+    --bg-color-dark: #0d1117;
+    --text-color-dark: #c9d1d9;
+    --container-bg-dark: #161b22;
+    --container-border-dark: #21262d;
     --header-text-dark: #c9d1d9;
 
-    --cell-bg-dark: #2c3a47;                       /* --grid-cell-bg (برای سلول‌های ورودی) */
-    --cell-input-bg-dark: #2c3a47;                 /* مشابه سلول */
-    --cell-border-dark: #21262d;                   /* حاشیه پیش‌فرض سلول (تیره‌تر از پس‌زمینه سلول) */
-    --cell-readonly-bg-dark: #1e2732;              /* پس‌زمینه سلول فقط خواندنی (می‌تواند --grid-bg باشد) */
+    --cell-bg-dark: #2c3a47;
+    --cell-input-bg-dark: #2c3a47;
+    --cell-border-dark: #21262d;
+    --cell-readonly-bg-dark: #1e2732;
     --cell-readonly-text-dark: #c9d1d9;
-    --cell-selected-bg-dark: #3282b8;              /* مشابه --button-bg برای انتخاب */
-    --cell-highlight-bg-dark: #1d4357;             /* مشابه --button-hover-bg برای هایلایت */
+    --cell-selected-bg-dark: #3282b8;
+    --cell-highlight-bg-dark: #1d4357;
     
-    --cell-error-bg-dark: #4a2e33;                 /* پس‌زمینه سلول خطا (قرمز تیره) */
-    --cell-error-text-dark: #f8d7da;               /* متن سلول خطا (روشن) */
-    --input-error-border-dark: #e74c3c;            /* حاشیه ورودی خطا (قرمز روشن) */
+    --cell-error-bg-dark: #4a2e33;
+    --cell-error-text-dark: #f8d7da;
+    --input-error-border-dark: #e74c3c;
 
-    --grid-strong-border-dark: #c9d1d9;            /* خطوط جداکننده ۳x۳ (رنگ متن اصلی برای وضوح) */
+    --grid-strong-border-dark: #c9d1d9;
 
-    --button-primary-bg-dark: #3282b8;             /* --button-bg */
-    --button-primary-text-dark: #ffffff;           /* --button-text */
-    --button-primary-hover-bg-dark: #1d4357;       /* --button-hover-bg */
-    --button-secondary-bg-dark: #274c77;           /* --score-box-bg (برای دکمه Reset) */
-    --button-secondary-text-dark: #e0e6eb;         /* --score-box-text */
+    --button-primary-bg-dark: #3282b8;
+    --button-primary-text-dark: #ffffff;
+    --button-primary-hover-bg-dark: #1d4357;
+    --button-secondary-bg-dark: #274c77;
+    --button-secondary-text-dark: #e0e6eb;
     --button-secondary-hover-bg-dark: #1d3c5e;
 
-    --select-bg-dark: #161b22;                     /* مشابه --container-bg */
-    --select-border-dark: #3282b8;                 /* مشابه --button-bg */
+    --select-bg-dark: #161b22;
+    --select-border-dark: #3282b8;
     --select-text-dark: #c9d1d9;
 
-    --theme-switcher-dark: #e0e0e0;                /* --theme-switcher-bg-dark-active */
-    --input-focus-border-dark: #3282b8;            /* مشابه --button-bg */
+    --theme-switcher-dark: #e0e0e0;
+    --input-focus-border-dark: #3282b8;
 }
 
 body {
@@ -120,7 +124,7 @@ body.dark-theme {
 }
 body.dark-theme #themeSwitcher {
     background-color: var(--theme-switcher-dark);
-    border-color: var(--theme-switcher-border-dark-active, var(--text-color-dark)); /* Fallback */
+    border-color: var(--theme-switcher-border-dark-active, var(--text-color-dark));
 }
 
 .game-container {
@@ -137,7 +141,7 @@ body.dark-theme #themeSwitcher {
 body.dark-theme .game-container {
     background-color: var(--container-bg-dark);
     border-color: var(--container-border-dark);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1); /* Slightly more visible shadow on dark */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
 .game-header h1 {
@@ -173,9 +177,9 @@ body.dark-theme .game-header h1 {
     font-weight: 500;
     font-size: 0.9em;
 }
-.btn { /* Common button styles */
+.btn {
     padding: 10px 15px;
-    border-radius: 3px;
+    border-radius: var(--button-border-radius); /* Using variable */
     font-size: 0.95em;
     cursor: pointer;
     font-weight: bold;
@@ -219,9 +223,11 @@ body.dark-theme #resetBtn:hover {
     background-color: var(--select-bg-light);
     color: var(--select-text-light);
     border: 1px solid var(--select-border-light);
-    padding: 9px 12px;
-    border-radius: 3px;
+    padding: 9px 12px; /* Consistent padding */
+    border-radius: var(--select-border-radius); /* Using variable */
     font-weight: normal;
+    line-height: 1.2; /* Match button line-height */
+    font-size: 0.95em; /* Match button font-size */
 }
 body.dark-theme #difficultySelect {
     background-color: var(--select-bg-dark);
@@ -241,11 +247,11 @@ body.dark-theme #difficultySelect {
     border-radius: 6px;
     overflow: hidden;
     transition: border-color 0.3s ease;
-    background-color: var(--grid-bg, var(--container-bg-light)); /* Fallback for light theme if --grid-bg not set */
+    background-color: var(--grid-bg, var(--container-bg-light));
 }
 body.dark-theme .sudoku-board {
     border-color: var(--grid-strong-border-dark);
-    background-color: var(--grid-bg, var(--container-bg-dark)); /* Use --grid-bg from user's dark theme */
+    background-color: var(--grid-bg, var(--container-bg-dark));
 }
 
 .cell {
@@ -264,7 +270,7 @@ body.dark-theme .sudoku-board {
     border: 0.5px solid var(--cell-border-light);
 }
 body.dark-theme .cell {
-    background-color: var(--cell-bg-dark); /* --grid-cell-bg */
+    background-color: var(--cell-bg-dark);
     color: var(--text-color-dark);
     border-color: var(--cell-border-dark);
 }
@@ -373,28 +379,34 @@ body.dark-theme .cell.error input {
 }
 
 .game-footer {
-    margin-top: 25px;
+    margin-top: 20px; /* Adjusted margin */
     font-size: 0.9em;
     color: inherit;
+    min-height: 60px; /* Ensure space for messages and end game controls */
+    position: relative; /* For positioning end game controls */
 }
 #messageArea {
     font-weight: 500;
-    min-height: 1.5em;
-    margin-bottom: 8px;
+    min-height: 1.5em; /* Standard message area height */
+    margin-bottom: 10px; /* Space before credit or end game controls */
 }
-.message-success { color: #0f5132; background-color: #d1e7dd; border: 1px solid #badbcc; padding: 5px; border-radius: 4px;} /* Bootstrap success colors */
-.message-error { color: #842029; background-color: #f8d7da; border: 1px solid #f5c2c7; padding: 5px; border-radius: 4px;} /* Bootstrap danger colors */
+.message-success { color: #0f5132; background-color: #d1e7dd; border: 1px solid #badbcc; padding: 5px 8px; border-radius: var(--button-border-radius);}
+.message-error { color: #842029; background-color: #f8d7da; border: 1px solid #f5c2c7; padding: 5px 8px; border-radius: var(--button-border-radius);}
+.message-info { color: #055160; background-color: #cff4fc; border: 1px solid #b6effb; padding: 5px 8px; border-radius: var(--button-border-radius);}
+
 
 body.dark-theme .message-success { color: #75b798; background-color: #192f26; border-color: #2a674f;}
 body.dark-theme .message-error { color: #ea868f; background-color: #3a2426; border-color: #a33f4c;}
+body.dark-theme .message-info { color: #6edff6; background-color: #11323d; border-color: #1789a3;}
 
 
 .footer-credit {
     font-size: 0.85em;
     color: var(--text-color-light);
+    /* Positioned absolutely if end-game controls are visible, otherwise static */
 }
 .footer-credit a {
-    color: var(--button-primary-bg-light); /* Link color matches primary button for light theme */
+    color: var(--button-primary-bg-light);
     text-decoration: none;
 }
 .footer-credit a:hover {
@@ -404,8 +416,26 @@ body.dark-theme .footer-credit {
     color: var(--text-color-dark);
 }
 body.dark-theme .footer-credit a {
-    color: var(--button-primary-bg-dark); /* Link color matches primary button for dark theme */
+    color: var(--button-primary-bg-dark);
 }
+
+.end-game-controls {
+    display: flex; /* Changed from none by JS */
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 10px;
+    /* position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%; */
+}
+.end-game-controls .btn {
+    padding: 8px 12px; /* Slightly smaller for these specific buttons */
+    font-size: 0.9em;
+}
+
 
 /* Responsive adjustments */
 @media (max-width: 600px) {
@@ -422,6 +452,8 @@ body.dark-theme .footer-credit a {
     #themeSwitcher { width: 25px; height: 25px; }
     .sudoku-board { max-width: 100%; margin-bottom: 15px;}
     .cell { font-size: clamp(0.8em, 5vw, 1.4em); }
+    .end-game-controls { flex-direction: column; gap: 8px; }
+    .end-game-controls .btn { width: 70%; }
 }
 
 @media (max-width: 420px) {
