@@ -10,6 +10,8 @@
         "genre_en": "Puzzle",
         "genre_fa": "پازل"
     },
+    ]
+[
     {
         "id": "game_minesweeper",
         "name_en": "Minesweeper",
@@ -21,6 +23,8 @@
         "genre_en": "Puzzle",
         "genre_fa": "پازل"
     },
+    ]
+[
     {
         "id": "game_tetris",
         "name_en": "Tetris",
@@ -32,6 +36,8 @@
         "genre_en": "Puzzle",
         "genre_fa": "پازل"
     },
+    ]
+[
     {
         "id": "game_sudoku",
         "name_en": "Sudoku",
