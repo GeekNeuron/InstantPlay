@@ -7,7 +7,9 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎮</text></svg>">
 </head>
-<body>
+<body class="light-theme"> <div class="top-bar">
+        <button id="theme-switcher">🌙 Dark Mode</button>
+    </div>
     <div class="container">
         <header>
             <h1>2048</h1>
@@ -15,14 +17,14 @@
                 <div class="score-box">Score: <span id="score">0</span></div>
                 <div class="score-box">Best: <span id="best-score">0</span></div>
             </div>
-            <button id="new-game-button">New Game</button>
+            <button id="new-game-button" class="btn">New Game</button>
         </header>
         <main>
             <div class="grid-container">
                 </div>
         </main>
         <footer>
-            <p>Created by GeekNeuron.</p>
+            <p>Created by GeekNeuron</p>
         </footer>
     </div>
 
@@ -30,7 +32,7 @@
         <div class="modal-content">
             <h2>Game Over!</h2>
             <p>Your Score: <span id="final-score">0</span></p>
-            <button id="restart-game-button">Play Again</button>
+            <button id="restart-game-button" class="btn">Play Again</button>
         </div>
     </div>
 
