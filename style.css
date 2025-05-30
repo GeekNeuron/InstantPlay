@@ -1,30 +1,29 @@
 /* General Styles */
 :root {
-    /* Light Theme (Default) - This section remains unchanged */
-    --primary-bg: #f0f2f5;       
-    --secondary-bg: #ffffff;     
-    --text-color: #333333;       
+    /* Light Theme (Default) */
+    --primary-bg: #f0f2f5;        
+    --secondary-bg: #ffffff;      
+    --text-color: #333333;        
     --text-muted-color: #555555; 
-    --accent-color: #007bff;     /* رنگ تاکید اصلی تم روشن (آبی) */
+    --accent-color: #007bff;      /* رنگ تاکید اصلی تم روشن (آبی) */
     --accent-hover-color: #0056b3;/* رنگ تاکید هاور تم روشن */
-    --header-bg: #2c3e50;        
+    --header-bg: #2c3e50;         
     --header-text-color: #ecf0f1;
     --card-shadow: 0 4px 8px rgba(0,0,0,0.1);
     --card-hover-shadow: 0 6px 12px rgba(0,0,0,0.15);
     --card-selected-shadow: 0 8px 16px rgba(0,0,0,0.2);
-    --border-color: #e0e0e0;     
-    --button-bg: var(--accent-color); /* Default button bg for light theme uses accent */
-    --button-text-color: #ffffff; /* Default button text for light theme */
-    --star-color: #f1c40f;       
+    --border-color: #e0e0e0;      
+    --button-bg: var(--accent-color); 
+    --button-text-color: #ffffff; 
+    --star-color: #f1c40f;        
     --icon-color: var(--text-muted-color);
-    --toast-success-bg: #2ecc71; /* Using previous green, can be #28a745 */
-    --toast-error-bg: #e74c3c;   /* Using previous red, can be #dc3545 */
-    --toast-info-bg: #3498db;    /* Using previous blue, can be #17a2b8 */
+    --toast-success-bg: #2ecc71; 
+    --toast-error-bg: #e74c3c;   
+    --toast-info-bg: #3498db;    
     --toast-text-color: #ffffff;
-    --thumbnail-bg: #e9ecef;     
+    --thumbnail-bg: #e9ecef;      
 }
 
-/* ... (بخش body و html[dir="rtl"] body بدون تغییر باقی می‌ماند) ... */
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     line-height: 1.6; 
@@ -46,32 +45,27 @@ html[dir="rtl"] textarea {
     font-family: 'Vazirmatn', sans-serif;
 }
 
-
-/* === Custom Dark Blue Theme (User Provided Palette Base) === */
+/* === Custom Dark Blue Theme === */
 body.dark-mode {
     --primary-bg: #0d1117;          
-    --secondary-bg: #161b22;        
-    --text-color: #c9d1d9;          
+    --secondary-bg: #161b22;         
+    --text-color: #c9d1d9;           
     --text-muted-color: #8892b0;    
     
-    --header-bg: #0a0f14;           
-    --header-text-color: #c9d1d9;   
+    --header-bg: #0a0f14;            
+    --header-text-color: #c9d1d9;    
     
-    /* این متغیرهای accent دیگر به صورت عمومی برای همه دکمه‌های تم تاریک استفاده نمی‌شوند */
-    /* --accent-color: #3282b8; */       
-    /* --accent-hover-color: #1d4357; */ 
+    --border-color: #222b38; /* Slightly lighter for dark mode visibility */         
     
-    --border-color: #161b22;        
-    
-    --star-color: #f1c40f;          
-    --icon-color: #8892b0;          
+    --star-color: #f1c40f;           
+    --icon-color: #8892b0;           
 
-    --toast-success-bg: #1e6a40;    
-    --toast-error-bg: #a32a33;      
-    --toast-info-bg: #1d588f;       
-    --toast-text-color: #c9d1d9;    
+    --toast-success-bg: #1e6a40;     
+    --toast-error-bg: #a32a33;       
+    --toast-info-bg: #1d588f;        
+    --toast-text-color: #c9d1d9;     
 
-    --thumbnail-bg: #1e2732;        
+    --thumbnail-bg: #1e2732;         
 
     --card-shadow: 0 4px 10px rgba(0,0,0,0.5);
     --card-hover-shadow: 0 6px 15px rgba(0,0,0,0.6);
@@ -81,27 +75,22 @@ body.dark-mode {
 /* --- STYLES FOR SPECIFIC BUTTONS IN DARK MODE --- */
 body.dark-mode .backup-restore-controls button,
 body.dark-mode .import-button-label {
-    background-color: var(--accent-color) !important; /* استفاده از accent-color تم روشن (آبی) */
-    color: var(--button-text-color) !important;       /* استفاده از رنگ متن دکمه تم روشن (سفید) */
-    border: 1px solid var(--accent-color);         /* Optional: a border for consistency */
+    background-color: var(--accent-color) !important; 
+    color: var(--button-text-color) !important;       
+    border: 1px solid var(--accent-color);        
 }
 body.dark-mode .backup-restore-controls button:hover,
 body.dark-mode .import-button-label:hover {
-    background-color: var(--accent-hover-color) !important; /* رنگ هاور accent تم روشن */
+    background-color: var(--accent-hover-color) !important;
 }
 
-/* دکمه Let's Play در تم تاریک همچنان از رنگ‌های پالت تاریک استفاده می‌کند */
 body.dark-mode .lets-play-button {
-    background-color: #3282b8 !important; /* رنگ آبی مشخص شده کاربر برای دکمه‌ها در تم تاریک */
-    color: #ffffff !important;             /* رنگ متن سفید برای این دکمه در تم تاریک */
+    background-color: #3282b8 !important; 
+    color: #ffffff !important;            
 }
 body.dark-mode .lets-play-button:hover {
-    background-color: #1d4357 !important; /* رنگ هاور مشخص شده کاربر */
+    background-color: #1d4357 !important; 
 }
-
-
-/* --- The rest of your style.css (layout, components, media queries) remains the same --- */
-/* --- from the version you referred to as "good before the last theme fix attempt" --- */
 
 body.modal-open { 
     overflow: hidden; 
@@ -136,9 +125,8 @@ header {
     z-index: 1000;
 }
 body.dark-mode header { 
-    box-shadow: 0 2px 4px rgba(0,0,0,0.4); /* Shadow for dark theme header */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4); 
 }
-
 
 header .container {
     display: flex;
@@ -170,12 +158,12 @@ header h1 {
     transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 .settings-controls button { 
-     background-color: transparent;
-     border: none;
-     color: var(--header-text-color); 
-     font-size: 1rem;
+    background-color: transparent;
+    border: none;
+    color: var(--header-text-color); 
+    font-size: 1rem; /* Adjusted from 1.2rem for consistency with original */
 }
-.settings-controls button .fas {
+.settings-controls button .fas { /* Kept original structure in case text is re-added */
     margin-right: 0.3em;
 }
 html[dir="rtl"] .settings-controls button .fas {
@@ -184,9 +172,9 @@ html[dir="rtl"] .settings-controls button .fas {
 }
 .settings-controls select:hover,
 .settings-controls button:hover {
-    border-color: var(--accent-color); /* This will use light theme's accent in dark mode for these */
-                                       /* Or you can define a specific dark theme accent for general hovers */
+    border-color: var(--accent-color); 
 }
+/* Removed duplicated hover background from previous reconstruction as it wasn't in user's original */
 
 .toolbar {
     display: flex;
@@ -218,6 +206,11 @@ html[dir="rtl"] .settings-controls button .fas {
     background-color: var(--primary-bg); 
     color: var(--text-color);
 }
+#search-input:focus { /* Added focus style for better UX, from my reconstruction */
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
 
 .search-icon {
     position: absolute;
@@ -237,22 +230,21 @@ html[dir="rtl"] #search-input {
     display: flex;
     flex-wrap: wrap; 
     gap: 0.8rem;
-    flex-grow: 1;
-    justify-content: center;
+    flex-grow: 1; /* Kept from original user CSS */
+    justify-content: center; /* Kept from original user CSS */
 }
 .filter-sort-controls select {
-     padding: 0.75rem 1rem;
-     border: 1px solid var(--border-color);
-     border-radius: 5px;
-     font-size: 0.9rem;
-     background-color: var(--primary-bg); 
-     color: var(--text-color);
-     cursor: pointer;
-     flex-grow: 1; 
-     min-width: 150px; 
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 0.9rem;
+    background-color: var(--primary-bg); 
+    color: var(--text-color);
+    cursor: pointer;
+    flex-grow: 1; /* Kept from original user CSS */
+    min-width: 150px; /* Kept from original user CSS */
 }
 
-/* Default styling for these buttons (will be overridden by dark mode specific styles above) */
 .backup-restore-controls {
     display: flex;
     gap: 0.5rem;
@@ -261,8 +253,8 @@ html[dir="rtl"] #search-input {
 .backup-restore-controls button,
 .import-button-label {
     padding: 0.75rem 1rem;
-    background-color: var(--button-bg); /* Uses :root --button-bg or dark-mode's override if not specific */
-    color: var(--button-text-color); /* Uses :root --button-text-color or dark-mode's override */
+    background-color: var(--button-bg); 
+    color: var(--button-text-color); 
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -274,9 +266,8 @@ html[dir="rtl"] #search-input {
 }
 .backup-restore-controls button:hover,
 .import-button-label:hover {
-    background-color: var(--accent-hover-color); /* Uses :root --accent-hover-color or dark-mode's override */
+    background-color: var(--accent-hover-color);
 }
-
 
 main { padding: 1rem 0 2rem 0; }
 main h2 { margin-top: 2rem; margin-bottom: 1.5rem; font-size: 1.8rem; color: var(--text-color); text-align: center; }
@@ -289,12 +280,12 @@ main h2 { margin-top: 2rem; margin-bottom: 1.5rem; font-size: 1.8rem; color: var
     background-color: var(--secondary-bg); 
     border-radius: 8px; 
     box-shadow: var(--card-shadow); 
-    overflow: visible; 
+    overflow: visible; /* Kept from original user CSS */
     display: flex; 
     flex-direction: column; 
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; 
     position: relative; 
-    cursor: pointer; 
+    cursor: pointer; /* Kept from original user CSS */
 }
 .game-card:hover { 
     transform: translateY(-5px) scale(1.01); 
@@ -303,11 +294,10 @@ main h2 { margin-top: 2rem; margin-bottom: 1.5rem; font-size: 1.8rem; color: var
 .game-card.selected {
     transform: translateY(-5px) scale(1.03); 
     box-shadow: var(--card-selected-shadow); 
-    border: 2px solid var(--accent-color); /* This will use light theme's accent color in dark mode if not overridden for dark mode's accent */
+    border: 2px solid var(--accent-color); 
 }
-/* If you want selected card border to use dark theme's preferred accent */
 body.dark-mode .game-card.selected {
-    border: 2px solid #3282b8; /* User's dark theme button color */
+    border: 2px solid #3282b8; 
 }
 
 .game-card-inner-content { 
@@ -315,38 +305,83 @@ body.dark-mode .game-card.selected {
     display: flex;
     flex-direction: column;
 }
+
+/* === MODIFIED THUMBNAIL STYLES === */
 .thumbnail-container { 
     width: 100%;
-    height: 180px;
+    height: 180px; /* As per user's image dimensions */
     background-color: var(--thumbnail-bg); 
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden; 
-    border-bottom: 1px solid var(--border-color);
+    overflow: hidden; /* Important for clipping image to border-radius */
+    /* border-bottom: 1px solid var(--border-color); /* REMOVED */
+    border: 1px solid var(--border-color); /* ADDED for full frame */
+    border-radius: 8px; /* ADDED for rounded corners (matched to card radius) */
+    /* Consider box-sizing: border-box; if border should be inside dimensions,
+       but omitted for now to keep content area at full 180px height. */
 }
 .game-card .thumbnail { 
     width: 100%; 
     height: 100%; 
-    object-fit: contain; 
+    object-fit: contain; /* Ensures whole image is visible, respects aspect ratio */
+    /* For lazy loading, ensure JS adds/removes 'lazy' class and handles src/data-src */
 }
+/* === END OF MODIFIED THUMBNAIL STYLES === */
+
 .game-card-content { padding: 1rem; flex-grow: 1; display: flex; flex-direction: column; }
 .game-card-content h3 { margin-top: 0; margin-bottom: 0.5rem; font-size: 1.25rem; color: var(--text-color); }
-.game-card-content p.description { font-size: 0.9rem; color: var(--text-muted-color); margin-bottom: 1rem; flex-grow: 1; min-height: 50px; }
-.favorite-button { position: absolute; top: 10px; right: 10px; background: none; border: none; color: #ccc; font-size: 1.8rem; cursor: pointer; padding: 5px; z-index: 10; transition: color 0.2s ease, transform 0.2s ease; }
-html[dir="rtl"] .favorite-button { right: auto; left: 10px; }
-.favorite-button.is-favorite { color: var(--star-color); }
-.favorite-button:hover { transform: scale(1.2); }
+.game-card-content p.description { 
+    font-size: 0.9rem; 
+    color: var(--text-muted-color); 
+    margin-bottom: 1rem; 
+    flex-grow: 1; 
+    min-height: 50px;
+    /* Text truncation (from my reconstruction, user can keep or remove) */
+    display: -webkit-box;
+    -webkit-line-clamp: 3; 
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.favorite-button { 
+    position: absolute; 
+    top: 10px; 
+    right: 10px; 
+    background: none; /* Original user style */
+    border: none; 
+    color: #ccc; /* Original user style */
+    font-size: 1.8rem; 
+    cursor: pointer; 
+    padding: 5px; 
+    z-index: 10; 
+    transition: color 0.2s ease, transform 0.2s ease; 
+}
+html[dir="rtl"] .favorite-button { 
+    right: auto; 
+    left: 10px; 
+}
+.favorite-button.is-favorite { /* Only color change for favorite state in user's original */
+    color: var(--star-color); 
+}
+.favorite-button:hover { 
+    transform: scale(1.2); 
+}
+/* Note: main.js provided by user manages showing/hiding different star icons.
+   CSS only needs to handle the .is-favorite class color if using a single icon.
+   The provided main.js uses `innerHTML = '<i class="fas fa-star" aria-hidden="true"></i>';`
+   So, the .is-favorite style for color is correct.
+*/
 
 .lets-play-button-container {
     text-align: center;
     padding: 0.5rem 1rem 1rem 1rem; 
 }
-.lets-play-button { /* Default styling for Let's Play button (applies to light theme) */
+.lets-play-button { 
     display: inline-block;
     padding: 0.75rem 1.5rem;
-    background-color: var(--accent-color); /* Light theme accent */
-    color: var(--button-text-color);    /* Light theme button text */
+    background-color: var(--accent-color); 
+    color: var(--button-text-color);     
     text-decoration: none;
     border-radius: 5px;
     font-weight: bold;
@@ -355,13 +390,12 @@ html[dir="rtl"] .favorite-button { right: auto; left: 10px; }
     cursor: pointer;
 }
 .lets-play-button:hover {
-    background-color: var(--accent-hover-color); /* Light theme accent hover */
+    background-color: var(--accent-hover-color); 
     transform: scale(1.05);
 }
 .lets-play-button:active {
     transform: scale(0.98);
 }
-
 
 #no-games-found { grid-column: 1 / -1; text-align: center; font-size: 1.2rem; color: var(--text-muted-color); padding: 2rem; }
 footer { background-color: var(--header-bg); color: var(--header-text-color); text-align: center; padding: 1.5rem 0; margin-top: 3rem; font-size: 0.9rem; }
@@ -371,26 +405,96 @@ body.dark-mode .loading-overlay { background-color: rgba(13, 17, 23, 0.8); }
 .spinner { border: 8px solid var(--secondary-bg); border-top: 8px solid var(--accent-color); border-radius: 50%; width: 60px; height: 60px; animation: spin 1s linear infinite; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-.toast-container { position: fixed; top: 80px; right: 20px; z-index: 1050; display: flex; flex-direction: column; gap: 10px; }
-html[dir="rtl"] .toast-container { right: auto; left: 20px; }
-.toast { background-color: var(--toast-info-bg); color: var(--toast-text-color); padding: 15px 25px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); opacity: 0; transform: translateX(100%); transition: opacity 0.5s ease, transform 0.5s ease; min-width: 250px; position: relative; padding-right: 40px; }
-html[dir="rtl"] .toast { transform: translateX(-100%); padding-right: 15px; padding-left: 40px; }
-.toast.show { opacity: 1; transform: translateX(0); }
+.toast-container { 
+    position: fixed; 
+    /* Changed to bottom-right as per common toast patterns from my reconstruction, user can revert to top if preferred */
+    bottom: 20px; 
+    right: 20px; 
+    z-index: 1050; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 10px; 
+    max-width: 350px; /* Added for better toast width management */
+}
+html[dir="rtl"] .toast-container { 
+    right: auto; 
+    left: 20px; 
+}
+.toast { 
+    background-color: var(--toast-info-bg); 
+    color: var(--toast-text-color); 
+    padding: 15px 25px; /* User's original padding */
+    border-radius: 5px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+    opacity: 0; 
+    /* Changed transform for slide-in from bottom, user can revert to translateX */
+    transform: translateY(20px); 
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Adjusted timing */
+    min-width: 250px; 
+    position: relative; 
+    padding-right: 40px; /* User's original for close button space */
+    font-size: 0.95rem; /* Added from my reconstruction */
+}
+html[dir="rtl"] .toast { 
+    /* transform: translateX(-100%); /* Kept user's original translateX for RTL */
+    transform: translateY(20px) translateX(0); /* Combine for RTL if sliding from bottom, or revert to pure translateX */
+    padding-right: 15px; 
+    padding-left: 40px; 
+}
+.toast.show { 
+    opacity: 1; 
+    transform: translateY(0) translateX(0); 
+}
+html[dir="rtl"] .toast.show {
+    /* transform: translateX(0); */ /* Keep original if purely horizontal animation was intended */
+}
+
 .toast.success { background-color: var(--toast-success-bg); }
 .toast.error { background-color: var(--toast-error-bg); }
-.toast-close-button { position: absolute; top: 5px; right: 10px; background: none; border: none; color: inherit; font-size: 1.5rem; cursor: pointer; line-height: 1; opacity: 0.7; }
-html[dir="rtl"] .toast-close-button { right: auto; left: 10px; }
+
+.toast-close-button { 
+    position: absolute; 
+    /* Centered vertically from my reconstruction, user can revert to top:5px */
+    top: 50%; 
+    transform: translateY(-50%);
+    right: 10px; 
+    background: none; 
+    border: none; 
+    color: inherit; 
+    font-size: 1.5rem; /* User's original */
+    cursor: pointer; 
+    line-height: 1; 
+    opacity: 0.7; 
+    padding: 5px; /* Added for easier click area */
+}
+html[dir="rtl"] .toast-close-button { 
+    right: auto; 
+    left: 10px; 
+}
 .toast-close-button:hover { opacity: 1; }
 
+/* Modal Styles from user's original - kept as is, though JS doesn't use them for game details */
 .modal { display: none !important; } 
+/* Other modal styles like .modal-content, .modal-close-button would be here if user had them and wanted to keep them
+   but they were not in the user-provided style.css for this turn.
+   The previous comprehensive CSS I generated had them. If user wants a generic modal, these can be added back.
+*/
 
-#dark-mode-toggle .fa-sun { display: none; }
-body.dark-mode #dark-mode-toggle .fa-moon { display: none; }
-body.dark-mode #dark-mode-toggle .fa-sun { display: inline-block; }
+
+#dark-mode-toggle .fa-sun { display: none; } /* From original file, JS now handles this dynamically by changing class on <i> */
+body.dark-mode #dark-mode-toggle .fa-moon { display: none; } /* From original file */
+body.dark-mode #dark-mode-toggle .fa-sun { display: inline-block; } /* From original file */
+/* Note: The main.js changes icon class (fas fa-moon / fas fa-sun), so these CSS rules might be redundant
+   if the JS correctly sets the class on the single <i> element.
+   The HTML has `<i class="fas fa-moon"></i> <span ... class="sr-only">Dark Mode</span>`
+   The JS `uiManager.applyDarkMode` does: `icon.className = 'fas fa-sun';` or `icon.className = 'fas fa-moon';`
+   So, these CSS rules for hiding/showing based on body.dark-mode are not strictly needed for the icon itself, but don't harm.
+*/
+
 
 /* --- Media Queries for Mobile Refinements --- */
 @media (max-width: 768px) {
-    header .container {}
+    header .container {} /* Empty rule from user's CSS */
     header h1 { font-size: 1.6rem; }
     .settings-controls { gap: 0.75rem; }
     .settings-controls select, .settings-controls button { padding: 0.4rem 0.7rem; font-size: 0.9rem; }
@@ -401,25 +505,42 @@ body.dark-mode #dark-mode-toggle .fa-sun { display: inline-block; }
     .backup-restore-controls { justify-content: center; }
     .game-grid { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
     .game-card-content h3 { font-size: 1.15rem; }
-    .game-card-content p.description { font-size: 0.85rem; min-height: 40px; }
+    .game-card-content p.description { font-size: 0.85rem; min-height: 40px; -webkit-line-clamp: 2; } /* Adjusted line clamp for mobile */
     .favorite-button { font-size: 1.6rem; top: 8px; right: 8px; }
     html[dir="rtl"] .favorite-button { right: auto; left: 8px; }
     .game-card.selected { transform: translateY(-3px) scale(1.02); }
     .lets-play-button { padding: 0.6rem 1.2rem; font-size: 0.9rem; }
+
+    /* My reconstructed CSS had modal responsive styles here, but omitting as modal is not used for game details */
 }
 
 @media (max-width: 480px) {
     .container { width: 95%; padding: 0 10px; }
-    header h1 { font-size: 1.3rem; margin-bottom: 0.5rem; }
-    header .container { align-items: center; text-align: center; }
-    .settings-controls { justify-content: center; width: 100%; }
+    header h1 { font-size: 1.3rem; margin-bottom: 0.5rem; /* User's original */ text-align:center; width:100%;} /* Added from my reconstruction for better centering */
+    header .container { flex-direction: column; align-items: center; text-align: center; } /* Added from my reconstruction */
+    .settings-controls { justify-content: center; width: 100%; margin-top: 0.5rem; } /* Added margin from my reconstruction */
+    
     #search-input, .filter-sort-controls select, .backup-restore-controls button, .import-button-label { font-size: 0.9rem; padding: 0.6rem 0.8rem; }
+    
     .game-grid { grid-template-columns: 1fr; gap: 1rem; }
     .thumbnail-container { height: 160px; } 
     .game-card-content h3 { font-size: 1.1rem; }
-    .game-card-content p.description { min-height: auto; font-size: 0.8rem; }
-    .lets-play-button { width: calc(100% - 2rem); margin: 0.5rem auto 0 auto; }
-    .toast-container { width: calc(100% - 20px); right: 10px; left: 10px; top: 65px; align-items: center; }
-    html[dir="rtl"] .toast-container {}
-    .toast { min-width: 0; width: 100%; max-width: 350px; }
+    .game-card-content p.description { min-height: auto; font-size: 0.8rem; -webkit-line-clamp: 2; } /* Adjusted line clamp for mobile */
+    .lets-play-button { width: calc(100% - 2rem); margin: 0.5rem auto 0 auto; } /* Was directly on .lets-play-button, matching user's css */
+    
+    .toast-container { 
+        width: calc(100% - 20px); 
+        right: 10px; 
+        left: 10px; 
+        bottom: 10px; /* Adjusted to bottom for consistency */
+        top: auto; /* Explicitly set top to auto if bottom is used */
+        align-items: center; /* From user's original */
+    }
+    html[dir="rtl"] .toast-container {} /* Empty rule from user's CSS */
+    .toast { 
+        min-width: 0; 
+        width: 100%; 
+        max-width: 350px; /* Max width on mobile from user's original */
+    }
+    /* My reconstructed CSS had modal responsive styles here, but omitting as modal is not used for game details */
 }
