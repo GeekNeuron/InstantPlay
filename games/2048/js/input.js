@@ -41,7 +41,7 @@ class InputManager {
         window.addEventListener("keydown", keydownHandler);
 
         let touchstartX = 0;
-        let touchstartY = 0;
+        touchstartY = 0;
         let touchendX = 0;
         let touchendY = 0;
         
@@ -93,12 +93,10 @@ class InputManager {
             } else {
                 // Vertical swipe
                 if (absDeltaY > swipeThreshold) { 
-                    // *** FIX: Invert vertical swipe mapping ***
-                    // If physical swipe down (deltaY > 0) makes tiles go UP visually,
-                    // we need to send the command that makes tiles go DOWN visually.
-                    // Assuming game.move("ArrowUp") makes tiles go DOWN visually, and
-                    // game.move("ArrowDown") makes tiles go UP visually, based on user report.
-                    direction = (deltaY > 0) ? "ArrowUp" : "ArrowDown"; 
+                    // *** REVERTED to original logic ***
+                    // deltaY > 0 means finger moved physically down screen.
+                    // This should map to the game's "ArrowDown" command.
+                    direction = (deltaY > 0) ? "ArrowDown" : "ArrowUp"; 
                 }
             }
             
