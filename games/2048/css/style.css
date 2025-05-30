@@ -177,7 +177,7 @@ header h1 {
         transform: scale(1);
     }
     50% {
-        transform: scale(1.15); /* <<< این مقدار پرش را کنترل می‌کند */
+        transform: scale(1.20); /* <<< این مقدار پرش را کنترل می‌کند */
     }
     100% {
         transform: scale(1);
