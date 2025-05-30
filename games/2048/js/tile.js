@@ -9,9 +9,11 @@ class Tile {
         this.x = -1; 
         this.y = -1;
 
+        // Set value and initial font size
         this.setValue(value); 
         gridElement.append(this.tileElement);
 
+        // Trigger appear animation
         requestAnimationFrame(() => {
             this.tileElement.style.opacity = '1';
         });
@@ -21,9 +23,12 @@ class Tile {
         this.value = value;
         this.tileElement.textContent = value; 
         this.tileElement.dataset.value = value; 
+        this.adjustFontSize(); // Adjust font size based on new value
+    }
 
-        const numStr = value.toString();
-        let baseSize = 2.8; 
+    adjustFontSize() {
+        const numStr = this.value.toString();
+        let baseSize = 2.8; // em, default for 1-2 digits
         if (numStr.length > 4) { 
             baseSize = 1.3;
         } else if (numStr.length === 4) { 
@@ -31,12 +36,10 @@ class Tile {
         } else if (numStr.length === 3) { 
             baseSize = 2.3;
         }
-        // Ensure font size is not too small on mobile, consider a minimum
-        const currentTileWidth = this.tileElement.offsetWidth; // Get current width if available
-        if (currentTileWidth && currentTileWidth < 50 && baseSize > 1.8) { // Example threshold
-             baseSize = Math.max(1.8, baseSize * 0.8); // Reduce if tile is small, but not too much
-        }
-
+        
+        // Consider tile's actual width for very small screens if needed
+        // This part can be tricky as offsetWidth might not be fully computed yet
+        // For now, relying on em units and media queries for base font size is often sufficient.
         this.tileElement.style.fontSize = `${baseSize}em`;
     }
 
@@ -45,7 +48,6 @@ class Tile {
         const gridPadding = parseFloat(computedStyle.paddingLeft) || 0;
         const gap = parseFloat(computedStyle.gap) || 0;
         
-        // Use clientWidth which excludes scrollbars and is better for layout calculations
         const availableWidth = gridElement.clientWidth - (2 * gridPadding); 
         const cellSize = (availableWidth - (gridSize - 1) * gap) / gridSize;
 
@@ -59,8 +61,8 @@ class Tile {
         this.tileElement.style.setProperty('--translateY', `${yPos}px`);
         this.tileElement.style.transform = `translate(${xPos}px, ${yPos}px)`;
         
-        // Re-evaluate font size after tile dimensions are set, especially for initial setup
-        this.setValue(this.value); 
+        // After tile dimensions are set/updated, re-adjust font size
+        this.adjustFontSize(); 
     }
     
     setPosition(row, col, gridSize, gridElement) {
@@ -70,16 +72,16 @@ class Tile {
     }
 
     remove(withAnimation = true) { 
-        if (withAnimation) {
-            this.tileElement.style.opacity = '0';
-            this.tileElement.style.transform += ' scale(0.5)'; 
-            this.tileElement.addEventListener('transitionend', () => {
-                if (this.tileElement.parentElement) { 
-                    this.tileElement.remove();
-                }
-            }, { once: true });
-        } else {
-            if (this.tileElement.parentElement) {
+        if (this.tileElement.parentElement) { // Only proceed if tile is in DOM
+            if (withAnimation) {
+                this.tileElement.style.opacity = '0';
+                this.tileElement.style.transform += ' scale(0.5)'; 
+                this.tileElement.addEventListener('transitionend', () => {
+                    if (this.tileElement.parentElement) { 
+                        this.tileElement.remove();
+                    }
+                }, { once: true });
+            } else {
                 this.tileElement.remove();
             }
         }
@@ -87,17 +89,28 @@ class Tile {
 
     waitForTransition(isAnimation = false) {
         return new Promise(resolve => {
+            if (!this.tileElement.parentElement) { // If tile was removed prematurely
+                resolve();
+                return;
+            }
             const eventName = isAnimation ? 'animationend' : 'transitionend';
-            const timeoutDuration = isAnimation ? 400 : 300; // Longer for animations
+            const timeoutDuration = isAnimation ? 400 : 200; // Adjusted timeout
+            
+            let resolved = false;
+            const resolveOnce = () => {
+                if (!resolved) {
+                    resolved = true;
+                    clearTimeout(timeoutId);
+                    resolve();
+                }
+            };
+
             const timeoutId = setTimeout(() => {
-                console.warn("Tile transition/animation timeout for value:", this.value, "at", this.x, ",", this.y);
-                resolve(); // Resolve promise even on timeout to prevent game freeze
+                // console.warn("Tile transition/animation timeout for value:", this.value, "at", this.x, ",", this.y);
+                resolveOnce(); 
             }, timeoutDuration); 
 
-            this.tileElement.addEventListener(eventName, () => {
-                clearTimeout(timeoutId);
-                resolve();
-            }, { once: true });
+            this.tileElement.addEventListener(eventName, resolveOnce, { once: true });
         });
     }
 
