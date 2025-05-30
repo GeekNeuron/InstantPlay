@@ -1,5 +1,5 @@
 // =================================================================
-//  Game Portal Ultimate - Main JavaScript
+//  InstantPlay - Main JavaScript (v4)
 // =================================================================
 (function() {
     'use strict';
@@ -7,6 +7,7 @@
     // --- DOM Elements ---
     const elements = {
         body: document.body,
+        html: document.documentElement,
         gameListContainer: document.getElementById('game-list-container'),
         favoritesListContainer: document.getElementById('favorites-list-container'),
         favoritesSection: document.getElementById('favorites-section'),
@@ -19,20 +20,13 @@
         allGamesHeader: document.getElementById('all_games_main_header'),
         loadingOverlay: document.getElementById('loading-overlay'),
         toastContainer: document.getElementById('toast-container'),
-        gameModal: document.getElementById('game-modal'),
-        modalContent: document.querySelector('.modal-content'),
-        modalCloseButton: document.querySelector('.modal-close-button'),
-        modalImg: document.getElementById('modal-img'),
-        modalTitle: document.getElementById('modal-title'),
-        modalGenre: document.getElementById('modal-genre'),
-        modalDescription: document.getElementById('modal-description'),
-        modalPlayButton: document.getElementById('modal-play-button'),
+        // Modal elements are removed as modal is no longer used for game details
         genreFilter: document.getElementById('genre-filter'),
         sortBy: document.getElementById('sort-by')
     };
 
     // --- App State ---
-    let allGamesData = []; // To store the original games data
+    let allGamesData = []; 
     let currentTranslations = {};
     let appSettings = {
         language: 'en',
@@ -41,9 +35,10 @@
         currentGenre: 'all',
         currentSort: 'name_asc'
     };
+    let selectedCard = null; // To keep track of the currently selected game card
 
     // --- Utilities ---
-    const utils = {
+    const utils = { /* ... (Keep utils object as in previous version) ... */ 
         fetchJson: async (url) => {
             utils.showLoading(true);
             try {
@@ -52,7 +47,8 @@
                 return await response.json();
             } catch (error) {
                 console.error("Could not fetch JSON:", error);
-                utils.showToast(currentTranslations.fetch_error || `Error fetching data. Check console.`, 'error');
+                const errorMsg = currentTranslations.fetch_error || `Error fetching data. Check console. (${url})`;
+                utils.showToast(errorMsg, 'error');
                 return null;
             } finally {
                 utils.showLoading(false);
@@ -76,7 +72,9 @@
             const closeButton = document.createElement('button');
             closeButton.className = 'toast-close-button';
             closeButton.innerHTML = '&times;';
-            closeButton.setAttribute('aria-label', currentTranslations.close_button_label || 'Close');
+            const closeLabel = currentTranslations.close_button_label || 'Close';
+            closeButton.setAttribute('aria-label', closeLabel);
+            closeButton.title = closeLabel;
 
             toast.appendChild(messageSpan);
             toast.appendChild(closeButton);
@@ -94,17 +92,16 @@
                     }
                 }, { once: true });
             };
-
             closeButton.addEventListener('click', hideToast);
             setTimeout(hideToast, duration);
         }
     };
 
     // --- Settings Management ---
-    const settingsManager = {
+    const settingsManager = { /* ... (Keep settingsManager object as in previous version) ... */ 
         load: () => {
             try {
-                const saved = localStorage.getItem('gamePortalUltimateSettings');
+                const saved = localStorage.getItem('instantPlaySettingsV4'); // Use a new key if structure changes significantly
                 if (saved) {
                     const loaded = JSON.parse(saved);
                     appSettings = { ...appSettings, ...loaded };
@@ -115,7 +112,7 @@
             }
         },
         save: () => {
-            localStorage.setItem('gamePortalUltimateSettings', JSON.stringify(appSettings));
+            localStorage.setItem('instantPlaySettingsV4', JSON.stringify(appSettings));
         },
         export: () => {
             const settingsJson = JSON.stringify(appSettings, null, 2);
@@ -123,10 +120,10 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'game-portal-settings.json';
+            a.download = 'instantplay-settings.json';
             a.click();
             URL.revokeObjectURL(url);
-            utils.showToast(currentTranslations.settings_exported_success || "Settings exported!", 'success');
+            utils.showToast(currentTranslations.settings_exported_success, 'success');
         },
         import: (event) => {
             const file = event.target.files[0];
@@ -135,7 +132,6 @@
             reader.onload = (e) => {
                 try {
                     const imported = JSON.parse(e.target.result);
-                    // Basic validation/merge
                     appSettings.language = imported.language || appSettings.language;
                     appSettings.darkMode = typeof imported.darkMode === 'boolean' ? imported.darkMode : appSettings.darkMode;
                     appSettings.favorites = Array.isArray(imported.favorites) ? imported.favorites : appSettings.favorites;
@@ -143,7 +139,7 @@
                     appSettings.currentSort = imported.currentSort || 'name_asc';
                     
                     settingsManager.save();
-                    app.init(); // Re-initialize fully
+                    app.init(); 
                     utils.showToast(currentTranslations.settings_imported_success, 'success');
                 } catch (error) {
                     console.error("Error importing settings:", error);
@@ -156,20 +152,21 @@
     };
 
     // --- UI Management ---
-    const uiManager = {
+    const uiManager = { /* ... (Keep applyDarkMode, loadTranslations, changeLanguage, populateGenreFilter as in previous version) ... */ 
         applyDarkMode: () => {
             elements.body.classList.toggle('dark-mode', appSettings.darkMode);
             const icon = elements.darkModeToggle.querySelector('i');
-            const label = elements.darkModeToggle.querySelector('span.sr-only'); // The visible text is now sr-only as icon is primary
+            const srLabel = elements.darkModeToggle.querySelector('span.sr-only');
+            const title = appSettings.darkMode ? (currentTranslations.light_mode_label || 'Switch to Light Mode') : (currentTranslations.dark_mode_label || 'Switch to Dark Mode');
+            
             if (appSettings.darkMode) {
                 icon.className = 'fas fa-sun';
-                if(label) label.textContent = currentTranslations.light_mode_label || 'Light Mode';
-                elements.darkModeToggle.title = currentTranslations.light_mode_label || 'Switch to Light Mode';
             } else {
                 icon.className = 'fas fa-moon';
-                if(label) label.textContent = currentTranslations.dark_mode_label || 'Dark Mode';
-                elements.darkModeToggle.title = currentTranslations.dark_mode_label || 'Switch to Dark Mode';
             }
+            if(srLabel) srLabel.textContent = title;
+            elements.darkModeToggle.title = title;
+            elements.darkModeToggle.setAttribute('aria-label', title);
         },
         toggleDarkMode: () => {
             appSettings.darkMode = !appSettings.darkMode;
@@ -180,75 +177,81 @@
             currentTranslations = await utils.fetchJson(`lang/${appSettings.language}.json`) || {};
             document.querySelectorAll('[data-translate-key]').forEach(el => {
                 const key = el.dataset.translateKey;
-                if (currentTranslations[key]) {
+                if (currentTranslations[key] !== undefined) {
                     if (el.tagName === 'TITLE') document.title = currentTranslations[key];
                     else el.textContent = currentTranslations[key];
                 }
             });
             document.querySelectorAll('[data-translate-placeholder-key]').forEach(el => {
                 const key = el.dataset.translatePlaceholderKey;
-                if (currentTranslations[key]) el.placeholder = currentTranslations[key];
+                if (currentTranslations[key] !== undefined) el.placeholder = currentTranslations[key];
             });
             document.querySelectorAll('[data-translate-aria-label]').forEach(el => {
                 const key = el.dataset.translateAriaLabel;
-                if (currentTranslations[key]) el.setAttribute('aria-label', currentTranslations[key]);
+                if (currentTranslations[key] !== undefined) el.setAttribute('aria-label', currentTranslations[key]);
             });
         },
         changeLanguage: (lang) => {
             appSettings.language = lang;
-            document.documentElement.lang = lang;
-            document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr';
+            elements.html.lang = lang;
+            elements.html.dir = lang === 'fa' ? 'rtl' : 'ltr';
             settingsManager.save();
             uiManager.loadTranslations().then(() => {
                 uiManager.populateGenreFilter();
                 uiManager.renderGames();
-                uiManager.applyDarkMode(); // Re-apply to update button title if translated
+                uiManager.applyDarkMode(); 
             });
         },
         populateGenreFilter: () => {
             if (!elements.genreFilter || !allGamesData) return;
             const lang = appSettings.language;
             const genres = [...new Set(allGamesData.map(g => lang === 'fa' ? g.genre_fa : g.genre_en).filter(Boolean))];
-            genres.sort((a, b) => a.localeCompare(b, lang)); // Sort genres based on current language
+            genres.sort((a, b) => a.localeCompare(b, lang)); 
             
             elements.genreFilter.innerHTML = `<option value="all">${currentTranslations.all_genres || "All Genres"}</option>`;
             genres.forEach(genre => {
                 const option = document.createElement('option');
-                option.value = genre; // Store the localized genre name as value
+                option.value = genre; 
                 option.textContent = genre;
                 elements.genreFilter.appendChild(option);
             });
             elements.genreFilter.value = appSettings.currentGenre;
         },
+
         createGameCard: (game) => {
             const card = document.createElement('article');
             card.className = 'game-card';
             card.dataset.gameId = game.id;
+            card.tabIndex = 0; // Make card focusable
 
             const isFav = appSettings.favorites.includes(game.id);
             const lang = appSettings.language;
             const name = lang === 'fa' ? game.name_fa : game.name_en;
+            const favLabel = isFav ? currentTranslations.remove_from_favorites : currentTranslations.add_to_favorites;
 
             const favButton = document.createElement('button');
             favButton.className = `favorite-button ${isFav ? 'is-favorite' : ''}`;
-            favButton.setAttribute('aria-label', isFav ? currentTranslations.remove_from_favorites : currentTranslations.add_to_favorites);
-            favButton.title = isFav ? currentTranslations.remove_from_favorites : currentTranslations.add_to_favorites;
-            favButton.innerHTML = `<i class="fas fa-star"></i>`;
+            favButton.setAttribute('aria-label', favLabel);
+            favButton.title = favLabel;
+            favButton.innerHTML = `<i class="fas fa-star" aria-hidden="true"></i>`;
             favButton.addEventListener('click', (e) => {
-                e.stopPropagation(); 
+                e.stopPropagation(); // Prevent card click event
                 gameManager.toggleFavorite(game.id);
             });
 
-            const clickableArea = document.createElement('div');
-            clickableArea.className = 'game-card-clickable-area';
-            clickableArea.addEventListener('click', () => uiManager.openModal(game));
+            // Inner content wrapper (excluding the play button which is now separate)
+            const innerContentWrapper = document.createElement('div');
+            innerContentWrapper.className = 'game-card-inner-content';
 
+            const thumbnailContainer = document.createElement('div');
+            thumbnailContainer.className = 'thumbnail-container';
             const thumbnail = document.createElement('img');
             thumbnail.dataset.src = game.thumbnail_url || 'assets/images/default_thumb.png';
             thumbnail.alt = name;
             thumbnail.className = 'thumbnail lazy';
-            thumbnail.width = 300;
+            thumbnail.width = 300; // Intrinsic size for layout
             thumbnail.height = 180;
+            thumbnailContainer.appendChild(thumbnail);
 
             const content = document.createElement('div');
             content.className = 'game-card-content';
@@ -260,16 +263,77 @@
 
             content.appendChild(title);
             content.appendChild(description);
-            clickableArea.appendChild(thumbnail);
-            clickableArea.appendChild(content);
+            
+            innerContentWrapper.appendChild(thumbnailContainer);
+            innerContentWrapper.appendChild(content);
 
             card.appendChild(favButton);
-            card.appendChild(clickableArea);
+            card.appendChild(innerContentWrapper);
+
+            // Event listener for card selection
+            card.addEventListener('click', () => uiManager.selectCard(card, game));
+            card.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    uiManager.selectCard(card, game);
+                }
+            });
             return card;
         },
-        renderGames: () => {
+
+        selectCard: (cardElement, gameData) => {
+            // Remove previous selected state and play button
+            if (selectedCard && selectedCard.element) {
+                selectedCard.element.classList.remove('selected');
+                const oldPlayButtonContainer = selectedCard.element.querySelector('.lets-play-button-container');
+                if (oldPlayButtonContainer) {
+                    oldPlayButtonContainer.remove();
+                }
+            }
+
+            // If clicking the same card that's already selected, deselect it
+            if (selectedCard && selectedCard.element === cardElement) {
+                selectedCard = null;
+                return;
+            }
+
+            // Set new selected card
+            cardElement.classList.add('selected');
+            selectedCard = { element: cardElement, data: gameData };
+
+            // Create and append "Let's Play" button
+            const playButtonContainer = document.createElement('div');
+            playButtonContainer.className = 'lets-play-button-container';
+
+            const playButton = document.createElement('a');
+            playButton.className = 'lets-play-button';
+            
+            // Construct game URL with theme parameter
+            const themeParam = appSettings.darkMode ? 'dark' : 'light';
+            const gameUrlWithTheme = `${gameData.game_url}${gameData.game_url.includes('?') ? '&' : '?'}theme=${themeParam}`;
+            playButton.href = gameUrlWithTheme;
+
+            playButton.target = '_blank'; // Open in new tab
+            playButton.rel = 'noopener noreferrer';
+            playButton.textContent = currentTranslations.lets_play_button || "Let's Play!";
+            playButton.addEventListener('click', (e) => e.stopPropagation()); // Prevent card click from re-triggering
+
+            playButtonContainer.appendChild(playButton);
+            cardElement.appendChild(playButtonContainer);
+        },
+
+        renderGames: () => { /* ... (Keep renderGames logic mostly as before, but it now calls the new createGameCard) ... */ 
             if (!elements.gameListContainer || !elements.favoritesListContainer) return;
             const filteredAndSortedGames = gameManager.getFilteredAndSortedGames();
+
+            // Deselect card if it's no longer in the filtered list or if lists are cleared
+            if (selectedCard && !filteredAndSortedGames.find(g => g.id === selectedCard.data.id)) {
+                const oldPlayButtonContainer = selectedCard.element.querySelector('.lets-play-button-container');
+                if (oldPlayButtonContainer) oldPlayButtonContainer.remove();
+                selectedCard.element.classList.remove('selected');
+                selectedCard = null;
+            }
+
 
             elements.favoritesListContainer.innerHTML = '';
             elements.gameListContainer.innerHTML = '';
@@ -293,11 +357,11 @@
             elements.favoritesSection.style.display = favoriteGamesCount > 0 ? 'block' : 'none';
             elements.allGamesHeader.style.display = (filteredAndSortedGames.length > favoriteGamesCount || favoriteGamesCount === 0 || filteredAndSortedGames.length > 0) ? 'block' : 'none';
             
-            if (filteredAndSortedGames.length === 0 && elements.searchInput.value) {
-                 elements.noGamesMessage.textContent = currentTranslations.no_games_found || "No games found matching your criteria.";
+            if (filteredAndSortedGames.length === 0 && (elements.searchInput.value || appSettings.currentGenre !== 'all')) {
+                 elements.noGamesMessage.textContent = currentTranslations.no_games_found;
                  elements.noGamesMessage.style.display = 'block';
             } else if (allGamesData.length === 0) {
-                 elements.noGamesMessage.textContent = currentTranslations.no_games_available || "No games available yet."; // Add this key to lang files
+                 elements.noGamesMessage.textContent = currentTranslations.no_games_available;
                  elements.noGamesMessage.style.display = 'block';
             }
             else {
@@ -305,40 +369,16 @@
             }
             
             lazyLoadManager.observe();
-        },
-        openModal: (game) => {
-            const lang = appSettings.language;
-            elements.modalImg.src = game.thumbnail_url || 'assets/images/default_thumb.png';
-            elements.modalImg.alt = lang === 'fa' ? game.name_fa : game.name_en;
-            elements.modalTitle.textContent = lang === 'fa' ? game.name_fa : game.name_en;
-            elements.modalGenre.textContent = lang === 'fa' ? game.genre_fa : game.genre_en;
-            elements.modalDescription.textContent = lang === 'fa' ? game.description_fa : game.description_en;
-            elements.modalPlayButton.href = game.game_url;
-            
-            elements.gameModal.style.display = 'flex';
-            elements.body.classList.add('modal-open');
-            elements.modalCloseButton.focus(); // For accessibility
-            requestAnimationFrame(() => {
-                elements.gameModal.classList.add('show');
-            });
-        },
-        closeModal: () => {
-            elements.gameModal.classList.remove('show');
-             elements.gameModal.addEventListener('transitionend', () => {
-                if (!elements.gameModal.classList.contains('show')) { // Check if it's still meant to be hidden
-                    elements.gameModal.style.display = 'none';
-                    elements.body.classList.remove('modal-open');
-                }
-            }, { once: true });
         }
+        // Modal open/close functions are removed as modal is not used for game details anymore
     };
 
     // --- Game Logic ---
-    const gameManager = {
+    const gameManager = { /* ... (Keep getFilteredAndSortedGames and toggleFavorite as in previous version) ... */ 
         getFilteredAndSortedGames: () => {
             const searchTerm = elements.searchInput.value.toLowerCase().trim();
             const lang = appSettings.language;
-            const selectedGenre = appSettings.currentGenre; // This is the localized genre name
+            const selectedGenre = appSettings.currentGenre; 
             const sortType = appSettings.currentSort;
 
             let filtered = allGamesData.filter(game => {
@@ -372,12 +412,12 @@
                 utils.showToast(currentTranslations.added_to_favorites, 'success');
             }
             settingsManager.save();
-            uiManager.renderGames();
+            uiManager.renderGames(); // Re-render to update UI (star icon and favorite list)
         }
     };
 
     // --- Lazy Loading ---
-    const lazyLoadManager = {
+    const lazyLoadManager = { /* ... (Keep lazyLoadManager object as in previous version) ... */ 
         observer: null,
         init: () => {
             if (!('IntersectionObserver' in window)) {
@@ -389,11 +429,10 @@
                     if (entry.isIntersecting) {
                         const img = entry.target;
                         img.src = img.dataset.src;
-                        img.onload = () => img.classList.remove('lazy'); // Remove lazy class after load
-                        img.onerror = () => { // Handle broken images
+                        img.onload = () => img.classList.remove('lazy'); 
+                        img.onerror = () => { 
                             img.classList.remove('lazy'); 
-                            // Optionally set a placeholder for broken images
-                            // img.src = 'assets/images/broken_thumb.png'; 
+                            img.src = 'assets/images/default_thumb.png'; 
                         }
                         obs.unobserve(img);
                     }
@@ -416,14 +455,14 @@
     };
 
     // --- Event Listener Setup ---
-    const setupEventListeners = () => {
+    const setupEventListeners = () => { /* ... (Keep setupEventListeners as in previous version, modal listeners are removed) ... */ 
         elements.darkModeToggle.addEventListener('click', uiManager.toggleDarkMode);
         elements.languageSelect.addEventListener('change', (e) => uiManager.changeLanguage(e.target.value));
         
         let searchTimeout;
         elements.searchInput.addEventListener('input', () => {
             clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(uiManager.renderGames, 300); // Debounce search
+            searchTimeout = setTimeout(uiManager.renderGames, 300); 
         });
 
         elements.genreFilter.addEventListener('change', (e) => {
@@ -438,47 +477,78 @@
         });
         elements.exportButton.addEventListener('click', settingsManager.export);
         elements.importInput.addEventListener('change', settingsManager.import);
-        elements.modalCloseButton.addEventListener('click', uiManager.closeModal);
-        elements.gameModal.addEventListener('click', (e) => {
-            if (e.target === elements.gameModal) uiManager.closeModal();
-        });
-        document.addEventListener('keydown', (e) => {
-             if (e.key === 'Escape' && elements.gameModal.style.display === 'flex') {
-                uiManager.closeModal();
-             }
+        
+        const importLabel = document.querySelector('.import-button-label');
+        if (importLabel) {
+            importLabel.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    elements.importInput.click();
+                }
+            });
+        }
+        // Remove modal specific event listeners if modal is fully removed
+        // elements.modalCloseButton.addEventListener('click', uiManager.closeModal);
+        // elements.gameModal.addEventListener('click', (e) => {
+        //     if (e.target === elements.gameModal) uiManager.closeModal();
+        // });
+        // document.addEventListener('keydown', (e) => {
+        //      if (e.key === 'Escape' && elements.gameModal.style.display === 'flex') {
+        //         uiManager.closeModal();
+        //      }
+        // });
+
+        // Deselect card if user clicks outside of any card
+        document.addEventListener('click', (event) => {
+            if (selectedCard && selectedCard.element) {
+                const isClickInsideCard = selectedCard.element.contains(event.target);
+                const isClickInsidePlayButton = event.target.classList.contains('lets-play-button');
+                
+                if (!isClickInsideCard && !isClickInsidePlayButton) {
+                    selectedCard.element.classList.remove('selected');
+                    const playButtonContainer = selectedCard.element.querySelector('.lets-play-button-container');
+                    if (playButtonContainer) {
+                        playButtonContainer.remove();
+                    }
+                    selectedCard = null;
+                }
+            }
         });
     };
+    
 
     // --- App Initialization ---
-    const app = {
+    const app = { /* ... (Keep app.init as in previous version) ... */ 
         init: async () => {
             utils.showLoading(true);
-            settingsManager.load(); // Load settings first
+            settingsManager.load(); 
             
-            // Apply initial UI settings from loaded appSettings
             uiManager.applyDarkMode();
             elements.languageSelect.value = appSettings.language;
             elements.sortBy.value = appSettings.currentSort;
-            // Genre filter value set after genres are populated
-            document.documentElement.lang = appSettings.language;
-            document.documentElement.dir = appSettings.language === 'fa' ? 'rtl' : 'ltr';
+            
+            elements.html.lang = appSettings.language;
+            elements.html.dir = appSettings.language === 'fa' ? 'rtl' : 'ltr';
 
-            await uiManager.loadTranslations(); // Load translations based on current language
+            await uiManager.loadTranslations(); 
             allGamesData = await utils.fetchJson('games.json') || [];
 
-            if(allGamesData) {
-                uiManager.populateGenreFilter(); // Needs allGamesData & translations
-                elements.genreFilter.value = appSettings.currentGenre; // Set filter after population
+            if(allGamesData && allGamesData.length > 0) {
+                uiManager.populateGenreFilter(); 
+                elements.genreFilter.value = appSettings.currentGenre; 
                 uiManager.renderGames(); 
             } else {
-                 utils.showToast(currentTranslations.error_loading_games_data || "Could not load game data.", "error");
-                 elements.gameListContainer.innerHTML = `<p>${currentTranslations.error_loading_games_data || "Could not load game data. Please check games.json and try again."}</p>`;
+                 const errorMsg = currentTranslations.error_loading_games_data || "Could not load game data. Please check games.json.";
+                 utils.showToast(errorMsg, "error", 5000);
+                 if(elements.gameListContainer) elements.gameListContainer.innerHTML = `<p>${errorMsg}</p>`;
+                 elements.noGamesMessage.textContent = currentTranslations.no_games_available;
+                 elements.noGamesMessage.style.display = 'block';
             }
             
-            lazyLoadManager.init(); // Initialize observer
-            lazyLoadManager.observe(); // Initial observation
+            lazyLoadManager.init(); 
+            lazyLoadManager.observe(); 
             
-            setupEventListeners(); // Setup event listeners after everything is ready
+            setupEventListeners(); 
             utils.showLoading(false);
         }
     };
@@ -486,4 +556,4 @@
     // --- Start the App ---
     app.init();
 
-})()
+})();
