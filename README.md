@@ -6,19 +6,22 @@ A feature-rich, bilingual (English/Persian) portal to host and play a collection
 ```
 / (Project Root)
 ├── index.html               # Main page, includes Font Awesome & Google Fonts (Vazirmatn) links
+├──README.md                 # This file
 ├── style.css                # Main stylesheet, including Vazirmatn for Persian & mobile media queries
 ├── main.js                  # Core JavaScript for all functionalities
 ├── games.json               # JSON file listing all games (name, desc, genre, paths, etc.)
-│├── games/                   # Directory to store actual game files
+│
+├── games/                   # Directory to store actual game files
 │   ├── (game1_folder/)      # Each game in its own subfolder
 │   └── README_HOW_TO_ADD_GAMES.txt # Instructions for adding new games
-│├── assets/
+│
+├── assets/
 │   └── images/              # For game thumbnails, site logo (optional)
 │       └── default_thumb.png # Default thumbnail image
-│└── lang/
-├── en.json              # English language strings
-└── fa.json              # Persian language strings
-README.md                    # This file
+│
+└── lang/
+    ├── en.json              # English language strings
+    └── fa.json              # Persian language strings
 ```
 
 ## Key Features
