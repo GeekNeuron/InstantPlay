@@ -92,7 +92,7 @@ body.dark-mode .lets-play-button:hover {
     background-color: #1d4357 !important; 
 }
 
-body.modal-open { 
+body.modal-open { /* Although modal for game details is removed, this class might be used for other modals if any */
     overflow: hidden; 
 }
 
@@ -161,9 +161,9 @@ header h1 {
     background-color: transparent;
     border: none;
     color: var(--header-text-color); 
-    font-size: 1rem; /* Adjusted from 1.2rem for consistency with original */
+    font-size: 1rem;
 }
-.settings-controls button .fas { /* Kept original structure in case text is re-added */
+.settings-controls button .fas {
     margin-right: 0.3em;
 }
 html[dir="rtl"] .settings-controls button .fas {
@@ -174,7 +174,6 @@ html[dir="rtl"] .settings-controls button .fas {
 .settings-controls button:hover {
     border-color: var(--accent-color); 
 }
-/* Removed duplicated hover background from previous reconstruction as it wasn't in user's original */
 
 .toolbar {
     display: flex;
@@ -206,7 +205,7 @@ html[dir="rtl"] .settings-controls button .fas {
     background-color: var(--primary-bg); 
     color: var(--text-color);
 }
-#search-input:focus { /* Added focus style for better UX, from my reconstruction */
+#search-input:focus {
     outline: none;
     border-color: var(--accent-color);
     box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
@@ -230,8 +229,8 @@ html[dir="rtl"] #search-input {
     display: flex;
     flex-wrap: wrap; 
     gap: 0.8rem;
-    flex-grow: 1; /* Kept from original user CSS */
-    justify-content: center; /* Kept from original user CSS */
+    flex-grow: 1; 
+    justify-content: center; 
 }
 .filter-sort-controls select {
     padding: 0.75rem 1rem;
@@ -241,8 +240,8 @@ html[dir="rtl"] #search-input {
     background-color: var(--primary-bg); 
     color: var(--text-color);
     cursor: pointer;
-    flex-grow: 1; /* Kept from original user CSS */
-    min-width: 150px; /* Kept from original user CSS */
+    flex-grow: 1; 
+    min-width: 150px; 
 }
 
 .backup-restore-controls {
@@ -280,12 +279,12 @@ main h2 { margin-top: 2rem; margin-bottom: 1.5rem; font-size: 1.8rem; color: var
     background-color: var(--secondary-bg); 
     border-radius: 8px; 
     box-shadow: var(--card-shadow); 
-    overflow: visible; /* Kept from original user CSS */
+    overflow: visible; 
     display: flex; 
     flex-direction: column; 
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; 
     position: relative; 
-    cursor: pointer; /* Kept from original user CSS */
+    cursor: pointer; 
 }
 .game-card:hover { 
     transform: translateY(-5px) scale(1.01); 
@@ -309,23 +308,20 @@ body.dark-mode .game-card.selected {
 /* === MODIFIED THUMBNAIL STYLES === */
 .thumbnail-container { 
     width: 100%;
-    height: 210px; /* As per user's image dimensions */
+    height: 180px; 
     background-color: var(--thumbnail-bg); 
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden; /* Important for clipping image to border-radius */
-    /* border-bottom: 1px solid var(--border-color); /* REMOVED */
-    border: 1px solid var(--border-color); /* ADDED for full frame */
-    border-radius: 8px; /* ADDED for rounded corners (matched to card radius) */
-    /* Consider box-sizing: border-box; if border should be inside dimensions,
-       but omitted for now to keep content area at full 180px height. */
+    border: 1px solid var(--border-color); /* Full frame */
+    border-radius: 8px; /* Rounded corners (matched to card radius) */
+    box-sizing: border-box; /* Border is inside the 100% width and 180px height */
 }
 .game-card .thumbnail { 
     width: 100%; 
     height: 100%; 
     object-fit: contain; /* Ensures whole image is visible, respects aspect ratio */
-    /* For lazy loading, ensure JS adds/removes 'lazy' class and handles src/data-src */
 }
 /* === END OF MODIFIED THUMBNAIL STYLES === */
 
@@ -337,7 +333,7 @@ body.dark-mode .game-card.selected {
     margin-bottom: 1rem; 
     flex-grow: 1; 
     min-height: 50px;
-    /* Text truncation (from my reconstruction, user can keep or remove) */
+    /* Text truncation */
     display: -webkit-box;
     -webkit-line-clamp: 3; 
     -webkit-box-orient: vertical;
@@ -348,9 +344,9 @@ body.dark-mode .game-card.selected {
     position: absolute; 
     top: 10px; 
     right: 10px; 
-    background: none; /* Original user style */
+    background: none; 
     border: none; 
-    color: #ccc; /* Original user style */
+    color: #ccc; 
     font-size: 1.8rem; 
     cursor: pointer; 
     padding: 5px; 
@@ -361,17 +357,12 @@ html[dir="rtl"] .favorite-button {
     right: auto; 
     left: 10px; 
 }
-.favorite-button.is-favorite { /* Only color change for favorite state in user's original */
+.favorite-button.is-favorite { 
     color: var(--star-color); 
 }
 .favorite-button:hover { 
     transform: scale(1.2); 
 }
-/* Note: main.js provided by user manages showing/hiding different star icons.
-   CSS only needs to handle the .is-favorite class color if using a single icon.
-   The provided main.js uses `innerHTML = '<i class="fas fa-star" aria-hidden="true"></i>';`
-   So, the .is-favorite style for color is correct.
-*/
 
 .lets-play-button-container {
     text-align: center;
@@ -407,14 +398,13 @@ body.dark-mode .loading-overlay { background-color: rgba(13, 17, 23, 0.8); }
 
 .toast-container { 
     position: fixed; 
-    /* Changed to bottom-right as per common toast patterns from my reconstruction, user can revert to top if preferred */
     bottom: 20px; 
     right: 20px; 
     z-index: 1050; 
     display: flex; 
     flex-direction: column; 
     gap: 10px; 
-    max-width: 350px; /* Added for better toast width management */
+    max-width: 350px; 
 }
 html[dir="rtl"] .toast-container { 
     right: auto; 
@@ -423,30 +413,25 @@ html[dir="rtl"] .toast-container {
 .toast { 
     background-color: var(--toast-info-bg); 
     color: var(--toast-text-color); 
-    padding: 15px 25px; /* User's original padding */
+    padding: 15px 25px; 
     border-radius: 5px; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
     opacity: 0; 
-    /* Changed transform for slide-in from bottom, user can revert to translateX */
     transform: translateY(20px); 
-    transition: opacity 0.3s ease, transform 0.3s ease; /* Adjusted timing */
+    transition: opacity 0.3s ease, transform 0.3s ease; 
     min-width: 250px; 
     position: relative; 
-    padding-right: 40px; /* User's original for close button space */
-    font-size: 0.95rem; /* Added from my reconstruction */
+    padding-right: 40px; 
+    font-size: 0.95rem;
 }
 html[dir="rtl"] .toast { 
-    /* transform: translateX(-100%); /* Kept user's original translateX for RTL */
-    transform: translateY(20px) translateX(0); /* Combine for RTL if sliding from bottom, or revert to pure translateX */
+    transform: translateY(20px); /* Adjusted for consistency, original had translateX(-100%) */
     padding-right: 15px; 
     padding-left: 40px; 
 }
 .toast.show { 
     opacity: 1; 
-    transform: translateY(0) translateX(0); 
-}
-html[dir="rtl"] .toast.show {
-    /* transform: translateX(0); */ /* Keep original if purely horizontal animation was intended */
+    transform: translateY(0); 
 }
 
 .toast.success { background-color: var(--toast-success-bg); }
@@ -454,18 +439,17 @@ html[dir="rtl"] .toast.show {
 
 .toast-close-button { 
     position: absolute; 
-    /* Centered vertically from my reconstruction, user can revert to top:5px */
     top: 50%; 
     transform: translateY(-50%);
     right: 10px; 
     background: none; 
     border: none; 
     color: inherit; 
-    font-size: 1.5rem; /* User's original */
+    font-size: 1.5rem; 
     cursor: pointer; 
     line-height: 1; 
     opacity: 0.7; 
-    padding: 5px; /* Added for easier click area */
+    padding: 5px; 
 }
 html[dir="rtl"] .toast-close-button { 
     right: auto; 
@@ -473,28 +457,15 @@ html[dir="rtl"] .toast-close-button {
 }
 .toast-close-button:hover { opacity: 1; }
 
-/* Modal Styles from user's original - kept as is, though JS doesn't use them for game details */
 .modal { display: none !important; } 
-/* Other modal styles like .modal-content, .modal-close-button would be here if user had them and wanted to keep them
-   but they were not in the user-provided style.css for this turn.
-   The previous comprehensive CSS I generated had them. If user wants a generic modal, these can be added back.
-*/
 
-
-#dark-mode-toggle .fa-sun { display: none; } /* From original file, JS now handles this dynamically by changing class on <i> */
-body.dark-mode #dark-mode-toggle .fa-moon { display: none; } /* From original file */
-body.dark-mode #dark-mode-toggle .fa-sun { display: inline-block; } /* From original file */
-/* Note: The main.js changes icon class (fas fa-moon / fas fa-sun), so these CSS rules might be redundant
-   if the JS correctly sets the class on the single <i> element.
-   The HTML has `<i class="fas fa-moon"></i> <span ... class="sr-only">Dark Mode</span>`
-   The JS `uiManager.applyDarkMode` does: `icon.className = 'fas fa-sun';` or `icon.className = 'fas fa-moon';`
-   So, these CSS rules for hiding/showing based on body.dark-mode are not strictly needed for the icon itself, but don't harm.
-*/
-
+#dark-mode-toggle .fa-sun { display: none; } 
+body.dark-mode #dark-mode-toggle .fa-moon { display: none; } 
+body.dark-mode #dark-mode-toggle .fa-sun { display: inline-block; } 
 
 /* --- Media Queries for Mobile Refinements --- */
 @media (max-width: 768px) {
-    header .container {} /* Empty rule from user's CSS */
+    header .container {} 
     header h1 { font-size: 1.6rem; }
     .settings-controls { gap: 0.75rem; }
     .settings-controls select, .settings-controls button { padding: 0.4rem 0.7rem; font-size: 0.9rem; }
@@ -505,42 +476,45 @@ body.dark-mode #dark-mode-toggle .fa-sun { display: inline-block; } /* From orig
     .backup-restore-controls { justify-content: center; }
     .game-grid { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
     .game-card-content h3 { font-size: 1.15rem; }
-    .game-card-content p.description { font-size: 0.85rem; min-height: 40px; -webkit-line-clamp: 2; } /* Adjusted line clamp for mobile */
+    .game-card-content p.description { font-size: 0.85rem; min-height: 40px; -webkit-line-clamp: 2; } 
     .favorite-button { font-size: 1.6rem; top: 8px; right: 8px; }
     html[dir="rtl"] .favorite-button { right: auto; left: 8px; }
     .game-card.selected { transform: translateY(-3px) scale(1.02); }
     .lets-play-button { padding: 0.6rem 1.2rem; font-size: 0.9rem; }
-
-    /* My reconstructed CSS had modal responsive styles here, but omitting as modal is not used for game details */
 }
 
 @media (max-width: 480px) {
     .container { width: 95%; padding: 0 10px; }
-    header h1 { font-size: 1.3rem; margin-bottom: 0.5rem; /* User's original */ text-align:center; width:100%;} /* Added from my reconstruction for better centering */
-    header .container { flex-direction: column; align-items: center; text-align: center; } /* Added from my reconstruction */
-    .settings-controls { justify-content: center; width: 100%; margin-top: 0.5rem; } /* Added margin from my reconstruction */
+    header h1 { font-size: 1.3rem; margin-bottom: 0.5rem; text-align:center; width:100%;} 
+    header .container { flex-direction: column; align-items: center; text-align: center; } 
+    .settings-controls { justify-content: center; width: 100%; margin-top: 0.5rem; } 
     
     #search-input, .filter-sort-controls select, .backup-restore-controls button, .import-button-label { font-size: 0.9rem; padding: 0.6rem 0.8rem; }
     
     .game-grid { grid-template-columns: 1fr; gap: 1rem; }
-    .thumbnail-container { height: 160px; } 
+    
+    /* === MODIFIED THUMBNAIL HEIGHT FOR MOBILE === */
+    .thumbnail-container { 
+        height: 180px; /* Changed from 160px to 180px for consistency */
+    }
+    /* === END OF MODIFIED THUMBNAIL HEIGHT FOR MOBILE === */
+
     .game-card-content h3 { font-size: 1.1rem; }
-    .game-card-content p.description { min-height: auto; font-size: 0.8rem; -webkit-line-clamp: 2; } /* Adjusted line clamp for mobile */
-    .lets-play-button { width: calc(100% - 2rem); margin: 0.5rem auto 0 auto; } /* Was directly on .lets-play-button, matching user's css */
+    .game-card-content p.description { min-height: auto; font-size: 0.8rem; -webkit-line-clamp: 2; } 
+    .lets-play-button { width: calc(100% - 2rem); margin: 0.5rem auto 0 auto; } 
     
     .toast-container { 
         width: calc(100% - 20px); 
         right: 10px; 
         left: 10px; 
-        bottom: 10px; /* Adjusted to bottom for consistency */
-        top: auto; /* Explicitly set top to auto if bottom is used */
-        align-items: center; /* From user's original */
+        bottom: 10px; 
+        top: auto; 
+        align-items: center; 
     }
-    html[dir="rtl"] .toast-container {} /* Empty rule from user's CSS */
+    html[dir="rtl"] .toast-container {} 
     .toast { 
         min-width: 0; 
         width: 100%; 
-        max-width: 350px; /* Max width on mobile from user's original */
+        max-width: 350px; 
     }
-    /* My reconstructed CSS had modal responsive styles here, but omitting as modal is not used for game details */
 }
