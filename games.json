@@ -1,0 +1,46 @@
+[
+    {
+        "id": "game1_2048",
+        "name_en": "2048 Deluxe",
+        "name_fa": "۲۰۴۸ پیشرفته",
+        "description_en": "The classic 2048 puzzle game. Can you reach the 2048 tile?",
+        "description_fa": "بازی پازل کلاسیک ۲۰۴۸. آیا می‌توانید به کاشی ۲۰۴۸ برسید؟",
+        "thumbnail_url": "assets/images/placeholder_thumb_300x180.png",
+        "game_url": "games/2048_example/index.html",
+        "genre_en": "Puzzle",
+        "genre_fa": "پازل"
+    },
+    {
+        "id": "game2_hextris",
+        "name_en": "Hextris Blitz",
+        "name_fa": "هکستریس سرعتی",
+        "description_en": "A fast-paced hexagonal puzzle game. Match colors before the stack fills!",
+        "description_fa": "یک بازی پازل شش ضلعی سرعتی. رنگ‌ها را قبل از پر شدن ستون، مچ کنید!",
+        "thumbnail_url": "assets/images/placeholder_thumb_300x180.png",
+        "game_url": "games/hextris_example/index.html",
+        "genre_en": "Puzzle",
+        "genre_fa": "پازل"
+    },
+    {
+        "id": "game3_platformer_pro",
+        "name_en": "Platformer Pro",
+        "name_fa": "پلتفرمر حرفه‌ای",
+        "description_en": "Jump, run, and collect coins in this exciting 2D platformer.",
+        "description_fa": "در این پلتفرمر دو بعدی هیجان‌انگیز بپر، بدو و سکه جمع کن.",
+        "thumbnail_url": "assets/images/placeholder_thumb_300x180.png",
+        "game_url": "games/platformer_example/index.html",
+        "genre_en": "Platformer",
+        "genre_fa": "سکوبازی"
+    },
+    {
+        "id": "game4_tower_defense",
+        "name_en": "Tower Defense Ultimate",
+        "name_fa": "دفاع از برج نهایی",
+        "description_en": "Strategically place towers to defend against waves of enemies.",
+        "description_fa": "برج‌ها را به صورت استراتژیک قرار دهید تا در برابر موج دشمنان دفاع کنید.",
+        "thumbnail_url": "assets/images/placeholder_thumb_300x180.png",
+        "game_url": "games/tower_defense_example/index.html",
+        "genre_en": "Strategy",
+        "genre_fa": "استراتژی"
+    }
+]
