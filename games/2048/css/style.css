@@ -32,7 +32,7 @@
     --tile-super-bg: #dc3545; --tile-super-text: #ffffff;
 
     --font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
-    --border-radius: 10px; /* Adjusted from 12px for a slightly sharper look */
+    --border-radius: 10px;
     --gap-size: 10px;
     --grid-side-length-desktop: 400px;
 }
@@ -107,15 +107,15 @@ body {
     background-color: var(--container-bg);
     border: 1px solid var(--grid-bg);
     padding: 0;
-    font-size: 1.0em; /* Further reduced icon size */
+    font-size: 1.0em;
     cursor: pointer;
     color: var(--text-color-primary);
     outline: none;
     transition: color 0.3s ease, transform 0.2s ease, background-color 0.3s ease, border-color 0.3s ease;
     line-height: 1;
-    border-radius: 50%; /* Perfectly circular */
-    width: 28px;  /* Smaller explicit size */
-    height: 28px; /* Smaller explicit size */
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -219,11 +219,11 @@ header h1 {
     height: var(--grid-side-length-desktop);
     background-color: var(--grid-bg);
     border-radius: var(--border-radius);
-    position: relative;
+    position: relative; /* Crucial for absolute positioning of tiles */
     transition: background-color 0.3s ease;
     padding: var(--gap-size);
-    touch-action: none; /* Prevents default touch actions like scrolling/zooming inside the grid */
-    overflow: hidden; /* Prevents tiles from animating outside grid boundaries if calculations are slightly off */
+    touch-action: none; 
+    overflow: hidden; 
 }
 
 .grid-cell {
@@ -233,37 +233,46 @@ header h1 {
 }
 
 .tile {
-    position: absolute;
+    position: absolute; /* Tiles are positioned absolutely within .grid-container */
     display: flex;
     justify-content: center;
     align-items: center;
     font-weight: bold;
     border-radius: calc(var(--border-radius) / 1.5);
-    /* IMPORTANT: Animation timing and easing */
-    transition: transform 0.1s linear, /* Faster, linear for direct movement */
+    /* Transition for smooth movement */
+    transition: transform 0.1s linear, /* Faster for direct movement */
                 background-color 0.1s ease-in-out, 
                 color 0.1s ease-in-out, 
                 opacity 0.1s ease-in-out;
     /* 'appear' animation for new tiles */
-    animation: appear 0.15s ease-out; /* Faster appear */
+    animation: appear 0.15s ease-out;
     user-select: none;
+    /* width and height are set by JS in tile.updateVisualPosition */
+    /* transform: translate(X,Y) is set by JS in tile.updateVisualPosition */
 }
 
 @keyframes appear {
-    from { transform: scale(0.5) translate(var(--translateX, 0), var(--translateY, 0)); opacity: 0; }
-    to { transform: scale(1) translate(var(--translateX, 0), var(--translateY, 0)); opacity: 1; }
+    from { 
+        transform: scale(0.5) translate(var(--translateX, 0px), var(--translateY, 0px)); 
+        opacity: 0; 
+    }
+    to { 
+        transform: scale(1) translate(var(--translateX, 0px), var(--translateY, 0px)); 
+        opacity: 1; 
+    }
 }
 
 .tile.tile-merged {
     /* 'pop' animation for merged tiles */
-    animation: pop 0.15s ease-out 0.05s; /* Faster pop, slight delay */
+    animation: pop 0.15s ease-out 0.05s forwards; /* Ensure it stays at the end state */
 }
 
 @keyframes pop {
-    0% { transform: scale(1) translate(var(--translateX, 0), var(--translateY, 0)); }
-    50% { transform: scale(1.2) translate(var(--translateX, 0), var(--translateY, 0)); } /* Smaller pop */
-    100% { transform: scale(1) translate(var(--translateX, 0), var(--translateY, 0)); }
+    0% { transform: scale(1) translate(var(--translateX, 0px), var(--translateY, 0px)); }
+    50% { transform: scale(1.2) translate(var(--translateX, 0px), var(--translateY, 0px)); }
+    100% { transform: scale(1) translate(var(--translateX, 0px), var(--translateY, 0px)); }
 }
+
 
 .tile[data-value="2"]    { background-color: var(--tile-2-bg); color: var(--tile-2-text); }
 .tile[data-value="4"]    { background-color: var(--tile-4-bg); color: var(--tile-4-text); }
@@ -402,7 +411,7 @@ footer {
         gap: calc(var(--gap-size) * 0.7);
     }
     #theme-switcher {
-        font-size: 0.9em; /* Smaller icon on very small screens */
+        font-size: 0.9em;
         width: 26px;
         height: 26px;
     }
