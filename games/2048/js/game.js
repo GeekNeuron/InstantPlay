@@ -4,7 +4,7 @@ class Game {
     constructor(gridInstance, scoreElementId, bestScoreElementId, gameOverModalId, finalScoreElementId) {
         this.grid = gridInstance;
         this.score = 0;
-        this.bestScore = parseInt(localStorage.getItem('2048BestScoreProV3')) || 0; // New key for this version
+        this.bestScore = parseInt(localStorage.getItem('2048BestScoreProV4')) || 0; // New key
         this.gameOver = false;
         this.gridSize = this.grid.size;
         this.isMoving = false;
@@ -23,12 +23,11 @@ class Game {
         this.score = 0;
         this.gameOver = false;
         this.grid.clearAllTilesForNewGame();
-        this.grid.setupBackgroundCells();
+        this.grid.setupBackgroundCells(); // Re-creates .grid-cell elements
         this.grid.addRandomTile();
         this.grid.addRandomTile();
         this.updateScoreDisplay();
         this.gameOverModal.classList.remove('show');
-        // console.log("New game started.");
     }
 
     updateScore(points) {
@@ -37,7 +36,7 @@ class Game {
         if (this.score > this.bestScore) {
             this.bestScore = this.score;
             this.updateBestScoreDisplay();
-            localStorage.setItem('2048BestScoreProV3', this.bestScore.toString());
+            localStorage.setItem('2048BestScoreProV4', this.bestScore.toString());
         }
     }
 
@@ -49,121 +48,107 @@ class Game {
         this.bestScoreElement.textContent = this.bestScore;
     }
 
+    // --- Core Game Logic: Move and Merge ---
     async move(direction) {
         if (this.gameOver || this.isMoving) return false;
         this.isMoving = true;
 
-        let initialBoardStateForComparison = this.grid.getBoardState();
-        let currentScoreChange = 0;
-        let moveAnimations = [];
-        let tilesToRemoveAfterAnimation = []; // Store tiles that merged
+        let boardChanged = false;
+        let currentMoveScore = 0;
+        const animationPromises = [];
 
-        // Create a 2D array of tile objects from the current grid
-        let objectBoard = Array(this.gridSize).fill(null).map((_, r) =>
+        // Create a 2D array representing the logical board, holding tile objects or null
+        let logicalBoard = Array(this.gridSize).fill(null).map((_, r) =>
             Array(this.gridSize).fill(null).map((__, c) => this.grid.getTileAt(r, c))
         );
 
-        // Rotate board so all logic can be "slide left"
-        let boardToProcess = this.rotateBoardWithObjects(objectBoard, direction, 'toLogic');
-        let boardChangedInLogic = false;
+        // Rotate for processing (all moves become "left")
+        let processedBoard = this.rotateBoardWithObjects(logicalBoard, direction, 'toLogic');
 
         for (let r = 0; r < this.gridSize; r++) {
-            let currentRow = boardToProcess[r];
-            let newLogicalRow = []; // Holds tile objects after slide & merge for this row's logic
-
-            // 1. Slide non-null tiles to the left
+            let row = processedBoard[r];
+            let newRow = []; // Tiles after sliding
+            
+            // 1. Slide non-null tiles to the start of the row
             for (let c = 0; c < this.gridSize; c++) {
-                if (currentRow[c]) {
-                    newLogicalRow.push(currentRow[c]);
+                if (row[c]) {
+                    newRow.push(row[c]);
                 }
             }
 
             // 2. Merge adjacent identical tiles
-            for (let c = 0; c < newLogicalRow.length - 1; c++) {
-                if (newLogicalRow[c] && newLogicalRow[c+1] && newLogicalRow[c].value === newLogicalRow[c+1].value) {
-                    let tileToKeep = newLogicalRow[c];
-                    let tileToRemove = newLogicalRow[c+1];
+            let mergedThisRow = false;
+            for (let c = 0; c < newRow.length - 1; c++) {
+                if (newRow[c] && newRow[c+1] && newRow[c].value === newRow[c+1].value) {
+                    let tileToKeep = newRow[c];
+                    let tileToRemove = newRow[c+1];
                     
-                    tileToKeep.setValue(tileToKeep.value * 2); // This updates value and calls adjustFontSize
-                    tileToKeep.merged(); // Explicitly call merged animation
-                    currentScoreChange += tileToKeep.value;
+                    // Update value of the kept tile (setValue will trigger merged animation)
+                    tileToKeep.setValue(tileToKeep.value * 2); 
+                    currentMoveScore += tileToKeep.value;
                     
-                    tilesToRemoveAfterAnimation.push(tileToRemove); // Mark for removal
+                    // Mark the other tile for removal from the main grid.tiles array
+                    tileToRemove.markedForRemoval = true; 
                     
-                    newLogicalRow.splice(c + 1, 1); // Remove from this processing row
-                    boardChangedInLogic = true; 
+                    newRow.splice(c + 1, 1); // Remove from this processing row
+                    boardChanged = true;
+                    mergedThisRow = true;
                 }
             }
             
-            // Fill rest of newLogicalRow with nulls to maintain gridSize
-            while (newLogicalRow.length < this.gridSize) {
-                newLogicalRow.push(null);
+            // Fill rest of newRow with nulls to maintain gridSize
+            while (newRow.length < this.gridSize) {
+                newRow.push(null);
             }
-            boardToProcess[r] = newLogicalRow; // Update the processed row in the rotated board
+            processedBoard[r] = newRow; // Update the processed row in the rotated board
         }
 
         // Rotate board back to original orientation
-        let finalObjectBoardLayout = this.rotateBoardWithObjects(boardToProcess, direction, 'fromLogic');
+        let finalLayout = this.rotateBoardWithObjects(processedBoard, direction, 'fromLogic');
 
-        // Update tile.x, tile.y for all tiles based on finalObjectBoardLayout
-        // and collect move animation promises
+        // Update tile positions and collect animation promises
         for (let r = 0; r < this.gridSize; r++) {
             for (let c = 0; c < this.gridSize; c++) {
-                let tile = finalObjectBoardLayout[r][c];
+                let tile = finalLayout[r][c];
                 if (tile) {
-                    if (tile.x !== r || tile.y !== c) { // If tile's logical position needs to change
-                        moveAnimations.push(tile.moveTo(r, c, this.gridSize, this.grid.gridContainerElement));
-                        boardChangedInLogic = true; 
+                    // If tile's current logical position (tile.x, tile.y) is different from its new position (r,c)
+                    // OR if it was part of a merge (its value changed), it needs to be animated.
+                    if (tile.x !== r || tile.y !== c) {
+                        animationPromises.push(tile.moveTo(r, c, this.gridSize, this.grid.gridContainerElement));
+                        boardChanged = true; 
                     } else {
-                        // Even if it didn't change logical cell, ensure its visual position is correct
-                        // This can happen if a tile didn't move but others did around it.
-                        // tile.updateVisualPosition(r, c, this.gridSize, this.grid.gridContainerElement);
-                        // moveTo already handles this, so this might be redundant if moveTo is always called.
-                        // However, if a tile is in its final spot but wasn't "moved" by logic, its visual might need refresh.
-                        // Let's rely on moveTo for now.
+                        // If it didn't move cells but its value changed (merge in place), ensure visual update
+                        // tile.setValue(tile.value); // This is already done during merge logic
                     }
                 }
             }
         }
         
-        // Check if the board actually changed values/positions compared to start of move
-        // This is an additional check to boardChangedInLogic which is set during slide/merge
-        let visualBoardChanged = false;
-        if (!boardChangedInLogic && moveAnimations.length === 0) { // If logic didn't detect change, check visual
-            let finalBoardStateAfterLogic = this.grid.getBoardState(); // Get current values
-             for(let r=0; r<this.gridSize; r++){
-                for(let c=0; c<this.gridSize; c++){
-                    if(initialBoardStateForComparison[r][c] !== finalBoardStateAfterLogic[r][c]){
-                        visualBoardChanged = true;
-                        break;
-                    }
-                }
-                if(visualBoardChanged) break;
+        if (animationPromises.length > 0) {
+            await Promise.all(animationPromises);
+        }
+
+        // Remove tiles that were merged away
+        const tilesActuallyRemoved = [];
+        this.grid.tiles = this.grid.tiles.filter(tile => {
+            if (tile.markedForRemoval) {
+                tilesActuallyRemoved.push(tile.remove()); // tile.remove() handles DOM removal
+                return false; // Remove from grid.tiles array
             }
+            return true;
+        });
+        if (tilesActuallyRemoved.length > 0) {
+            // If there were removals, wait for their animations (though short)
+            // await Promise.all(tilesActuallyRemoved); // tile.remove() is not async currently
+             await new Promise(resolve => setTimeout(resolve, 150)); // Wait for removal transitions
         }
 
 
-        if (boardChangedInLogic || moveAnimations.length > 0 || visualBoardChanged) {
-            if (currentScoreChange > 0) {
-                this.updateScore(currentScoreChange);
+        if (boardChanged) {
+            if (currentMoveScore > 0) {
+                this.updateScore(currentMoveScore);
             }
-            
-            if (moveAnimations.length > 0) {
-                await Promise.all(moveAnimations); // Wait for all move animations
-            }
-
-            // Remove merged tiles from the main grid.tiles array and DOM
-            tilesToRemoveAfterAnimation.forEach(tile => this.grid.removeTileObject(tile));
-            
-            // A small delay might be needed for merge pop animations to visually complete
-            // before adding a new tile, if pop animation has a delay.
-            // Current pop animation has a 0.05s delay.
-            if (tilesToRemoveAfterAnimation.length > 0) {
-                 await new Promise(resolve => setTimeout(resolve, 100)); // e.g., 100ms
-            }
-
-
-            this.grid.addRandomTile();
+            this.grid.addRandomTile(); // Add new tile only if the board changed
 
             if (this.checkGameOver()) {
                 this.triggerGameOver();
@@ -171,7 +156,7 @@ class Game {
         }
 
         this.isMoving = false;
-        return boardChangedInLogic || moveAnimations.length > 0 || visualBoardChanged;
+        return boardChanged;
     }
 
     rotateBoardWithObjects(objectBoard, direction, phase) {
@@ -212,6 +197,7 @@ class Game {
         for (let r = 0; r < this.gridSize; r++) {
             for (let c = 0; c < this.gridSize; c++) {
                 const val = board[r][c];
+                if (val === 0) continue; // Should not happen if no empty cells, but good check
                 if (c < this.gridSize - 1 && val === board[r][c+1]) return false;
                 if (r < this.gridSize - 1 && val === board[r+1][c]) return false;
             }
@@ -223,6 +209,5 @@ class Game {
         this.gameOver = true;
         this.finalScoreElement.textContent = this.score;
         this.gameOverModal.classList.add('show');
-        // console.log("Game Over! Final Score:", this.score);
     }
 }
