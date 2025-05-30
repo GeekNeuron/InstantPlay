@@ -32,7 +32,7 @@
     --tile-super-bg: #dc3545; --tile-super-text: #ffffff;
 
     --font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
-    --border-radius: 12px;
+    --border-radius: 10px; /* Adjusted from 12px for a slightly sharper look */
     --gap-size: 10px;
     --grid-side-length-desktop: 400px;
 }
@@ -106,20 +106,20 @@ body {
 #theme-switcher {
     background-color: var(--container-bg);
     border: 1px solid var(--grid-bg);
-    padding: 0; /* Padding removed to let width/height define size */
-    font-size: 1.1em; /* Smaller icon size */
+    padding: 0;
+    font-size: 1.0em; /* Further reduced icon size */
     cursor: pointer;
     color: var(--text-color-primary);
     outline: none;
     transition: color 0.3s ease, transform 0.2s ease, background-color 0.3s ease, border-color 0.3s ease;
     line-height: 1;
     border-radius: 50%; /* Perfectly circular */
-    width: 30px;  /* Smaller explicit size */
-    height: 30px; /* Smaller explicit size */
+    width: 28px;  /* Smaller explicit size */
+    height: 28px; /* Smaller explicit size */
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Softer shadow */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 #theme-switcher:hover {
     transform: scale(1.1);
@@ -164,7 +164,7 @@ header h1 {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between; /* Pushes scores left, button right */
+    justify-content: space-between;
     width: 100%;
     gap: 10px;
 }
@@ -222,7 +222,8 @@ header h1 {
     position: relative;
     transition: background-color 0.3s ease;
     padding: var(--gap-size);
-    touch-action: none; /* Crucial for preventing scroll on swipe inside grid */
+    touch-action: none; /* Prevents default touch actions like scrolling/zooming inside the grid */
+    overflow: hidden; /* Prevents tiles from animating outside grid boundaries if calculations are slightly off */
 }
 
 .grid-cell {
@@ -238,11 +239,13 @@ header h1 {
     align-items: center;
     font-weight: bold;
     border-radius: calc(var(--border-radius) / 1.5);
-    transition: transform 0.15s cubic-bezier(0.25, 0.1, 0.25, 1), 
-                background-color 0.15s ease-in-out, 
-                color 0.15s ease-in-out, 
-                opacity 0.15s ease-in-out;
-    animation: appear 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+    /* IMPORTANT: Animation timing and easing */
+    transition: transform 0.1s linear, /* Faster, linear for direct movement */
+                background-color 0.1s ease-in-out, 
+                color 0.1s ease-in-out, 
+                opacity 0.1s ease-in-out;
+    /* 'appear' animation for new tiles */
+    animation: appear 0.15s ease-out; /* Faster appear */
     user-select: none;
 }
 
@@ -252,12 +255,13 @@ header h1 {
 }
 
 .tile.tile-merged {
-    animation: pop 0.2s cubic-bezier(0.25, 0.1, 0.25, 1) 0.05s;
+    /* 'pop' animation for merged tiles */
+    animation: pop 0.15s ease-out 0.05s; /* Faster pop, slight delay */
 }
 
 @keyframes pop {
     0% { transform: scale(1) translate(var(--translateX, 0), var(--translateY, 0)); }
-    50% { transform: scale(1.25) translate(var(--translateX, 0), var(--translateY, 0)); }
+    50% { transform: scale(1.2) translate(var(--translateX, 0), var(--translateY, 0)); } /* Smaller pop */
     100% { transform: scale(1) translate(var(--translateX, 0), var(--translateY, 0)); }
 }
 
@@ -344,10 +348,7 @@ footer {
     header h1 {
         font-size: 2.5em;
     }
-    .game-controls-wrapper {
-        /* Flex properties will try to keep them side-by-side */
-        /* May need to adjust font/padding more if they wrap undesirably */
-    }
+
     .score-box {
         font-size: 0.85em;
         padding: 6px 8px;
@@ -380,17 +381,12 @@ footer {
     }
 }
 
-@media (max-width: 380px) { /* Further refined for very small screens */
+@media (max-width: 380px) {
     header h1 {
         font-size: 2.2em;
     }
     .game-controls-wrapper {
         gap: 5px;
-        /* Could switch to flex-direction: column here if absolutely necessary */
-        /* flex-direction: column; align-items: center; */
-    }
-    .scores-container {
-        /* If wrapper is column, scores might need to be centered or full width */
     }
     .score-box {
         font-size: 0.75em;
@@ -400,17 +396,14 @@ footer {
      .btn#new-game-button {
         font-size: 0.75em;
         padding: 6px 8px;
-        /* If wrapper is column, button might need margin-top */
-        /* margin-top: 8px; */
     }
     .grid-container {
         padding: calc(var(--gap-size) * 0.6);
         gap: calc(var(--gap-size) * 0.7);
     }
     #theme-switcher {
-        font-size: 1em; /* Even smaller icon */
-        width: 28px;
-        height: 28px;
+        font-size: 0.9em; /* Smaller icon on very small screens */
+        width: 26px;
+        height: 26px;
     }
 }
-
