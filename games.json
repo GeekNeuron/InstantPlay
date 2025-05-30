@@ -5,7 +5,7 @@
         "name_fa": "۲۰۴۸",
         "description_en": "The classic 2048 puzzle game. Can you reach the 2048 tile?",
         "description_fa": "بازی پازل ۲۰۴۸. آیا می‌توانید به کاشی ۲۰۴۸ برسید؟",
-        "thumbnail_url": "assets/images/placeholder_thumb_300x180.png",
+        "thumbnail_url": "assets/images/2048.png",
         "game_url": "games/2048/index.html",
         "genre_en": "Puzzle",
         "genre_fa": "پازل"
