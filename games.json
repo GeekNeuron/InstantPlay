@@ -12,12 +12,12 @@
     },
     {
         "id": "game2_hextris",
-        "name_en": "Hextris Blitz",
-        "name_fa": "هکستریس سرعتی",
+        "name_en": "minesweeper",
+        "name_fa": "مینروب",
         "description_en": "A fast-paced hexagonal puzzle game. Match colors before the stack fills!",
         "description_fa": "یک بازی پازل شش ضلعی سرعتی. رنگ‌ها را قبل از پر شدن ستون، مچ کنید!",
-        "thumbnail_url": "assets/images/placeholder_thumb_300x180.png",
-        "game_url": "games/hextris_example/index.html",
+        "thumbnail_url": "assets/images/minesweeper.png",
+        "game_url": "games/minesweeper/index.html",
         "genre_en": "Puzzle",
         "genre_fa": "پازل"
     },
