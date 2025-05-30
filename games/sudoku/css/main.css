@@ -1,0 +1,266 @@
+/* css/main.css (Conceptual Snippets) */
+:root {
+    /* Light Theme Variables */
+    --bg-color-light: #FFFFFF;
+    --text-color-light: #333333;
+    --container-bg-light: #f0f0f0;
+    --container-border-light: #cccccc;
+    --cell-bg-light: #ffffff;
+    --cell-border-light: #dddddd;
+    --cell-readonly-bg-light: #e9e9e9;
+    --cell-selected-bg-light: #aaddff;
+    --cell-error-bg-light: #ffdddd;
+    --grid-strong-border-light: #333333;
+    --button-bg-light: #4CAF50;
+    --button-text-light: #ffffff;
+    --theme-switcher-light: #0A192F; /* Dark Blue */
+
+    /* Dark Theme Variables */
+    --bg-color-dark: #0A192F; /* Dark Blue */
+    --text-color-dark: #E0E0E0;
+    --container-bg-dark: #162942;
+    --container-border-dark: #3A506B;
+    --cell-bg-dark: #1F3A5F;
+    --cell-border-dark: #3A506B;
+    --cell-readonly-bg-dark: #2C4A6D;
+    --cell-selected-bg-dark: #3498DB;
+    --cell-error-bg-dark: #C0392B;
+    --grid-strong-border-dark: #bdc3c7;
+    --button-bg-dark: #3498DB;
+    --button-text-dark: #121212;
+    --theme-switcher-dark: #FFFFFF; /* White */
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+    background-color: var(--bg-color-light);
+    color: var(--text-color-light);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-theme {
+    background-color: var(--bg-color-dark);
+    color: var(--text-color-dark);
+}
+
+.theme-switcher-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+#themeSwitcher {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid transparent; /* Subtle border */
+    cursor: pointer;
+    background-color: var(--theme-switcher-light);
+    transition: background-color 0.3s ease;
+}
+
+body.dark-theme #themeSwitcher {
+    background-color: var(--theme-switcher-dark);
+    border-color: var(--theme-switcher-light); /* Ensure visibility on dark bg */
+}
+
+.game-container {
+    background-color: var(--container-bg-light);
+    border: 1px solid var(--container-border-light);
+    padding: 25px;
+    border-radius: 20px; /* Rounded game container */
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    text-align: center;
+    max-width: 550px; /* Max width of the game area */
+    width: 100%;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+body.dark-theme .game-container {
+    background-color: var(--container-bg-dark);
+    border-color: var(--container-border-dark);
+    box-shadow: 0 8px 25px rgba(200,200,255,0.05);
+}
+
+.game-header h1 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 2.5em;
+    color: inherit;
+}
+
+.game-controls {
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap; /* Allow controls to wrap on smaller screens */
+}
+
+.game-controls label {
+    color: inherit;
+}
+
+.game-controls select, .game-controls button {
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid var(--cell-border-light);
+    font-size: 0.9em;
+    cursor: pointer;
+    background-color: var(--button-bg-light);
+    color: var(--button-text-light);
+    transition: background-color 0.2s ease;
+}
+.game-controls select {
+    background-color: var(--cell-bg-light); /* Match cell bg for select */
+    color: var(--text-color-light);
+}
+
+
+body.dark-theme .game-controls select,
+body.dark-theme .game-controls button {
+    border-color: var(--cell-border-dark);
+    background-color: var(--button-bg-dark);
+    color: var(--button-text-dark);
+}
+body.dark-theme .game-controls select {
+    background-color: var(--cell-bg-dark);
+    color: var(--text-color-dark);
+}
+
+
+.sudoku-board {
+    display: grid;
+    grid-template-columns: repeat(9, minmax(30px, 1fr)); /* Responsive cells */
+    grid-template-rows: repeat(9, minmax(30px, 1fr));
+    width: 100%; /* Make board responsive within container */
+    max-width: 450px; /* Max size of the board */
+    aspect-ratio: 1 / 1; /* Keep it square */
+    margin: 0 auto 20px auto;
+    border: 3px solid var(--grid-strong-border-light);
+    border-radius: 15px; /* Rounded grid edges */
+    overflow: hidden; /* Ensures inner cell rounding is visible at edges */
+    background-color: var(--container-bg-light); /* Background for the grid lines */
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+body.dark-theme .sudoku-board {
+    border-color: var(--grid-strong-border-dark);
+    background-color: var(--container-bg-dark);
+}
+
+.cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: clamp(1em, 4vw, 1.8em); /* Responsive font size */
+    font-weight: 500;
+    border: 1px solid var(--cell-border-light);
+    background-color: var(--cell-bg-light);
+    color: var(--text-color-light);
+    border-radius: 8px; /* Rounded individual cells */
+    margin: 1px; /* Creates the grid line effect */
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    position: relative; /* For input absolute positioning */
+}
+
+body.dark-theme .cell {
+    border-color: var(--cell-border-dark);
+    background-color: var(--cell-bg-dark);
+    color: var(--text-color-dark);
+}
+
+/* Thick borders for 3x3 subgrids - JS will add these classes */
+.cell.border-right-strong {
+    border-right-width: 3px !important; /* Use !important carefully */
+    border-right-color: var(--grid-strong-border-light) !important;
+    margin-right: 2px; /* Adjust margin for thicker border */
+}
+.cell.border-bottom-strong {
+    border-bottom-width: 3px !important;
+    border-bottom-color: var(--grid-strong-border-light) !important;
+    margin-bottom: 2px; /* Adjust margin for thicker border */
+}
+
+body.dark-theme .cell.border-right-strong {
+    border-right-color: var(--grid-strong-border-dark) !important;
+}
+body.dark-theme .cell.border-bottom-strong {
+    border-bottom-color: var(--grid-strong-border-dark) !important;
+}
+
+
+.cell input {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    border: none;
+    outline: none;
+    font-size: inherit; /* Match cell font size */
+    font-weight: inherit;
+    background-color: transparent;
+    color: inherit; /* Inherit text color from cell */
+    padding: 0;
+    border-radius: 6px; /* Slightly less than cell for aesthetics */
+}
+
+.cell.readonly {
+    background-color: var(--cell-readonly-bg-light);
+    font-weight: bold;
+    cursor: default;
+}
+body.dark-theme .cell.readonly {
+    background-color: var(--cell-readonly-bg-dark);
+}
+
+.cell.selected {
+    background-color: var(--cell-selected-bg-light) !important; /* Override for selection */
+    box-shadow: 0 0 0 2px var(--grid-strong-border-light) inset; /* Selection highlight */
+}
+body.dark-theme .cell.selected {
+    background-color: var(--cell-selected-bg-dark) !important;
+    box-shadow: 0 0 0 2px var(--grid-strong-border-dark) inset;
+}
+
+.cell.error {
+    background-color: var(--cell-error-bg-light) !important;
+    color: #900 !important;
+    animation: shake 0.3s;
+}
+body.dark-theme .cell.error {
+    background-color: var(--cell-error-bg-dark) !important;
+    color: #FFCCCC !important;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+
+.game-footer {
+    margin-top: 20px;
+    font-size: 0.9em;
+    min-height: 1.2em; /* Reserve space for messages */
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    body { padding: 10px; }
+    .game-container { padding: 15px; }
+    .game-header h1 { font-size: 2em; }
+    .game-controls { gap: 5px; }
+    .game-controls select, .game-controls button { padding: 8px 10px; font-size: 0.8em; }
+    .theme-switcher-container { top: 10px; right: 10px; }
+    #themeSwitcher { width: 25px; height: 25px; }
+}
