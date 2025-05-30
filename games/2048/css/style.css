@@ -242,8 +242,8 @@ header h1 {
     transition: transform 0.1s linear,
                 background-color 0.1s ease-in-out, 
                 color 0.1s ease-in-out, 
-                opacity 0.1s ease-in-out;
-    animation: appear 0.15s ease-out;
+                opacity 0.1s ease-in-out; /* Keep opacity transition for removal */
+    animation: appear 0.15s ease-out; /* Animation for new tiles */
     user-select: none;
 }
 
@@ -258,25 +258,7 @@ header h1 {
     }
 }
 
-/* Updated Merge Animation */
-@keyframes subtleMergeEffect {
-    0% {
-        transform: scale(1) translate(var(--translateX, 0px), var(--translateY, 0px));
-    }
-    50% {
-        transform: scale(1.1) translate(var(--translateX, 0px), var(--translateY, 0px)); /* Slightly larger */
-    }
-    100% {
-        transform: scale(1) translate(var(--translateX, 0px), var(--translateY, 0px));
-    }
-}
-
-.tile.tile-merged {
-    animation: subtleMergeEffect 0.12s ease-in-out 0s forwards;
-    /* Ensure z-index is higher during merge to pop above other tiles if needed, though usually not an issue with absolute positioning */
-    /* z-index: 10;  *//* Optional: if visual overlap issues occur */
-}
-
+/* REMOVED @keyframes subtleMergeEffect and .tile.tile-merged class styling */
 
 .tile[data-value="2"]    { background-color: var(--tile-2-bg); color: var(--tile-2-text); }
 .tile[data-value="4"]    { background-color: var(--tile-4-bg); color: var(--tile-4-text); }
