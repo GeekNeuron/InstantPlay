@@ -1,4 +1,3 @@
-
 /* Global Resets and Base Styles */
 *,
 *::before,
@@ -35,12 +34,18 @@
     --button-secondary-bg-light: #6c757d;
     --button-secondary-text-light: #ffffff;
     --button-secondary-hover-bg-light: #545b62;
-    --button-border-radius: 8px; /* Increased border-radius */
+    --button-border-radius: 8px;
 
     --select-bg-light: #ffffff;
     --select-border-light: #ced4da;
     --select-text-light: #495057;
-    --select-border-radius: 8px; /* Increased border-radius */
+    --select-border-radius: 8px;
+
+    --timer-text-light: #495057;
+    --history-bg-light: #ffffff;
+    --history-border-light: #ced4da;
+    --history-header-bg-light: #e9ecef;
+    --history-item-hover-bg-light: #f8f9fa;
 
 
     --theme-switcher-light: #212529;
@@ -78,6 +83,12 @@
     --select-border-dark: #3282b8;
     --select-text-dark: #c9d1d9;
 
+    --timer-text-dark: #adb5bd;
+    --history-bg-dark: #161b22;
+    --history-border-dark: #3282b8;
+    --history-header-bg-dark: #1e2732;
+    --history-item-hover-bg-dark: #2c3a47;
+
     --theme-switcher-dark: #e0e0e0;
     --input-focus-border-dark: #3282b8;
 }
@@ -107,7 +118,7 @@ body.dark-theme {
     position: fixed;
     top: 15px;
     right: 15px;
-    z-index: 1000;
+    z-index: 1001; /* Above history dropdown */
 }
 
 #themeSwitcher {
@@ -137,11 +148,16 @@ body.dark-theme #themeSwitcher {
     max-width: 500px;
     width: 100%;
     transition: background-color 0.3s ease, border-color 0.3s ease;
+    position: relative; /* For positioning history dropdown relative to container */
 }
 body.dark-theme .game-container {
     background-color: var(--container-bg-dark);
     border-color: var(--container-border-dark);
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.game-header {
+    position: relative; /* For dropdown positioning */
 }
 
 .game-header h1 {
@@ -160,12 +176,17 @@ body.dark-theme .game-header h1 {
     justify-content: space-between;
     align-items: center;
     gap: 15px;
-    margin-bottom: 20px;
+    margin-bottom: 10px; /* Reduced margin as history dropdown is below */
     flex-wrap: wrap;
 }
 .game-actions {
     display: flex;
     gap: 10px;
+}
+.difficulty-timer-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 .difficulty-control {
     display: flex;
@@ -177,9 +198,126 @@ body.dark-theme .game-header h1 {
     font-weight: 500;
     font-size: 0.9em;
 }
+.timer-display {
+    font-size: 0.95em;
+    font-weight: bold;
+    color: var(--timer-text-light);
+    background-color: var(--select-bg-light); /* Match select bg */
+    border: 1px solid var(--select-border-light); /* Match select border */
+    padding: 9px 12px;
+    border-radius: var(--select-border-radius);
+    cursor: pointer;
+    user-select: none;
+    min-width: 90px; /* Ensure it has some width */
+    text-align: center;
+}
+body.dark-theme .timer-display {
+    color: var(--timer-text-dark);
+    background-color: var(--select-bg-dark);
+    border-color: var(--select-border-dark);
+}
+.timer-display:focus, .timer-display:hover {
+    outline: none;
+    border-color: var(--input-focus-border-light);
+}
+body.dark-theme .timer-display:focus, 
+body.dark-theme .timer-display:hover {
+    border-color: var(--input-focus-border-dark);
+}
+
+
+.game-history-dropdown {
+    position: absolute;
+    top: calc(100% + 5px); /* Below the header controls */
+    right: 0; /* Align to the right of the header or specific element */
+    width: 300px; /* Or a percentage */
+    max-width: 90%;
+    background-color: var(--history-bg-light);
+    border: 1px solid var(--history-border-light);
+    border-radius: var(--button-border-radius);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    z-index: 1000;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 10px;
+    text-align: left;
+}
+body.dark-theme .game-history-dropdown {
+    background-color: var(--history-bg-dark);
+    border-color: var(--history-border-dark);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.history-header {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid var(--history-border-light);
+    color: var(--header-text-light);
+}
+body.dark-theme .history-header {
+    border-bottom-color: var(--history-border-dark);
+    color: var(--header-text-dark);
+}
+
+.history-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.history-list .difficulty-group-header {
+    font-size: 1em;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    padding: 5px;
+    background-color: var(--history-header-bg-light);
+    border-radius: 4px;
+    color: var(--text-color-light);
+}
+body.dark-theme .history-list .difficulty-group-header {
+    background-color: var(--history-header-bg-dark);
+    color: var(--text-color-dark);
+}
+
+.history-list li {
+    padding: 8px 5px;
+    font-size: 0.9em;
+    border-bottom: 1px dashed var(--history-border-light);
+    color: var(--text-color-light);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+.history-list li:last-child {
+    border-bottom: none;
+}
+.history-list li:hover {
+    background-color: var(--history-item-hover-bg-light);
+}
+body.dark-theme .history-list li {
+    border-bottom-color: var(--history-border-dark);
+    color: var(--text-color-dark);
+}
+body.dark-theme .history-list li:hover {
+    background-color: var(--history-item-hover-bg-dark);
+}
+.history-item-date {
+    font-size: 0.85em;
+    color: var(--text-color-light);
+    opacity: 0.8;
+}
+body.dark-theme .history-item-date {
+    color: var(--text-color-dark);
+}
+.history-item-time {
+    font-weight: 500;
+}
+
+
 .btn {
     padding: 10px 15px;
-    border-radius: var(--button-border-radius); /* Using variable */
+    border-radius: var(--button-border-radius);
     font-size: 0.95em;
     cursor: pointer;
     font-weight: bold;
@@ -223,11 +361,11 @@ body.dark-theme #resetBtn:hover {
     background-color: var(--select-bg-light);
     color: var(--select-text-light);
     border: 1px solid var(--select-border-light);
-    padding: 9px 12px; /* Consistent padding */
-    border-radius: var(--select-border-radius); /* Using variable */
+    padding: 9px 12px;
+    border-radius: var(--select-border-radius);
     font-weight: normal;
-    line-height: 1.2; /* Match button line-height */
-    font-size: 0.95em; /* Match button font-size */
+    line-height: 1.2;
+    font-size: 0.95em;
 }
 body.dark-theme #difficultySelect {
     background-color: var(--select-bg-dark);
@@ -379,16 +517,16 @@ body.dark-theme .cell.error input {
 }
 
 .game-footer {
-    margin-top: 20px; /* Adjusted margin */
+    margin-top: 20px;
     font-size: 0.9em;
     color: inherit;
-    min-height: 60px; /* Ensure space for messages and end game controls */
-    position: relative; /* For positioning end game controls */
+    min-height: 60px;
+    position: relative;
 }
 #messageArea {
     font-weight: 500;
-    min-height: 1.5em; /* Standard message area height */
-    margin-bottom: 10px; /* Space before credit or end game controls */
+    min-height: 1.5em;
+    margin-bottom: 10px;
 }
 .message-success { color: #0f5132; background-color: #d1e7dd; border: 1px solid #badbcc; padding: 5px 8px; border-radius: var(--button-border-radius);}
 .message-error { color: #842029; background-color: #f8d7da; border: 1px solid #f5c2c7; padding: 5px 8px; border-radius: var(--button-border-radius);}
@@ -403,7 +541,6 @@ body.dark-theme .message-info { color: #6edff6; background-color: #11323d; borde
 .footer-credit {
     font-size: 0.85em;
     color: var(--text-color-light);
-    /* Positioned absolutely if end-game controls are visible, otherwise static */
 }
 .footer-credit a {
     color: var(--button-primary-bg-light);
@@ -420,33 +557,50 @@ body.dark-theme .footer-credit a {
 }
 
 .end-game-controls {
-    display: flex; /* Changed from none by JS */
+    display: flex;
     justify-content: center;
     align-items: center;
     gap: 15px;
     margin-top: 10px;
-    /* position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%; */
 }
 .end-game-controls .btn {
-    padding: 8px 12px; /* Slightly smaller for these specific buttons */
+    padding: 8px 12px;
     font-size: 0.9em;
 }
 
-
 /* Responsive adjustments */
+@media (max-width: 768px) { /* Adjust breakpoint for better control layout */
+    .header-controls {
+        flex-direction: column;
+        align-items: stretch; /* Make items take full width */
+    }
+    .game-actions, .difficulty-timer-wrapper {
+        width: 100%;
+        justify-content: space-between; /* Space out items within these wrappers */
+    }
+    .difficulty-timer-wrapper {
+        margin-top: 10px;
+    }
+    .timer-display {
+        flex-grow: 1; /* Allow timer to take available space */
+        margin-left: 10px; /* Space from difficulty */
+    }
+    .game-history-dropdown {
+        width: calc(100% - 40px); /* Adjust width relative to game container padding */
+        left: 20px; /* Center it or align based on container padding */
+        right: auto;
+        top: calc(100% + 10px); /* Ensure it's below all header controls */
+    }
+}
+
+
 @media (max-width: 600px) {
     body { padding: 10px; }
     .game-container { padding: 15px; }
     .game-header h1 { font-size: 2em; margin-bottom: 15px; }
-    .header-controls { flex-direction: column; align-items: stretch; gap: 10px; }
-    .game-actions, .difficulty-control { justify-content: center; width: 100%; }
-    #difficultySelect { flex-grow: 1; }
-    .btn { width: auto; flex-grow: 1; min-width: 120px; }
-    .game-actions .btn { flex-basis: 48%; }
+    /* .header-controls already column from 768px */
+    .game-actions .btn { flex-basis: 48%; } /* Try to keep New Game/Reset side-by-side if possible */
+
 
     .theme-switcher-container { top: 10px; right: 10px; }
     #themeSwitcher { width: 25px; height: 25px; }
@@ -456,12 +610,26 @@ body.dark-theme .footer-credit a {
     .end-game-controls .btn { width: 70%; }
 }
 
+@media (max-width: 480px) { /* More specific for smaller phones */
+    .game-actions {
+        flex-direction: column; /* Stack New Game and Reset */
+    }
+    .game-actions .btn {
+        width: 100%; /* Full width for stacked buttons */
+    }
+    .difficulty-timer-wrapper {
+        flex-direction: column;
+        align-items: stretch; /* Full width for difficulty and timer */
+    }
+    .difficulty-control, .timer-display {
+        width: 100%;
+        margin-left: 0; /* Reset margin for timer */
+    }
+    .difficulty-control { margin-bottom: 10px; }
+    .timer-display { text-align: center; }
+}
+
 @media (max-width: 420px) {
     .game-header h1 { font-size: 1.8em; }
     .cell { font-size: clamp(0.7em, 6vw, 1.2em); }
-    .game-actions { flex-direction: column; }
-    .game-actions .btn { width: 100%; }
-    .difficulty-control { flex-direction: column; align-items: stretch; }
-    .difficulty-control label { margin-bottom: 5px; text-align: center; }
-    #difficultySelect { width: 100%; }
 }
