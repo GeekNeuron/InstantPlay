@@ -1,48 +1,70 @@
-/* css/main.css (Conceptual Snippets) */
+/* Global Resets and Base Styles */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 :root {
     /* Light Theme Variables */
     --bg-color-light: #FFFFFF;
-    --text-color-light: #333333;
-    --container-bg-light: #f0f0f0;
+    --text-color-light: #1a1a1a; /* Darker text for better contrast */
+    --container-bg-light: #f4f7f6; /* Slightly off-white */
     --container-border-light: #cccccc;
     --cell-bg-light: #ffffff;
-    --cell-border-light: #dddddd;
-    --cell-readonly-bg-light: #e9e9e9;
-    --cell-selected-bg-light: #aaddff;
-    --cell-error-bg-light: #ffdddd;
-    --grid-strong-border-light: #333333;
-    --button-bg-light: #4CAF50;
+    --cell-border-light: #d1d1d1; /* Softer cell borders */
+    --cell-readonly-bg-light: #e9ecef; /* Bootstrap-like readonly bg */
+    --cell-readonly-text-light: #495057;
+    --cell-selected-bg-light: #aaddff; /* Light blue for selection */
+    --cell-highlight-bg-light: #cceeff; /* For highlighting related numbers/regions */
+    --cell-error-bg-light: #f8d7da; /* Bootstrap danger bg */
+    --cell-error-text-light: #721c24; /* Bootstrap danger text */
+    --cell-error-border-light: #f5c6cb;
+    --grid-strong-border-light: #343a40; /* Darker for subgrids */
+    --button-bg-light: #007bff; /* Bootstrap primary blue */
     --button-text-light: #ffffff;
-    --theme-switcher-light: #0A192F; /* Dark Blue */
+    --button-hover-bg-light: #0056b3;
+    --theme-switcher-light: #0A192F; /* Dark Blue for contrast */
+    --input-focus-border-light: #80bdff; /* Focus ring color */
 
     /* Dark Theme Variables */
     --bg-color-dark: #0A192F; /* Dark Blue */
     --text-color-dark: #E0E0E0;
-    --container-bg-dark: #162942;
-    --container-border-dark: #3A506B;
-    --cell-bg-dark: #1F3A5F;
+    --container-bg-dark: #102a43; /* Darker container */
+    --container-border-dark: #243b53;
+    --cell-bg-dark: #1f3a5f; /* Slightly lighter than container for cells */
     --cell-border-dark: #3A506B;
-    --cell-readonly-bg-dark: #2C4A6D;
+    --cell-readonly-bg-dark: #2c4a6d;
+    --cell-readonly-text-dark: #b0c4de;
     --cell-selected-bg-dark: #3498DB;
-    --cell-error-bg-dark: #C0392B;
-    --grid-strong-border-dark: #bdc3c7;
-    --button-bg-dark: #3498DB;
-    --button-text-dark: #121212;
-    --theme-switcher-dark: #FFFFFF; /* White */
+    --cell-highlight-bg-dark: #2c709e;
+    --cell-error-bg-dark: #721c24; /* Re-using light theme error, but could be adjusted */
+    --cell-error-text-dark: #f8d7da;
+    --cell-error-border-dark: #f5c6cb;
+    --grid-strong-border-dark: #bdc3c7; /* Lighter for subgrids on dark */
+    --button-bg-dark: #3498DB; /* A nice blue for dark theme */
+    --button-text-dark: #0A192F; /* Dark text on lighter blue button */
+    --button-hover-bg-dark: #217dbb;
+    --theme-switcher-dark: #FFFFFF; /* White for contrast */
+    --input-focus-border-dark: #5dade2;
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     margin: 0;
-    padding: 20px;
+    padding: 15px; /* Padding for small screens */
     display: flex;
+    flex-direction: column; /* Allow header and footer to stack */
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    box-sizing: border-box;
     background-color: var(--bg-color-light);
     color: var(--text-color-light);
     transition: background-color 0.3s ease, color 0.3s ease;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 body.dark-theme {
@@ -52,8 +74,8 @@ body.dark-theme {
 
 .theme-switcher-container {
     position: fixed;
-    top: 20px;
-    right: 20px;
+    top: 15px;
+    right: 15px;
     z-index: 1000;
 }
 
@@ -61,25 +83,28 @@ body.dark-theme {
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    border: 1px solid transparent; /* Subtle border */
+    border: 1px solid transparent;
     cursor: pointer;
     background-color: var(--theme-switcher-light);
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+#themeSwitcher:hover {
+    transform: scale(1.1);
 }
 
 body.dark-theme #themeSwitcher {
     background-color: var(--theme-switcher-dark);
-    border-color: var(--theme-switcher-light); /* Ensure visibility on dark bg */
+    border-color: var(--theme-switcher-light);
 }
 
 .game-container {
     background-color: var(--container-bg-light);
     border: 1px solid var(--container-border-light);
-    padding: 25px;
+    padding: 20px;
     border-radius: 20px; /* Rounded game container */
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     text-align: center;
-    max-width: 550px; /* Max width of the game area */
+    max-width: 550px;
     width: 100%;
     transition: background-color 0.3s ease, border-color 0.3s ease;
 }
@@ -87,30 +112,38 @@ body.dark-theme #themeSwitcher {
 body.dark-theme .game-container {
     background-color: var(--container-bg-dark);
     border-color: var(--container-border-dark);
-    box-shadow: 0 8px 25px rgba(200,200,255,0.05);
+    box-shadow: 0 10px 30px rgba(200,200,255,0.07);
 }
 
 .game-header h1 {
     margin-top: 0;
     margin-bottom: 20px;
-    font-size: 2.5em;
+    font-size: 2.2em; /* Slightly adjusted */
     color: inherit;
+    font-weight: 600;
 }
 
-.game-controls {
-    margin-bottom: 25px;
+.controls-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.game-controls, .action-buttons {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
-    flex-wrap: wrap; /* Allow controls to wrap on smaller screens */
+    flex-wrap: wrap;
 }
 
 .game-controls label {
     color: inherit;
+    font-weight: 500;
 }
 
-.game-controls select, .game-controls button {
+.game-controls select, .btn {
     padding: 10px 15px;
     border-radius: 8px;
     border: 1px solid var(--cell-border-light);
@@ -118,16 +151,25 @@ body.dark-theme .game-container {
     cursor: pointer;
     background-color: var(--button-bg-light);
     color: var(--button-text-light);
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+    font-weight: 500;
 }
 .game-controls select {
-    background-color: var(--cell-bg-light); /* Match cell bg for select */
+    background-color: var(--cell-bg-light);
     color: var(--text-color-light);
+    border: 1px solid var(--container-border-light); /* Match container border */
+}
+.btn:hover {
+    background-color: var(--button-hover-bg-light);
+    transform: translateY(-1px);
+}
+.btn:active {
+    transform: translateY(0px);
 }
 
 
 body.dark-theme .game-controls select,
-body.dark-theme .game-controls button {
+body.dark-theme .btn {
     border-color: var(--cell-border-dark);
     background-color: var(--button-bg-dark);
     color: var(--button-text-dark);
@@ -135,22 +177,26 @@ body.dark-theme .game-controls button {
 body.dark-theme .game-controls select {
     background-color: var(--cell-bg-dark);
     color: var(--text-color-dark);
+    border: 1px solid var(--container-border-dark);
 }
-
+body.dark-theme .btn:hover {
+    background-color: var(--button-hover-bg-dark);
+}
 
 .sudoku-board {
     display: grid;
-    grid-template-columns: repeat(9, minmax(30px, 1fr)); /* Responsive cells */
+    grid-template-columns: repeat(9, minmax(30px, 1fr));
     grid-template-rows: repeat(9, minmax(30px, 1fr));
-    width: 100%; /* Make board responsive within container */
+    width: 100%;
     max-width: 450px; /* Max size of the board */
-    aspect-ratio: 1 / 1; /* Keep it square */
+    aspect-ratio: 1 / 1;
     margin: 0 auto 20px auto;
     border: 3px solid var(--grid-strong-border-light);
     border-radius: 15px; /* Rounded grid edges */
-    overflow: hidden; /* Ensures inner cell rounding is visible at edges */
-    background-color: var(--container-bg-light); /* Background for the grid lines */
+    overflow: hidden;
+    background-color: var(--container-bg-light); /* For grid lines effect */
     transition: border-color 0.3s ease, background-color 0.3s ease;
+    position: relative; /* For potential overlay messages */
 }
 
 body.dark-theme .sudoku-board {
@@ -162,7 +208,7 @@ body.dark-theme .sudoku-board {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: clamp(1em, 4vw, 1.8em); /* Responsive font size */
+    font-size: clamp(0.9em, 4vw, 1.6em); /* Responsive font size */
     font-weight: 500;
     border: 1px solid var(--cell-border-light);
     background-color: var(--cell-bg-light);
@@ -170,8 +216,9 @@ body.dark-theme .sudoku-board {
     border-radius: 8px; /* Rounded individual cells */
     margin: 1px; /* Creates the grid line effect */
     cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease;
-    position: relative; /* For input absolute positioning */
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    position: relative;
+    user-select: none; /* Prevent text selection on click */
 }
 
 body.dark-theme .cell {
@@ -182,14 +229,14 @@ body.dark-theme .cell {
 
 /* Thick borders for 3x3 subgrids - JS will add these classes */
 .cell.border-right-strong {
-    border-right-width: 3px !important; /* Use !important carefully */
+    border-right-width: 3px !important;
     border-right-color: var(--grid-strong-border-light) !important;
-    margin-right: 2px; /* Adjust margin for thicker border */
+    margin-right: 2px;
 }
 .cell.border-bottom-strong {
     border-bottom-width: 3px !important;
     border-bottom-color: var(--grid-strong-border-light) !important;
-    margin-bottom: 2px; /* Adjust margin for thicker border */
+    margin-bottom: 2px;
 }
 
 body.dark-theme .cell.border-right-strong {
@@ -199,68 +246,149 @@ body.dark-theme .cell.border-bottom-strong {
     border-bottom-color: var(--grid-strong-border-dark) !important;
 }
 
-
 .cell input {
     width: 100%;
     height: 100%;
     text-align: center;
     border: none;
     outline: none;
-    font-size: inherit; /* Match cell font size */
+    font-size: inherit;
     font-weight: inherit;
     background-color: transparent;
-    color: inherit; /* Inherit text color from cell */
+    color: inherit;
     padding: 0;
-    border-radius: 6px; /* Slightly less than cell for aesthetics */
+    border-radius: 6px; /* Slightly less than cell */
+    caret-color: var(--text-color-light);
 }
+body.dark-theme .cell input {
+    caret-color: var(--text-color-dark);
+}
+.cell input:focus {
+    box-shadow: 0 0 0 2px var(--input-focus-border-light); /* Focus ring */
+}
+body.dark-theme .cell input:focus {
+    box-shadow: 0 0 0 2px var(--input-focus-border-dark);
+}
+
 
 .cell.readonly {
     background-color: var(--cell-readonly-bg-light);
-    font-weight: bold;
+    color: var(--cell-readonly-text-light);
+    font-weight: 700; /* Bolder for given numbers */
     cursor: default;
 }
 body.dark-theme .cell.readonly {
     background-color: var(--cell-readonly-bg-dark);
+    color: var(--cell-readonly-text-dark);
 }
 
 .cell.selected {
-    background-color: var(--cell-selected-bg-light) !important; /* Override for selection */
-    box-shadow: 0 0 0 2px var(--grid-strong-border-light) inset; /* Selection highlight */
+    background-color: var(--cell-selected-bg-light) !important;
+    /* box-shadow: 0 0 0 2px var(--grid-strong-border-light) inset; */
 }
 body.dark-theme .cell.selected {
     background-color: var(--cell-selected-bg-dark) !important;
-    box-shadow: 0 0 0 2px var(--grid-strong-border-dark) inset;
+    /* box-shadow: 0 0 0 2px var(--grid-strong-border-dark) inset; */
 }
+
+.cell.highlight { /* For highlighting same numbers or row/col/box */
+    background-color: var(--cell-highlight-bg-light) !important;
+}
+body.dark-theme .cell.highlight {
+    background-color: var(--cell-highlight-bg-dark) !important;
+}
+
 
 .cell.error {
     background-color: var(--cell-error-bg-light) !important;
-    color: #900 !important;
-    animation: shake 0.3s;
+    color: var(--cell-error-text-light) !important;
+    border: 1px solid var(--cell-error-border-light) !important;
+    animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
 }
 body.dark-theme .cell.error {
     background-color: var(--cell-error-bg-dark) !important;
-    color: #FFCCCC !important;
+    color: var(--cell-error-text-dark) !important;
+    border: 1px solid var(--cell-error-border-dark) !important;
 }
 
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-3px); }
-  75% { transform: translateX(3px); }
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-3px); }
+  40%, 60% { transform: translateX(3px); }
 }
 
-.game-footer {
-    margin-top: 20px;
-    font-size: 0.9em;
-    min-height: 1.2em; /* Reserve space for messages */
+.number-palette {
+    display: flex;
+    justify-content: center;
+    gap: 5px; /* Smaller gap for palette buttons */
+    margin-top: 15px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
 }
+
+.number-palette button {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2em;
+    font-weight: bold;
+    border-radius: 8px;
+    border: 1px solid var(--cell-border-light);
+    background-color: var(--cell-bg-light);
+    color: var(--text-color-light);
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+body.dark-theme .number-palette button {
+    border-color: var(--cell-border-dark);
+    background-color: var(--cell-bg-dark);
+    color: var(--text-color-dark);
+}
+.number-palette button:hover {
+    background-color: var(--cell-highlight-bg-light);
+    transform: scale(1.05);
+}
+body.dark-theme .number-palette button:hover {
+    background-color: var(--cell-highlight-bg-dark);
+}
+.number-palette button.clear-btn { /* Specific styling for clear/delete button */
+    font-size: 1em; /* Smaller text for "X" or "Del" */
+}
+
+
+.game-footer {
+    margin-top: 15px;
+    font-size: 0.9em;
+    min-height: 1.2em;
+    color: inherit;
+}
+#messageArea {
+    font-weight: 500;
+    min-height: 1.5em; /* Ensure space for messages */
+}
+.message-success { color: #155724; background-color: #d4edda; border: 1px solid #c3e6cb; padding: 5px; border-radius: 4px;}
+.message-error { color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 5px; border-radius: 4px;}
+body.dark-theme .message-success { color: #d4edda; background-color: #155724; border-color: #28a745;}
+body.dark-theme .message-error { color: #f8d7da; background-color: #721c24; border-color: #dc3545;}
+
 
 /* Responsive adjustments */
 @media (max-width: 600px) {
     body { padding: 10px; }
     .game-container { padding: 15px; }
-    .game-header h1 { font-size: 2em; }
-    .game-controls { gap: 5px; }
-    .game-controls select, .game-controls button { padding: 8px 10px; font-size: 0.8em; }
+    .game-header h1 { font-size: 1.8em; margin-bottom: 15px; }
+    .controls-wrapper { gap: 10px; margin-bottom: 15px; }
+    .game-controls select, .btn { padding: 8px 10px; font-size: 0.85em; }
     .theme-switcher-container { top: 10px; right: 10px; }
     #themeSwitcher { width: 25px; height: 25px; }
+    .sudoku-board { max-width: 100%; margin-bottom: 15px;} /* Ensure board fits */
+    .cell { font-size: clamp(0.8em, 5vw, 1.4em); border-radius: 6px; margin: 0.5px;}
+    .number-palette button { width: 35px; height: 35px; font-size: 1.1em; }
+}
+
+@media (max-width: 380px) {
+    .cell { font-size: clamp(0.7em, 6vw, 1.2em); border-radius: 4px;}
+    .number-palette button { width: 30px; height: 30px; font-size: 1em; }
+    .game-controls, .action-buttons { flex-direction: column; align-items: stretch; }
+    .game-controls select, .btn { width: 100%; }
 }
