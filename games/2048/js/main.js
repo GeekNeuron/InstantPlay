@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         restartGameButton.addEventListener('click', () => game.startNewGame());
     }
 
+    // Theme Switcher Logic
     const storedTheme = localStorage.getItem('2048Theme');
     const defaultTheme = 'light-theme';
     const currentTheme = (storedTheme === 'light-theme' || storedTheme === 'dark-theme') ? storedTheme : defaultTheme;
@@ -30,8 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.classList.add(currentTheme); 
 
     if (themeSwitcherButton) {
-        themeSwitcherButton.textContent = ''; 
-
         themeSwitcherButton.addEventListener('click', () => {
             const isCurrentlyDark = document.body.classList.contains('dark-theme');
             const newTheme = isCurrentlyDark ? 'light-theme' : 'dark-theme';
@@ -41,6 +40,16 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('2048Theme', newTheme);
         });
     }
+
+    // Disable context menu (right-click) unless Shift key is pressed
+    window.addEventListener('contextmenu', function (e) {
+        // Allow context menu if shift is pressed, or if the target is an input/textarea
+        const targetNodeName = e.target.nodeName;
+        if (e.shiftKey || targetNodeName === 'INPUT' || targetNodeName === 'TEXTAREA') {
+            return;
+        }
+        e.preventDefault();
+    }, false);
     
     game.startNewGame();
 });
