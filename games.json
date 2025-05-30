@@ -33,14 +33,14 @@
         "genre_fa": "سکوبازی"
     },
     {
-        "id": "game4_sudoku",
+        "id": "game3_sudoku",
         "name_en": "Sudoku",
         "name_fa": "سودوکو",
-        "description_en": "Strategically place towers to defend against waves of enemies.",
-        "description_fa": "برج‌ها را به صورت استراتژیک قرار دهید تا در برابر موج دشمنان دفاع کنید.",
+        "description_en": "Jump, run, and collect coins in this exciting 2D platformer.",
+        "description_fa": "در این پلتفرمر دو بعدی هیجان‌انگیز بپر، بدو و سکه جمع کن.",
         "thumbnail_url": "assets/images/sudoku.png",
         "game_url": "games/sudoku/index.html",
-        "genre_en": "Strategy",
-        "genre_fa": "استراتژی"
-    }
+        "genre_en": "Platformer",
+        "genre_fa": "سکوبازی"
+    },
 ]
