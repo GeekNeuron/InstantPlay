@@ -9,15 +9,21 @@ class InputManager {
 
     listen() {
         const keydownHandler = (event) => {
-            if (this.game.gameOver && event.key !== "Enter" && event.key !== " ") return; // Allow restart via Enter/Space on game over
-
-            // Allow restart if modal is visible
-            if (this.game.gameOverModal.style.display === 'flex') {
+            if (this.game.gameOver && event.key !== "Enter" && event.key !== " ") {
+                // If game over modal is shown, allow Enter/Space to restart
+                if (this.game.gameOverModal.classList.contains('show') && (event.key === "Enter" || event.key === " ")) {
+                     event.preventDefault();
+                     this.game.startNewGame();
+                }
+                return;
+            }
+            // If modal is active for game over, only allow restart keys
+            if (this.game.gameOverModal.classList.contains('show')) {
                 if (event.key === "Enter" || event.key === " ") {
                     event.preventDefault();
                     this.game.startNewGame();
                 }
-                return;
+                return; // Block other game moves if modal is up
             }
 
 
@@ -47,15 +53,21 @@ class InputManager {
         let touchendX = 0;
         let touchendY = 0;
 
-        const gameArea = document.querySelector('.grid-container'); // Or a broader container
+        // Listen on a broader area if grid-container is too small or for better UX
+        const gameArea = document.body; // Or document.querySelector('.container');
 
         const touchstartHandler = (event) => {
+            // Prevent handling if it's inside a button or interactive element within gameArea
+            if (event.target.closest('button, a, input')) return;
             touchstartX = event.changedTouches[0].screenX;
             touchstartY = event.changedTouches[0].screenY;
         };
 
         const touchendHandler = (event) => {
-            if (this.game.gameOver) return;
+            if (event.target.closest('button, a, input')) return;
+            if (this.game.gameOver && !this.game.gameOverModal.classList.contains('show')) return; // No swipes if game over and modal not up
+            if (this.game.isMoving) return; // Don't process swipe if already moving
+
             touchendX = event.changedTouches[0].screenX;
             touchendY = event.changedTouches[0].screenY;
             handleSwipe();
@@ -64,36 +76,43 @@ class InputManager {
         const handleSwipe = () => {
             const deltaX = touchendX - touchstartX;
             const deltaY = touchendY - touchstartY;
-            const swipeThreshold = 50; // Minimum distance for a swipe
+            const swipeThreshold = 30; // Minimum distance for a swipe (px)
+            const absDeltaX = Math.abs(deltaX);
+            const absDeltaY = Math.abs(deltaY);
 
-            if (Math.abs(deltaX) > Math.abs(deltaY)) { // Horizontal swipe
-                if (Math.abs(deltaX) > swipeThreshold) {
-                    if (deltaX > 0) this.game.move("ArrowRight");
-                    else this.game.move("ArrowLeft");
-                }
+            if (Math.max(absDeltaX, absDeltaY) < swipeThreshold) {
+                return; // Not a swipe, too short
+            }
+
+            let direction = null;
+            if (absDeltaX > absDeltaY) { // Horizontal swipe
+                direction = (deltaX > 0) ? "ArrowRight" : "ArrowLeft";
             } else { // Vertical swipe
-                if (Math.abs(deltaY) > swipeThreshold) {
-                    if (deltaY > 0) this.game.move("ArrowDown");
-                    else this.game.move("ArrowUp");
+                direction = (deltaY > 0) ? "ArrowDown" : "ArrowUp";
+            }
+            
+            if (direction) {
+                 // If game over modal is shown, a swipe could dismiss it or restart (optional UX)
+                if (this.game.gameOverModal.classList.contains('show')) {
+                    // Example: this.game.startNewGame();
+                    return; 
                 }
+                this.game.move(direction);
             }
         };
 
         if (gameArea) {
             this.eventListeners.touchstart = touchstartHandler;
             this.eventListeners.touchend = touchendHandler;
-            // Use { passive: false } if you need to preventDefault() within touch handlers,
-            // but be cautious as it can affect scrolling performance.
-            // For swipe detection, often passive: true is fine.
+            // Use passive: false if you need to preventDefault() for scroll, but usually not needed for swipe logic
             gameArea.addEventListener('touchstart', touchstartHandler, { passive: true });
             gameArea.addEventListener('touchend', touchendHandler, { passive: true });
         }
     }
 
-    // Call this if you need to remove event listeners, e.g., when tearing down the game instance
     destroy() {
         window.removeEventListener("keydown", this.eventListeners.keydown);
-        const gameArea = document.querySelector('.grid-container');
+        const gameArea = document.body; // Or document.querySelector('.container');
         if (gameArea && this.eventListeners.touchstart && this.eventListeners.touchend) {
             gameArea.removeEventListener('touchstart', this.eventListeners.touchstart);
             gameArea.removeEventListener('touchend', this.eventListeners.touchend);
