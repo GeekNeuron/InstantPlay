@@ -34,12 +34,12 @@
     },
     {
         "id": "game4_tower_defense",
-        "name_en": "Tower Defense Ultimate",
+        "name_en": "Sudoku",
         "name_fa": "دفاع از برج نهایی",
         "description_en": "Strategically place towers to defend against waves of enemies.",
         "description_fa": "برج‌ها را به صورت استراتژیک قرار دهید تا در برابر موج دشمنان دفاع کنید.",
-        "thumbnail_url": "assets/images/placeholder_thumb_300x180.png",
-        "game_url": "games/tower_defense_example/index.html",
+        "thumbnail_url": "assets/images/sudoku.png",
+        "game_url": "games/sudoku/index.html",
         "genre_en": "Strategy",
         "genre_fa": "استراتژی"
     }
