@@ -4,7 +4,7 @@ class InputManager {
     constructor(gameInstance) {
         this.game = gameInstance;
         this.eventListeners = {};
-        this.isSwiping = false; // Flag to manage swipe state
+        this.isSwiping = false; 
         this.listen();
     }
 
@@ -33,7 +33,7 @@ class InputManager {
             }
 
             if (direction) {
-                event.preventDefault();
+                event.preventDefault(); // Still good to prevent default for keyboard, e.g. arrow key scrolling
                 this.game.move(direction);
             }
         };
@@ -46,69 +46,63 @@ class InputManager {
         let touchendY = 0;
         let touchstartTime = 0;
 
-        const gameArea = document.body; 
+        // Touch events will be on grid-container itself due to touch-action: none
+        const gameArea = document.querySelector('.grid-container'); 
 
         const touchstartHandler = (event) => {
-            if (event.target.closest('button, a, input, .top-bar')) return;
-            if (this.game.isMoving || this.isSwiping) return; // Don't start new swipe if already processing one or game is moving
+            // event.target.closest check is less critical if listener is on grid-container
+            // but good for robustness if listener was on body.
+            if (this.game.isMoving || this.isSwiping) return;
 
             touchstartX = event.changedTouches[0].screenX;
             touchstartY = event.changedTouches[0].screenY;
             touchstartTime = new Date().getTime();
-            this.isSwiping = true; // Indicate a potential swipe has started
+            this.isSwiping = true; 
         };
 
         const touchendHandler = (event) => {
-            if (!this.isSwiping) return; // Only process if a swipe was initiated
-            this.isSwiping = false; // Reset swipe flag
+            if (!this.isSwiping) return; 
+            this.isSwiping = false; 
 
-            if (event.target.closest('button, a, input, .top-bar')) return;
             if (this.game.isMoving) return;
 
             touchendX = event.changedTouches[0].screenX;
             touchendY = event.changedTouches[0].screenY;
-            const touchendTime = new Date().getTime();
-            const timeDiff = touchendTime - touchstartTime;
+            // const touchendTime = new Date().getTime(); // Not used in this version
+            // const timeDiff = touchendTime - touchstartTime; // Not used in this version
 
-            handleSwipe(timeDiff);
+            handleSwipe();
         };
         
         const touchcancelHandler = () => {
-            // Reset swipe state if touch is cancelled (e.g. browser interruption)
             this.isSwiping = false;
             touchstartX = 0;
             touchstartY = 0;
         };
 
-
-        const handleSwipe = (timeDiff) => {
+        const handleSwipe = () => {
             const deltaX = touchendX - touchstartX;
             const deltaY = touchendY - touchstartY;
-            const swipeThreshold = 25; // Adjusted threshold
+            const swipeThreshold = 20; // Min distance for a swipe
             const absDeltaX = Math.abs(deltaX);
             const absDeltaY = Math.abs(deltaY);
 
-            // Filter out very short and quick taps that are not swipes
-            if (timeDiff < 150 && Math.max(absDeltaX, absDeltaY) < (swipeThreshold + 5)) {
-                return; 
+            if (Math.max(absDeltaX, absDeltaY) < swipeThreshold) {
+                return; // Not a swipe or too short
             }
             
-            // Ensure movement is significant enough
-            if (Math.max(absDeltaX, absDeltaY) < swipeThreshold) {
-                return; 
-            }
-
-            // Determine predominant direction (more horizontal or more vertical)
-            // And ensure it's not too diagonal (e.g., diff between absDeltaX and absDeltaY isn't too small)
-            const predominantThreshold = 1.5; // e.g., X movement must be 1.5x Y movement to be horizontal
             let direction = null;
-
-            if (absDeltaX > absDeltaY && absDeltaX > absDeltaY * predominantThreshold) { 
-                direction = (deltaX > 0) ? "ArrowRight" : "ArrowLeft";
-            } else if (absDeltaY > absDeltaX && absDeltaY > absDeltaX * predominantThreshold) { 
-                direction = (deltaY > 0) ? "ArrowDown" : "ArrowUp";
+            // Prioritize the direction with greater movement
+            if (absDeltaX > absDeltaY) {
+                // More horizontal movement
+                if (absDeltaX > swipeThreshold) { // Check threshold for the dominant axis
+                    direction = (deltaX > 0) ? "ArrowRight" : "ArrowLeft";
+                }
             } else {
-                return; // Swipe is too diagonal or not clear
+                // More vertical movement
+                if (absDeltaY > swipeThreshold) { // Check threshold for the dominant axis
+                    direction = (deltaY > 0) ? "ArrowDown" : "ArrowUp";
+                }
             }
             
             if (direction) {
@@ -124,15 +118,19 @@ class InputManager {
             this.eventListeners.touchend = touchendHandler;
             this.eventListeners.touchcancel = touchcancelHandler;
 
+            // passive: true is fine here because touch-action: none on the element
+            // will handle the scroll prevention.
             gameArea.addEventListener('touchstart', touchstartHandler, { passive: true });
             gameArea.addEventListener('touchend', touchendHandler, { passive: true });
             gameArea.addEventListener('touchcancel', touchcancelHandler, { passive: true });
+        } else {
+            console.error("Game area for touch input not found!");
         }
     }
 
     destroy() {
         window.removeEventListener("keydown", this.eventListeners.keydown);
-        const gameArea = document.body;
+        const gameArea = document.querySelector('.grid-container');
         if (gameArea) {
             if(this.eventListeners.touchstart) gameArea.removeEventListener('touchstart', this.eventListeners.touchstart);
             if(this.eventListeners.touchend) gameArea.removeEventListener('touchend', this.eventListeners.touchend);
