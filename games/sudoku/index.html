@@ -1,28 +1,45 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Sudoku Game</title>
-   
-    <meta name="description" content="A simple Sudoku Game using HTML, CSS, and Javascript"/>
-	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-	<meta name="author" content="Krunal Patel" />
-	
-	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Montserrat"/>
-    <link rel="stylesheet" href="css/sudoku.css" />
-    
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-  	<script type="text/javascript" src="js/sudoku.js" ></script>
-  	<script type="text/javascript">
-  		$(document).ready(function () {
-  			$(".sudoku-game").sudoku({});
-  		});
-  	</script>
-  
-  </head>
-  <body>
-	<div class="sudoku-bk">
-		<div class="sudoku-game"></div>
-	</div>
-  </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sudoku - GeekNeuron</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/themes.css">
+    </head>
+<body>
+    <div class="theme-switcher-container">
+        <button id="themeSwitcher" class="theme-switcher"></button>
+    </div>
+
+    <div id="gameContainer" class="game-container">
+        <header class="game-header">
+            <h1>Sudoku</h1>
+            <div class="controls">
+                <label for="difficulty">Difficulty:</label>
+                <select id="difficulty">
+                    <option value="easy">Easy</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="hard">Hard</option>
+                    <option value="very-hard">Very Hard</option>
+                </select>
+                <button id="newGameBtn">New Game</button>
+            </div>
+        </header>
+
+        <div id="sudokuBoard" class="sudoku-board">
+            </div>
+
+        <div class="game-actions">
+            <button id="checkSolutionBtn">Check Solution</button>
+            <button id="solveBtn">Solve</button> </div>
+         <p id="messageArea" class="message-area"></p>
+    </div>
+
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/sudoku.js"></script>
+    <script src="assets/js/ui.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
 </html>
+
