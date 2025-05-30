@@ -19,21 +19,18 @@ document.addEventListener('DOMContentLoaded', () => {
         newGameButton.addEventListener('click', () => game.startNewGame());
     }
     if (restartGameButton) {
-        // This button is inside the modal, modal visibility is handled by game.js
         restartGameButton.addEventListener('click', () => game.startNewGame());
     }
 
-    // Theme Switcher Logic
     const storedTheme = localStorage.getItem('2048Theme');
-    // Default to light theme if nothing is stored or if stored value is invalid
     const defaultTheme = 'light-theme';
     const currentTheme = (storedTheme === 'light-theme' || storedTheme === 'dark-theme') ? storedTheme : defaultTheme;
     
-    document.body.className = ''; // Clear existing classes
-    document.body.classList.add(currentTheme); // Apply stored theme or default
+    document.body.className = ''; 
+    document.body.classList.add(currentTheme); 
 
     if (themeSwitcherButton) {
-        themeSwitcherButton.textContent = ''; // Icon is handled by CSS ::before
+        themeSwitcherButton.textContent = ''; 
 
         themeSwitcherButton.addEventListener('click', () => {
             const isCurrentlyDark = document.body.classList.contains('dark-theme');
@@ -45,6 +42,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Start the first game
     game.startNewGame();
 });
