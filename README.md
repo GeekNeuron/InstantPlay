@@ -60,4 +60,4 @@ README.md                    # This file
 * User preferences (language, dark mode status, favorite games, current filter/sort settings) are saved to `localStorage` to persist across sessions.
 * Game cards trigger a modal window displaying more detailed information about the game; the actual "Play Game" button is located within this modal.
 
-Enjoy your [InstantPlay](https://geekneuron.github.io/InstantPlay)!
+> Enjoy your [InstantPlay](https://geekneuron.github.io/InstantPlay)!
