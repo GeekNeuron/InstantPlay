@@ -8,74 +8,74 @@
 }
 
 :root {
-    /* Light Theme Variables (Inspired by 2048 Game by GeekNeuron) */
-    --bg-color-light: #faf8ef;
-    --text-color-light: #776e65;
-    --container-bg-light: #f4f7f6;
-    --container-border-light: #e0dad1;
-    --header-text-light: #776e65;
+    /* Light Theme Variables (All White Theme) */
+    --bg-color-light: #ffffff;                     /* پس‌زمینه اصلی صفحه */
+    --text-color-light: #212529;                   /* رنگ متن اصلی (مشکی ملایم) */
+    --container-bg-light: #f8f9fa;                 /* پس‌زمینه کانتینر (سفید مایل به خاکستری) */
+    --container-border-light: #dee2e6;             /* حاشیه کانتینر */
+    --header-text-light: #212529;                  /* رنگ عنوان سودوکو */
 
-    --cell-bg-light: #fff; /* Cells will have white background now */
-    --cell-input-bg-light: #fff; /* Input field background inside cell */
-    --cell-border-light: #ded3c5; /* Lighter default cell border */
-    --cell-readonly-bg-light: #eee4da;
-    --cell-readonly-text-light: #776e65;
-    --cell-selected-bg-light: #e8da77;
-    --cell-highlight-bg-light: #f0e6c2;
-    --cell-error-bg-light: #f8d7da; /* Error background for cell itself */
-    --cell-error-text-light: #721c24; /* Error text color */
-    --input-error-border-light: #dc3545; /* Red border for input field on error */
+    --cell-bg-light: #ffffff;                      /* پس‌زمینه سلول‌های خالی/ورودی */
+    --cell-input-bg-light: #ffffff;
+    --cell-border-light: #ced4da;                  /* حاشیه پیش‌فرض سلول */
+    --cell-readonly-bg-light: #e9ecef;             /* پس‌زمینه سلول‌های فقط خواندنی */
+    --cell-readonly-text-light: #495057;           /* متن سلول‌های فقط خواندنی */
+    --cell-selected-bg-light: #cfe2ff;             /* پس‌زمینه سلول انتخاب شده (آبی روشن) */
+    --cell-highlight-bg-light: #e7f0ff;            /* پس‌زمینه هایلایت سطر/ستون/باکس */
+    --cell-error-bg-light: #f8d7da;                /* پس‌زمینه سلول خطا */
+    --cell-error-text-light: #721c24;              /* متن سلول خطا */
+    --input-error-border-light: #dc3545;           /* حاشیه ورودی خطا */
 
-    --grid-strong-border-light: #8f7a66; /* For 3x3 subgrids and main board border */
+    --grid-strong-border-light: #495057;           /* خطوط جداکننده ۳x۳ (خاکستری تیره‌تر) */
 
-    --button-primary-bg-light: #8f7a66;
-    --button-primary-text-light: #f9f6f2;
-    --button-primary-hover-bg-light: #7c6856;
-    --button-secondary-bg-light: #bbada0; /* For "Reset" button */
-    --button-secondary-text-light: #f9f6f2;
-    --button-secondary-hover-bg-light: #a89c8e;
+    --button-primary-bg-light: #007bff;            /* دکمه اصلی (آبی) */
+    --button-primary-text-light: #ffffff;
+    --button-primary-hover-bg-light: #0056b3;
+    --button-secondary-bg-light: #6c757d;          /* دکمه ثانویه (خاکستری) */
+    --button-secondary-text-light: #ffffff;
+    --button-secondary-hover-bg-light: #545b62;
 
-    --select-bg-light: #fff;
-    --select-border-light: #bbada0;
-    --select-text-light: #776e65;
+    --select-bg-light: #ffffff;
+    --select-border-light: #ced4da;
+    --select-text-light: #495057;
 
-    --theme-switcher-light: #776e65;
-    --input-focus-border-light: #8f7a66;
+    --theme-switcher-light: #212529;               /* دکمه تغییر تم (مشکی) */
+    --input-focus-border-light: #86b7fe;           /* حاشیه فوکوس ورودی (آبی) */
 
-    /* Dark Theme Variables (Kept as Dark Blue) */
-    --bg-color-dark: #0A192F;
-    --text-color-dark: #E0E0E0;
-    --container-bg-dark: #102a43;
-    --container-border-dark: #243b53;
-    --header-text-dark: #E0E0E0;
+    /* Dark Theme Variables (User Provided Palette) */
+    --bg-color-dark: #0d1117;                      /* --body-bg */
+    --text-color-dark: #c9d1d9;                    /* --text-color-primary */
+    --container-bg-dark: #161b22;                  /* --container-bg */
+    --container-border-dark: #21262d;              /* مشابه --container-bg یا کمی تیره‌تر */
+    --header-text-dark: #c9d1d9;
 
-    --cell-bg-dark: #1f3a5f; /* Cells background in dark theme */
-    --cell-input-bg-dark: #2a4f7c;
-    --cell-border-dark: #4a5f78; /* Lighter default cell border for dark */
-    --cell-readonly-bg-dark: #2c4a6d;
-    --cell-readonly-text-dark: #b0c4de;
-    --cell-selected-bg-dark: #3498DB;
-    --cell-highlight-bg-dark: #2c709e;
-    --cell-error-bg-dark: #4a2e33;  /* Error background for cell itself in dark */
-    --cell-error-text-dark: #f8d7da;
-    --input-error-border-dark: #e74c3c; /* Red border for input field on error in dark */
+    --cell-bg-dark: #2c3a47;                       /* --grid-cell-bg (برای سلول‌های ورودی) */
+    --cell-input-bg-dark: #2c3a47;                 /* مشابه سلول */
+    --cell-border-dark: #21262d;                   /* حاشیه پیش‌فرض سلول (تیره‌تر از پس‌زمینه سلول) */
+    --cell-readonly-bg-dark: #1e2732;              /* پس‌زمینه سلول فقط خواندنی (می‌تواند --grid-bg باشد) */
+    --cell-readonly-text-dark: #c9d1d9;
+    --cell-selected-bg-dark: #3282b8;              /* مشابه --button-bg برای انتخاب */
+    --cell-highlight-bg-dark: #1d4357;             /* مشابه --button-hover-bg برای هایلایت */
+    
+    --cell-error-bg-dark: #4a2e33;                 /* پس‌زمینه سلول خطا (قرمز تیره) */
+    --cell-error-text-dark: #f8d7da;               /* متن سلول خطا (روشن) */
+    --input-error-border-dark: #e74c3c;            /* حاشیه ورودی خطا (قرمز روشن) */
 
+    --grid-strong-border-dark: #c9d1d9;            /* خطوط جداکننده ۳x۳ (رنگ متن اصلی برای وضوح) */
 
-    --grid-strong-border-dark: #bdc3c7;
+    --button-primary-bg-dark: #3282b8;             /* --button-bg */
+    --button-primary-text-dark: #ffffff;           /* --button-text */
+    --button-primary-hover-bg-dark: #1d4357;       /* --button-hover-bg */
+    --button-secondary-bg-dark: #274c77;           /* --score-box-bg (برای دکمه Reset) */
+    --button-secondary-text-dark: #e0e6eb;         /* --score-box-text */
+    --button-secondary-hover-bg-dark: #1d3c5e;
 
-    --button-primary-bg-dark: #3498DB;
-    --button-primary-text-dark: #0A192F;
-    --button-primary-hover-bg-dark: #217dbb;
-    --button-secondary-bg-dark: #567aac;
-    --button-secondary-text-dark: #0A192F;
-    --button-secondary-hover-bg-dark: #436187;
+    --select-bg-dark: #161b22;                     /* مشابه --container-bg */
+    --select-border-dark: #3282b8;                 /* مشابه --button-bg */
+    --select-text-dark: #c9d1d9;
 
-    --select-bg-dark: #1f3a5f;
-    --select-border-dark: #3A506B;
-    --select-text-dark: #E0E0E0;
-
-    --theme-switcher-dark: #FFFFFF;
-    --input-focus-border-dark: #5dade2;
+    --theme-switcher-dark: #e0e0e0;                /* --theme-switcher-bg-dark-active */
+    --input-focus-border-dark: #3282b8;            /* مشابه --button-bg */
 }
 
 body {
@@ -120,7 +120,7 @@ body.dark-theme {
 }
 body.dark-theme #themeSwitcher {
     background-color: var(--theme-switcher-dark);
-    border-color: var(--theme-switcher-light);
+    border-color: var(--theme-switcher-border-dark-active, var(--text-color-dark)); /* Fallback */
 }
 
 .game-container {
@@ -137,7 +137,7 @@ body.dark-theme #themeSwitcher {
 body.dark-theme .game-container {
     background-color: var(--container-bg-dark);
     border-color: var(--container-border-dark);
-    box-shadow: 0 5px 15px rgba(200,200,255,0.07);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1); /* Slightly more visible shadow on dark */
 }
 
 .game-header h1 {
@@ -173,7 +173,7 @@ body.dark-theme .game-header h1 {
     font-weight: 500;
     font-size: 0.9em;
 }
-.game-controls select, .btn {
+.btn { /* Common button styles */
     padding: 10px 15px;
     border-radius: 3px;
     font-size: 0.95em;
@@ -200,7 +200,7 @@ body.dark-theme .btn.btn-primary:hover {
     background-color: var(--button-primary-hover-bg-dark);
 }
 
-#resetBtn { /* Reset button uses secondary style */
+#resetBtn {
     background-color: var(--button-secondary-bg-light);
     color: var(--button-secondary-text-light);
 }
@@ -231,20 +231,21 @@ body.dark-theme #difficultySelect {
 
 .sudoku-board {
     display: grid;
-    grid-template-columns: repeat(9, 1fr); /* Simpler repeat */
-    grid-template-rows: repeat(9, 1fr);    /* Simpler repeat */
+    grid-template-columns: repeat(9, 1fr);
+    grid-template-rows: repeat(9, 1fr);
     width: 100%;
     max-width: 450px;
     aspect-ratio: 1 / 1;
-    margin: 0 auto 20px auto; /* Standard margin */
-    border: 3px solid var(--grid-strong-border-light); /* Main outer border */
+    margin: 0 auto 20px auto;
+    border: 3px solid var(--grid-strong-border-light);
     border-radius: 6px;
-    overflow: hidden; /* Important for rounded corners with cell borders */
-    /* Removed gap and padding for direct cell borders */
+    overflow: hidden;
     transition: border-color 0.3s ease;
+    background-color: var(--grid-bg, var(--container-bg-light)); /* Fallback for light theme if --grid-bg not set */
 }
 body.dark-theme .sudoku-board {
     border-color: var(--grid-strong-border-dark);
+    background-color: var(--grid-bg, var(--container-bg-dark)); /* Use --grid-bg from user's dark theme */
 }
 
 .cell {
@@ -255,27 +256,25 @@ body.dark-theme .sudoku-board {
     font-weight: bold;
     background-color: var(--cell-bg-light);
     color: var(--text-color-light);
-    border-radius: 0; /* Cells are square, rounding is on the main board */
+    border-radius: 0;
     cursor: pointer;
     transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
     position: relative;
     user-select: none;
-    /* Default thin border for all cells */
-    border: 0.5px solid var(--cell-border-light); /* Very thin default border */
+    border: 0.5px solid var(--cell-border-light);
 }
 body.dark-theme .cell {
-    background-color: var(--cell-bg-dark);
+    background-color: var(--cell-bg-dark); /* --grid-cell-bg */
     color: var(--text-color-dark);
     border-color: var(--cell-border-dark);
 }
 
-/* Prominent borders for 3x3 subgrids */
 .cell.border-right-strong {
-    border-right-width: 2px; /* Thicker than default */
+    border-right-width: 2px;
     border-right-color: var(--grid-strong-border-light);
 }
 .cell.border-bottom-strong {
-    border-bottom-width: 2px; /* Thicker than default */
+    border-bottom-width: 2px;
     border-bottom-color: var(--grid-strong-border-light);
 }
 body.dark-theme .cell.border-right-strong {
@@ -323,7 +322,7 @@ body.dark-theme .cell.readonly {
 .cell.selected {
     background-color: var(--cell-selected-bg-light) !important;
 }
-.cell.selected input { /* Ensure input bg matches selected cell bg if it's an input cell */
+.cell.selected input {
     background-color: var(--cell-selected-bg-light) !important;
 }
 body.dark-theme .cell.selected {
@@ -333,11 +332,10 @@ body.dark-theme .cell.selected input {
     background-color: var(--cell-selected-bg-dark) !important;
 }
 
-
 .cell.highlight {
     background-color: var(--cell-highlight-bg-light) !important;
 }
-.cell.highlight input { /* Ensure input bg matches highlighted cell bg */
+.cell.highlight input {
     background-color: var(--cell-highlight-bg-light) !important;
 }
 body.dark-theme .cell.highlight {
@@ -347,16 +345,15 @@ body.dark-theme .cell.highlight input {
     background-color: var(--cell-highlight-bg-dark) !important;
 }
 
-
 .cell.error {
-    background-color: var(--cell-error-bg-light) !important; /* Cell background for error */
+    background-color: var(--cell-error-bg-light) !important;
     color: var(--cell-error-text-light) !important;
     animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
 }
-.cell.error input { /* Input field specific error indication */
-    background-color: var(--cell-error-bg-light) !important; /* Match cell error bg */
+.cell.error input {
+    background-color: var(--cell-error-bg-light) !important;
     color: var(--cell-error-text-light) !important;
-    box-shadow: 0 0 0 2px var(--input-error-border-light) inset !important; /* Red border for input */
+    box-shadow: 0 0 0 2px var(--input-error-border-light) inset !important;
 }
 body.dark-theme .cell.error {
     background-color: var(--cell-error-bg-dark) !important;
@@ -375,8 +372,6 @@ body.dark-theme .cell.error input {
   40%, 60% { transform: translateX(3px); }
 }
 
-/* Removed .number-palette and .below-board-controls styles */
-
 .game-footer {
     margin-top: 25px;
     font-size: 0.9em;
@@ -387,17 +382,19 @@ body.dark-theme .cell.error input {
     min-height: 1.5em;
     margin-bottom: 8px;
 }
-.message-success { color: #155724; background-color: #d4edda; border: 1px solid #c3e6cb; padding: 5px; border-radius: 4px;}
-.message-error { color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 5px; border-radius: 4px;}
-body.dark-theme .message-success { color: #d4edda; background-color: #155724; border-color: #28a745;}
-body.dark-theme .message-error { color: #f8d7da; background-color: #721c24; border-color: #dc3545;}
+.message-success { color: #0f5132; background-color: #d1e7dd; border: 1px solid #badbcc; padding: 5px; border-radius: 4px;} /* Bootstrap success colors */
+.message-error { color: #842029; background-color: #f8d7da; border: 1px solid #f5c2c7; padding: 5px; border-radius: 4px;} /* Bootstrap danger colors */
+
+body.dark-theme .message-success { color: #75b798; background-color: #192f26; border-color: #2a674f;}
+body.dark-theme .message-error { color: #ea868f; background-color: #3a2426; border-color: #a33f4c;}
+
 
 .footer-credit {
     font-size: 0.85em;
     color: var(--text-color-light);
 }
 .footer-credit a {
-    color: var(--button-primary-bg-light);
+    color: var(--button-primary-bg-light); /* Link color matches primary button for light theme */
     text-decoration: none;
 }
 .footer-credit a:hover {
@@ -407,7 +404,7 @@ body.dark-theme .footer-credit {
     color: var(--text-color-dark);
 }
 body.dark-theme .footer-credit a {
-    color: var(--button-primary-bg-dark);
+    color: var(--button-primary-bg-dark); /* Link color matches primary button for dark theme */
 }
 
 /* Responsive adjustments */
@@ -417,15 +414,14 @@ body.dark-theme .footer-credit a {
     .game-header h1 { font-size: 2em; margin-bottom: 15px; }
     .header-controls { flex-direction: column; align-items: stretch; gap: 10px; }
     .game-actions, .difficulty-control { justify-content: center; width: 100%; }
-    .difficulty-control select { flex-grow: 1; }
-    .btn, #difficultySelect { width: auto; flex-grow: 1; min-width: 120px; }
+    #difficultySelect { flex-grow: 1; }
+    .btn { width: auto; flex-grow: 1; min-width: 120px; }
     .game-actions .btn { flex-basis: 48%; }
 
     .theme-switcher-container { top: 10px; right: 10px; }
     #themeSwitcher { width: 25px; height: 25px; }
     .sudoku-board { max-width: 100%; margin-bottom: 15px;}
     .cell { font-size: clamp(0.8em, 5vw, 1.4em); }
-    /* Removed number palette responsive styles */
 }
 
 @media (max-width: 420px) {
