@@ -2,11 +2,11 @@
 :root {
     /* Light Theme (Pure White) */
     --body-bg: #ffffff;
-    --container-bg: #bbada0; /* Light gray-brown, classic 2048 */
-    --grid-bg: #cdc1b4; /* Background for gaps, slightly lighter */
-    --grid-cell-bg: rgba(238, 228, 218, 0.35); /* Very light, almost transparent */
-    --text-color-primary: #776e65; /* Dark gray-brown for text */
-    --text-color-secondary: #f9f6f2; /* Off-white for text on darker tiles */
+    --container-bg: #bbada0;
+    --grid-bg: #cdc1b4;
+    --grid-cell-bg: rgba(238, 228, 218, 0.35);
+    --text-color-primary: #776e65;
+    --text-color-secondary: #f9f6f2;
     --tile-default-bg: #eee4da;
     --tile-default-text: #776e65;
     --score-box-bg: #8f7a66;
@@ -17,9 +17,8 @@
     --modal-bg: rgba(0,0,0,0.6);
     --modal-content-bg: #fefefe;
     --modal-text-color: #776e65;
-    --border-color: var(--container-bg); /* Use container bg for subtle border */
+    --border-color: var(--container-bg);
 
-    /* Tile specific colors (Light Theme) */
     --tile-2-bg: #eee4da;   --tile-2-text: #776e65;
     --tile-4-bg: #ede0c8;   --tile-4-text: #776e65;
     --tile-8-bg: #f2b179;   --tile-8-text: #f9f6f2;
@@ -35,62 +34,68 @@
     --tile-super-bg: #3c3a32; --tile-super-text: #f9f6f2;
 
     --font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
-    --border-radius: 10px; /* Increased border radius */
-    --gap-size: 12px; /* Increased gap for visual grid lines */
-    --grid-width-desktop: 400px;
-    --grid-height-desktop: 400px; /* Ensures square grid on desktop */
+    --border-radius: 10px;
+    --gap-size: 12px;
+    --grid-side-length-desktop: 400px; /* Use one variable for square grid */
 }
 
 /* Dark Theme Variables (Dark Blue) */
 body.dark-theme {
-    --body-bg: #0d1117; /* Very dark blue/gray, GitHub dark style */
-    --container-bg: #161b22; /* Darker blue/gray for main container */
-    --grid-bg: #1e2732; /* Dark blue for grid background (lines) */
-    --grid-cell-bg: #2c3a47; /* Slightly lighter dark blue for empty cells */
-    --text-color-primary: #c9d1d9; /* Light gray/off-white for primary text */
-    --text-color-secondary: #0d1117; /* Dark text for contrast on lighter dark tiles */
-    --tile-default-bg: #293b5f; /* Dark blue-gray for default tiles */
-    --tile-default-text: #e0e6eb; /* Lighter text for default tiles */
-    --score-box-bg: #274c77; /* Deeper dark blue for score boxes */
+    --body-bg: #0d1117;
+    --container-bg: #161b22;
+    --grid-bg: #1e2732;
+    --grid-cell-bg: #2c3a47;
+    --text-color-primary: #c9d1d9;
+    --text-color-secondary: #0d1117;
+    --tile-default-bg: #293b5f;
+    --tile-default-text: #e0e6eb;
+    --score-box-bg: #274c77;
     --score-box-text: #e0e6eb;
-    --button-bg: #3282b8; /* Medium blue for buttons */
+    --button-bg: #3282b8;
     --button-text: #ffffff;
-    --button-hover-bg: #1d4357; /* Darker blue for button hover */
+    --button-hover-bg: #1d4357;
     --modal-bg: rgba(10, 10, 15, 0.7);
     --modal-content-bg: #161b22;
     --modal-text-color: #c9d1d9;
     --border-color: var(--container-bg);
 
-    /* Tile specific colors for Dark Theme */
     --tile-2-bg: #2c3e50;   --tile-2-text: #ecf0f1;
     --tile-4-bg: #34495e;   --tile-4-text: #ecf0f1;
-    --tile-8-bg: #1abc9c;   --tile-8-text: #0d1117; /* Teal */
-    --tile-16-bg: #2ecc71;  --tile-16-text: #0d1117; /* Green */
-    --tile-32-bg: #3498db;  --tile-32-text: #f9f6f2; /* Blue */
-    --tile-64-bg: #9b59b6;  --tile-64-text: #f9f6f2; /* Purple */
-    --tile-128-bg: #f1c40f; --tile-128-text: #0d1117; /* Yellow */
-    --tile-256-bg: #e67e22; --tile-256-text: #f9f6f2; /* Orange */
-    --tile-512-bg: #e74c3c; --tile-512-text: #f9f6f2; /* Red */
-    --tile-1024-bg: #62DAFB;--tile-1024-text: #0d1117; /* React Blue / Light Blue */
-    --tile-2048-bg: #f39c12;--tile-2048-text: #0d1117; /* Bright Orange */
-    --tile-super-bg: #00008B; --tile-super-text: #f9f6f2; /* DarkBlue for > 2048 */
+    --tile-8-bg: #1abc9c;   --tile-8-text: #0d1117;
+    --tile-16-bg: #2ecc71;  --tile-16-text: #0d1117;
+    --tile-32-bg: #3498db;  --tile-32-text: #f9f6f2;
+    --tile-64-bg: #9b59b6;  --tile-64-text: #f9f6f2;
+    --tile-128-bg: #f1c40f; --tile-128-text: #0d1117;
+    --tile-256-bg: #e67e22; --tile-256-text: #f9f6f2;
+    --tile-512-bg: #e74c3c; --tile-512-text: #f9f6f2;
+    --tile-1024-bg: #62DAFB;--tile-1024-text: #0d1117;
+    --tile-2048-bg: #f39c12;--tile-2048-text: #0d1117;
+    --tile-super-bg: #00008B; --tile-super-text: #f9f6f2;
 }
 
 /* General Styles */
+html {
+    box-sizing: border-box; /* Apply box-sizing to html for easier calculations */
+    -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+}
+*, *:before, *:after {
+    box-sizing: inherit; /* Inherit box-sizing from html */
+}
+
 body {
     font-family: var(--font-family);
     background-color: var(--body-bg);
     color: var(--text-color-primary);
     margin: 0;
-    padding: 20px; /* Add some padding around the body */
-    padding-top: 70px; /* More space for theme switcher if it's larger */
+    padding: 20px;
+    padding-top: 70px;
     display: flex;
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
     text-align: center;
     transition: background-color 0.3s ease, color 0.3s ease;
-    box-sizing: border-box;
+    overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
 .top-bar {
@@ -103,21 +108,22 @@ body {
 #theme-switcher {
     background: none;
     border: none;
-    padding: 5px;
-    font-size: 1.8em; /* Slightly larger icon */
+    padding: 8px; /* Slightly more touch area */
+    font-size: 1.8em;
     cursor: pointer;
-    color: var(--text-color-primary); /* Icon color matches text */
+    color: var(--text-color-primary);
     outline: none;
     transition: color 0.3s ease, transform 0.2s ease;
+    line-height: 1; /* Ensure icon is centered */
 }
 #theme-switcher:hover {
     transform: scale(1.1);
 }
 #theme-switcher::before {
-    content: '🌙'; /* Default: Moon icon (implies current is light, switch to dark) */
+    content: '🌙';
 }
 body.dark-theme #theme-switcher::before {
-    content: '☀️'; /* Sun icon (implies current is dark, switch to light) */
+    content: '☀️';
 }
 
 .container {
@@ -129,10 +135,8 @@ body.dark-theme #theme-switcher::before {
     flex-direction: column;
     align-items: center;
     transition: background-color 0.3s ease;
-    /* Width set by content, or max-width if needed */
-    max-width: calc(var(--grid-width-desktop) + 40px); /* Max width for desktop */
-    width: 100%; /* Responsive width for smaller screens */
-    box-sizing: border-box;
+    max-width: calc(var(--grid-side-length-desktop) + 40px);
+    width: 100%;
 }
 
 header {
@@ -155,6 +159,7 @@ header h1 {
     justify-content: center;
     gap: var(--gap-size);
     margin-bottom: 20px;
+    flex-wrap: wrap; /* Allow score boxes to wrap on small screens if needed */
 }
 
 .score-box {
@@ -178,6 +183,7 @@ header h1 {
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.1s ease;
+    user-select: none; /* Prevent text selection on buttons */
 }
 .btn:hover {
     background-color: var(--button-hover-bg);
@@ -190,48 +196,45 @@ header h1 {
 .grid-container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(4, 1fr); /* Makes cells square if container is square */
-    gap: var(--gap-size); /* This creates the "grid lines" with grid-bg color */
-    width: var(--grid-width-desktop);
-    height: var(--grid-height-desktop);
-    background-color: var(--grid-bg); /* This is the color of the gaps/lines */
+    grid-template-rows: repeat(4, 1fr);
+    gap: var(--gap-size);
+    width: var(--grid-side-length-desktop);
+    height: var(--grid-side-length-desktop);
+    background-color: var(--grid-bg);
     border-radius: var(--border-radius);
     position: relative;
     transition: background-color 0.3s ease;
-    padding: var(--gap-size); /* Padding uses grid-bg color, effectively making border */
-    box-sizing: border-box;
+    padding: var(--gap-size);
 }
 
 .grid-cell {
-    background-color: var(--grid-cell-bg); /* Background of the empty cell spots */
-    border-radius: calc(var(--border-radius) / 1.5); /* Slightly less rounded than tiles */
+    background-color: var(--grid-cell-bg);
+    border-radius: calc(var(--border-radius) / 1.5);
     transition: background-color 0.3s ease;
 }
 
 .tile {
-    position: absolute; /* Positioned by JS within grid-container */
+    position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
     font-weight: bold;
-    border-radius: var(--border-radius); /* More rounded tiles */
+    border-radius: var(--border-radius);
     transition: transform 0.15s cubic-bezier(0.25, 0.1, 0.25, 1), 
                 background-color 0.15s ease-in-out, 
                 color 0.15s ease-in-out, 
                 opacity 0.15s ease-in-out;
     animation: appear 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
-    box-sizing: border-box;
-    /* Text content (number) is set by JS */
-    /* Background and text color set by data-value attributes */
+    user-select: none; /* Prevent text selection on tiles */
 }
 
 @keyframes appear {
-    from { transform: scale(0.5) translate(var(--translateX, 0), var(--translateY, 0)); opacity: 0; } /* Allow JS to set initial translate for new tiles */
+    from { transform: scale(0.5) translate(var(--translateX, 0), var(--translateY, 0)); opacity: 0; }
     to { transform: scale(1) translate(var(--translateX, 0), var(--translateY, 0)); opacity: 1; }
 }
 
 .tile.tile-merged {
-    animation: pop 0.2s cubic-bezier(0.25, 0.1, 0.25, 1) 0.05s; /* Pop after move, 0.05s delay */
+    animation: pop 0.2s cubic-bezier(0.25, 0.1, 0.25, 1) 0.05s;
 }
 
 @keyframes pop {
@@ -240,8 +243,6 @@ header h1 {
     100% { transform: scale(1) translate(var(--translateX, 0), var(--translateY, 0)); }
 }
 
-/* Tile value-specific styles using CSS variables */
-/* Font size adjustments are now primarily in tile.js for dynamic fitting */
 .tile[data-value="2"]    { background-color: var(--tile-2-bg); color: var(--tile-2-text); }
 .tile[data-value="4"]    { background-color: var(--tile-4-bg); color: var(--tile-4-text); }
 .tile[data-value="8"]    { background-color: var(--tile-8-bg); color: var(--tile-8-text); }
@@ -255,7 +256,6 @@ header h1 {
 .tile[data-value="2048"] { background-color: var(--tile-2048-bg); color: var(--tile-2048-text); }
 .tile[data-value="4096"],
 .tile[data-value="8192"] { background-color: var(--tile-super-bg); color: var(--tile-super-text); }
-
 
 .modal {
     position: fixed;
@@ -311,18 +311,16 @@ footer {
 }
 
 /* Responsive adjustments for square grid on mobile */
-@media (max-width: 520px) { /* Adjusted breakpoint */
+@media (max-width: 520px) {
     body {
         padding: 10px;
-        padding-top: 60px; /* Space for theme switcher */
+        padding-top: 60px;
     }
     .container {
-        /* Container takes full width, padding is inside */
         padding: 15px;
-        max-width: 100%; /* Override desktop max-width */
     }
     header h1 {
-        font-size: 2.8em;
+        font-size: 2.5em; /* Slightly smaller h1 on mobile */
     }
     .scores-container {
         flex-direction: column;
@@ -335,16 +333,22 @@ footer {
         min-width: 90px;
     }
     .grid-container {
-        width: 90vw;  /* Make grid a percentage of viewport width */
-        height: 90vw; /* Make grid height same as width for square aspect ratio */
-        max-width: 400px; /* Cap size on larger "mobile" screens */
-        max-height: 400px;
+        /* Calculate width to be 90% of viewport width OR height, whichever is smaller, minus padding */
+        /* This is hard to do purely in CSS for a square. JS might be needed for perfect square based on smaller dimension. */
+        /* Simpler: Use vw for width, and aspect-ratio if supported, or fixed relation to width. */
+        width: 90vw; 
+        height: 90vw; /* This makes it square based on width */
+        max-width: var(--grid-side-length-desktop); /* Cap at desktop size if 90vw is larger */
+        max-height: var(--grid-side-length-desktop);
         margin-left: auto;
-        margin-right: auto; /* Center the grid */
-        padding: var(--gap-size); /* Padding is inside this defined width/height */
+        margin-right: auto;
+        padding: calc(var(--gap-size) * 0.8); /* Slightly smaller gap/padding on mobile */
     }
     
-    /* Tile font sizes will be handled by JS in tile.js based on value and available space */
+    .btn {
+        padding: 10px 20px;
+        font-size: 1em;
+    }
 
     .modal-content {
         width: 85%;
@@ -352,4 +356,17 @@ footer {
     }
     .modal-content h2 { font-size: 1.8em; }
     .modal-content p { font-size: 1.1em; }
+}
+
+@media (max-width: 360px) { /* Even smaller screens */
+    header h1 {
+        font-size: 2.2em;
+    }
+    .grid-container {
+        padding: calc(var(--gap-size) * 0.7);
+    }
+     .btn {
+        padding: 8px 15px;
+        font-size: 0.9em;
+    }
 }
