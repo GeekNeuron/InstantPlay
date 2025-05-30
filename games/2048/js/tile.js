@@ -8,32 +8,36 @@ class Tile {
         this.id = `tile-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
         this.tileElement.setAttribute('data-id', this.id);
 
+        // Create a span for the number to animate it independently
+        this.numberDisplay = document.createElement('span');
+        this.numberDisplay.classList.add('tile-number-display');
+        this.tileElement.appendChild(this.numberDisplay);
+
         this.x = -1; 
         this.y = -1;
         this.value = 0;
-        this.mergedFrom = null; // Not actively used in current logic, but can be for advanced animations
+        this.mergedFrom = null;
         this.markedForRemoval = false;
 
-        this.setValue(value, true); // isNewTile = true
+        this.setValue(value, true); 
         gridElement.append(this.tileElement);
-        
-        // The 'appear' animation is handled by CSS on .tile class
     }
 
     setValue(value, isNewTile = false) {
         const oldValue = this.value;
         this.value = value;
-        this.tileElement.textContent = value; 
+        this.numberDisplay.textContent = value; // Set text content of the span
         this.tileElement.dataset.value = value; 
-        this.adjustFontSize();
+        this.adjustFontSize(); // Adjust font size of the main tile element (span will inherit or can be styled)
 
-        // No longer calling this.merged() here, as per user request
-        // if (!isNewTile && oldValue !== value && oldValue !== 0) {
-        //     // this.merged(); // User wants no specific merge animation on the kept tile
-        // }
+        if (!isNewTile && oldValue !== value && oldValue !== 0) { // Value changed due to merge
+            this.triggerMergeAnimation(); 
+        }
     }
 
     adjustFontSize() {
+        // This adjusts font size for the .tile element. 
+        // The .tile-number-display span will inherit this, or can have its own relative size.
         const numStr = this.value.toString();
         let baseSize = 2.8; 
         if (numStr.length > 4) { 
@@ -55,8 +59,8 @@ class Tile {
         const cellSize = (availableWidth - (gridSize - 1) * gap) / gridSize;
 
         if (cellSize <= 0 || isNaN(cellSize)) {
-            this.tileElement.style.width = `50px`; // Fallback
-            this.tileElement.style.height = `50px`; // Fallback
+            this.tileElement.style.width = `50px`; 
+            this.tileElement.style.height = `50px`;
         } else {
             this.tileElement.style.width = `${cellSize}px`;
             this.tileElement.style.height = `${cellSize}px`;
@@ -76,11 +80,9 @@ class Tile {
         this.x = row;
         this.y = col;
         this._updateVisuals(row, col, gridSize, gridElement);
-        // Ensure initial visibility for new tiles (appear animation handles fade-in and scale-in)
-        // Opacity is initially 0 via 'appear' animation 'from' state
         requestAnimationFrame(() => { 
-            if (this.tileElement.style.opacity !== '1') { // Only if not already made visible
-                 // this.tileElement.style.opacity = '1'; // Let animation handle this
+            if (this.tileElement.style.opacity !== '1') {
+                 // Let 'appear' animation handle initial opacity
             }
         });
     }
@@ -92,17 +94,10 @@ class Tile {
                 return;
             }
             this.tileElement.style.opacity = '0';
-            // Apply a scale down effect for removal
             let currentTransform = this.tileElement.style.transform || '';
-            // Ensure we are not adding scale if it's already part of a complex transform from movement
             if (!currentTransform.includes('scale(')) {
                  this.tileElement.style.transform = currentTransform + ' scale(0.1)';
-            } else {
-                 // If transform is complex, just rely on opacity for removal feedback
-                 // Or parse and rebuild transform, which is more complex.
-                 // For simplicity, if already transformed, just fade.
             }
-
 
             const onRemoveEnd = () => {
                 if (this.tileElement.parentElement) {
@@ -110,14 +105,12 @@ class Tile {
                 }
                 resolve();
             };
-            // Listen to transition end for opacity (which is 0.1s)
             this.tileElement.addEventListener('transitionend', function TEnd(event) {
                 if (event.propertyName === 'opacity') {
                     this.removeEventListener('transitionend', TEnd);
                     onRemoveEnd();
                 }
             });
-            // Fallback if transition doesn't fire reliably
             setTimeout(onRemoveEnd, 160); 
         });
     }
@@ -133,7 +126,7 @@ class Tile {
             }
 
             const eventName = 'transitionend';
-            const timeoutDuration = 120; // Slightly more than 0.1s transform transition
+            const timeoutDuration = 120; 
             
             let resolved = false;
             const resolveOnce = (event) => {
@@ -152,13 +145,13 @@ class Tile {
         });
     }
 
-    // merged() method is no longer needed for a specific merge animation on the kept tile
-    // merged() {
-    //     this.tileElement.classList.add('tile-merged'); 
-    //     this.tileElement.addEventListener('animationend', () => {
-    //         this.tileElement.classList.remove('tile-merged');
-    //     }, { once: true });
-    // }
+    // This method adds a class to trigger the number pop animation
+    triggerMergeAnimation() {
+        this.numberDisplay.classList.add('number-pop-effect'); 
+        this.numberDisplay.addEventListener('animationend', () => {
+            this.numberDisplay.classList.remove('number-pop-effect');
+        }, { once: true });
+    }
 
     async moveTo(row, col, gridSize, gridElement) {
         this.x = row; 
