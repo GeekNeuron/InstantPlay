@@ -1,38 +1,60 @@
-/* General Styles */
+/* General Styles - Color Variable Definitions */
 :root {
-    --primary-bg: #f0f2f5;
-    --secondary-bg: #ffffff;
-    --text-color: #333333;
-    --text-muted-color: #555555;
-    --accent-color: #3498db;
-    --accent-hover-color: #2980b9;
-    --header-bg: #2c3e50;
-    --header-text-color: #ecf0f1;
-    --card-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    --card-hover-shadow: 0 6px 12px rgba(0,0,0,0.15);
-    --card-selected-shadow: 0 8px 16px rgba(0,0,0,0.2); /* New shadow for selected card */
-    --border-color: #e0e0e0;
-    --button-bg: var(--accent-color);
-    --button-text-color: #ffffff;
-    --star-color: #f1c40f; 
+    /* Light Theme (Default) */
+    --primary-bg: #f4f7f9;       /* پس‌زمینه اصلی صفحه - خاکستری خیلی روشن */
+    --secondary-bg: #ffffff;     /* پس‌زمینه عناصر مانند کارت‌ها، تولبار - سفید */
+    --text-color: #212529;       /* رنگ متن اصلی - تیره */
+    --text-muted-color: #6c757d; /* رنگ متن فرعی/کمرنگ - خاکستری متوسط */
+    
+    --header-bg: #343a40;        /* پس‌زمینه هدر - خاکستری تیره */
+    --header-text-color: #f8f9fa;/* رنگ متن هدر - روشن */
+    
+    --accent-color: #007bff;     /* رنگ تاکید اصلی (مثلاً برای دکمه‌ها) - آبی */
+    --accent-hover-color: #0056b3;/* رنگ تاکید هنگام هاور */
+    
+    --border-color: #dee2e6;     /* رنگ بوردرها - خاکستری روشن */
+    
+    --star-color: #f1c40f;       /* رنگ ستاره علاقه‌مندی‌ها */
     --icon-color: var(--text-muted-color);
-    --toast-success-bg: #2ecc71;
-    --toast-error-bg: #e74c3c;
-    --toast-info-bg: #3498db;
+
+    --toast-success-bg: #28a745;
+    --toast-error-bg: #dc3545;
+    --toast-info-bg: #17a2b8;
     --toast-text-color: #ffffff;
-    --thumbnail-bg: #e9ecef; /* Background for thumbnail container */
+
+    --thumbnail-bg: #e9ecef;     /* پس‌زمینه برای تصاویر بندانگشتی قبل از بارگذاری */
 }
 
+body.dark-mode {
+    /* Dark Theme */
+    --primary-bg: #1c1c1e;       /* پس‌زمینه اصلی صفحه - خاکستری بسیار تیره (نزدیک به مشکی) */
+    --secondary-bg: #2c2c2e;     /* پس‌زمینه عناصر - خاکستری تیره */
+    --text-color: #f8f9fa;       /* رنگ متن اصلی - روشن */
+    --text-muted-color: #adb5bd; /* رنگ متن فرعی/کمرنگ - خاکستری روشن */
+
+    --header-bg: #212529;        /* پس‌زمینه هدر - تیره‌تر از خاکستری تیره اصلی */
+    /* --header-text-color remains light */
+    
+    --accent-color: #007bff;     /* می‌توان این را هم برای حالت تاریک تغییر داد، مثلا به آبی روشن‌تر */
+    --accent-hover-color: #0056b3;
+
+    --border-color: #495057;     /* رنگ بوردرها - خاکستری تیره‌تر */
+    --icon-color: var(--text-muted-color);
+    --thumbnail-bg: #3a3f44;
+}
+
+/* Basic application of theme variables */
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     line-height: 1.6; 
     margin: 0;
     padding: 0;
-    background-color: var(--primary-bg);
-    color: var(--text-color);
+    background-color: var(--primary-bg); /* <--- اعمال پس‌زمینه اصلی صفحه */
+    color: var(--text-color);           /* <--- اعمال رنگ متن اصلی صفحه */
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* Apply Vazirmatn when the page is in Persian (RTL) */
 html[dir="rtl"] body {
     font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     line-height: 1.75; 
@@ -44,143 +66,47 @@ html[dir="rtl"] textarea {
     font-family: 'Vazirmatn', sans-serif;
 }
 
-body.dark-mode {
-    --primary-bg: #1a1a1a;
-    --secondary-bg: #2c2c2c;
-    --text-color: #e0e0e0;
-    --text-muted-color: #aaaaaa;
-    --header-bg: #1f2937;
-    --card-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    --card-hover-shadow: 0 6px 12px rgba(0,0,0,0.4);
-    --card-selected-shadow: 0 8px 16px rgba(0,0,0,0.5);
-    --border-color: #444444;
-    --icon-color: var(--text-muted-color);
-    --thumbnail-bg: #3a3f44;
+body.modal-open {
+    overflow: hidden; 
 }
 
-.container { /* ... (Keep as before) ... */ }
-.sr-only { /* ... (Keep as before) ... */ }
-header { /* ... (Keep as before) ... */ }
-.settings-controls { /* ... (Keep as before) ... */ }
-.toolbar { /* ... (Keep as before) ... */ }
-.search-container { /* ... (Keep as before) ... */ }
-#search-input { /* ... (Keep as before) ... */ }
-.search-icon { /* ... (Keep as before) ... */ }
-.filter-sort-controls { /* ... (Keep as before) ... */ }
-.filter-sort-controls select { /* ... (Keep as before) ... */ }
-.backup-restore-controls { /* ... (Keep as before) ... */ }
-.backup-restore-controls button, .import-button-label { /* ... (Keep as before) ... */ }
-main { /* ... (Keep as before) ... */ }
-main h2 { /* ... (Keep as before) ... */ }
-#all_games_main_header { /* ... (Keep as before) ... */ }
-.favorites-section h2 { /* ... (Keep as before) ... */ }
-.favorites-separator { /* ... (Keep as before) ... */ }
-.game-grid { /* ... (Keep as before) ... */ }
-
-.game-card { 
-    background-color: var(--secondary-bg); 
-    border-radius: 8px; 
-    box-shadow: var(--card-shadow); 
-    overflow: visible; /* Allow shadow and button to be seen */
-    display: flex; 
-    flex-direction: column; 
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; 
-    position: relative; 
-    cursor: pointer; /* Indicate the card is clickable */
-}
-.game-card:hover { 
-    transform: translateY(-5px) scale(1.01); /* Slight scale on hover */
-    box-shadow: var(--card-hover-shadow); 
-}
-.game-card.selected {
-    transform: translateY(-5px) scale(1.03); /* Larger scale for selected */
-    box-shadow: var(--card-selected-shadow); /* More prominent shadow */
-    border: 2px solid var(--accent-color); /* Highlight border */
+/* Ensure main structural elements use the theme variables correctly */
+header {
+    background-color: var(--header-bg);
+    color: var(--header-text-color);
+    /* ... other header styles ... */
 }
 
-.game-card-inner-content { /* New wrapper for content that is not the play button */
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
+.toolbar {
+    background-color: var(--secondary-bg);
+    /* ... other toolbar styles ... */
 }
 
-.thumbnail-container { /* New container for thumbnail for better object-fit control */
-    width: 100%;
-    height: 180px;
-    background-color: var(--thumbnail-bg); /* Background for letterboxing */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden; /* Clip if image is too large for contain */
-    border-bottom: 1px solid var(--border-color);
-}
-.game-card .thumbnail { 
-    width: 100%; 
-    height: 100%; /* Fill container */
-    object-fit: contain; /* Display full image, letterbox if needed */
-    /* background-color removed, handled by thumbnail-container */
-}
-.game-card-content { /* ... (Keep as before) ... */ }
-.game-card-content h3 { /* ... (Keep as before) ... */ }
-.game-card-content p.description { /* ... (Keep as before) ... */ }
-.favorite-button { /* ... (Keep as before) ... */ }
-#no-games-found { /* ... (Keep as before) ... */ }
-footer { /* ... (Keep as before) ... */ }
-
-/* Let's Play Button (New) */
-.lets-play-button-container {
-    text-align: center;
-    padding: 0.5rem 1rem 1rem 1rem; /* Padding around the button */
-}
-.lets-play-button {
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    background-color: var(--accent-color);
-    color: var(--button-text-color);
-    text-decoration: none;
-    border-radius: 5px;
-    font-weight: bold;
-    transition: background-color 0.2s ease, transform 0.1s ease;
-    border: none;
-    cursor: pointer;
-}
-.lets-play-button:hover {
-    background-color: var(--accent-hover-color);
-    transform: scale(1.05);
-}
-.lets-play-button:active {
-    transform: scale(0.98);
+.game-card {
+    background-color: var(--secondary-bg);
+    /* ... other card styles ... */
 }
 
-
-/* Loading Spinner */ /* ... (Keep as before) ... */
-/* Toast Notifications */ /* ... (Keep as before) ... */
-/* Modal (REMOVED as per request for game details, but keep structure if used for other things) */
-/* If modal is completely unused, you can remove these styles */
-.modal { display: none !important; /* Hide modal if not used for game details */ }
-
-/* Dark Mode Toggle Icon Styling */ /* ... (Keep as before) ... */
-/* Media Queries for Mobile Refinements */ /* ... (Keep as before, but test with new card interaction) ... */
-
-/* Adjustments in Media Queries for new interaction */
-@media (max-width: 768px) {
-    /* ... (previous mobile styles) ... */
-    .game-card.selected {
-        transform: translateY(-3px) scale(1.02); /* Slightly less pronounced on mobile */
-    }
-    .lets-play-button {
-        padding: 0.6rem 1.2rem;
-        font-size: 0.9rem;
-    }
+.game-card-content h3 {
+    color: var(--text-color);
+    /* ... */
 }
 
-@media (max-width: 480px) {
-    /* ... (previous mobile styles) ... */
-    .game-card .thumbnail-container { /* Renamed from .thumbnail */
-        height: 160px; 
-    }
-    .lets-play-button {
-        width: calc(100% - 2rem); /* Make button full width within its container */
-        margin: 0.5rem auto 0 auto;
-    }
+.game-card-content p.description {
+    color: var(--text-muted-color);
+    /* ... */
 }
+
+/* Keep the rest of your style.css as it was, including:
+   .container, .sr-only, .settings-controls, #search-input, .search-icon,
+   .filter-sort-controls, .backup-restore-controls,
+   main h2, #all_games_main_header, .favorites-section h2, .favorites-separator,
+   .game-grid structure, .game-card specific styles (border, shadow, etc.),
+   .favorite-button, #no-games-found, footer,
+   .loading-overlay, .spinner, @keyframes spin,
+   .toast-container, .toast, .toast-close-button,
+   #dark-mode-toggle icons,
+   and ALL Media Queries.
+   The changes above are focused on the CORE THEME COLOR definitions and their
+   direct application to the main page areas.
+*/
