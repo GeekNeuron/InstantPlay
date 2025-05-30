@@ -1,0 +1,223 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #faf8ef;
+    color: #776e65;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    text-align: center;
+}
+
+.container {
+    background-color: #bbada0;
+    padding: 15px; /* Slightly reduced padding */
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+header {
+    margin-bottom: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column; /* Stack title, scores, button vertically */
+    align-items: center;
+}
+
+header h1 {
+    font-size: 3em; /* Adjust as needed */
+    margin: 0.2em 0;
+    font-weight: bold;
+}
+
+.scores-container {
+    display: flex;
+    justify-content: center; /* Center score boxes */
+    gap: 10px; /* Space between score boxes */
+    margin-bottom: 15px;
+}
+
+.score-box {
+    background-color: #8f7a66;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 3px;
+    font-size: 1.1em; /* Adjust as needed */
+    min-width: 80px; /* Ensure score boxes have a decent width */
+    text-align: center;
+}
+
+#new-game-button {
+    background-color: #8f7a66;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 3px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#new-game-button:hover {
+    background-color: #776e65;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 10px;
+    width: 320px; /* Adjusted for a more compact look, like some Minesweeper UIs or isega.ro */
+    height: 320px;
+    background-color: #cdc1b4; /* Background for the grid gaps */
+    border: 10px solid #bbada0; /* Border around the grid cells container */
+    border-radius: 6px;
+    position: relative; /* For absolute positioning of tiles */
+}
+
+.grid-cell { /* The empty cells behind the tiles */
+    background-color: rgba(238, 228, 218, 0.35);
+    border-radius: 3px;
+}
+
+.tile {
+    position: absolute; /* For movement animation */
+    /* Tile size calculated dynamically in JS or based on grid-container size minus gaps */
+    width: calc((100% - (10px * 5)) / 4 + 2.5px); /* Adjust based on grid-container width & gap */
+    height: calc((100% - (10px * 5)) / 4 + 2.5px);
+    background-color: #eee4da;
+    border-radius: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.8em; /* Initial font size */
+    font-weight: bold;
+    transition: transform 0.1s ease-in-out, background-color 0.1s ease-in-out, opacity 0.1s;
+    animation: appear 0.2s ease-in-out;
+    box-sizing: border-box; /* Ensures padding and border are included in the element's total width and height */
+}
+
+
+@keyframes appear {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Tile value-specific styles */
+.tile[data-value="2"]    { background-color: #eee4da; color: #776e65; }
+.tile[data-value="4"]    { background-color: #ede0c8; color: #776e65; }
+.tile[data-value="8"]    { background-color: #f2b179; color: #f9f6f2; }
+.tile[data-value="16"]   { background-color: #f59563; color: #f9f6f2; }
+.tile[data-value="32"]   { background-color: #f67c5f; color: #f9f6f2; }
+.tile[data-value="64"]   { background-color: #f65e3b; color: #f9f6f2; }
+.tile[data-value="128"]  { background-color: #edcf72; color: #f9f6f2; font-size: 1.6em; }
+.tile[data-value="256"]  { background-color: #edcc61; color: #f9f6f2; font-size: 1.6em; }
+.tile[data-value="512"]  { background-color: #edc850; color: #f9f6f2; font-size: 1.6em; }
+.tile[data-value="1024"] { background-color: #edc53f; color: #f9f6f2; font-size: 1.3em; }
+.tile[data-value="2048"] { background-color: #edc22e; color: #f9f6f2; font-size: 1.3em; }
+.tile[data-value="4096"] { background-color: #3c3a32; color: #f9f6f2; font-size: 1.3em; }
+/* Add more styles for higher values if needed */
+
+.tile.tile-merged {
+    animation: pop 0.2s ease-in-out;
+}
+
+@keyframes pop {
+    0% { transform: scale(1) }
+    50% { transform: scale(1.2) }
+    100% { transform: scale(1) }
+}
+
+.modal {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    padding: 25px 30px;
+    border-radius: 6px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    color: #776e65;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+}
+
+.modal-content button {
+    background-color: #8f7a66;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 3px;
+    font-size: 1.1em;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background-color 0.2s;
+}
+
+.modal-content button:hover {
+    background-color: #776e65;
+}
+
+footer {
+    margin-top: 25px;
+    font-size: 0.9em;
+    color: #776e65;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 480px) {
+    .container {
+        padding: 10px;
+    }
+    header h1 {
+        font-size: 2.5em;
+    }
+    .scores-container {
+        flex-direction: column; /* Stack score boxes on small screens */
+        gap: 8px;
+    }
+    .score-box {
+        font-size: 1em;
+        padding: 6px 12px;
+        min-width: 70px;
+    }
+    .grid-container {
+        width: 90vw; /* Make grid responsive to viewport width */
+        height: 90vw; /* Maintain square aspect ratio */
+        gap: 8px;
+        border-width: 8px;
+    }
+    /* Tile size will adjust based on grid-container, but font might need tweaking */
+    .tile {
+        font-size: 1.5em; /* Base font size for tiles on small screens */
+    }
+    .tile[data-value="128"],
+    .tile[data-value="256"],
+    .tile[data-value="512"] { font-size: 1.3em; }
+
+    .tile[data-value="1024"],
+    .tile[data-value="2048"],
+    .tile[data-value="4096"] { font-size: 1.1em; }
+}
