@@ -1,30 +1,26 @@
 /* General Styles */
 :root {
-    --primary-bg: #f0f2f5;
-    --secondary-bg: #ffffff;
-    --text-color: #333333;
-    --text-muted-color: #555555;
-    --accent-color: #3498db;
-    --accent-hover-color: #2980b9;
-    --header-bg: #2c3e50;       /* Dark blue-grey */
-    --header-text-color: #ecf0f1;
-    --card-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    --card-hover-shadow: 0 6px 12px rgba(0,0,0,0.15);
-    --card-selected-shadow: 0 8px 16px rgba(0,0,0,0.2); /* Shadow for selected card (modal replacement) */
-    --border-color: #e0e0e0;
-    --button-bg: var(--accent-color);
-    --button-text-color: #ffffff;
-    --star-color: #f1c40f;
+    /* Light Theme (Default) - This section remains unchanged */
+    --primary-bg: #f4f7f9;       
+    --secondary-bg: #ffffff;     
+    --text-color: #212529;       
+    --text-muted-color: #6c757d; 
+    --header-bg: #343a40;        
+    --header-text-color: #f8f9fa;
+    --accent-color: #007bff;     
+    --accent-hover-color: #0056b3;
+    --border-color: #dee2e6;     
+    --star-color: #f1c40f;       
     --icon-color: var(--text-muted-color);
-    --toast-success-bg: #2ecc71;
-    --toast-error-bg: #e74c3c;
-    --toast-info-bg: #3498db;
+    --toast-success-bg: #28a745;
+    --toast-error-bg: #dc3545;
+    --toast-info-bg: #17a2b8;
     --toast-text-color: #ffffff;
-    --thumbnail-bg: #e9ecef;     /* Background for thumbnail container */
+    --thumbnail-bg: #e9ecef;     
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; /* Default LTR font stack */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     line-height: 1.6; 
     margin: 0;
     padding: 0;
@@ -33,7 +29,6 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Apply Vazirmatn when the page is in Persian (RTL) */
 html[dir="rtl"] body {
     font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     line-height: 1.75; 
@@ -45,20 +40,38 @@ html[dir="rtl"] textarea {
     font-family: 'Vazirmatn', sans-serif;
 }
 
+/* === Dark Blue Theme === */
 body.dark-mode {
-    --primary-bg: #1a1a1a;
-    --secondary-bg: #2c2c2c;
-    --text-color: #e0e0e0;
-    --text-muted-color: #aaaaaa;
-    --header-bg: #1f2937;      /* Darker blue-grey */
-    --card-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    --card-hover-shadow: 0 6px 12px rgba(0,0,0,0.4);
-    --card-selected-shadow: 0 8px 16px rgba(0,0,0,0.5); /* Shadow for selected card (modal replacement) */
-    --border-color: #444444;
-    --icon-color: var(--text-muted-color);
-    --thumbnail-bg: #3a3f44;
+    --primary-bg: #0a192f;       /* پس‌زمینه اصلی صفحه - آبی نفتی بسیار تیره */
+    --secondary-bg: #172a45;     /* پس‌زمینه عناصر (کارت‌ها، تولبار) - آبی نفتی کمی روشن‌تر */
+    --text-color: #ccd6f6;       /* رنگ متن اصلی - آبی بسیار روشن/خاکستری روشن */
+    --text-muted-color: #8892b0; /* رنگ متن فرعی - آبی خاکستری متوسط */
+
+    --header-bg: #071021;        /* پس‌زمینه هدر - آبی نفتی تیره‌تر */
+    --header-text-color: #e6f1ff;/* رنگ متن هدر - تقریبا سفید */
+    
+    --accent-color: #64ffda;     /* رنگ تاکید اصلی - یک سبزآبی روشن برای کنتراست با آبی تیره */
+    --accent-hover-color: #52d1b8;/* رنگ تاکید هنگام هاور */
+    
+    --border-color: #233554;     /* رنگ بوردرها - آبی نفتی برای جداسازی */
+    
+    --star-color: #f1c40f;       /* رنگ ستاره علاقه‌مندی‌ها (طلایی همچنان مناسب است) */
+    --icon-color: var(--text-muted-color); /* آیکون‌ها از رنگ متن فرعی استفاده می‌کنند */
+
+    --toast-success-bg: #1e6a40; /* سبز تیره‌تر برای Toast موفقیت */
+    --toast-error-bg: #a32a33;   /* قرمز تیره‌تر برای Toast خطا */
+    --toast-info-bg: #1d588f;    /* آبی تیره‌تر برای Toast اطلاعات */
+    --toast-text-color: #e6f1ff; /* متن روشن برای Toast ها */
+
+    --thumbnail-bg: #102a43;     /* پس‌زمینه برای تصاویر بندانگشتی - آبی نفتی متوسط */
+
+    /* Shadow colors can also be adjusted if needed, e.g., using hsla with blue tones */
+    --card-shadow: 0 4px 8px rgba(2, 12, 27, 0.7); /* سایه تیره‌تر با کمی رنگ آبی */
+    --card-hover-shadow: 0 6px 12px rgba(2, 12, 27, 0.8);
+    --card-selected-shadow: 0 8px 16px rgba(2, 12, 27, 0.9);
 }
-body.modal-open { /* This class was for modal, but the request was to remove modal for game details. Keeping it in case modal is used for something else or if structure is reverted fully. */
+
+body.modal-open { 
     overflow: hidden; 
 }
 
@@ -85,11 +98,16 @@ header {
     background-color: var(--header-bg);
     color: var(--header-text-color);
     padding: 1rem 0;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* This shadow might need adjustment for dark blue */
     position: sticky;
     top: 0;
     z-index: 1000;
 }
+/* Example of adjusting shadow for dark theme */
+body.dark-mode header {
+    box-shadow: 0 2px 4px rgba(2, 12, 27, 0.5);
+}
+
 
 header .container {
     display: flex;
@@ -115,15 +133,15 @@ header h1 {
     padding: 0.5rem 0.8rem;
     border-radius: 5px;
     border: 1px solid var(--border-color);
-    background-color: var(--secondary-bg);
-    color: var(--text-color);
+    background-color: var(--secondary-bg); /* Will use dark blue in dark mode */
+    color: var(--text-color); /* Will use light text in dark mode */
     cursor: pointer;
     transition: background-color 0.2s ease, border-color 0.2s ease;
 }
-.settings-controls button {
+.settings-controls button { /* Specific for dark mode toggle button style */
      background-color: transparent;
      border: none;
-     color: var(--header-text-color);
+     color: var(--header-text-color); /* Uses header text color */
      font-size: 1rem;
 }
 .settings-controls button .fas {
@@ -135,7 +153,7 @@ html[dir="rtl"] .settings-controls button .fas {
 }
 .settings-controls select:hover,
 .settings-controls button:hover {
-    border-color: var(--accent-color);
+    border-color: var(--accent-color); /* Accent color for hover border */
 }
 
 .toolbar {
@@ -165,7 +183,7 @@ html[dir="rtl"] .settings-controls button .fas {
     border: 1px solid var(--border-color);
     border-radius: 5px;
     font-size: 1rem;
-    background-color: var(--primary-bg);
+    background-color: var(--primary-bg); /* Uses main dark blue in dark mode */
     color: var(--text-color);
 }
 
@@ -195,7 +213,7 @@ html[dir="rtl"] #search-input {
      border: 1px solid var(--border-color);
      border-radius: 5px;
      font-size: 0.9rem;
-     background-color: var(--primary-bg);
+     background-color: var(--primary-bg); /* Uses main dark blue in dark mode */
      color: var(--text-color);
      cursor: pointer;
      flex-grow: 1; 
@@ -211,8 +229,8 @@ html[dir="rtl"] #search-input {
 .backup-restore-controls button,
 .import-button-label {
     padding: 0.75rem 1rem;
-    background-color: var(--button-bg);
-    color: var(--button-text-color);
+    background-color: var(--button-bg); /* Uses accent color */
+    color: var(--button-text-color); /* Should be light for dark blue accent */
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -222,6 +240,12 @@ html[dir="rtl"] #search-input {
     text-align: center;
     white-space: nowrap; 
 }
+/* Adjust button text color for dark blue accent if needed */
+body.dark-mode .backup-restore-controls button,
+body.dark-mode .import-button-label {
+    color: #071021; /* Dark text for light accent color like #64ffda */
+}
+
 
 .backup-restore-controls button:hover,
 .import-button-label:hover {
@@ -235,7 +259,6 @@ main h2 { margin-top: 2rem; margin-bottom: 1.5rem; font-size: 1.8rem; color: var
 .favorites-separator { border: 0; height: 1px; background-color: var(--border-color); margin: 2rem auto; width: 80%; }
 .game-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
 
-/* Game Card styles from v4 (modal replacement interaction) */
 .game-card { 
     background-color: var(--secondary-bg); 
     border-radius: 8px; 
@@ -274,7 +297,7 @@ main h2 { margin-top: 2rem; margin-bottom: 1.5rem; font-size: 1.8rem; color: var
 .game-card .thumbnail { 
     width: 100%; 
     height: 100%; 
-    object-fit: contain; /* Ensure full image is visible (user request) */
+    object-fit: contain; 
 }
 .game-card-content { padding: 1rem; flex-grow: 1; display: flex; flex-direction: column; }
 .game-card-content h3 { margin-top: 0; margin-bottom: 0.5rem; font-size: 1.25rem; color: var(--text-color); }
@@ -284,7 +307,6 @@ html[dir="rtl"] .favorite-button { right: auto; left: 10px; }
 .favorite-button.is-favorite { color: var(--star-color); }
 .favorite-button:hover { transform: scale(1.2); }
 
-/* Let's Play Button (from v4 interaction) */
 .lets-play-button-container {
     text-align: center;
     padding: 0.5rem 1rem 1rem 1rem; 
@@ -292,7 +314,7 @@ html[dir="rtl"] .favorite-button { right: auto; left: 10px; }
 .lets-play-button {
     display: inline-block;
     padding: 0.75rem 1.5rem;
-    background-color: var(--accent-color); /* Uses accent color */
+    background-color: var(--accent-color); 
     color: var(--button-text-color);
     text-decoration: none;
     border-radius: 5px;
@@ -300,6 +322,9 @@ html[dir="rtl"] .favorite-button { right: auto; left: 10px; }
     transition: background-color 0.2s ease, transform 0.1s ease;
     border: none;
     cursor: pointer;
+}
+body.dark-mode .lets-play-button {
+    color: #071021; /* Dark text for light accent color like #64ffda */
 }
 .lets-play-button:hover {
     background-color: var(--accent-hover-color);
@@ -312,8 +337,9 @@ html[dir="rtl"] .favorite-button { right: auto; left: 10px; }
 #no-games-found { grid-column: 1 / -1; text-align: center; font-size: 1.2rem; color: var(--text-muted-color); padding: 2rem; }
 footer { background-color: var(--header-bg); color: var(--header-text-color); text-align: center; padding: 1.5rem 0; margin-top: 3rem; font-size: 0.9rem; }
 
-.loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 9999; }
-.spinner { border: 8px solid var(--primary-bg); border-top: 8px solid var(--accent-color); border-radius: 50%; width: 60px; height: 60px; animation: spin 1s linear infinite; }
+.loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); /* Darker overlay for dark blue theme */ display: flex; justify-content: center; align-items: center; z-index: 9999; }
+body.dark-mode .loading-overlay { background-color: rgba(2, 12, 27, 0.8); }
+.spinner { border: 8px solid var(--secondary-bg); /* Spinner border matches card bg */ border-top: 8px solid var(--accent-color); border-radius: 50%; width: 60px; height: 60px; animation: spin 1s linear infinite; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
 .toast-container { position: fixed; top: 80px; right: 20px; z-index: 1050; display: flex; flex-direction: column; gap: 10px; }
@@ -327,25 +353,15 @@ html[dir="rtl"] .toast { transform: translateX(-100%); padding-right: 15px; padd
 html[dir="rtl"] .toast-close-button { right: auto; left: 10px; }
 .toast-close-button:hover { opacity: 1; }
 
-/* Modal was removed for game details, this is a placeholder if it's reused. Otherwise, remove. */
+/* Modal was removed for game details */
 .modal { display: none !important; } 
-/* If you fully removed modal HTML and JS, these styles are not strictly needed */
-/* .modal.show { opacity: 1; pointer-events: auto; } */
-/* .modal-content { ... } */
-/* .modal.show .modal-content { transform: scale(1); } */
-/* .modal-close-button { ... } */
-/* .modal-img { ... } */
-/* #modal-title-content { ... } */
-/* .modal-genre { ... } */
-/* #modal-description-content { ... } */
-/* .modal-play-button { ... } */
 
 
 #dark-mode-toggle .fa-sun { display: none; }
 body.dark-mode #dark-mode-toggle .fa-moon { display: none; }
 body.dark-mode #dark-mode-toggle .fa-sun { display: inline-block; }
 
-/* --- Media Queries for Mobile Refinements (from version with mobile improvements) --- */
+/* --- Media Queries for Mobile Refinements --- */
 @media (max-width: 768px) {
     header .container {}
     header h1 { font-size: 1.6rem; }
@@ -361,9 +377,6 @@ body.dark-mode #dark-mode-toggle .fa-sun { display: inline-block; }
     .game-card-content p.description { font-size: 0.85rem; min-height: 40px; }
     .favorite-button { font-size: 1.6rem; top: 8px; right: 8px; }
     html[dir="rtl"] .favorite-button { right: auto; left: 8px; }
-    /* Modal styles for mobile (if modal was still in use) */
-    /* .modal-content { padding: 1.5rem; width: 95%; } */
-    /* .modal-img { max-height: 250px; } */
     .game-card.selected { transform: translateY(-3px) scale(1.02); }
     .lets-play-button { padding: 0.6rem 1.2rem; font-size: 0.9rem; }
 }
@@ -375,14 +388,9 @@ body.dark-mode #dark-mode-toggle .fa-sun { display: inline-block; }
     .settings-controls { justify-content: center; width: 100%; }
     #search-input, .filter-sort-controls select, .backup-restore-controls button, .import-button-label { font-size: 0.9rem; padding: 0.6rem 0.8rem; }
     .game-grid { grid-template-columns: 1fr; gap: 1rem; }
-    .thumbnail-container { height: 160px; } /* Adjusted from .game-card .thumbnail */
+    .thumbnail-container { height: 160px; } 
     .game-card-content h3 { font-size: 1.1rem; }
     .game-card-content p.description { min-height: auto; font-size: 0.8rem; }
-    /* Modal styles for very small mobile (if modal was still in use) */
-    /* .modal-content { padding: 1rem; } */
-    /* #modal-title-content { font-size: 1.2rem; } */
-    /* .modal-genre { font-size: 0.8rem; } */
-    /* #modal-description-content { font-size: 0.9rem; margin-bottom: 1.5rem; } */
     .lets-play-button { width: calc(100% - 2rem); margin: 0.5rem auto 0 auto; }
     .toast-container { width: calc(100% - 20px); right: 10px; left: 10px; top: 65px; align-items: center; }
     html[dir="rtl"] .toast-container {}
