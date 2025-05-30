@@ -33,7 +33,7 @@ class InputManager {
             }
 
             if (direction) {
-                event.preventDefault(); // Still good to prevent default for keyboard, e.g. arrow key scrolling
+                event.preventDefault(); 
                 this.game.move(direction);
             }
         };
@@ -44,20 +44,20 @@ class InputManager {
         let touchstartY = 0;
         let touchendX = 0;
         let touchendY = 0;
-        let touchstartTime = 0;
+        // let touchstartTime = 0; // Not strictly needed for this version of swipe logic
 
-        // Touch events will be on grid-container itself due to touch-action: none
+        // Attach touch listeners directly to the grid container
         const gameArea = document.querySelector('.grid-container'); 
 
         const touchstartHandler = (event) => {
-            // event.target.closest check is less critical if listener is on grid-container
-            // but good for robustness if listener was on body.
             if (this.game.isMoving || this.isSwiping) return;
 
             touchstartX = event.changedTouches[0].screenX;
             touchstartY = event.changedTouches[0].screenY;
-            touchstartTime = new Date().getTime();
+            // touchstartTime = new Date().getTime();
             this.isSwiping = true; 
+            // `touch-action: none` on .grid-container in CSS handles scroll prevention.
+            // No need for event.preventDefault() here if passive:true is used.
         };
 
         const touchendHandler = (event) => {
@@ -68,9 +68,7 @@ class InputManager {
 
             touchendX = event.changedTouches[0].screenX;
             touchendY = event.changedTouches[0].screenY;
-            // const touchendTime = new Date().getTime(); // Not used in this version
-            // const timeDiff = touchendTime - touchstartTime; // Not used in this version
-
+            
             handleSwipe();
         };
         
@@ -83,24 +81,21 @@ class InputManager {
         const handleSwipe = () => {
             const deltaX = touchendX - touchstartX;
             const deltaY = touchendY - touchstartY;
-            const swipeThreshold = 20; // Min distance for a swipe
+            const swipeThreshold = 20; 
             const absDeltaX = Math.abs(deltaX);
             const absDeltaY = Math.abs(deltaY);
 
             if (Math.max(absDeltaX, absDeltaY) < swipeThreshold) {
-                return; // Not a swipe or too short
+                return; 
             }
             
             let direction = null;
-            // Prioritize the direction with greater movement
             if (absDeltaX > absDeltaY) {
-                // More horizontal movement
-                if (absDeltaX > swipeThreshold) { // Check threshold for the dominant axis
+                if (absDeltaX > swipeThreshold) { 
                     direction = (deltaX > 0) ? "ArrowRight" : "ArrowLeft";
                 }
             } else {
-                // More vertical movement
-                if (absDeltaY > swipeThreshold) { // Check threshold for the dominant axis
+                if (absDeltaY > swipeThreshold) { 
                     direction = (deltaY > 0) ? "ArrowDown" : "ArrowUp";
                 }
             }
@@ -118,13 +113,11 @@ class InputManager {
             this.eventListeners.touchend = touchendHandler;
             this.eventListeners.touchcancel = touchcancelHandler;
 
-            // passive: true is fine here because touch-action: none on the element
-            // will handle the scroll prevention.
             gameArea.addEventListener('touchstart', touchstartHandler, { passive: true });
             gameArea.addEventListener('touchend', touchendHandler, { passive: true });
             gameArea.addEventListener('touchcancel', touchcancelHandler, { passive: true });
         } else {
-            console.error("Game area for touch input not found!");
+            console.error("Grid container for touch input not found!");
         }
     }
 
