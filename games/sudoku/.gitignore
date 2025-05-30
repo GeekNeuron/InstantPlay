@@ -1,0 +1,46 @@
+# Operating System files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IDE and editor specific files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Build output (if any, though not typical for this vanilla JS project)
+dist/
+build/
+out/
+
+# Log files
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Coverage output
+coverage/
+.nyc_output/
+
+# Environment variables file (if you were to use one, e.g., for API keys not relevant here)
+.env
+.env.*
+!.env.example
+
+
