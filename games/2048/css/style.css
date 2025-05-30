@@ -219,7 +219,7 @@ header h1 {
     height: var(--grid-side-length-desktop);
     background-color: var(--grid-bg);
     border-radius: var(--border-radius);
-    position: relative; /* Crucial for absolute positioning of tiles */
+    position: relative;
     transition: background-color 0.3s ease;
     padding: var(--gap-size);
     touch-action: none; 
@@ -233,22 +233,18 @@ header h1 {
 }
 
 .tile {
-    position: absolute; /* Tiles are positioned absolutely within .grid-container */
+    position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
     font-weight: bold;
     border-radius: calc(var(--border-radius) / 1.5);
-    /* Transition for smooth movement */
-    transition: transform 0.1s linear, /* Faster for direct movement */
+    transition: transform 0.1s linear,
                 background-color 0.1s ease-in-out, 
                 color 0.1s ease-in-out, 
                 opacity 0.1s ease-in-out;
-    /* 'appear' animation for new tiles */
     animation: appear 0.15s ease-out;
     user-select: none;
-    /* width and height are set by JS in tile.updateVisualPosition */
-    /* transform: translate(X,Y) is set by JS in tile.updateVisualPosition */
 }
 
 @keyframes appear {
@@ -262,15 +258,23 @@ header h1 {
     }
 }
 
-.tile.tile-merged {
-    /* 'pop' animation for merged tiles */
-    animation: pop 0.15s ease-out 0.05s forwards; /* Ensure it stays at the end state */
+/* Updated Merge Animation */
+@keyframes subtleMergeEffect {
+    0% {
+        transform: scale(1) translate(var(--translateX, 0px), var(--translateY, 0px));
+    }
+    50% {
+        transform: scale(1.1) translate(var(--translateX, 0px), var(--translateY, 0px)); /* Slightly larger */
+    }
+    100% {
+        transform: scale(1) translate(var(--translateX, 0px), var(--translateY, 0px));
+    }
 }
 
-@keyframes pop {
-    0% { transform: scale(1) translate(var(--translateX, 0px), var(--translateY, 0px)); }
-    50% { transform: scale(1.2) translate(var(--translateX, 0px), var(--translateY, 0px)); }
-    100% { transform: scale(1) translate(var(--translateX, 0px), var(--translateY, 0px)); }
+.tile.tile-merged {
+    animation: subtleMergeEffect 0.12s ease-in-out 0s forwards;
+    /* Ensure z-index is higher during merge to pop above other tiles if needed, though usually not an issue with absolute positioning */
+    /* z-index: 10;  *//* Optional: if visual overlap issues occur */
 }
 
 
