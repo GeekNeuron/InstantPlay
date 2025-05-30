@@ -9,28 +9,29 @@
 
 :root {
     /* Light Theme Variables (Inspired by 2048 Game by GeekNeuron) */
-    --bg-color-light: #faf8ef; /* Page background from 2048 */
-    --text-color-light: #776e65; /* General text color from 2048 */
-    --container-bg-light: #f4f7f6; /* Keep similar to previous, or #f2efe9 for closer match */
-    --container-border-light: #e0dad1; /* Softer border */
-    --header-text-light: #776e65; /* Sudoku Title color */
+    --bg-color-light: #faf8ef;
+    --text-color-light: #776e65;
+    --container-bg-light: #f4f7f6;
+    --container-border-light: #e0dad1;
+    --header-text-light: #776e65;
 
-    --cell-bg-light: #cdc1b4; /* Base cell color, similar to 2048 empty grid cell */
+    --cell-bg-light: #fff; /* Cells will have white background now */
     --cell-input-bg-light: #fff; /* Input field background inside cell */
-    --cell-border-light: #bbada0; /* Cell border, from 2048 grid */
-    --cell-readonly-bg-light: #eee4da; /* Readonly background, similar to 2048 tile '2' */
-    --cell-readonly-text-light: #776e65; /* Text on readonly cells */
-    --cell-selected-bg-light: #e8da77; /* A distinct yellow for selection */
-    --cell-highlight-bg-light: #f0e6c2; /* Softer highlight for row/col/box */
-    --cell-error-bg-light: #f8d7da;
-    --cell-error-text-light: #721c24;
-    --cell-error-border-light: #f5c6cb;
-    --grid-strong-border-light: #8f7a66; /* Stronger border for 3x3 boxes, from 2048 button */
+    --cell-border-light: #ded3c5; /* Lighter default cell border */
+    --cell-readonly-bg-light: #eee4da;
+    --cell-readonly-text-light: #776e65;
+    --cell-selected-bg-light: #e8da77;
+    --cell-highlight-bg-light: #f0e6c2;
+    --cell-error-bg-light: #f8d7da; /* Error background for cell itself */
+    --cell-error-text-light: #721c24; /* Error text color */
+    --input-error-border-light: #dc3545; /* Red border for input field on error */
 
-    --button-primary-bg-light: #8f7a66; /* "New Game" button bg from 2048 */
-    --button-primary-text-light: #f9f6f2; /* "New Game" button text from 2048 */
+    --grid-strong-border-light: #8f7a66; /* For 3x3 subgrids and main board border */
+
+    --button-primary-bg-light: #8f7a66;
+    --button-primary-text-light: #f9f6f2;
     --button-primary-hover-bg-light: #7c6856;
-    --button-secondary-bg-light: #bbada0; /* For "Reset", "Check" buttons */
+    --button-secondary-bg-light: #bbada0; /* For "Reset" button */
     --button-secondary-text-light: #f9f6f2;
     --button-secondary-hover-bg-light: #a89c8e;
 
@@ -38,7 +39,7 @@
     --select-border-light: #bbada0;
     --select-text-light: #776e65;
 
-    --theme-switcher-light: #776e65; /* Matches text color */
+    --theme-switcher-light: #776e65;
     --input-focus-border-light: #8f7a66;
 
     /* Dark Theme Variables (Kept as Dark Blue) */
@@ -48,16 +49,18 @@
     --container-border-dark: #243b53;
     --header-text-dark: #E0E0E0;
 
-    --cell-bg-dark: #1f3a5f;
+    --cell-bg-dark: #1f3a5f; /* Cells background in dark theme */
     --cell-input-bg-dark: #2a4f7c;
-    --cell-border-dark: #3A506B;
+    --cell-border-dark: #4a5f78; /* Lighter default cell border for dark */
     --cell-readonly-bg-dark: #2c4a6d;
     --cell-readonly-text-dark: #b0c4de;
     --cell-selected-bg-dark: #3498DB;
     --cell-highlight-bg-dark: #2c709e;
-    --cell-error-bg-dark: #721c24;
+    --cell-error-bg-dark: #4a2e33;  /* Error background for cell itself in dark */
     --cell-error-text-dark: #f8d7da;
-    --cell-error-border-dark: #f5c6cb;
+    --input-error-border-dark: #e74c3c; /* Red border for input field on error in dark */
+
+
     --grid-strong-border-dark: #bdc3c7;
 
     --button-primary-bg-dark: #3498DB;
@@ -76,7 +79,7 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Clear Sans', 'Helvetica Neue', Arial, sans-serif; /* Font from 2048 */
+    font-family: -apple-system, BlinkMacSystemFont, 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
     margin: 0;
     padding: 15px;
     display: flex;
@@ -117,17 +120,17 @@ body.dark-theme {
 }
 body.dark-theme #themeSwitcher {
     background-color: var(--theme-switcher-dark);
-    border-color: var(--theme-switcher-light); /* Or a dark theme border */
+    border-color: var(--theme-switcher-light);
 }
 
 .game-container {
     background-color: var(--container-bg-light);
     border: 1px solid var(--container-border-light);
     padding: 20px;
-    border-radius: 6px; /* 2048 uses less pronounced rounding */
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05); /* Softer shadow */
+    border-radius: 6px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     text-align: center;
-    max-width: 500px; /* Slightly smaller like 2048 container */
+    max-width: 500px;
     width: 100%;
     transition: background-color 0.3s ease, border-color 0.3s ease;
 }
@@ -140,7 +143,7 @@ body.dark-theme .game-container {
 .game-header h1 {
     margin-top: 0;
     margin-bottom: 15px;
-    font-size: 2.5em; /* Larger title like 2048 */
+    font-size: 2.5em;
     color: var(--header-text-light);
     font-weight: bold;
 }
@@ -150,7 +153,7 @@ body.dark-theme .game-header h1 {
 
 .header-controls {
     display: flex;
-    justify-content: space-between; /* Align items to sides */
+    justify-content: space-between;
     align-items: center;
     gap: 15px;
     margin-bottom: 20px;
@@ -170,18 +173,17 @@ body.dark-theme .game-header h1 {
     font-weight: 500;
     font-size: 0.9em;
 }
-.game-controls select, .btn { /* Base button and select styling */
+.game-controls select, .btn {
     padding: 10px 15px;
-    border-radius: 3px; /* 2048 style buttons */
-    font-size: 0.95em; /* Slightly larger like 2048 */
+    border-radius: 3px;
+    font-size: 0.95em;
     cursor: pointer;
-    font-weight: bold; /* 2048 buttons are bold */
+    font-weight: bold;
     transition: background-color 0.1s ease, opacity 0.1s ease, transform 0.1s ease;
-    border: none; /* 2048 buttons have no border */
+    border: none;
     line-height: 1.2;
 }
 
-/* Primary Button (New Game) */
 .btn.btn-primary {
     background-color: var(--button-primary-bg-light);
     color: var(--button-primary-text-light);
@@ -198,70 +200,51 @@ body.dark-theme .btn.btn-primary:hover {
     background-color: var(--button-primary-hover-bg-dark);
 }
 
-/* Secondary Buttons (Reset, Check Solution) */
-.btn.btn-secondary {
-    background-color: var(--button-secondary-bg-light);
-    color: var(--button-secondary-text-light);
-}
-.btn.btn-secondary:hover {
-    background-color: var(--button-secondary-hover-bg-light);
-    opacity: 0.9;
-}
-/* General reset also uses secondary style for consistency if not primary */
-#resetBtn {
+#resetBtn { /* Reset button uses secondary style */
     background-color: var(--button-secondary-bg-light);
     color: var(--button-secondary-text-light);
 }
 #resetBtn:hover {
      background-color: var(--button-secondary-hover-bg-light);
 }
-
-body.dark-theme .btn.btn-secondary,
 body.dark-theme #resetBtn {
     background-color: var(--button-secondary-bg-dark);
     color: var(--button-secondary-text-dark);
 }
-body.dark-theme .btn.btn-secondary:hover,
 body.dark-theme #resetBtn:hover {
     background-color: var(--button-secondary-hover-bg-dark);
 }
 
-
-.game-controls select, #difficultySelect { /* Select specific styling */
+#difficultySelect {
     background-color: var(--select-bg-light);
     color: var(--select-text-light);
     border: 1px solid var(--select-border-light);
-    padding: 9px 12px; /* Adjust padding to align height with buttons */
+    padding: 9px 12px;
     border-radius: 3px;
-    font-weight: normal; /* Selects usually not bold */
+    font-weight: normal;
 }
-body.dark-theme .game-controls select, 
 body.dark-theme #difficultySelect {
     background-color: var(--select-bg-dark);
     color: var(--select-text-dark);
     border-color: var(--select-border-dark);
 }
 
-
 .sudoku-board {
     display: grid;
-    grid-template-columns: repeat(9, minmax(30px, 1fr));
-    grid-template-rows: repeat(9, minmax(30px, 1fr));
+    grid-template-columns: repeat(9, 1fr); /* Simpler repeat */
+    grid-template-rows: repeat(9, 1fr);    /* Simpler repeat */
     width: 100%;
     max-width: 450px;
     aspect-ratio: 1 / 1;
-    margin: 0 auto 15px auto; /* Reduced margin bottom */
-    border: 3px solid var(--grid-strong-border-light);
-    border-radius: 6px; /* Match container rounding */
-    overflow: hidden;
-    background-color: var(--cell-border-light); /* Grid lines color from cell border */
-    gap: 2px; /* Creates grid lines with background color */
-    padding: 2px; /* Padding to show the background as grid lines */
-    transition: border-color 0.3s ease, background-color 0.3s ease;
+    margin: 0 auto 20px auto; /* Standard margin */
+    border: 3px solid var(--grid-strong-border-light); /* Main outer border */
+    border-radius: 6px;
+    overflow: hidden; /* Important for rounded corners with cell borders */
+    /* Removed gap and padding for direct cell borders */
+    transition: border-color 0.3s ease;
 }
 body.dark-theme .sudoku-board {
     border-color: var(--grid-strong-border-dark);
-    background-color: var(--cell-border-dark);
 }
 
 .cell {
@@ -269,29 +252,38 @@ body.dark-theme .sudoku-board {
     justify-content: center;
     align-items: center;
     font-size: clamp(0.9em, 4vw, 1.6em);
-    font-weight: bold; /* Numbers in Sudoku are usually bold */
+    font-weight: bold;
     background-color: var(--cell-bg-light);
-    color: var(--text-color-light); /* Default text color for user input */
-    border-radius: 3px; /* Consistent rounding */
+    color: var(--text-color-light);
+    border-radius: 0; /* Cells are square, rounding is on the main board */
     cursor: pointer;
-    transition: background-color 0.15s ease, color 0.15s ease;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
     position: relative;
     user-select: none;
-    /* No margin/border on cell itself if using grid gap */
+    /* Default thin border for all cells */
+    border: 0.5px solid var(--cell-border-light); /* Very thin default border */
 }
 body.dark-theme .cell {
     background-color: var(--cell-bg-dark);
     color: var(--text-color-dark);
+    border-color: var(--cell-border-dark);
 }
 
-/* Thick borders via pseudo-elements or by adding margin to cells in JS (JS class method is better) */
+/* Prominent borders for 3x3 subgrids */
 .cell.border-right-strong {
-    /* If using grid gap, this might need adjustment or be handled by specific grid tracks */
+    border-right-width: 2px; /* Thicker than default */
+    border-right-color: var(--grid-strong-border-light);
 }
 .cell.border-bottom-strong {
-    /* Same as above */
+    border-bottom-width: 2px; /* Thicker than default */
+    border-bottom-color: var(--grid-strong-border-light);
 }
-
+body.dark-theme .cell.border-right-strong {
+    border-right-color: var(--grid-strong-border-dark);
+}
+body.dark-theme .cell.border-bottom-strong {
+    border-bottom-color: var(--grid-strong-border-dark);
+}
 
 .cell input {
     width: 100%;
@@ -301,10 +293,10 @@ body.dark-theme .cell {
     outline: none;
     font-size: inherit;
     font-weight: inherit;
-    background-color: var(--cell-input-bg-light); /* Separate BG for input area */
+    background-color: var(--cell-input-bg-light);
     color: inherit;
     padding: 0;
-    border-radius: inherit; /* Match cell rounding */
+    border-radius: inherit;
     caret-color: var(--text-color-light);
 }
 body.dark-theme .cell input {
@@ -312,16 +304,15 @@ body.dark-theme .cell input {
     caret-color: var(--text-color-dark);
 }
 .cell input:focus {
-    box-shadow: 0 0 0 2px var(--input-focus-border-light) inset; /* Inset focus ring */
+    box-shadow: 0 0 0 2px var(--input-focus-border-light) inset;
 }
 body.dark-theme .cell input:focus {
     box-shadow: 0 0 0 2px var(--input-focus-border-dark) inset;
 }
 
-
 .cell.readonly {
     background-color: var(--cell-readonly-bg-light);
-    color: var(--cell-readonly-text-light); /* Specific color for given numbers */
+    color: var(--cell-readonly-text-light);
     cursor: default;
 }
 body.dark-theme .cell.readonly {
@@ -331,95 +322,70 @@ body.dark-theme .cell.readonly {
 
 .cell.selected {
     background-color: var(--cell-selected-bg-light) !important;
-    /* Optional: add a border or stronger shadow */
+}
+.cell.selected input { /* Ensure input bg matches selected cell bg if it's an input cell */
+    background-color: var(--cell-selected-bg-light) !important;
 }
 body.dark-theme .cell.selected {
     background-color: var(--cell-selected-bg-dark) !important;
 }
+body.dark-theme .cell.selected input {
+    background-color: var(--cell-selected-bg-dark) !important;
+}
+
 
 .cell.highlight {
+    background-color: var(--cell-highlight-bg-light) !important;
+}
+.cell.highlight input { /* Ensure input bg matches highlighted cell bg */
     background-color: var(--cell-highlight-bg-light) !important;
 }
 body.dark-theme .cell.highlight {
     background-color: var(--cell-highlight-bg-dark) !important;
 }
+body.dark-theme .cell.highlight input {
+    background-color: var(--cell-highlight-bg-dark) !important;
+}
 
 
-.cell.error { /* Error style for user-inputted numbers */
-    background-color: var(--cell-input-bg-light) !important; /* Keep input area background */
-    color: var(--cell-error-text-light) !important; /* Error text color */
-    /* Add a visual cue like a red border to the input or a small icon */
-    position: relative; /* For pseudo-elements if needed */
+.cell.error {
+    background-color: var(--cell-error-bg-light) !important; /* Cell background for error */
+    color: var(--cell-error-text-light) !important;
     animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
 }
-.cell.error input { /* If input exists in error cell */
-    box-shadow: 0 0 0 2px var(--cell-error-text-light) inset !important;
+.cell.error input { /* Input field specific error indication */
+    background-color: var(--cell-error-bg-light) !important; /* Match cell error bg */
+    color: var(--cell-error-text-light) !important;
+    box-shadow: 0 0 0 2px var(--input-error-border-light) inset !important; /* Red border for input */
 }
 body.dark-theme .cell.error {
-    background-color: var(--cell-input-bg-dark) !important;
+    background-color: var(--cell-error-bg-dark) !important;
     color: var(--cell-error-text-dark) !important;
 }
 body.dark-theme .cell.error input {
-    box-shadow: 0 0 0 2px var(--cell-error-text-dark) inset !important;
+    background-color: var(--cell-error-bg-dark) !important;
+    color: var(--cell-error-text-dark) !important;
+    box-shadow: 0 0 0 2px var(--input-error-border-dark) inset !important;
 }
 
-
-@keyframes shake { /* Keep shake animation */
+@keyframes shake {
   10%, 90% { transform: translateX(-1px); }
   20%, 80% { transform: translateX(2px); }
   30%, 50%, 70% { transform: translateX(-3px); }
   40%, 60% { transform: translateX(3px); }
 }
 
-.below-board-controls {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.number-palette {
-    display: flex;
-    justify-content: center;
-    gap: 5px;
-    margin-bottom: 10px; /* Space before Check Solution button */
-    flex-wrap: wrap;
-}
-.number-palette button {
-    width: 38px; /* Slightly adjusted */
-    height: 38px;
-    font-size: 1.1em;
-    font-weight: bold;
-    border-radius: 3px;
-    border: 1px solid var(--select-border-light); /* Consistent border */
-    background-color: var(--cell-input-bg-light); /* Lighter than main buttons */
-    color: var(--text-color-light);
-    cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.1s ease;
-}
-body.dark-theme .number-palette button {
-    border-color: var(--select-border-dark);
-    background-color: var(--cell-input-bg-dark);
-    color: var(--text-color-dark);
-}
-.number-palette button:hover {
-    background-color: var(--cell-highlight-bg-light); /* Use cell highlight color on hover */
-    transform: scale(1.05);
-}
-body.dark-theme .number-palette button:hover {
-    background-color: var(--cell-highlight-bg-dark);
-}
+/* Removed .number-palette and .below-board-controls styles */
 
 .game-footer {
-    margin-top: 25px; /* More space for footer */
+    margin-top: 25px;
     font-size: 0.9em;
-    color: inherit; /* Inherits from body, which uses --text-color-light/dark */
+    color: inherit;
 }
 #messageArea {
     font-weight: 500;
     min-height: 1.5em;
-    margin-bottom: 8px; /* Space between message and credit */
+    margin-bottom: 8px;
 }
 .message-success { color: #155724; background-color: #d4edda; border: 1px solid #c3e6cb; padding: 5px; border-radius: 4px;}
 .message-error { color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 5px; border-radius: 4px;}
@@ -428,10 +394,10 @@ body.dark-theme .message-error { color: #f8d7da; background-color: #721c24; bord
 
 .footer-credit {
     font-size: 0.85em;
-    color: var(--text-color-light); /* Match general text color */
+    color: var(--text-color-light);
 }
 .footer-credit a {
-    color: var(--button-primary-bg-light); /* Use button color for link for prominence */
+    color: var(--button-primary-bg-light);
     text-decoration: none;
 }
 .footer-credit a:hover {
@@ -444,7 +410,6 @@ body.dark-theme .footer-credit a {
     color: var(--button-primary-bg-dark);
 }
 
-
 /* Responsive adjustments */
 @media (max-width: 600px) {
     body { padding: 10px; }
@@ -453,26 +418,22 @@ body.dark-theme .footer-credit a {
     .header-controls { flex-direction: column; align-items: stretch; gap: 10px; }
     .game-actions, .difficulty-control { justify-content: center; width: 100%; }
     .difficulty-control select { flex-grow: 1; }
-    .btn, .game-controls select { width: auto; flex-grow: 1; min-width: 120px; } /* Allow buttons to take space */
-    .game-actions .btn { flex-basis: 48%; } /* Two buttons side-by-side if space */
-
+    .btn, #difficultySelect { width: auto; flex-grow: 1; min-width: 120px; }
+    .game-actions .btn { flex-basis: 48%; }
 
     .theme-switcher-container { top: 10px; right: 10px; }
     #themeSwitcher { width: 25px; height: 25px; }
     .sudoku-board { max-width: 100%; margin-bottom: 15px;}
-    .cell { font-size: clamp(0.8em, 5vw, 1.4em); border-radius: 3px;}
-    .number-palette button { width: 35px; height: 35px; font-size: 1.1em; }
-    .below-board-controls #validateBtn { width: 80%; max-width: 200px; }
+    .cell { font-size: clamp(0.8em, 5vw, 1.4em); }
+    /* Removed number palette responsive styles */
 }
 
-@media (max-width: 420px) { /* Further adjustments for very small screens */
+@media (max-width: 420px) {
     .game-header h1 { font-size: 1.8em; }
     .cell { font-size: clamp(0.7em, 6vw, 1.2em); }
-    .number-palette button { width: calc(100% / 5 - 5px); height: auto; aspect-ratio: 1/1; font-size: 1em; } /* Make palette buttons responsive */
-    .number-palette button.clear-btn { /* width: calc(100% / 5 * 2 - 5px); Ensure it's clear or distinct */ }
     .game-actions { flex-direction: column; }
     .game-actions .btn { width: 100%; }
     .difficulty-control { flex-direction: column; align-items: stretch; }
     .difficulty-control label { margin-bottom: 5px; text-align: center; }
-    .difficulty-control select { width: 100%; }
+    #difficultySelect { width: 100%; }
 }
