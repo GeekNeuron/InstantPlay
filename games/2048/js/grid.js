@@ -8,8 +8,6 @@ class Grid {
         this.size = size;
         this.tiles = []; // Active game tiles
 
-        // CSS variables can also control grid layout, this is for JS logic if needed
-        // this.gridContainerElement.style.setProperty('--grid-size-param', this.size);
         this.setupBackgroundCells();
     }
 
@@ -41,7 +39,8 @@ class Grid {
     addRandomTile() {
         const position = this.getRandomEmptyCellPosition();
         if (position) {
-            const newTile = new Tile(this.gridContainerElement); // Value is random by default
+            // Value is random (2 or 4) by Tile constructor default
+            const newTile = new Tile(this.gridContainerElement); 
             newTile.setPosition(position.r, position.c, this.size, this.gridContainerElement);
             this.tiles.push(newTile);
             return newTile;
@@ -52,21 +51,23 @@ class Grid {
     getTileAt(row, col) {
         return this.tiles.find(tile => tile.x === row && tile.y === col);
     }
-
-    removeTile(tileInstance) {
+    
+    // Removes a specific tile instance from the grid and the internal array
+    removeTileObject(tileInstance) {
+        if (!tileInstance) return;
         tileInstance.remove(true); // Remove with animation
         this.tiles = this.tiles.filter(t => t !== tileInstance);
     }
     
-    clearAllTiles() {
-        this.tiles.forEach(tile => tile.remove()); // Simple removal, no animation needed here usually
+    clearAllTilesForNewGame() {
+        this.tiles.forEach(tile => tile.remove(false)); // No animation needed for full clear
         this.tiles = [];
     }
 
     getBoardState() {
         const board = Array(this.size).fill(null).map(() => Array(this.size).fill(0));
         this.tiles.forEach(tile => {
-            if (tile.x !== undefined && tile.y !== undefined) {
+            if (tile.x !== undefined && tile.x >= 0 && tile.y !== undefined && tile.y >= 0) {
                 board[tile.x][tile.y] = tile.value;
             }
         });
