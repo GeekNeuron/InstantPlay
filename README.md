@@ -3,8 +3,23 @@
 A feature-rich, bilingual (English/Persian) portal to host and play a collection of open-source HTML5 games. Designed for GitHub Pages, this portal includes dynamic game loading, a favorites system, search functionality, filtering by genre, sorting options, dark mode, user settings backup/restore, a game detail modal, toast notifications, and lazy loading for images.
 
 ## Project Structure
+```
+/ (Project Root)
+├── index.html               # Main page, includes Font Awesome & Google Fonts (Vazirmatn) links
+├── style.css                # Main stylesheet, including Vazirmatn for Persian & mobile media queries
+├── main.js                  # Core JavaScript for all functionalities
+├── games.json               # JSON file listing all games (name, desc, genre, paths, etc.)
+│├── games/                   # Directory to store actual game files
+│   ├── (game1_folder/)      # Each game in its own subfolder
+│   └── README_HOW_TO_ADD_GAMES.txt # Instructions for adding new games
+│├── assets/
+│   └── images/              # For game thumbnails, site logo (optional)
+│       └── default_thumb.png # Default thumbnail image
+│└── lang/
+├── en.json              # English language strings
+└── fa.json              # Persian language stringsREADME.md                    # This file
+```
 
-/ (Project Root)├── index.html               # Main page, includes Font Awesome & Google Fonts (Vazirmatn) links├── style.css                # Main stylesheet, including Vazirmatn for Persian & mobile media queries├── main.js                  # Core JavaScript for all functionalities├── games.json               # JSON file listing all games (name, desc, genre, paths, etc.)│├── games/                   # Directory to store actual game files│   ├── (game1_folder/)      # Each game in its own subfolder│   └── README_HOW_TO_ADD_GAMES.txt # Instructions for adding new games│├── assets/│   └── images/              # For game thumbnails, site logo (optional)│       └── default_thumb.png # Default thumbnail image│└── lang/├── en.json              # English language strings└── fa.json              # Persian language stringsREADME.md                    # This file
 ## Key Features
 
 * **Bilingual Support:** English and Persian, with automatic UI updates and Vazirmatn font specifically for Persian text.
