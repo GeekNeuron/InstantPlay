@@ -4,8 +4,6 @@ class Tile {
     constructor(gridElement, value = Math.random() < 0.9 ? 2 : 4) {
         this.tileElement = document.createElement('div');
         this.tileElement.classList.add('tile');
-        // Initial opacity is 0 due to 'appear' animation's 'from' state.
-        // We will explicitly set it to 1 after initial positioning if animation doesn't cover it.
         
         this.id = `tile-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
         this.tileElement.setAttribute('data-id', this.id);
@@ -13,16 +11,13 @@ class Tile {
         this.x = -1; 
         this.y = -1;
         this.value = 0;
-        this.mergedFrom = null;
-        this.markedForRemoval = false; // Ensure this property exists
+        this.mergedFrom = null; // Not actively used in current logic, but can be for advanced animations
+        this.markedForRemoval = false;
 
-        this.setValue(value, true); 
+        this.setValue(value, true); // isNewTile = true
         gridElement.append(this.tileElement);
-        // console.log(`Tile ${this.id} (val ${this.value}) appended to DOM.`);
-
-        // The 'appear' animation defined in CSS should handle making the tile visible.
-        // If it's not working, explicitly setting opacity after a frame might be a fallback.
-        // For now, relying on CSS animation.
+        
+        // The 'appear' animation is handled by CSS on .tile class
     }
 
     setValue(value, isNewTile = false) {
@@ -32,9 +27,10 @@ class Tile {
         this.tileElement.dataset.value = value; 
         this.adjustFontSize();
 
-        if (!isNewTile && oldValue !== value && oldValue !== 0) {
-            this.merged(); 
-        }
+        // No longer calling this.merged() here, as per user request
+        // if (!isNewTile && oldValue !== value && oldValue !== 0) {
+        //     // this.merged(); // User wants no specific merge animation on the kept tile
+        // }
     }
 
     adjustFontSize() {
@@ -59,9 +55,8 @@ class Tile {
         const cellSize = (availableWidth - (gridSize - 1) * gap) / gridSize;
 
         if (cellSize <= 0 || isNaN(cellSize)) {
-            // console.error(`Tile ${this.id}: Invalid cellSize calculated: ${cellSize}. availableWidth: ${availableWidth}, gridPadding: ${gridPadding}, gap: ${gap}, gridSize: ${gridSize}`);
-            this.tileElement.style.width = `50px`; // Fallback size
-            this.tileElement.style.height = `50px`; // Fallback size
+            this.tileElement.style.width = `50px`; // Fallback
+            this.tileElement.style.height = `50px`; // Fallback
         } else {
             this.tileElement.style.width = `${cellSize}px`;
             this.tileElement.style.height = `${cellSize}px`;
@@ -81,34 +76,49 @@ class Tile {
         this.x = row;
         this.y = col;
         this._updateVisuals(row, col, gridSize, gridElement);
-        // Ensure opacity is set for the 'appear' animation to take effect correctly from its 'from' state.
-        // The animation itself should transition opacity to 1.
-        // If tiles are not appearing, this is a critical point.
-        // Forcing opacity to 1 here bypasses the animation's fade-in.
-        // requestAnimationFrame(() => { this.tileElement.style.opacity = '1'; });
-        // console.log(`Tile ${this.id} (val ${this.value}) positioned at (${row},${col}). Opacity: ${this.tileElement.style.opacity}`);
+        // Ensure initial visibility for new tiles (appear animation handles fade-in and scale-in)
+        // Opacity is initially 0 via 'appear' animation 'from' state
+        requestAnimationFrame(() => { 
+            if (this.tileElement.style.opacity !== '1') { // Only if not already made visible
+                 // this.tileElement.style.opacity = '1'; // Let animation handle this
+            }
+        });
     }
 
     remove() { 
         return new Promise(resolve => {
             if (!this.tileElement || !this.tileElement.parentElement) {
-                // console.log(`Tile ${this.id} already removed or no parent.`);
                 resolve();
                 return;
             }
-            // console.log(`Removing tile ${this.id} (val ${this.value})`);
             this.tileElement.style.opacity = '0';
-            this.tileElement.style.transform = (this.tileElement.style.transform || '') + ' scale(0.1)';
+            // Apply a scale down effect for removal
+            let currentTransform = this.tileElement.style.transform || '';
+            // Ensure we are not adding scale if it's already part of a complex transform from movement
+            if (!currentTransform.includes('scale(')) {
+                 this.tileElement.style.transform = currentTransform + ' scale(0.1)';
+            } else {
+                 // If transform is complex, just rely on opacity for removal feedback
+                 // Or parse and rebuild transform, which is more complex.
+                 // For simplicity, if already transformed, just fade.
+            }
+
 
             const onRemoveEnd = () => {
                 if (this.tileElement.parentElement) {
                     this.tileElement.remove();
                 }
-                // console.log(`Tile ${this.id} remove animation ended.`);
                 resolve();
             };
-            this.tileElement.addEventListener('transitionend', onRemoveEnd, { once: true });
-            setTimeout(onRemoveEnd, 160); // Fallback, slightly longer than 0.15s opacity transition
+            // Listen to transition end for opacity (which is 0.1s)
+            this.tileElement.addEventListener('transitionend', function TEnd(event) {
+                if (event.propertyName === 'opacity') {
+                    this.removeEventListener('transitionend', TEnd);
+                    onRemoveEnd();
+                }
+            });
+            // Fallback if transition doesn't fire reliably
+            setTimeout(onRemoveEnd, 160); 
         });
     }
     
@@ -123,40 +133,34 @@ class Tile {
             }
 
             const eventName = 'transitionend';
-            const timeoutDuration = 120; 
+            const timeoutDuration = 120; // Slightly more than 0.1s transform transition
             
             let resolved = false;
             const resolveOnce = (event) => {
-                if (event && event.target !== this.tileElement) return; // Ensure it's this element's transition
+                if (event && event.target !== this.tileElement) return; 
                 if (event && event.propertyName !== 'transform') return;
                 if (!resolved) {
                     resolved = true;
                     clearTimeout(timeoutId);
                     this.tileElement.removeEventListener(eventName, resolveOnce);
-                    // console.log(`Tile ${this.id} (val ${this.value}) movement ended.`);
                     resolve();
                 }
             };
 
-            const timeoutId = setTimeout(() => {
-                // console.warn(`Tile (${this.id}, val ${this.value}) waitForMovement TIMEOUT`);
-                resolveOnce(); 
-            }, timeoutDuration); 
-
+            const timeoutId = setTimeout(resolveOnce, timeoutDuration); 
             this.tileElement.addEventListener(eventName, resolveOnce);
         });
     }
 
-    merged() {
-        // console.log(`Tile ${this.id} (new val ${this.value}) merged animation triggered.`);
-        this.tileElement.classList.add('tile-merged'); 
-        this.tileElement.addEventListener('animationend', () => {
-            this.tileElement.classList.remove('tile-merged');
-        }, { once: true });
-    }
+    // merged() method is no longer needed for a specific merge animation on the kept tile
+    // merged() {
+    //     this.tileElement.classList.add('tile-merged'); 
+    //     this.tileElement.addEventListener('animationend', () => {
+    //         this.tileElement.classList.remove('tile-merged');
+    //     }, { once: true });
+    // }
 
     async moveTo(row, col, gridSize, gridElement) {
-        // console.log(`Tile ${this.id} (val ${this.value}) moving from (${this.x},${this.y}) to (${row},${col})`);
         this.x = row; 
         this.y = col;
         this._updateVisuals(row, col, gridSize, gridElement); 
