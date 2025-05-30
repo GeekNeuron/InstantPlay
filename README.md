@@ -17,7 +17,8 @@ A feature-rich, bilingual (English/Persian) portal to host and play a collection
 │       └── default_thumb.png # Default thumbnail image
 │└── lang/
 ├── en.json              # English language strings
-└── fa.json              # Persian language stringsREADME.md                    # This file
+└── fa.json              # Persian language strings
+README.md                    # This file
 ```
 
 ## Key Features
