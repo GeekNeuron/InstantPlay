@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const grid = new Grid(gridContainer);
     const game = new Game(grid, 'score', 'best-score', 'game-over-modal', 'final-score');
-    const inputManager = new InputManager(game); // Assuming InputManager is defined elsewhere
+    const inputManager = new InputManager(game);
 
     const newGameButton = document.getElementById('new-game-button');
     const restartGameButton = document.getElementById('restart-game-button');
@@ -19,25 +19,29 @@ document.addEventListener('DOMContentLoaded', () => {
         newGameButton.addEventListener('click', () => game.startNewGame());
     }
     if (restartGameButton) {
+        // This button is inside the modal, modal visibility is handled by game.js
         restartGameButton.addEventListener('click', () => game.startNewGame());
     }
 
     // Theme Switcher Logic
-    const currentTheme = localStorage.getItem('2048Theme') || 'light-theme';
-    document.body.className = currentTheme; // Apply stored theme or default
+    const storedTheme = localStorage.getItem('2048Theme');
+    // Default to light theme if nothing is stored or if stored value is invalid
+    const defaultTheme = 'light-theme';
+    const currentTheme = (storedTheme === 'light-theme' || storedTheme === 'dark-theme') ? storedTheme : defaultTheme;
+    
+    document.body.className = ''; // Clear existing classes
+    document.body.classList.add(currentTheme); // Apply stored theme or default
+
     if (themeSwitcherButton) {
-        themeSwitcherButton.textContent = currentTheme === 'dark-theme' ? '☀️ Light Mode' : '🌙 Dark Mode';
+        themeSwitcherButton.textContent = ''; // Icon is handled by CSS ::before
 
         themeSwitcherButton.addEventListener('click', () => {
-            if (document.body.classList.contains('light-theme')) {
-                document.body.classList.replace('light-theme', 'dark-theme');
-                themeSwitcherButton.textContent = '☀️ Light Mode';
-                localStorage.setItem('2048Theme', 'dark-theme');
-            } else {
-                document.body.classList.replace('dark-theme', 'light-theme');
-                themeSwitcherButton.textContent = '🌙 Dark Mode';
-                localStorage.setItem('2048Theme', 'light-theme');
-            }
+            const isCurrentlyDark = document.body.classList.contains('dark-theme');
+            const newTheme = isCurrentlyDark ? 'light-theme' : 'dark-theme';
+            
+            document.body.classList.remove(isCurrentlyDark ? 'dark-theme' : 'light-theme');
+            document.body.classList.add(newTheme);
+            localStorage.setItem('2048Theme', newTheme);
         });
     }
     
