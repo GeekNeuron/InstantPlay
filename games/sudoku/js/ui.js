@@ -3,9 +3,11 @@ const UI = (() => {
     const themeSwitcherBtn = document.getElementById('themeSwitcher');
     const messageArea = document.getElementById('messageArea');
     const difficultySelect = document.getElementById('difficultySelect');
-    // const numberPaletteElement = document.getElementById('numberPalette'); // Removed
+    const endGameControlsElement = document.getElementById('endGameControls');
+    const footerCreditElement = document.querySelector('.footer-credit');
 
-    const THEME_KEY = 'sudokuThemeGeekNeuron';
+
+    const THEME_KEY = 'sudokuThemeGeekNeuron_v1'; // Added versioning in case of structure changes
     let currentTheme = localStorage.getItem(THEME_KEY) || 'light';
 
     function _applyTheme() {
@@ -21,14 +23,15 @@ const UI = (() => {
 
     function showMessage(text, type = 'info', duration = 0) {
         messageArea.textContent = text;
-        messageArea.className = '';
-        if (type) {
-            messageArea.classList.add(`message-${type}`);
-        }
+        messageArea.className = ''; // Clear previous classes
+        messageArea.classList.add(`message-${type}`); // Add new type class
         
         if (duration > 0) {
             setTimeout(() => {
-                clearMessage();
+                // Only clear if the message hasn't changed
+                if (messageArea.textContent === text) {
+                    clearMessage();
+                }
             }, duration);
         }
     }
@@ -37,27 +40,42 @@ const UI = (() => {
         messageArea.textContent = '';
         messageArea.className = '';
     }
+    
+    function showEndGameControls() {
+        if (endGameControlsElement) {
+            endGameControlsElement.style.display = 'flex';
+            if(footerCreditElement) footerCreditElement.style.display = 'none'; // Hide credit to make space
+        }
+    }
 
-    /**
-     * Initializes the UI elements, like theme switcher and difficulty.
-     * REMOVED: onPaletteClick parameter and palette generation.
-     */
+    function hideEndGameControls() {
+        if (endGameControlsElement) {
+            endGameControlsElement.style.display = 'none';
+            if(footerCreditElement) footerCreditElement.style.display = 'block'; // Show credit again
+        }
+    }
+
+
     function init() {
         _applyTheme();
         themeSwitcherBtn.addEventListener('click', toggleTheme);
-
-        // Removed number palette population
+        hideEndGameControls(); // Ensure they are hidden initially
     }
 
     function getSelectedDifficulty() {
         return difficultySelect.value;
+    }
+
+    function setSelectedDifficulty(difficultyValue) {
+        if (difficultySelect) {
+            difficultySelect.value = difficultyValue;
+        }
     }
     
     function setBoardDisabled(disabled) {
         const inputs = document.querySelectorAll('#sudokuBoard input');
         inputs.forEach(input => input.disabled = disabled);
         document.getElementById('sudokuBoard').classList.toggle('disabled', disabled);
-        // Removed disabling palette buttons
     }
 
     return {
@@ -65,6 +83,9 @@ const UI = (() => {
         showMessage,
         clearMessage,
         getSelectedDifficulty,
-        setBoardDisabled
+        setSelectedDifficulty,
+        setBoardDisabled,
+        showEndGameControls,
+        hideEndGameControls
     };
 })();
