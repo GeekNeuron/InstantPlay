@@ -1,34 +1,39 @@
+
 // js/tile.js
 
 class Tile {
     constructor(gridElement, value = Math.random() < 0.9 ? 2 : 4) {
         this.tileElement = document.createElement('div');
         this.tileElement.classList.add('tile');
-        this.tileElement.style.opacity = '0'; 
+        this.tileElement.style.opacity = '0'; // Start invisible for appear animation
         
         this.x = -1; 
         this.y = -1;
+        this.value = 0; // Initialize value
 
-        // Set value and initial font size
-        this.setValue(value); 
+        this.setValue(value, true); // Set initial value and adjust font size
         gridElement.append(this.tileElement);
 
-        // Trigger appear animation
-        requestAnimationFrame(() => {
-            this.tileElement.style.opacity = '1';
-        });
+        // Trigger appear animation (CSS @keyframes 'appear')
+        // CSS animation 'appear' handles scale and opacity
+        // The animation is set on the .tile class directly
     }
 
-    setValue(value) {
+    setValue(value, isNewTile = false) {
+        const oldValue = this.value;
         this.value = value;
         this.tileElement.textContent = value; 
         this.tileElement.dataset.value = value; 
-        this.adjustFontSize(); // Adjust font size based on new value
+        this.adjustFontSize();
+
+        if (!isNewTile && oldValue !== 0 && oldValue !== value) { // Value changed (likely a merge)
+            this.merged(); // Trigger merge animation
+        }
     }
 
     adjustFontSize() {
         const numStr = this.value.toString();
-        let baseSize = 2.8; // em, default for 1-2 digits
+        let baseSize = 2.8; 
         if (numStr.length > 4) { 
             baseSize = 1.3;
         } else if (numStr.length === 4) { 
@@ -36,10 +41,6 @@ class Tile {
         } else if (numStr.length === 3) { 
             baseSize = 2.3;
         }
-        
-        // Consider tile's actual width for very small screens if needed
-        // This part can be tricky as offsetWidth might not be fully computed yet
-        // For now, relying on em units and media queries for base font size is often sufficient.
         this.tileElement.style.fontSize = `${baseSize}em`;
     }
 
@@ -57,11 +58,17 @@ class Tile {
         const xPos = col * (cellSize + gap) + gridPadding;
         const yPos = row * (cellSize + gap) + gridPadding;
 
+        // These CSS variables are used by the keyframe animations
         this.tileElement.style.setProperty('--translateX', `${xPos}px`);
         this.tileElement.style.setProperty('--translateY', `${yPos}px`);
+        // Direct transform for positioning and CSS transitions
         this.tileElement.style.transform = `translate(${xPos}px, ${yPos}px)`;
         
-        // After tile dimensions are set/updated, re-adjust font size
+        if (this.tileElement.style.opacity === '0' && (this.x !== -1 || this.y !== -1)) {
+             // If tile was hidden and now has a position, make it appear
+            requestAnimationFrame(() => { this.tileElement.style.opacity = '1'; });
+        }
+        
         this.adjustFontSize(); 
     }
     
@@ -71,42 +78,53 @@ class Tile {
         this.updateVisualPosition(row, col, gridSize, gridElement);
     }
 
-    remove(withAnimation = true) { 
-        if (this.tileElement.parentElement) { // Only proceed if tile is in DOM
-            if (withAnimation) {
-                this.tileElement.style.opacity = '0';
-                this.tileElement.style.transform += ' scale(0.5)'; 
-                this.tileElement.addEventListener('transitionend', () => {
-                    if (this.tileElement.parentElement) { 
-                        this.tileElement.remove();
-                    }
-                }, { once: true });
-            } else {
+    remove() { 
+        // Animation for removal (e.g., shrink and fade)
+        this.tileElement.style.opacity = '0';
+        this.tileElement.style.transform += ' scale(0.1)'; // Shrink dramatically
+        
+        this.tileElement.addEventListener('transitionend', () => {
+            if (this.tileElement.parentElement) { 
                 this.tileElement.remove();
             }
-        }
+        }, { once: true });
+
+        // Fallback removal if transition doesn't fire (e.g., display:none parent)
+        setTimeout(() => {
+            if (this.tileElement.parentElement) {
+                this.tileElement.remove();
+            }
+        }, 200); // A bit longer than transition
     }
 
-    waitForTransition(isAnimation = false) {
+    waitForTransition() {
         return new Promise(resolve => {
-            if (!this.tileElement.parentElement) { // If tile was removed prematurely
-                resolve();
+            if (!this.tileElement || !this.tileElement.parentElement) {
+                resolve(); // Tile already removed or doesn't exist
                 return;
             }
-            const eventName = isAnimation ? 'animationend' : 'transitionend';
-            const timeoutDuration = isAnimation ? 400 : 200; // Adjusted timeout
+            // Check if the element is actually visible and has transitions
+            const styles = window.getComputedStyle(this.tileElement);
+            if (styles.display === 'none' || styles.transitionDuration === '0s') {
+                resolve(); // No transition to wait for
+                return;
+            }
+
+            const eventName = 'transitionend';
+            const timeoutDuration = 150; // Matches CSS transition for transform (0.1s + buffer)
             
             let resolved = false;
             const resolveOnce = () => {
                 if (!resolved) {
                     resolved = true;
                     clearTimeout(timeoutId);
+                    this.tileElement.removeEventListener(eventName, resolveOnce);
                     resolve();
                 }
             };
 
             const timeoutId = setTimeout(() => {
-                // console.warn("Tile transition/animation timeout for value:", this.value, "at", this.x, ",", this.y);
+                // console.warn("Tile.waitForTransition TIMEOUT for value:", this.value);
                 resolveOnce(); 
             }, timeoutDuration); 
 
@@ -124,7 +142,9 @@ class Tile {
     async moveTo(row, col, gridSize, gridElement) {
         this.x = row; 
         this.y = col;
+        // updateVisualPosition sets the final transform target
         this.updateVisualPosition(row, col, gridSize, gridElement); 
+        // The CSS transition on .tile class will handle the animation
         await this.waitForTransition(); 
     }
 }
