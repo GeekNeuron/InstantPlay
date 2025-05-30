@@ -6,18 +6,19 @@
     <title>Sudoku - GeekNeuron</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/themes.css">
-    </head>
+    <link rel="icon" href="https://placehold.co/32x32/000080/FFFFFF?text=S" type="image/png">
+</head>
 <body>
     <div class="theme-switcher-container">
-        <button id="themeSwitcher" class="theme-switcher"></button>
+        <button id="themeSwitcher" class="theme-switcher" aria-label="Toggle color theme"></button>
     </div>
 
     <div id="gameContainer" class="game-container">
         <header class="game-header">
             <h1>Sudoku</h1>
             <div class="controls">
-                <label for="difficulty">Difficulty:</label>
-                <select id="difficulty">
+                <label for="difficultySelector">Difficulty:</label>
+                <select id="difficultySelector">
                     <option value="easy">Easy</option>
                     <option value="medium" selected>Medium</option>
                     <option value="hard">Hard</option>
@@ -32,8 +33,9 @@
 
         <div class="game-actions">
             <button id="checkSolutionBtn">Check Solution</button>
-            <button id="solveBtn">Solve</button> </div>
-         <p id="messageArea" class="message-area"></p>
+            <button id="solveBtn">Solve</button>
+        </div>
+         <p id="messageArea" class="message-area" aria-live="polite"></p>
     </div>
 
     <script src="assets/js/utils.js"></script>
@@ -42,4 +44,3 @@
     <script src="assets/js/main.js"></script>
 </body>
 </html>
-
