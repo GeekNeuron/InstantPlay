@@ -1,4 +1,4 @@
-/* CSS Variables for Theming (Same as before) */
+/* CSS Variables for Theming */
 :root {
     /* Light Theme (Pure White & Modern Grays) */
     --body-bg: #ffffff;
@@ -16,6 +16,11 @@
     --modal-text-color: #333333;
     --border-color: var(--grid-bg);
 
+    /* Theme switcher appearance when LIGHT theme is active (button looks dark) */
+    --theme-switcher-bg-light-active: #4a4a4a; /* Dark gray */
+    --theme-switcher-border-light-active: #333333;
+
+    /* Tile specific colors (Light Theme - Modern Grayscale with Accent) */
     --tile-default-bg: #ffffff;
     --tile-default-text: #555555;
     --tile-2-bg: #f8f9fa;   --tile-2-text: #495057;
@@ -37,16 +42,13 @@
     --grid-side-length-desktop: 400px;
 }
 
-/* Dark Theme Variables (Same as before) */
+/* Dark Theme Variables (Dark Blue) */
 body.dark-theme {
     --body-bg: #0d1117;
+    --text-color-primary: #c9d1d9;
     --container-bg: #161b22;
     --grid-bg: #1e2732;
     --grid-cell-bg: #2c3a47;
-    --text-color-primary: #c9d1d9;
-    --text-color-secondary: #0d1117;
-    --tile-default-bg: #293b5f;
-    --tile-default-text: #e0e6eb;
     --score-box-bg: #274c77;
     --score-box-text: #e0e6eb;
     --button-bg: #3282b8;
@@ -57,6 +59,11 @@ body.dark-theme {
     --modal-text-color: #c9d1d9;
     --border-color: var(--container-bg);
 
+    /* Theme switcher appearance when DARK theme is active (button looks light) */
+    --theme-switcher-bg-dark-active: #e0e0e0; /* Light gray */
+    --theme-switcher-border-dark-active: #cccccc;
+
+    /* Tile specific colors (Dark Theme) */
     --tile-2-bg: #2c3e50;   --tile-2-text: #ecf0f1;
     --tile-4-bg: #34495e;   --tile-4-text: #ecf0f1;
     --tile-8-bg: #1abc9c;   --tile-8-text: #0d1117;
@@ -71,7 +78,7 @@ body.dark-theme {
     --tile-super-bg: #00008B; --tile-super-text: #f9f6f2;
 }
 
-/* General Styles (Same as before) */
+/* General Styles */
 html { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 *, *:before, *:after { box-sizing: inherit; }
 body {
@@ -80,17 +87,39 @@ body {
     align-items: center; min-height: 100vh; text-align: center;
     transition: background-color 0.3s ease, color 0.3s ease; overflow-x: hidden;
 }
+
 .top-bar { position: fixed; top: 12px; right: 12px; z-index: 1001; }
+
 #theme-switcher {
-    background-color: var(--container-bg); border: 1px solid var(--grid-bg); padding: 0;
-    font-size: 1.0em; cursor: pointer; color: var(--text-color-primary); outline: none;
-    transition: color 0.3s ease, transform 0.2s ease, background-color 0.3s ease, border-color 0.3s ease;
-    line-height: 1; border-radius: 50%; width: 28px; height: 28px; display: flex;
-    align-items: center; justify-content: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    /* Default appearance (when light theme is active) */
+    background-color: var(--theme-switcher-bg-light-active);
+    border: 1px solid var(--theme-switcher-border-light-active);
+    padding: 0;
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+    line-height: 1;
+    border-radius: 50%; /* Circular */
+    width: 24px;  /* Slightly smaller */
+    height: 24px; /* Slightly smaller */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); /* Subtle shadow */
 }
-#theme-switcher:hover { transform: scale(1.1); opacity: 0.9; }
-#theme-switcher::before { content: ''; }
-body.dark-theme #theme-switcher::before { content: ''; }
+/* REMOVED #theme-switcher::before styles for emojis */
+
+body.dark-theme #theme-switcher {
+    /* Appearance when dark theme is active */
+    background-color: var(--theme-switcher-bg-dark-active);
+    border: 1px solid var(--theme-switcher-border-dark-active);
+}
+
+#theme-switcher:hover {
+    transform: scale(1.1);
+    opacity: 0.9; /* Keep opacity change on hover if desired */
+}
+
 .container {
     background-color: var(--container-bg); padding: 20px; border-radius: var(--border-radius);
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08); display: flex; flex-direction: column;
@@ -121,6 +150,7 @@ header h1 {
 }
 .btn:hover { background-color: var(--button-hover-bg); transform: translateY(-1px); }
 .btn:active { transform: translateY(0px); }
+
 .grid-container {
     display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr);
     gap: var(--gap-size); width: var(--grid-side-length-desktop); height: var(--grid-side-length-desktop);
@@ -135,10 +165,10 @@ header h1 {
 
 .tile {
     position: absolute;
-    display: flex; /* For centering the span inside */
+    display: flex; 
     justify-content: center;
     align-items: center;
-    font-weight: bold; /* This will be inherited by the span */
+    font-weight: bold; 
     border-radius: calc(var(--border-radius) / 1.5);
     transition: transform 0.1s linear,
                 background-color 0.1s ease-in-out, 
@@ -146,19 +176,16 @@ header h1 {
                 opacity 0.1s ease-in-out;
     animation: appear 0.15s ease-out;
     user-select: none;
-    /* font-size is set by JS on .tile, span will inherit or can be overridden */
 }
 
-.tile-number-display {
-    display: inline-block; /* Allows transform to apply correctly */
-    transition: transform 0.12s ease-in-out; /* Smooth transition for the pop */
-    /* No specific animation here, class will be added by JS */
+.tile-number-display { /* For number-only pop animation */
+    display: inline-block; 
+    /* transition: transform 0.12s ease-in-out; /* Not needed if using animation */
 }
 
-.tile-number-display.number-pop-effect {
+.tile-number-display.number-pop-effect { /* Class added by JS to trigger animation */
     animation: numberOnlyPopEffect 0.12s ease-in-out;
 }
-
 
 @keyframes appear {
     from { 
@@ -171,23 +198,17 @@ header h1 {
     }
 }
 
-/* --- انیمیشن جدید برای پرش فقط اعداد --- */
 @keyframes numberOnlyPopEffect {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.20); /* <<< این مقدار پرش را کنترل می‌کند */
-    }
-    100% {
-        transform: scale(1);
-    }
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); } /* Adjust this value for pop intensity */
+    100% { transform: scale(1); }
 }
+
+/* REMOVED .tile.tile-merged and its specific animation keyframes if any */
 
 
 .tile[data-value="2"]    { background-color: var(--tile-2-bg); color: var(--tile-2-text); }
 .tile[data-value="4"]    { background-color: var(--tile-4-bg); color: var(--tile-4-text); }
-/* ... (سایر استایل‌های کاشی‌ها مانند قبل) ... */
 .tile[data-value="8"]    { background-color: var(--tile-8-bg); color: var(--tile-8-text); }
 .tile[data-value="16"]   { background-color: var(--tile-16-bg); color: var(--tile-16-text); }
 .tile[data-value="32"]   { background-color: var(--tile-32-bg); color: var(--tile-32-text); }
@@ -223,7 +244,7 @@ footer {
     color: var(--text-color-primary); transition: color 0.3s ease;
 }
 
-/* Responsive adjustments (Same as before) */
+/* Responsive adjustments */
 @media (max-width: 520px) {
     body { padding: 10px; padding-top: 50px; }
     .container { padding: 15px; }
@@ -247,5 +268,5 @@ footer {
     .score-box { font-size: 0.75em; padding: 5px 6px; min-width: 60px; }
     .btn#new-game-button { font-size: 0.75em; padding: 6px 8px; }
     .grid-container { padding: calc(var(--gap-size) * 0.6); gap: calc(var(--gap-size) * 0.7); }
-    #theme-switcher { font-size: 0.9em; width: 26px; height: 26px; }
+    #theme-switcher { font-size: 0.9em; width: 24px; height: 24px; } /* Adjusted for smallest screens */
 }
