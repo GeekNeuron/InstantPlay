@@ -1,6 +1,6 @@
 {
-    "site_title": "پورتال بازی نهایی من",
-    "site_title_header": "پورتال بازی نهایی",
+    "site_title": "InstantPlay",
+    "site_title_header": "InstantPlay",
     "language_label": "زبان:",
     "dark_mode_label": "حالت تاریک",
     "light_mode_label": "حالت روشن",
@@ -11,7 +11,7 @@
     "all_games_header": "همه بازی‌ها",
     "play_game_button": "شروع بازی",
     "no_games_found": "هیچ بازی مطابق با معیارهای شما یافت نشد.",
-    "footer_text": "&copy; ۲۰۲۵ پورتال بازی نهایی شما. محتوای بازی‌ها متعلق به صاحبان مربوطه است.",
+    "footer_text": "&copy; ۲۰۲۵ InstantPlay. محتوای بازی‌ها متعلق به صاحبان مربوطه است.",
     "add_to_favorites": "افزودن به علاقه‌مندی‌ها",
     "remove_from_favorites": "حذف از علاقه‌مندی‌ها",
     "added_to_favorites": "به علاقه‌مندی‌ها اضافه شد!",
@@ -26,5 +26,7 @@
     "sort_name_asc": "نام (الف-ی)",
     "sort_name_desc": "نام (ی-الف)",
     "close_button_label": "بستن",
-    "loading_games": "در حال بارگذاری بازی‌ها..."
-
+    "loading_games": "در حال بارگذاری بازی‌ها...",
+    "no_games_available": "هنوز هیچ بازی موجود نیست. چند بازی اضافه کنید!",
+    "error_loading_games_data": "امکان بارگذاری اطلاعات بازی‌ها وجود ندارد. لطفاً فایل games.json را بررسی کنید."
+}
