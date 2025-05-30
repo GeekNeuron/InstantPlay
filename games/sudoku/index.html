@@ -4,43 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sudoku - GeekNeuron</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/themes.css">
-    <link rel="icon" href="https://placehold.co/32x32/000080/FFFFFF?text=S" type="image/png">
+    <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
     <div class="theme-switcher-container">
-        <button id="themeSwitcher" class="theme-switcher" aria-label="Toggle color theme"></button>
+        <button id="themeSwitcher" aria-label="Toggle theme"></button>
     </div>
 
     <div id="gameContainer" class="game-container">
         <header class="game-header">
             <h1>Sudoku</h1>
-            <div class="controls">
-                <label for="difficultySelector">Difficulty:</label>
-                <select id="difficultySelector">
+            <div class="game-controls">
+                <label for="difficultySelect">Difficulty:</label>
+                <select id="difficultySelect">
                     <option value="easy">Easy</option>
-                    <option value="medium" selected>Medium</option>
+                    <option value="medium">Medium</option>
                     <option value="hard">Hard</option>
-                    <option value="very-hard">Very Hard</option>
-                </select>
+                    <option value="expert">Expert</option> </select>
                 <button id="newGameBtn">New Game</button>
-            </div>
+                <button id="resetBtn">Reset Board</button>
+                </div>
         </header>
 
-        <div id="sudokuBoard" class="sudoku-board">
-            </div>
+        <main id="sudokuBoard" class="sudoku-board">
+            </main>
 
-        <div class="game-actions">
-            <button id="checkSolutionBtn">Check Solution</button>
-            <button id="solveBtn">Solve</button>
-        </div>
-         <p id="messageArea" class="message-area" aria-live="polite"></p>
+        <footer class="game-footer">
+            <p id="messageArea"></p>
+        </footer>
     </div>
 
-    <script src="assets/js/utils.js"></script>
-    <script src="assets/js/sudoku.js"></script>
-    <script src="assets/js/ui.js"></script>
-    <script src="assets/js/main.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/sudoku.js"></script>
+    <script src="js/board.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
