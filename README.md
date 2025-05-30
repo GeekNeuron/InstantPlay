@@ -1,4 +1,4 @@
-# My Game Portal Ultimate
+# InstantPlay
 
 A feature-rich, bilingual (English/Persian) portal to host and play a collection of open-source HTML5 games. Designed for GitHub Pages, this portal includes dynamic game loading, a favorites system, search functionality, filtering by genre, sorting options, dark mode, user settings backup/restore, a game detail modal, toast notifications, and lazy loading for images.
 
@@ -44,4 +44,4 @@ A feature-rich, bilingual (English/Persian) portal to host and play a collection
 * User preferences (language, dark mode status, favorite games, current filter/sort settings) are saved to `localStorage` to persist across sessions.
 * Game cards trigger a modal window displaying more detailed information about the game; the actual "Play Game" button is located within this modal.
 
-Enjoy your ultimate game portal!
+Enjoy your InstantPlay!
