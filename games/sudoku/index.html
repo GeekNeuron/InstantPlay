@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sudoku - GeekNeuron</title>
+    <title>Sudoku by GeekNeuron</title>
     <link rel="stylesheet" href="css/main.css">
-</head>
+    </head>
 <body>
     <div class="theme-switcher-container">
         <button id="themeSwitcher" aria-label="Toggle theme"></button>
@@ -14,24 +14,34 @@
     <div id="gameContainer" class="game-container">
         <header class="game-header">
             <h1>Sudoku</h1>
-            <div class="game-controls">
-                <label for="difficultySelect">Difficulty:</label>
-                <select id="difficultySelect">
-                    <option value="easy">Easy</option>
-                    <option value="medium">Medium</option>
-                    <option value="hard">Hard</option>
-                    <option value="expert">Expert</option> </select>
-                <button id="newGameBtn">New Game</button>
-                <button id="resetBtn">Reset Board</button>
+            <div class="controls-wrapper">
+                <div class="game-controls">
+                    <label for="difficultySelect">Difficulty:</label>
+                    <select id="difficultySelect">
+                        <option value="easy">Easy</option>
+                        <option value="medium">Medium</option>
+                        <option value="hard">Hard</option>
+                        <option value="expert">Expert</option>
+                    </select>
                 </div>
+                <div class="action-buttons">
+                    <button id="newGameBtn" class="btn">New Game</button>
+                    <button id="resetBtn" class="btn">Reset Board</button>
+                    <button id="validateBtn" class="btn">Check Solution</button>
+                     <button id="solveBtn" class="btn">Solve (Hint)</button>
+                </div>
+            </div>
         </header>
 
         <main id="sudokuBoard" class="sudoku-board">
             </main>
 
+        <div id="numberPalette" class="number-palette">
+            </div>
+
         <footer class="game-footer">
-            <p id="messageArea"></p>
-        </footer>
+            <p id="messageArea" aria-live="polite"></p>
+            </footer>
     </div>
 
     <script src="js/utils.js"></script>
