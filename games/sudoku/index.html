@@ -15,10 +15,12 @@
         <header class="game-header">
             <h1>Sudoku</h1>
             <div class="header-controls">
-                 <div class="game-actions"> <button id="newGameBtn" class="btn btn-primary">New Game</button>
+                 <div class="game-actions">
+                    <button id="newGameBtn" class="btn btn-primary">New Game</button>
                     <button id="resetBtn" class="btn">Reset Board</button>
                 </div>
-                <div class="difficulty-control"> <label for="difficultySelect">Difficulty:</label>
+                <div class="difficulty-control">
+                    <label for="difficultySelect">Difficulty:</label>
                     <select id="difficultySelect">
                         <option value="easy">Easy</option>
                         <option value="medium">Medium</option>
@@ -34,6 +36,10 @@
 
         <footer class="game-footer">
             <p id="messageArea" aria-live="polite"></p>
+            <div id="endGameControls" class="end-game-controls" style="display: none;">
+                <button id="closeGameBtn" class="btn">Close</button>
+                <button id="newGameFromWinBtn" class="btn btn-primary">New Game</button>
+            </div>
             <p class="footer-credit">
                 Created by <a href="https://github.com/GeekNeuron" target="_blank" rel="noopener noreferrer">GeekNeuron</a>
             </p>
