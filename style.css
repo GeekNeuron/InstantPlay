@@ -1,29 +1,30 @@
 /* General Styles */
 :root {
-    /* Light Theme (Default) - This section remains as it was in the "good" version */
-    --primary-bg: #f0f2f5;
-    --secondary-bg: #ffffff;
-    --text-color: #333333;
-    --text-muted-color: #555555;
-    --accent-color: #3498db;
-    --accent-hover-color: #2980b9;
-    --header-bg: #2c3e50;
+    /* Light Theme (Default) - This section remains unchanged */
+    --primary-bg: #f0f2f5;       
+    --secondary-bg: #ffffff;     
+    --text-color: #333333;       
+    --text-muted-color: #555555; 
+    --accent-color: #007bff;     /* رنگ تاکید اصلی تم روشن (آبی) */
+    --accent-hover-color: #0056b3;/* رنگ تاکید هاور تم روشن */
+    --header-bg: #2c3e50;        
     --header-text-color: #ecf0f1;
     --card-shadow: 0 4px 8px rgba(0,0,0,0.1);
     --card-hover-shadow: 0 6px 12px rgba(0,0,0,0.15);
     --card-selected-shadow: 0 8px 16px rgba(0,0,0,0.2);
-    --border-color: #e0e0e0;
-    --button-bg: var(--accent-color); /* Default button bg for light theme */
+    --border-color: #e0e0e0;     
+    --button-bg: var(--accent-color); /* Default button bg for light theme uses accent */
     --button-text-color: #ffffff; /* Default button text for light theme */
-    --star-color: #f1c40f;
+    --star-color: #f1c40f;       
     --icon-color: var(--text-muted-color);
-    --toast-success-bg: #2ecc71;
-    --toast-error-bg: #e74c3c;
-    --toast-info-bg: #3498db;
+    --toast-success-bg: #2ecc71; /* Using previous green, can be #28a745 */
+    --toast-error-bg: #e74c3c;   /* Using previous red, can be #dc3545 */
+    --toast-info-bg: #3498db;    /* Using previous blue, can be #17a2b8 */
     --toast-text-color: #ffffff;
-    --thumbnail-bg: #e9ecef;
+    --thumbnail-bg: #e9ecef;     
 }
 
+/* ... (بخش body و html[dir="rtl"] body بدون تغییر باقی می‌ماند) ... */
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     line-height: 1.6; 
@@ -45,65 +46,57 @@ html[dir="rtl"] textarea {
     font-family: 'Vazirmatn', sans-serif;
 }
 
-/* === Custom Dark Blue Theme (User Provided) === */
+
+/* === Custom Dark Blue Theme (User Provided Palette Base) === */
 body.dark-mode {
-    --primary-bg: #0d1117;          /* User's --body-bg */
-    --secondary-bg: #161b22;        /* User's --container-bg (for cards, toolbar) */
-    --text-color: #c9d1d9;          /* User's --text-color-primary */
-    --text-muted-color: #8892b0;    /* A suitable muted text for this theme */
+    --primary-bg: #0d1117;          
+    --secondary-bg: #161b22;        
+    --text-color: #c9d1d9;          
+    --text-muted-color: #8892b0;    
     
-    --header-bg: #0a0f14;           /* Darker than primary-bg for header */
-    --header-text-color: #c9d1d9;   /* Same as primary text color */
+    --header-bg: #0a0f14;           
+    --header-text-color: #c9d1d9;   
     
-    --accent-color: #3282b8;        /* User's --button-bg */
-    --accent-hover-color: #1d4357;  /* User's --button-hover-bg */
+    /* این متغیرهای accent دیگر به صورت عمومی برای همه دکمه‌های تم تاریک استفاده نمی‌شوند */
+    /* --accent-color: #3282b8; */       
+    /* --accent-hover-color: #1d4357; */ 
     
-    --border-color: #161b22;        /* User's --border-color (derived from their --container-bg) */
+    --border-color: #161b22;        
     
-    --star-color: #f1c40f;          /* Gold star color remains */
-    --icon-color: #8892b0;          /* Using the muted text color for icons */
+    --star-color: #f1c40f;          
+    --icon-color: #8892b0;          
 
-    --toast-success-bg: #1e6a40;    /* Dark green for success toast */
-    --toast-error-bg: #a32a33;      /* Dark red for error toast */
-    --toast-info-bg: #1d588f;       /* Darker blue for info toast */
-    --toast-text-color: #c9d1d9;    /* Light text for toasts */
+    --toast-success-bg: #1e6a40;    
+    --toast-error-bg: #a32a33;      
+    --toast-info-bg: #1d588f;       
+    --toast-text-color: #c9d1d9;    
 
-    --thumbnail-bg: #1e2732;        /* User's --grid-bg (for thumbnail placeholder) */
+    --thumbnail-bg: #1e2732;        
 
     --card-shadow: 0 4px 10px rgba(0,0,0,0.5);
     --card-hover-shadow: 0 6px 15px rgba(0,0,0,0.6);
     --card-selected-shadow: 0 8px 20px rgba(0,0,0,0.7);
-
-    /* Variables from user's theme not directly mapped but can be used if needed:
-       --grid-cell-bg: #2c3a47;
-       --score-box-bg: #274c77;
-       --score-box-text: #e0e6eb;
-       --modal-bg: rgba(10, 10, 15, 0.7); (Modal for game details is removed)
-       --modal-content-bg: #161b22;
-       --modal-text-color: #c9d1d9;
-       --theme-switcher-bg-dark-active: #e0e0e0; (For theme switcher button itself, if styled)
-       --theme-switcher-border-dark-active: #cccccc;
-    */
 }
 
-/* Specific button styling for dark mode as per user request */
+/* --- STYLES FOR SPECIFIC BUTTONS IN DARK MODE --- */
 body.dark-mode .backup-restore-controls button,
 body.dark-mode .import-button-label {
-    background-color: #ffffff !important; /* سفید خالص */
-    color: #0d1117 !important;           /* رنگ متن تیره (مانند پس‌زمینه اصلی تم تاریک) */
-    border: 1px solid #0d1117;       /* Optional: a border to make it pop */
+    background-color: var(--accent-color) !important; /* استفاده از accent-color تم روشن (آبی) */
+    color: var(--button-text-color) !important;       /* استفاده از رنگ متن دکمه تم روشن (سفید) */
+    border: 1px solid var(--accent-color);         /* Optional: a border for consistency */
 }
 body.dark-mode .backup-restore-controls button:hover,
 body.dark-mode .import-button-label:hover {
-    background-color: #f0f0f0 !important; /* کمی خاکستری هنگام هاور */
+    background-color: var(--accent-hover-color) !important; /* رنگ هاور accent تم روشن */
 }
 
+/* دکمه Let's Play در تم تاریک همچنان از رنگ‌های پالت تاریک استفاده می‌کند */
 body.dark-mode .lets-play-button {
-    background-color: var(--accent-color) !important; /* User's --button-bg: #3282b8 */
-    color: #ffffff !important;                        /* User's --button-text */
+    background-color: #3282b8 !important; /* رنگ آبی مشخص شده کاربر برای دکمه‌ها در تم تاریک */
+    color: #ffffff !important;             /* رنگ متن سفید برای این دکمه در تم تاریک */
 }
 body.dark-mode .lets-play-button:hover {
-    background-color: var(--accent-hover-color) !important; /* User's --button-hover-bg: #1d4357 */
+    background-color: #1d4357 !important; /* رنگ هاور مشخص شده کاربر */
 }
 
 
@@ -142,8 +135,8 @@ header {
     top: 0;
     z-index: 1000;
 }
-body.dark-mode header { /* Ensure header shadow is visible on dark theme */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+body.dark-mode header { 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4); /* Shadow for dark theme header */
 }
 
 
@@ -191,7 +184,8 @@ html[dir="rtl"] .settings-controls button .fas {
 }
 .settings-controls select:hover,
 .settings-controls button:hover {
-    border-color: var(--accent-color); 
+    border-color: var(--accent-color); /* This will use light theme's accent in dark mode for these */
+                                       /* Or you can define a specific dark theme accent for general hovers */
 }
 
 .toolbar {
@@ -258,19 +252,17 @@ html[dir="rtl"] #search-input {
      min-width: 150px; 
 }
 
-/* Backup/Restore buttons will now use the default button variables from :root or body.dark-mode */
-/* The specific white background for dark mode is handled above */
+/* Default styling for these buttons (will be overridden by dark mode specific styles above) */
 .backup-restore-controls {
     display: flex;
     gap: 0.5rem;
     flex-shrink: 0; 
 }
-
 .backup-restore-controls button,
 .import-button-label {
     padding: 0.75rem 1rem;
-    background-color: var(--button-bg); 
-    color: var(--button-text-color); 
+    background-color: var(--button-bg); /* Uses :root --button-bg or dark-mode's override if not specific */
+    color: var(--button-text-color); /* Uses :root --button-text-color or dark-mode's override */
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -280,10 +272,9 @@ html[dir="rtl"] #search-input {
     text-align: center;
     white-space: nowrap; 
 }
-
 .backup-restore-controls button:hover,
 .import-button-label:hover {
-    background-color: var(--accent-hover-color);
+    background-color: var(--accent-hover-color); /* Uses :root --accent-hover-color or dark-mode's override */
 }
 
 
@@ -312,8 +303,13 @@ main h2 { margin-top: 2rem; margin-bottom: 1.5rem; font-size: 1.8rem; color: var
 .game-card.selected {
     transform: translateY(-5px) scale(1.03); 
     box-shadow: var(--card-selected-shadow); 
-    border: 2px solid var(--accent-color); 
+    border: 2px solid var(--accent-color); /* This will use light theme's accent color in dark mode if not overridden for dark mode's accent */
 }
+/* If you want selected card border to use dark theme's preferred accent */
+body.dark-mode .game-card.selected {
+    border: 2px solid #3282b8; /* User's dark theme button color */
+}
+
 .game-card-inner-content { 
     flex-grow: 1;
     display: flex;
@@ -346,11 +342,11 @@ html[dir="rtl"] .favorite-button { right: auto; left: 10px; }
     text-align: center;
     padding: 0.5rem 1rem 1rem 1rem; 
 }
-.lets-play-button {
+.lets-play-button { /* Default styling for Let's Play button (applies to light theme) */
     display: inline-block;
     padding: 0.75rem 1.5rem;
-    background-color: var(--accent-color); 
-    color: var(--button-text-color); 
+    background-color: var(--accent-color); /* Light theme accent */
+    color: var(--button-text-color);    /* Light theme button text */
     text-decoration: none;
     border-radius: 5px;
     font-weight: bold;
@@ -358,22 +354,20 @@ html[dir="rtl"] .favorite-button { right: auto; left: 10px; }
     border: none;
     cursor: pointer;
 }
-/* Text color for Let's Play button in dark mode (if accent is light) */
-/* body.dark-mode .lets-play-button { color: #0d1117; } /* Example if accent was very light */
-
 .lets-play-button:hover {
-    background-color: var(--accent-hover-color);
+    background-color: var(--accent-hover-color); /* Light theme accent hover */
     transform: scale(1.05);
 }
 .lets-play-button:active {
     transform: scale(0.98);
 }
 
+
 #no-games-found { grid-column: 1 / -1; text-align: center; font-size: 1.2rem; color: var(--text-muted-color); padding: 2rem; }
 footer { background-color: var(--header-bg); color: var(--header-text-color); text-align: center; padding: 1.5rem 0; margin-top: 3rem; font-size: 0.9rem; }
 
 .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); display: flex; justify-content: center; align-items: center; z-index: 9999; }
-body.dark-mode .loading-overlay { background-color: rgba(13, 17, 23, 0.8); } /* Using primary dark bg for overlay */
+body.dark-mode .loading-overlay { background-color: rgba(13, 17, 23, 0.8); } 
 .spinner { border: 8px solid var(--secondary-bg); border-top: 8px solid var(--accent-color); border-radius: 50%; width: 60px; height: 60px; animation: spin 1s linear infinite; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
