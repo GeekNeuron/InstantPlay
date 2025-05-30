@@ -41,7 +41,7 @@ class InputManager {
         window.addEventListener("keydown", keydownHandler);
 
         let touchstartX = 0;
-        touchstartY = 0;
+        let touchstartY = 0; // *** FIX: Added 'let' to declare touchstartY correctly ***
         let touchendX = 0;
         let touchendY = 0;
         
@@ -51,7 +51,7 @@ class InputManager {
             if (this.game.isMoving || this.isSwiping) return;
 
             touchstartX = event.changedTouches[0].screenX;
-            touchstartY = event.changedTouches[0].screenY;
+            touchstartY = event.changedTouches[0].screenY; // Now assigns to the correctly declared variable
             this.isSwiping = true; 
         };
 
@@ -70,12 +70,12 @@ class InputManager {
         const touchcancelHandler = () => {
             this.isSwiping = false;
             touchstartX = 0;
-            touchstartY = 0;
+            touchstartY = 0; // Reset declared variable
         };
 
         const handleSwipe = () => {
             const deltaX = touchendX - touchstartX;
-            const deltaY = touchendY - touchstartY;
+            const deltaY = touchendY - touchstartY; // Uses the correctly declared touchstartY
             const swipeThreshold = 20; 
             const absDeltaX = Math.abs(deltaX);
             const absDeltaY = Math.abs(deltaY);
@@ -93,15 +93,12 @@ class InputManager {
             } else {
                 // Vertical swipe
                 if (absDeltaY > swipeThreshold) { 
-                    // *** REVERTED to original logic ***
-                    // deltaY > 0 means finger moved physically down screen.
-                    // This should map to the game's "ArrowDown" command.
+                    // Using the reverted (original) logic for vertical swipe direction
                     direction = (deltaY > 0) ? "ArrowDown" : "ArrowUp"; 
                 }
             }
             
             if (direction) {
-                // console.log(`Swipe detected. Physical deltaY: ${deltaY}, Sending game direction: ${direction}`);
                 if (this.game.gameOverModal.classList.contains('show')) {
                     return; 
                 }
