@@ -12,7 +12,7 @@
     },
     {
         "id": "game2_hextris",
-        "name_en": "minesweeper",
+        "name_en": "Minesweeper",
         "name_fa": "مینروب",
         "description_en": "A fast-paced hexagonal puzzle game. Match colors before the stack fills!",
         "description_fa": "یک بازی پازل شش ضلعی سرعتی. رنگ‌ها را قبل از پر شدن ستون، مچ کنید!",
@@ -23,12 +23,12 @@
     },
     {
         "id": "game3_platformer_pro",
-        "name_en": "Platformer Pro",
+        "name_en": "Tetris",
         "name_fa": "پلتفرمر حرفه‌ای",
         "description_en": "Jump, run, and collect coins in this exciting 2D platformer.",
         "description_fa": "در این پلتفرمر دو بعدی هیجان‌انگیز بپر، بدو و سکه جمع کن.",
-        "thumbnail_url": "assets/images/placeholder_thumb_300x180.png",
-        "game_url": "games/platformer_example/index.html",
+        "thumbnail_url": "assets/images/tetris.png",
+        "game_url": "games/tetris/index.html",
         "genre_en": "Platformer",
         "genre_fa": "سکوبازی"
     },
