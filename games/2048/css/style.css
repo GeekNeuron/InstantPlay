@@ -1,142 +1,252 @@
+/* CSS Variables for Theming */
+:root {
+    /* Light Theme (Default) */
+    --body-bg: #faf8ef;
+    --container-bg: #bbada0;
+    --grid-bg: #cdc1b4;
+    --grid-cell-bg: rgba(238, 228, 218, 0.35);
+    --text-color-primary: #776e65;
+    --text-color-secondary: #f9f6f2; /* For dark text on light tiles, or light text on dark tiles */
+    --tile-default-bg: #eee4da;
+    --tile-default-text: #776e65;
+    --score-box-bg: #8f7a66;
+    --score-box-text: #ffffff;
+    --button-bg: #8f7a66;
+    --button-text: #ffffff;
+    --button-hover-bg: #776e65;
+    --modal-bg: rgba(0,0,0,0.6);
+    --modal-content-bg: #fefefe;
+    --modal-text-color: #776e65;
+    --border-color: #bbada0; /* For grid border */
+
+    /* Tile specific colors (can be overridden in dark theme if needed) */
+    --tile-2-bg: #eee4da;   --tile-2-text: #776e65;
+    --tile-4-bg: #ede0c8;   --tile-4-text: #776e65;
+    --tile-8-bg: #f2b179;   --tile-8-text: #f9f6f2;
+    --tile-16-bg: #f59563;  --tile-16-text: #f9f6f2;
+    --tile-32-bg: #f67c5f;  --tile-32-text: #f9f6f2;
+    --tile-64-bg: #f65e3b;  --tile-64-text: #f9f6f2;
+    --tile-128-bg: #edcf72; --tile-128-text: #f9f6f2;
+    --tile-256-bg: #edcc61; --tile-256-text: #f9f6f2;
+    --tile-512-bg: #edc850; --tile-512-text: #f9f6f2;
+    --tile-1024-bg: #edc53f;--tile-1024-text: #f9f6f2;
+    --tile-2048-bg: #edc22e;--tile-2048-text: #f9f6f2;
+    --tile-4096-bg: #3c3a32;--tile-4096-text: #f9f6f2; /* Example for higher values */
+    --tile-super-bg: #3c3a32; --tile-super-text: #f9f6f2; /* For values > 2048 */
+
+    --font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
+    --border-radius: 6px;
+    --gap-size: 10px;
+    --grid-width-desktop: 400px; /* Increased for a more spacious feel */
+    --grid-height-desktop: 400px;
+}
+
+/* Dark Theme Variables */
+body.dark-theme {
+    --body-bg: #0d1117; /* Very dark blue/gray, common GitHub dark */
+    --container-bg: #161b22; /* Darker blue/gray for container */
+    --grid-bg: #2c3a47; /* Slightly lighter dark blue for grid background */
+    --grid-cell-bg: rgba(45, 55, 65, 0.5); /* Darker cell background */
+    --text-color-primary: #c9d1d9; /* Light gray/off-white for primary text */
+    --text-color-secondary: #1f2428; /* Dark text for light tiles if any, or contrast */
+    --tile-default-bg: #34495e; /* Dark blue-gray for default tiles */
+    --tile-default-text: #ecf0f1; /* Light text for default tiles */
+    --score-box-bg: #2c3e50; /* Darker blue for score boxes */
+    --score-box-text: #ecf0f1;
+    --button-bg: #3498db; /* Brighter blue for buttons */
+    --button-text: #ffffff;
+    --button-hover-bg: #2980b9;
+    --modal-bg: rgba(10, 10, 15, 0.7);
+    --modal-content-bg: #161b22;
+    --modal-text-color: #c9d1d9;
+    --border-color: #0d1117;
+
+    /* Tile specific colors for Dark Theme */
+    --tile-2-bg: #2c3e50;   --tile-2-text: #ecf0f1;
+    --tile-4-bg: #34495e;   --tile-4-text: #ecf0f1;
+    --tile-8-bg: #1abc9c;   --tile-8-text: #0d1117; /* Teal */
+    --tile-16-bg: #2ecc71;  --tile-16-text: #0d1117; /* Green */
+    --tile-32-bg: #3498db;  --tile-32-text: #f9f6f2; /* Blue */
+    --tile-64-bg: #9b59b6;  --tile-64-text: #f9f6f2; /* Purple */
+    --tile-128-bg: #f1c40f; --tile-128-text: #0d1117; /* Yellow */
+    --tile-256-bg: #e67e22; --tile-256-text: #f9f6f2; /* Orange */
+    --tile-512-bg: #e74c3c; --tile-512-text: #f9f6f2; /* Red */
+    --tile-1024-bg: #62DAFB;--tile-1024-text: #0d1117; /* React Blue / Light Blue */
+    --tile-2048-bg: #f39c12;--tile-2048-text: #0d1117; /* Bright Orange */
+    --tile-super-bg: #191970; --tile-super-text: #f9f6f2; /* Midnight blue for > 2048 */
+}
+
+/* General Styles */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #faf8ef;
-    color: #776e65;
+    font-family: var(--font-family);
+    background-color: var(--body-bg);
+    color: var(--text-color-primary);
     margin: 0;
+    padding-top: 50px; /* Space for theme switcher */
     display: flex;
-    justify-content: center;
+    flex-direction: column; /* Allow footer to be separate */
     align-items: center;
     min-height: 100vh;
     text-align: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.top-bar {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 1001; /* Above modals */
+}
+
+#theme-switcher {
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    padding: 8px 15px;
+    border-radius: var(--border-radius);
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#theme-switcher:hover {
+    background-color: var(--button-hover-bg);
 }
 
 .container {
-    background-color: #bbada0;
-    padding: 15px; /* Slightly reduced padding */
-    border-radius: 6px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: var(--container-bg);
+    padding: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
     display: flex;
     flex-direction: column;
     align-items: center;
+    transition: background-color 0.3s ease;
+    width: calc(var(--grid-width-desktop) + 40px); /* Ensure container accommodates grid and padding */
 }
 
 header {
     margin-bottom: 20px;
     width: 100%;
     display: flex;
-    flex-direction: column; /* Stack title, scores, button vertically */
+    flex-direction: column;
     align-items: center;
 }
 
 header h1 {
-    font-size: 3em; /* Adjust as needed */
-    margin: 0.2em 0;
+    font-size: 3.5em;
+    margin: 0.1em 0 0.3em 0;
     font-weight: bold;
+    color: var(--text-color-primary);
 }
 
 .scores-container {
     display: flex;
-    justify-content: center; /* Center score boxes */
-    gap: 10px; /* Space between score boxes */
-    margin-bottom: 15px;
+    justify-content: center;
+    gap: var(--gap-size);
+    margin-bottom: 20px;
 }
 
 .score-box {
-    background-color: #8f7a66;
-    color: white;
-    padding: 8px 15px;
-    border-radius: 3px;
-    font-size: 1.1em; /* Adjust as needed */
-    min-width: 80px; /* Ensure score boxes have a decent width */
-    text-align: center;
-}
-
-#new-game-button {
-    background-color: #8f7a66;
-    color: white;
-    border: none;
+    background-color: var(--score-box-bg);
+    color: var(--score-box-text);
     padding: 10px 20px;
-    border-radius: 3px;
-    font-size: 1em;
-    cursor: pointer;
-    transition: background-color 0.2s;
+    border-radius: var(--border-radius);
+    font-size: 1.2em;
+    min-width: 100px;
+    text-align: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-#new-game-button:hover {
-    background-color: #776e65;
+.btn { /* Common button style */
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    padding: 12px 25px;
+    border-radius: var(--border-radius);
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
 }
+
+.btn:hover {
+    background-color: var(--button-hover-bg);
+    transform: translateY(-2px);
+}
+.btn:active {
+    transform: translateY(0px);
+}
+
 
 .grid-container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(4, 1fr);
-    gap: 10px;
-    width: 320px; /* Adjusted for a more compact look, like some Minesweeper UIs or isega.ro */
-    height: 320px;
-    background-color: #cdc1b4; /* Background for the grid gaps */
-    border: 10px solid #bbada0; /* Border around the grid cells container */
-    border-radius: 6px;
-    position: relative; /* For absolute positioning of tiles */
+    gap: var(--gap-size);
+    width: var(--grid-width-desktop);
+    height: var(--grid-height-desktop);
+    background-color: var(--grid-bg);
+    border: var(--gap-size) solid var(--border-color);
+    border-radius: var(--border-radius);
+    position: relative;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    padding: var(--gap-size); /* Add padding inside the border for better spacing from edge */
+    box-sizing: border-box;
 }
 
-.grid-cell { /* The empty cells behind the tiles */
-    background-color: rgba(238, 228, 218, 0.35);
-    border-radius: 3px;
+.grid-cell {
+    background-color: var(--grid-cell-bg);
+    border-radius: calc(var(--border-radius) / 2);
+    transition: background-color 0.3s ease;
 }
 
 .tile {
-    position: absolute; /* For movement animation */
-    /* Tile size calculated dynamically in JS or based on grid-container size minus gaps */
-    width: calc((100% - (10px * 5)) / 4 + 2.5px); /* Adjust based on grid-container width & gap */
-    height: calc((100% - (10px * 5)) / 4 + 2.5px);
-    background-color: #eee4da;
-    border-radius: 3px;
+    position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.8em; /* Initial font size */
     font-weight: bold;
-    transition: transform 0.1s ease-in-out, background-color 0.1s ease-in-out, opacity 0.1s;
+    border-radius: calc(var(--border-radius) / 2);
+    transition: transform 0.15s ease-in-out, background-color 0.15s ease-in-out, color 0.15s ease-in-out, opacity 0.15s ease-in-out;
     animation: appear 0.2s ease-in-out;
-    box-sizing: border-box; /* Ensures padding and border are included in the element's total width and height */
+    box-sizing: border-box;
+    background-color: var(--tile-default-bg); /* Fallback */
+    color: var(--tile-default-text); /* Fallback */
 }
-
 
 @keyframes appear {
-    from {
-        transform: scale(0);
-        opacity: 0;
-    }
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
 }
-
-/* Tile value-specific styles */
-.tile[data-value="2"]    { background-color: #eee4da; color: #776e65; }
-.tile[data-value="4"]    { background-color: #ede0c8; color: #776e65; }
-.tile[data-value="8"]    { background-color: #f2b179; color: #f9f6f2; }
-.tile[data-value="16"]   { background-color: #f59563; color: #f9f6f2; }
-.tile[data-value="32"]   { background-color: #f67c5f; color: #f9f6f2; }
-.tile[data-value="64"]   { background-color: #f65e3b; color: #f9f6f2; }
-.tile[data-value="128"]  { background-color: #edcf72; color: #f9f6f2; font-size: 1.6em; }
-.tile[data-value="256"]  { background-color: #edcc61; color: #f9f6f2; font-size: 1.6em; }
-.tile[data-value="512"]  { background-color: #edc850; color: #f9f6f2; font-size: 1.6em; }
-.tile[data-value="1024"] { background-color: #edc53f; color: #f9f6f2; font-size: 1.3em; }
-.tile[data-value="2048"] { background-color: #edc22e; color: #f9f6f2; font-size: 1.3em; }
-.tile[data-value="4096"] { background-color: #3c3a32; color: #f9f6f2; font-size: 1.3em; }
-/* Add more styles for higher values if needed */
 
 .tile.tile-merged {
     animation: pop 0.2s ease-in-out;
+    animation-delay: 0.05s; /* slight delay so merge happens after move */
 }
 
 @keyframes pop {
     0% { transform: scale(1) }
-    50% { transform: scale(1.2) }
+    50% { transform: scale(1.25) } /* Slightly bigger pop */
     100% { transform: scale(1) }
 }
+
+/* Tile value-specific styles using CSS variables */
+.tile[data-value="2"]    { background-color: var(--tile-2-bg); color: var(--tile-2-text); }
+.tile[data-value="4"]    { background-color: var(--tile-4-bg); color: var(--tile-4-text); }
+.tile[data-value="8"]    { background-color: var(--tile-8-bg); color: var(--tile-8-text); }
+.tile[data-value="16"]   { background-color: var(--tile-16-bg); color: var(--tile-16-text); }
+.tile[data-value="32"]   { background-color: var(--tile-32-bg); color: var(--tile-32-text); }
+.tile[data-value="64"]   { background-color: var(--tile-64-bg); color: var(--tile-64-text); }
+.tile[data-value="128"]  { background-color: var(--tile-128-bg); color: var(--tile-128-text); font-size: 2.3em; }
+.tile[data-value="256"]  { background-color: var(--tile-256-bg); color: var(--tile-256-text); font-size: 2.3em; }
+.tile[data-value="512"]  { background-color: var(--tile-512-bg); color: var(--tile-512-text); font-size: 2.3em; }
+.tile[data-value="1024"] { background-color: var(--tile-1024-bg); color: var(--tile-1024-text); font-size: 1.8em; }
+.tile[data-value="2048"] { background-color: var(--tile-2048-bg); color: var(--tile-2048-text); font-size: 1.8em; }
+.tile[data-value="4096"],
+.tile[data-value="8192"] { background-color: var(--tile-super-bg); color: var(--tile-super-text); font-size: 1.8em; }
+
 
 .modal {
     position: fixed;
@@ -144,74 +254,85 @@ header h1 {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.6);
+    background-color: var(--modal-bg);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+.modal.show {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease, visibility 0s linear 0s;
 }
 
 .modal-content {
-    background-color: #fefefe;
-    padding: 25px 30px;
-    border-radius: 6px;
+    background-color: var(--modal-content-bg);
+    padding: 30px 40px;
+    border-radius: var(--border-radius);
     text-align: center;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    color: #776e65;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.25);
+    color: var(--modal-text-color);
+    transform: scale(0.9);
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+.modal.show .modal-content {
+    transform: scale(1);
 }
 
 .modal-content h2 {
     margin-top: 0;
+    font-size: 2em;
+    margin-bottom: 15px;
 }
-
-.modal-content button {
-    background-color: #8f7a66;
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 3px;
-    font-size: 1.1em;
-    cursor: pointer;
-    margin-top: 15px;
-    transition: background-color 0.2s;
-}
-
-.modal-content button:hover {
-    background-color: #776e65;
+.modal-content p {
+    font-size: 1.2em;
+    margin-bottom: 25px;
 }
 
 footer {
-    margin-top: 25px;
+    margin-top: 30px;
+    padding-bottom: 20px;
     font-size: 0.9em;
-    color: #776e65;
+    color: var(--text-color-primary);
+    transition: color 0.3s ease;
 }
 
-/* Responsive adjustments for smaller screens */
-@media (max-width: 480px) {
+/* Responsive adjustments */
+@media (max-width: 500px) { /* Increased breakpoint for better mobile layout */
+    body {
+        padding-top: 60px; /* Adjust for theme switcher */
+    }
     .container {
-        padding: 10px;
+        width: 95vw;
+        padding: 15px;
     }
     header h1 {
-        font-size: 2.5em;
+        font-size: 2.8em;
     }
     .scores-container {
-        flex-direction: column; /* Stack score boxes on small screens */
+        flex-direction: column;
         gap: 8px;
+        margin-bottom: 15px;
     }
     .score-box {
         font-size: 1em;
-        padding: 6px 12px;
-        min-width: 70px;
+        padding: 8px 15px;
+        min-width: 90px;
     }
     .grid-container {
-        width: 90vw; /* Make grid responsive to viewport width */
-        height: 90vw; /* Maintain square aspect ratio */
-        gap: 8px;
-        border-width: 8px;
+        width: calc(100% - 2 * var(--gap-size)); /* Take full width minus padding */
+        height: calc(95vw - 2 * var(--gap-size) - 30px); /* Adjust height to be square-ish */
+        /* If strict square is needed and width is 100% (minus padding), height should be same */
+        /* max-height: 400px; /* Cap height on mobile */
+        padding: var(--gap-size);
     }
-    /* Tile size will adjust based on grid-container, but font might need tweaking */
-    .tile {
-        font-size: 1.5em; /* Base font size for tiles on small screens */
+    
+    .tile { /* Font size for tiles on mobile */
+        font-size: 1.5em;
     }
     .tile[data-value="128"],
     .tile[data-value="256"],
@@ -220,4 +341,11 @@ footer {
     .tile[data-value="1024"],
     .tile[data-value="2048"],
     .tile[data-value="4096"] { font-size: 1.1em; }
+
+    .modal-content {
+        width: 80%;
+        padding: 20px;
+    }
+    .modal-content h2 { font-size: 1.8em; }
+    .modal-content p { font-size: 1.1em; }
 }
