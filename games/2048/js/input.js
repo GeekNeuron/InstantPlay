@@ -44,9 +44,7 @@ class InputManager {
         let touchstartY = 0;
         let touchendX = 0;
         let touchendY = 0;
-        // let touchstartTime = 0; // Not strictly needed for this version of swipe logic
-
-        // Attach touch listeners directly to the grid container
+        
         const gameArea = document.querySelector('.grid-container'); 
 
         const touchstartHandler = (event) => {
@@ -54,10 +52,7 @@ class InputManager {
 
             touchstartX = event.changedTouches[0].screenX;
             touchstartY = event.changedTouches[0].screenY;
-            // touchstartTime = new Date().getTime();
             this.isSwiping = true; 
-            // `touch-action: none` on .grid-container in CSS handles scroll prevention.
-            // No need for event.preventDefault() here if passive:true is used.
         };
 
         const touchendHandler = (event) => {
@@ -91,16 +86,24 @@ class InputManager {
             
             let direction = null;
             if (absDeltaX > absDeltaY) {
+                // Horizontal swipe
                 if (absDeltaX > swipeThreshold) { 
                     direction = (deltaX > 0) ? "ArrowRight" : "ArrowLeft";
                 }
             } else {
+                // Vertical swipe
                 if (absDeltaY > swipeThreshold) { 
-                    direction = (deltaY > 0) ? "ArrowDown" : "ArrowUp";
+                    // *** FIX: Invert vertical swipe mapping ***
+                    // If physical swipe down (deltaY > 0) makes tiles go UP visually,
+                    // we need to send the command that makes tiles go DOWN visually.
+                    // Assuming game.move("ArrowUp") makes tiles go DOWN visually, and
+                    // game.move("ArrowDown") makes tiles go UP visually, based on user report.
+                    direction = (deltaY > 0) ? "ArrowUp" : "ArrowDown"; 
                 }
             }
             
             if (direction) {
+                // console.log(`Swipe detected. Physical deltaY: ${deltaY}, Sending game direction: ${direction}`);
                 if (this.game.gameOverModal.classList.contains('show')) {
                     return; 
                 }
