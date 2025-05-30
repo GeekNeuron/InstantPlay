@@ -1,19 +1,21 @@
-
+/* General Body Styles */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
-    flex-direction: column; /* To stack theme switcher and game container */
+    flex-direction: column;
     align-items: center;
-    justify-content: flex-start; /* Align game container to top */
+    justify-content: flex-start;
     min-height: 100vh;
     margin: 0;
-    padding-top: 60px; /* Space for the fixed theme switcher */
+    padding: 20px; /* General padding */
+    padding-top: 70px; /* Increased padding for fixed theme switcher */
     box-sizing: border-box;
-    transition: background-color 0.3s, color 0.3s;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* Theme Switcher Styles */
 .theme-switcher-container {
-    position: fixed; /* Or absolute if body is relative */
+    position: fixed;
     top: 20px;
     right: 20px;
     z-index: 1000;
@@ -22,75 +24,127 @@ body {
 .theme-switcher {
     width: 30px;
     height: 30px;
-    border-radius: 50%;
-    border: none;
+    border-radius: 50%; /* دکمه گرد */
+    border: 1px solid; /* Border color will be set by theme */
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
+/* Game Container Styles */
 .game-container {
-    border: 2px solid; /* Color will be set by theme */
+    /* رنگ پس‌زمینه و کادر توسط تم‌ها مشخص می‌شود */
+    border-width: 2px;
+    border-style: solid;
     border-radius: 15px; /* کادر بازی دور گرد */
     padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 500px; /* Max width for the game container */
 }
 
 .game-header {
     text-align: center;
     margin-bottom: 20px;
+    width: 100%;
 }
 
 .game-header h1 {
     margin-top: 0;
+    font-size: 2.5em;
+    font-weight: 300;
 }
 
-.controls select, .controls button, .game-actions button {
-    padding: 8px 12px;
-    margin: 0 5px;
-    border-radius: 5px;
-    border: 1px solid; /* Color will be set by theme */
+.controls, .game-actions {
+    margin-bottom: 15px;
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    justify-content: center;
+    gap: 10px; /* Space between control elements */
+}
+
+.controls label {
+    display: flex;
+    align-items: center;
+}
+
+.controls select,
+.controls button,
+.game-actions button {
+    padding: 10px 15px;
+    border-radius: 8px; /* دکمه‌ها و انتخاب‌گرها با گوشه گرد */
+    border-width: 1px;
+    border-style: solid;
     cursor: pointer;
-    font-size: 1em;
+    font-size: 0.9em;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
+/* Sudoku Board Styles */
 .sudoku-board {
     display: grid;
-    grid-template-columns: repeat(9, minmax(30px, 1fr)); /* Responsive cells */
-    grid-template-rows: repeat(9, minmax(30px, 1fr));    /* Responsive cells */
-    gap: 2px; /* Slight gap to make grid lines visible */
-    width: 90vw; /* Responsive width */
-    max-width: 450px; /* Max width for larger screens */
+    grid-template-columns: repeat(9, minmax(30px, 1fr));
+    grid-template-rows: repeat(9, minmax(30px, 1fr));
+    gap: 1px; /* Fine lines between cells */
+    width: 100%; /* Full width of its container */
+    max-width: 450px; /* Max width for the board itself */
     aspect-ratio: 1 / 1; /* Keep it square */
-    border: 2px solid; /* Main grid border, color from theme */
-    background-color: transparent; /* Will be overridden by theme if needed */
+    border-width: 2px; /* Main grid border */
+    border-style: solid;
+    border-radius: 10px; /* کادر داخلی جدول هم گرد */
+    padding: 3px; /* Small padding to make the outer border distinct from cell borders */
+    box-sizing: border-box;
+    margin-bottom: 20px;
+    /* رنگ پس‌زمینه و کادر توسط تم‌ها مشخص می‌شود */
 }
 
-.sudoku-board div[data-row='2'],
-.sudoku-board div[data-row='5'] {
-    /* Thicker bottom border for 3x3 subgrids */
-    border-bottom-width: 3px !important;
+/* Styling for thicker lines separating 3x3 subgrids */
+.cell:nth-child(9n) { /* No right border for the last cell in a row */
+    border-right-width: 1px;
+}
+.cell:nth-child(n):nth-child(-n+9) { /* No top border for the first row */
+     border-top-width: 1px;
 }
 
-.sudoku-board div[data-col='2'],
-.sudoku-board div[data-col='5'] {
-    /* Thicker right border for 3x3 subgrids */
-    border-right-width: 3px !important;
+/* Horizontal lines */
+.cell[data-row="2"], .cell[data-row="5"] {
+    border-bottom-width: 3px;
 }
 
+/* Vertical lines */
+.cell[data-col="2"], .cell[data-col="5"] {
+    border-right-width: 3px;
+}
+
+/* Ensure the very last cell doesn't have an overly thick right/bottom border if it's also a subgrid border */
+.cell[data-row="2"][data-col="8"], .cell[data-row="5"][data-col="8"] {
+    border-right-width: 1px; /* Reset if it's the last in row but also a subgrid col border */
+}
+.cell[data-row="8"][data-col="2"], .cell[data-row="8"][data-col="5"] {
+    border-bottom-width: 1px; /* Reset if it's the last in col but also a subgrid row border */
+}
+.cell[data-row="8"]:nth-child(9n) { /* Last cell of the board */
+    border-bottom-width: 1px;
+    border-right-width: 1px;
+}
+
+
+/* Individual Cell Styles */
 .cell {
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid; /* Color from theme */
-    border-radius: 8px; /* مربع‌ها هم دور گرد */
-    font-size: clamp(1em, 4vw, 1.5em); /* Responsive font size */
-    font-weight: bold;
+    border-width: 1px; /* نازک برای سلول‌های داخلی */
+    border-style: solid;
+    border-radius: 6px; /* مربع‌های داخل جدول هم دور گرد */
+    font-size: clamp(1em, 4vw, 1.6em); /* Responsive font size */
+    font-weight: normal;
     text-align: center;
-    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    box-sizing: border-box;
+    transition: background-color 0.2s ease;
 }
 
 .cell input {
@@ -99,39 +153,82 @@ body {
     text-align: center;
     border: none;
     background-color: transparent;
-    font-size: inherit; /* Inherit from .cell */
+    font-size: inherit;
     font-weight: inherit;
-    color: inherit;
-    border-radius: 6px; /* Slightly less than cell for visual fit */
+    color: inherit; /* رنگ متن از والد (سلول) به ارث می‌رسد */
+    border-radius: 5px; /* Slightly less than cell for visual fit */
     padding: 0;
     box-sizing: border-box;
+    outline: none; /* Outline will be handled by focus style */
 }
 
 .cell input:focus {
-    outline: none;
-    /* Optional: add a subtle focus indicator if needed */
-    /* box-shadow: 0 0 0 2px var(--focus-color); */
+    /* نشانگر فوکوس سفارشی - رنگ توسط تم‌ها مشخص می‌شود */
+    box-shadow: 0 0 0 2px var(--focus-indicator-color);
 }
 
 .cell.prefilled {
-    /* Style for pre-filled numbers */
     font-weight: bold;
+    /* رنگ پس‌زمینه و متن توسط تم‌ها مشخص می‌شود */
 }
 
-.cell.conflicting input {
-    /* Style for conflicting numbers */
-    color: red !important; /* Or another indicator color */
-    animation: shake 0.3s;
+.cell.conflicting input, .cell.conflicting { /* Also style the cell if it's prefilled and conflicting (though rare for prefilled) */
+    color: var(--conflict-color) !important; /* رنگ متن متناقض */
+    animation: shake 0.4s;
 }
 
 @keyframes shake {
     0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-3px); }
-    75% { transform: translateX(3px); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
 }
 
+/* Message Area Styles */
 .message-area {
     margin-top: 15px;
-    font-size: 1.1em;
-    min-height: 1.5em; /* To prevent layout shift */
+    font-size: 1em;
+    font-weight: 500;
+    min-height: 1.5em;
+    text-align: center;
+    width: 100%;
+    transition: color 0.3s ease;
+}
+
+/* Specific message types (colors set in themes.css) */
+.message-success {
+    color: var(--success-color);
+}
+.message-error {
+    color: var(--error-color);
+}
+.message-info {
+    color: var(--info-color);
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+        padding-top: 60px;
+    }
+    .game-container {
+        padding: 15px;
+    }
+    .game-header h1 {
+        font-size: 2em;
+    }
+    .controls, .game-actions {
+        flex-direction: column; /* Stack controls on small screens */
+        align-items: stretch; /* Make buttons full width in column */
+    }
+    .controls select, .controls button, .game-actions button {
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .sudoku-board {
+        gap: 1px;
+    }
+    .cell {
+        border-radius: 4px;
+    }
 }
