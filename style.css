@@ -1,56 +1,35 @@
-/* General Styles - Color Variable Definitions */
+/* General Styles */
 :root {
-    /* Light Theme (Default) */
-    --primary-bg: #f4f7f9;       /* پس‌زمینه اصلی صفحه - خاکستری خیلی روشن */
-    --secondary-bg: #ffffff;     /* پس‌زمینه عناصر مانند کارت‌ها، تولبار - سفید */
-    --text-color: #212529;       /* رنگ متن اصلی - تیره */
-    --text-muted-color: #6c757d; /* رنگ متن فرعی/کمرنگ - خاکستری متوسط */
-    
-    --header-bg: #343a40;        /* پس‌زمینه هدر - خاکستری تیره */
-    --header-text-color: #f8f9fa;/* رنگ متن هدر - روشن */
-    
-    --accent-color: #007bff;     /* رنگ تاکید اصلی (مثلاً برای دکمه‌ها) - آبی */
-    --accent-hover-color: #0056b3;/* رنگ تاکید هنگام هاور */
-    
-    --border-color: #dee2e6;     /* رنگ بوردرها - خاکستری روشن */
-    
-    --star-color: #f1c40f;       /* رنگ ستاره علاقه‌مندی‌ها */
+    --primary-bg: #f0f2f5;
+    --secondary-bg: #ffffff;
+    --text-color: #333333;
+    --text-muted-color: #555555;
+    --accent-color: #3498db;
+    --accent-hover-color: #2980b9;
+    --header-bg: #2c3e50;       /* Dark blue-grey */
+    --header-text-color: #ecf0f1;
+    --card-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    --card-hover-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    --card-selected-shadow: 0 8px 16px rgba(0,0,0,0.2); /* Shadow for selected card (modal replacement) */
+    --border-color: #e0e0e0;
+    --button-bg: var(--accent-color);
+    --button-text-color: #ffffff;
+    --star-color: #f1c40f;
     --icon-color: var(--text-muted-color);
-
-    --toast-success-bg: #28a745;
-    --toast-error-bg: #dc3545;
-    --toast-info-bg: #17a2b8;
+    --toast-success-bg: #2ecc71;
+    --toast-error-bg: #e74c3c;
+    --toast-info-bg: #3498db;
     --toast-text-color: #ffffff;
-
-    --thumbnail-bg: #e9ecef;     /* پس‌زمینه برای تصاویر بندانگشتی قبل از بارگذاری */
+    --thumbnail-bg: #e9ecef;     /* Background for thumbnail container */
 }
 
-body.dark-mode {
-    /* Dark Theme */
-    --primary-bg: #1c1c1e;       /* پس‌زمینه اصلی صفحه - خاکستری بسیار تیره (نزدیک به مشکی) */
-    --secondary-bg: #2c2c2e;     /* پس‌زمینه عناصر - خاکستری تیره */
-    --text-color: #f8f9fa;       /* رنگ متن اصلی - روشن */
-    --text-muted-color: #adb5bd; /* رنگ متن فرعی/کمرنگ - خاکستری روشن */
-
-    --header-bg: #212529;        /* پس‌زمینه هدر - تیره‌تر از خاکستری تیره اصلی */
-    /* --header-text-color remains light */
-    
-    --accent-color: #007bff;     /* می‌توان این را هم برای حالت تاریک تغییر داد، مثلا به آبی روشن‌تر */
-    --accent-hover-color: #0056b3;
-
-    --border-color: #495057;     /* رنگ بوردرها - خاکستری تیره‌تر */
-    --icon-color: var(--text-muted-color);
-    --thumbnail-bg: #3a3f44;
-}
-
-/* Basic application of theme variables */
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; /* Default LTR font stack */
     line-height: 1.6; 
     margin: 0;
     padding: 0;
-    background-color: var(--primary-bg); /* <--- اعمال پس‌زمینه اصلی صفحه */
-    color: var(--text-color);           /* <--- اعمال رنگ متن اصلی صفحه */
+    background-color: var(--primary-bg);
+    color: var(--text-color);
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -66,47 +45,346 @@ html[dir="rtl"] textarea {
     font-family: 'Vazirmatn', sans-serif;
 }
 
-body.modal-open {
+body.dark-mode {
+    --primary-bg: #1a1a1a;
+    --secondary-bg: #2c2c2c;
+    --text-color: #e0e0e0;
+    --text-muted-color: #aaaaaa;
+    --header-bg: #1f2937;      /* Darker blue-grey */
+    --card-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    --card-hover-shadow: 0 6px 12px rgba(0,0,0,0.4);
+    --card-selected-shadow: 0 8px 16px rgba(0,0,0,0.5); /* Shadow for selected card (modal replacement) */
+    --border-color: #444444;
+    --icon-color: var(--text-muted-color);
+    --thumbnail-bg: #3a3f44;
+}
+body.modal-open { /* This class was for modal, but the request was to remove modal for game details. Keeping it in case modal is used for something else or if structure is reverted fully. */
     overflow: hidden; 
 }
 
-/* Ensure main structural elements use the theme variables correctly */
+.container {
+    width: 90%;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
 header {
     background-color: var(--header-bg);
     color: var(--header-text-color);
-    /* ... other header styles ... */
+    padding: 1rem 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; 
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    user-select: none;
+}
+
+.settings-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.settings-controls select,
+.settings-controls button {
+    padding: 0.5rem 0.8rem;
+    border-radius: 5px;
+    border: 1px solid var(--border-color);
+    background-color: var(--secondary-bg);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+.settings-controls button {
+     background-color: transparent;
+     border: none;
+     color: var(--header-text-color);
+     font-size: 1rem;
+}
+.settings-controls button .fas {
+    margin-right: 0.3em;
+}
+html[dir="rtl"] .settings-controls button .fas {
+    margin-right: 0;
+    margin-left: 0.3em;
+}
+.settings-controls select:hover,
+.settings-controls button:hover {
+    border-color: var(--accent-color);
 }
 
 .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin: 2rem 0;
+    gap: 1rem;
+    padding: 1rem;
     background-color: var(--secondary-bg);
-    /* ... other toolbar styles ... */
+    border-radius: 8px;
+    box-shadow: var(--card-shadow);
+}
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    min-width: 220px;
 }
 
-.game-card {
-    background-color: var(--secondary-bg);
-    /* ... other card styles ... */
-}
-
-.game-card-content h3 {
+#search-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    padding-right: 2.5rem; 
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: var(--primary-bg);
     color: var(--text-color);
-    /* ... */
 }
 
-.game-card-content p.description {
-    color: var(--text-muted-color);
-    /* ... */
+.search-icon {
+    position: absolute;
+    right: 1rem;
+    color: var(--icon-color);
+}
+html[dir="rtl"] .search-icon {
+    right: auto;
+    left: 1rem;
+}
+html[dir="rtl"] #search-input {
+    padding-left: 2.5rem;
+    padding-right: 1rem;
 }
 
-/* Keep the rest of your style.css as it was, including:
-   .container, .sr-only, .settings-controls, #search-input, .search-icon,
-   .filter-sort-controls, .backup-restore-controls,
-   main h2, #all_games_main_header, .favorites-section h2, .favorites-separator,
-   .game-grid structure, .game-card specific styles (border, shadow, etc.),
-   .favorite-button, #no-games-found, footer,
-   .loading-overlay, .spinner, @keyframes spin,
-   .toast-container, .toast, .toast-close-button,
-   #dark-mode-toggle icons,
-   and ALL Media Queries.
-   The changes above are focused on the CORE THEME COLOR definitions and their
-   direct application to the main page areas.
-*/
+.filter-sort-controls {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 0.8rem;
+    flex-grow: 1;
+    justify-content: center;
+}
+.filter-sort-controls select {
+     padding: 0.75rem 1rem;
+     border: 1px solid var(--border-color);
+     border-radius: 5px;
+     font-size: 0.9rem;
+     background-color: var(--primary-bg);
+     color: var(--text-color);
+     cursor: pointer;
+     flex-grow: 1; 
+     min-width: 150px; 
+}
+
+.backup-restore-controls {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0; 
+}
+
+.backup-restore-controls button,
+.import-button-label {
+    padding: 0.75rem 1rem;
+    background-color: var(--button-bg);
+    color: var(--button-text-color);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+    font-size: 0.9rem;
+    text-align: center;
+    white-space: nowrap; 
+}
+
+.backup-restore-controls button:hover,
+.import-button-label:hover {
+    background-color: var(--accent-hover-color);
+}
+
+main { padding: 1rem 0 2rem 0; }
+main h2 { margin-top: 2rem; margin-bottom: 1.5rem; font-size: 1.8rem; color: var(--text-color); text-align: center; }
+#all_games_main_header { margin-top: 1rem; }
+.favorites-section h2 { margin-top: 0.5rem; }
+.favorites-separator { border: 0; height: 1px; background-color: var(--border-color); margin: 2rem auto; width: 80%; }
+.game-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+
+/* Game Card styles from v4 (modal replacement interaction) */
+.game-card { 
+    background-color: var(--secondary-bg); 
+    border-radius: 8px; 
+    box-shadow: var(--card-shadow); 
+    overflow: visible; 
+    display: flex; 
+    flex-direction: column; 
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; 
+    position: relative; 
+    cursor: pointer; 
+}
+.game-card:hover { 
+    transform: translateY(-5px) scale(1.01); 
+    box-shadow: var(--card-hover-shadow); 
+}
+.game-card.selected {
+    transform: translateY(-5px) scale(1.03); 
+    box-shadow: var(--card-selected-shadow); 
+    border: 2px solid var(--accent-color); 
+}
+.game-card-inner-content { 
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+.thumbnail-container { 
+    width: 100%;
+    height: 180px;
+    background-color: var(--thumbnail-bg); 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; 
+    border-bottom: 1px solid var(--border-color);
+}
+.game-card .thumbnail { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: contain; /* Ensure full image is visible (user request) */
+}
+.game-card-content { padding: 1rem; flex-grow: 1; display: flex; flex-direction: column; }
+.game-card-content h3 { margin-top: 0; margin-bottom: 0.5rem; font-size: 1.25rem; color: var(--text-color); }
+.game-card-content p.description { font-size: 0.9rem; color: var(--text-muted-color); margin-bottom: 1rem; flex-grow: 1; min-height: 50px; }
+.favorite-button { position: absolute; top: 10px; right: 10px; background: none; border: none; color: #ccc; font-size: 1.8rem; cursor: pointer; padding: 5px; z-index: 10; transition: color 0.2s ease, transform 0.2s ease; }
+html[dir="rtl"] .favorite-button { right: auto; left: 10px; }
+.favorite-button.is-favorite { color: var(--star-color); }
+.favorite-button:hover { transform: scale(1.2); }
+
+/* Let's Play Button (from v4 interaction) */
+.lets-play-button-container {
+    text-align: center;
+    padding: 0.5rem 1rem 1rem 1rem; 
+}
+.lets-play-button {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--accent-color); /* Uses accent color */
+    color: var(--button-text-color);
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    border: none;
+    cursor: pointer;
+}
+.lets-play-button:hover {
+    background-color: var(--accent-hover-color);
+    transform: scale(1.05);
+}
+.lets-play-button:active {
+    transform: scale(0.98);
+}
+
+#no-games-found { grid-column: 1 / -1; text-align: center; font-size: 1.2rem; color: var(--text-muted-color); padding: 2rem; }
+footer { background-color: var(--header-bg); color: var(--header-text-color); text-align: center; padding: 1.5rem 0; margin-top: 3rem; font-size: 0.9rem; }
+
+.loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 9999; }
+.spinner { border: 8px solid var(--primary-bg); border-top: 8px solid var(--accent-color); border-radius: 50%; width: 60px; height: 60px; animation: spin 1s linear infinite; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+.toast-container { position: fixed; top: 80px; right: 20px; z-index: 1050; display: flex; flex-direction: column; gap: 10px; }
+html[dir="rtl"] .toast-container { right: auto; left: 20px; }
+.toast { background-color: var(--toast-info-bg); color: var(--toast-text-color); padding: 15px 25px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); opacity: 0; transform: translateX(100%); transition: opacity 0.5s ease, transform 0.5s ease; min-width: 250px; position: relative; padding-right: 40px; }
+html[dir="rtl"] .toast { transform: translateX(-100%); padding-right: 15px; padding-left: 40px; }
+.toast.show { opacity: 1; transform: translateX(0); }
+.toast.success { background-color: var(--toast-success-bg); }
+.toast.error { background-color: var(--toast-error-bg); }
+.toast-close-button { position: absolute; top: 5px; right: 10px; background: none; border: none; color: inherit; font-size: 1.5rem; cursor: pointer; line-height: 1; opacity: 0.7; }
+html[dir="rtl"] .toast-close-button { right: auto; left: 10px; }
+.toast-close-button:hover { opacity: 1; }
+
+/* Modal was removed for game details, this is a placeholder if it's reused. Otherwise, remove. */
+.modal { display: none !important; } 
+/* If you fully removed modal HTML and JS, these styles are not strictly needed */
+/* .modal.show { opacity: 1; pointer-events: auto; } */
+/* .modal-content { ... } */
+/* .modal.show .modal-content { transform: scale(1); } */
+/* .modal-close-button { ... } */
+/* .modal-img { ... } */
+/* #modal-title-content { ... } */
+/* .modal-genre { ... } */
+/* #modal-description-content { ... } */
+/* .modal-play-button { ... } */
+
+
+#dark-mode-toggle .fa-sun { display: none; }
+body.dark-mode #dark-mode-toggle .fa-moon { display: none; }
+body.dark-mode #dark-mode-toggle .fa-sun { display: inline-block; }
+
+/* --- Media Queries for Mobile Refinements (from version with mobile improvements) --- */
+@media (max-width: 768px) {
+    header .container {}
+    header h1 { font-size: 1.6rem; }
+    .settings-controls { gap: 0.75rem; }
+    .settings-controls select, .settings-controls button { padding: 0.4rem 0.7rem; font-size: 0.9rem; }
+    .toolbar { flex-direction: column; align-items: stretch; gap: 0.8rem; }
+    .search-container, .filter-sort-controls, .backup-restore-controls { width: 100%; }
+    .filter-sort-controls { flex-direction: column; gap: 0.5rem; }
+    .filter-sort-controls select { width: 100%; }
+    .backup-restore-controls { justify-content: center; }
+    .game-grid { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+    .game-card-content h3 { font-size: 1.15rem; }
+    .game-card-content p.description { font-size: 0.85rem; min-height: 40px; }
+    .favorite-button { font-size: 1.6rem; top: 8px; right: 8px; }
+    html[dir="rtl"] .favorite-button { right: auto; left: 8px; }
+    /* Modal styles for mobile (if modal was still in use) */
+    /* .modal-content { padding: 1.5rem; width: 95%; } */
+    /* .modal-img { max-height: 250px; } */
+    .game-card.selected { transform: translateY(-3px) scale(1.02); }
+    .lets-play-button { padding: 0.6rem 1.2rem; font-size: 0.9rem; }
+}
+
+@media (max-width: 480px) {
+    .container { width: 95%; padding: 0 10px; }
+    header h1 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+    header .container { align-items: center; text-align: center; }
+    .settings-controls { justify-content: center; width: 100%; }
+    #search-input, .filter-sort-controls select, .backup-restore-controls button, .import-button-label { font-size: 0.9rem; padding: 0.6rem 0.8rem; }
+    .game-grid { grid-template-columns: 1fr; gap: 1rem; }
+    .thumbnail-container { height: 160px; } /* Adjusted from .game-card .thumbnail */
+    .game-card-content h3 { font-size: 1.1rem; }
+    .game-card-content p.description { min-height: auto; font-size: 0.8rem; }
+    /* Modal styles for very small mobile (if modal was still in use) */
+    /* .modal-content { padding: 1rem; } */
+    /* #modal-title-content { font-size: 1.2rem; } */
+    /* .modal-genre { font-size: 0.8rem; } */
+    /* #modal-description-content { font-size: 0.9rem; margin-bottom: 1.5rem; } */
+    .lets-play-button { width: calc(100% - 2rem); margin: 0.5rem auto 0 auto; }
+    .toast-container { width: calc(100% - 20px); right: 10px; left: 10px; top: 65px; align-items: center; }
+    html[dir="rtl"] .toast-container {}
+    .toast { min-width: 0; width: 100%; max-width: 350px; }
+}
