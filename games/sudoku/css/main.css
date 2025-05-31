@@ -44,10 +44,8 @@
     --timer-text-light: #495057;
     --history-bg-light: #ffffff;
     --history-border-light: #ced4da;
-    /* --history-header-bg-light: #e9ecef; */ /* No longer needed for text bg */
-    --history-item-hover-bg-light: #f8f9fa;
     --history-separator-color-light: #dee2e6;
-
+    --history-item-hover-bg-light: #f8f9fa;
 
     --theme-switcher-light: #212529;
     --input-focus-border-light: #86b7fe;
@@ -87,10 +85,8 @@
     --timer-text-dark: #adb5bd;
     --history-bg-dark: #161b22;
     --history-border-dark: #3282b8;
-    /* --history-header-bg-dark: #1e2732; */ /* No longer needed for text bg */
-    --history-item-hover-bg-dark: #2c3a47;
     --history-separator-color-dark: #21262d;
-
+    --history-item-hover-bg-dark: #2c3a47;
 
     --theme-switcher-dark: #e0e0e0;
     --input-focus-border-dark: #3282b8;
@@ -176,22 +172,34 @@ body.dark-theme .game-header h1 {
 
 .header-controls {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; /* Puts .game-actions and .difficulty-timer-wrapper on opposite sides */
     align-items: center;
-    gap: 15px;
+    gap: 10px; /* Gap between the two main groups if they are close */
     margin-bottom: 10px;
-    flex-wrap: wrap;
+    flex-wrap: wrap; /* Allows the two main groups to wrap on smaller screens */
 }
-.game-actions {
+.game-actions, .difficulty-timer-wrapper {
     display: flex;
-    gap: 10px;
-    align-items: center;
+    align-items: center; /* Vertically align items within each group */
+    gap: 10px; /* Gap between items within each group (e.g., New Game & Reset, or Difficulty & Timer) */
+    flex-shrink: 0; /* Prevent groups from shrinking too much initially */
 }
-.difficulty-timer-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+/* If header-controls wraps, center the wrapped items */
+@media (max-width: 550px) { /* Adjust this breakpoint as needed */
+    .header-controls {
+        justify-content: center; /* Center groups when they wrap */
+    }
+    .game-actions, .difficulty-timer-wrapper {
+        width: 100%; /* Make each group take full width when wrapped */
+        justify-content: center; /* Center items within the full-width group */
+        margin-bottom: 10px;
+    }
+    .difficulty-timer-wrapper {
+        margin-bottom: 0;
+    }
 }
+
+
 .difficulty-control {
     display: flex;
     align-items: center;
@@ -209,13 +217,12 @@ body.dark-theme .game-header h1 {
     color: var(--timer-text-light);
     background-color: transparent;
     border: none;
-    padding: 10px 5px;
-    border-radius: var(--select-border-radius);
+    padding: 10px 0px; /* Reduced horizontal padding as there's no border */
     cursor: pointer;
     user-select: none;
-    min-width: 80px;
+    min-width: 75px; /* Slightly reduced min-width for "00:00:00" */
     text-align: center;
-    line-height: 1.2;
+    line-height: 1.2; /* Align with buttons/select */
 }
 body.dark-theme .timer-display {
     color: var(--timer-text-dark);
@@ -239,7 +246,7 @@ body.dark-theme .timer-display {
     z-index: 1000;
     max-height: 300px;
     overflow-y: auto;
-    padding: 10px; /* Padding for the overall dropdown */
+    padding: 10px;
     text-align: left;
 }
 body.dark-theme .game-history-dropdown {
@@ -247,10 +254,8 @@ body.dark-theme .game-history-dropdown {
     border-color: var(--history-border-dark);
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
-.history-header { /* This element is now hidden by JS if it was only for text */
-    /* If you want a top border for the list, style .history-list directly or this element */
-    /* display: none; */ /* JS handles hiding this now */
-    margin-bottom: 5px; /* Space before the first item or separator */
+.history-header { /* Hidden by JS */
+    margin-bottom: 5px;
 }
 
 .history-list {
@@ -258,35 +263,31 @@ body.dark-theme .game-history-dropdown {
     padding: 0;
     margin: 0;
 }
-.difficulty-group-separator { /* Style for the separator line */
+.difficulty-group-separator {
     height: 1px;
     background-color: var(--history-separator-color-light);
-    margin: 10px 0; /* Space around the separator */
+    margin: 10px 0;
 }
 body.dark-theme .difficulty-group-separator {
     background-color: var(--history-separator-color-dark);
 }
 
-/* Removed .difficulty-group-header styles as text is removed */
-
 .history-list li {
     padding: 8px 5px;
     font-size: 0.9em;
-    /* border-bottom: 1px dashed var(--history-border-light); */ /* Dashed border removed for cleaner look */
     color: var(--text-color-light);
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 5px;
 }
-.history-list li:not(:last-child) { /* Add a subtle separator between items if needed */
-    border-bottom: 1px solid var(--history-item-hover-bg-light); /* Very light separator */
+.history-list li:not(:last-child) {
+    border-bottom: 1px solid var(--history-item-hover-bg-light);
 }
 
 body.dark-theme .history-list li:not(:last-child) {
     border-bottom-color: var(--history-item-hover-bg-dark);
 }
-
 
 .history-list li:hover {
     background-color: var(--history-item-hover-bg-light);
@@ -563,25 +564,18 @@ body.dark-theme .footer-credit a {
 }
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
+@media (max-width: 550px) { /* Breakpoint where header controls might stack */
     .header-controls {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
+        justify-content: center; /* Center the groups when they wrap */
     }
     .game-actions, .difficulty-timer-wrapper {
-        width: 100%;
-        justify-content: space-around;
+        width: 100%; /* Make each group take full width when wrapped */
+        justify-content: space-around; /* Space out items within the full-width group */
+        margin-bottom: 10px;
     }
-    .timer-display {
-        flex-grow: 0;
-        text-align: right;
-        padding-right: 10px;
+     .difficulty-timer-wrapper {
+        margin-bottom: 0; /* No bottom margin if it's the last wrapped item */
     }
-    .difficulty-control {
-        flex-grow: 1;
-    }
-
     .game-history-dropdown {
         width: calc(100% - 40px);
         left: 20px;
@@ -591,42 +585,43 @@ body.dark-theme .footer-credit a {
 }
 
 
-@media (max-width: 600px) {
-    body { padding: 10px; }
-    .game-container { padding: 15px; }
-    .game-header h1 { font-size: 2em; margin-bottom: 15px; }
-    .game-actions .btn { flex-basis: auto; flex-grow: 1; }
+@media (max-width: 420px) { /* Breakpoint where items within difficulty-timer might stack */
+    .difficulty-timer-wrapper {
+        flex-direction: column; /* Stack Difficulty and Timer */
+        align-items: stretch; /* Make them take full width of their wrapper */
+        gap: 8px;
+    }
+    .difficulty-control, .timer-display {
+        width: 100%;
+        text-align: center; /* Center text */
+    }
+    .difficulty-control {
+        justify-content: center; /* Center label and select if they have space */
+    }
+    .timer-display {
+        padding: 10px 0px; /* Ensure vertical padding is maintained */
+    }
 
-
-    .theme-switcher-container { top: 10px; right: 10px; }
-    #themeSwitcher { width: 25px; height: 25px; }
-    .sudoku-board { max-width: 100%; margin-bottom: 15px;}
-    .cell { font-size: clamp(0.8em, 5vw, 1.4em); }
-    .end-game-controls { flex-direction: column; gap: 8px; }
-    .end-game-controls .btn { width: 70%; }
-}
-
-@media (max-width: 480px) {
-    .game-actions {
+    .game-actions { /* Also stack New Game and Reset on very small screens */
         flex-direction: column;
     }
     .game-actions .btn {
         width: 100%;
     }
-    .difficulty-timer-wrapper {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    .difficulty-control, .timer-display {
-        width: 100%;
-        margin-left: 0;
-        text-align: center;
-    }
-    .difficulty-control { margin-bottom: 10px; }
-    .timer-display { padding: 10px 5px; }
+     .game-header h1 { font-size: 1.8em; }
+     .cell { font-size: clamp(0.7em, 6vw, 1.2em); }
+     .end-game-controls { flex-direction: column; gap: 8px; }
+     .end-game-controls .btn { width: 80%; } /* Make end game buttons wider */
 }
 
-@media (max-width: 420px) {
-    .game-header h1 { font-size: 1.8em; }
-    .cell { font-size: clamp(0.7em, 6vw, 1.2em); }
+/* Keep general small screen adjustments */
+@media (max-width: 600px) { /* This might overlap with 550px, review breakpoints */
+    body { padding: 10px; }
+    .game-container { padding: 15px; }
+    .game-header h1 { font-size: 2em; } /* Adjusted from 768px to 600px for this rule */
+    
+    .theme-switcher-container { top: 10px; right: 10px; }
+    #themeSwitcher { width: 25px; height: 25px; }
+    .sudoku-board { max-width: 100%; margin-bottom: 15px;}
+    .cell { font-size: clamp(0.8em, 5vw, 1.4em); } /* This is fine */
 }
