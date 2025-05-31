@@ -42,11 +42,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Disable context menu (right-click) unless Shift key is pressed
+    // or if the target is an input/textarea (e.g., for dev tools)
     window.addEventListener('contextmenu', function (e) {
-        // Allow context menu if shift is pressed, or if the target is an input/textarea
-        const targetNodeName = e.target.nodeName;
-        if (e.shiftKey || targetNodeName === 'INPUT' || targetNodeName === 'TEXTAREA') {
-            return;
+        const targetNodeName = e.target.nodeName.toUpperCase();
+        if (e.shiftKey || targetNodeName === 'INPUT' || targetNodeName === 'TEXTAREA' || e.target.isContentEditable) {
+            return; // Allow context menu
         }
         e.preventDefault();
     }, false);
