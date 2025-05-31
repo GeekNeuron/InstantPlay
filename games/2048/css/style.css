@@ -16,11 +16,9 @@
     --modal-text-color: #333333;
     --border-color: var(--grid-bg);
 
-    /* Theme switcher appearance when LIGHT theme is active (button looks dark) */
     --theme-switcher-bg-light-active: #4a4a4a; 
     --theme-switcher-border-light-active: #333333;
 
-    /* Tile specific colors (Light Theme - Modern Grayscale with Accent) */
     --tile-default-bg: #ffffff;
     --tile-default-text: #555555;
     --tile-2-bg: #f8f9fa;   --tile-2-text: #495057;
@@ -59,11 +57,9 @@ body.dark-theme {
     --modal-text-color: #c9d1d9;
     --border-color: var(--container-bg);
 
-    /* Theme switcher appearance when DARK theme is active (button looks light) */
     --theme-switcher-bg-dark-active: #e0e0e0; 
     --theme-switcher-border-dark-active: #cccccc;
 
-    /* Tile specific colors (Dark Theme) */
     --tile-2-bg: #2c3e50;   --tile-2-text: #ecf0f1;
     --tile-4-bg: #34495e;   --tile-4-text: #ecf0f1;
     --tile-8-bg: #1abc9c;   --tile-8-text: #0d1117;
@@ -85,7 +81,8 @@ body {
     font-family: var(--font-family); background-color: var(--body-bg); color: var(--text-color-primary);
     margin: 0; padding: 15px; padding-top: 60px; display: flex; flex-direction: column;
     align-items: center; min-height: 100vh; text-align: center;
-    transition: background-color 0.3s ease, color 0.3s ease; overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease; 
+    overflow: hidden; /* *** FIX: Lock page scroll globally *** */
 }
 
 .top-bar { position: fixed; top: 12px; right: 12px; z-index: 1001; }
@@ -153,7 +150,8 @@ header h1 {
     gap: var(--gap-size); width: var(--grid-side-length-desktop); height: var(--grid-side-length-desktop);
     background-color: var(--grid-bg); border-radius: var(--border-radius); position: relative;
     transition: background-color 0.3s ease; padding: var(--gap-size);
-    touch-action: none; overflow: hidden; 
+    touch-action: none; /* Prevents default touch actions like scrolling/zooming inside the grid */
+    overflow: hidden;  /* Prevents tiles from "leaking" during animations if calculations are off */
 }
 .grid-cell {
     background-color: var(--grid-cell-bg); border-radius: calc(var(--border-radius) / 1.8);
@@ -167,22 +165,21 @@ header h1 {
     align-items: center;
     font-weight: bold; 
     border-radius: calc(var(--border-radius) / 1.5);
-    transition: transform 0.1s linear, /* Transition for movement */
+    transition: transform 0.1s linear,
                 background-color 0.1s ease-in-out, 
                 color 0.1s ease-in-out, 
-                opacity 0.1s ease-in-out; /* Transition for removal opacity */
-    animation: appear 0.15s ease-out; /* Animation for new tiles appearing */
+                opacity 0.1s ease-in-out;
+    animation: appear 0.15s ease-out;
     user-select: none;
-    /* CSS variables for transform are set by JS for precise positioning */
     transform: translate(var(--translateX, 0px), var(--translateY, 0px));
+    line-height: 1; /* Helps with vertical centering of the span */
 }
 
 .tile-number-display { 
     display: inline-block; 
-    /* No separate transition needed here if animation is applied */
+    transform-origin: center center; /* *** FIX: Ensure scaling is from the center for number pop *** */
 }
 
-/* Class to trigger the number pop animation */
 .tile-number-display.number-pop-effect { 
     animation: numberOnlyPopEffect 0.12s ease-in-out;
 }
@@ -198,10 +195,9 @@ header h1 {
     }
 }
 
-/* Animation for the number pop effect (for merges and new tiles) */
 @keyframes numberOnlyPopEffect {
     0% { transform: scale(1); }
-    50% { transform: scale(1.15); } /* Adjust this value for pop intensity */
+    50% { transform: scale(1.15); } 
     100% { transform: scale(1); }
 }
 
