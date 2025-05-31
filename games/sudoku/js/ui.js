@@ -55,7 +55,7 @@ const UI = (() => {
      * @param {string} message - The message content for the modal.
      * @param {string} type - 'win' or 'error-continue' to control animation.
      */
-    function showModal(title, message, type = 'info') {
+    function showModal(title, message, type = 'info') { // autoHideDuration & onHideCallback removed
         if (gameOverModalElement && modalTitleElement && modalMessageElement) {
             modalTitleElement.textContent = title;
             modalMessageElement.textContent = message;
@@ -73,6 +73,8 @@ const UI = (() => {
             }
 
             gameOverModalElement.classList.add('show');
+            // Modal no longer auto-hides based on a timer here.
+            // It's dismissed by overlay click (see init) or by starting a new game/reset.
         }
     }
 
@@ -168,7 +170,7 @@ const UI = (() => {
     function init(onTimerClickCallback, onModalOverlayCloseCallback) {
         _applyTheme();
         if(themeSwitcherBtn) themeSwitcherBtn.addEventListener('click', toggleTheme);
-        hideModal();
+        hideModal(); // Ensure modal is hidden initially
         updateTimerDisplay("00:00:00");
 
         if (timerDisplayElement) {
@@ -186,7 +188,7 @@ const UI = (() => {
                 if (event.target === gameOverModalElement) { // Clicked on the overlay itself
                     hideModal();
                     if (typeof onModalOverlayCloseCallback === 'function') {
-                        onModalOverlayCloseCallback();
+                        onModalOverlayCloseCallback(); // Notify app.js
                     }
                 }
             });
@@ -204,7 +206,7 @@ const UI = (() => {
     }
 
     function getSelectedDifficulty() {
-        return difficultySelect ? difficultySelect.value : 'easy'; // Provide a default
+        return difficultySelect ? difficultySelect.value : 'easy';
     }
 
     function setSelectedDifficulty(difficultyValue) {
