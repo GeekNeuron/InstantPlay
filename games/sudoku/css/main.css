@@ -58,9 +58,9 @@
     --history-separator-color-light: #dee2e6;
     --history-item-hover-bg-light: #f8f9fa;
 
-    --modal-overlay-bg-light: rgba(0,0,0,0.6); /* Reference --modal-bg */
-    --modal-content-bg-light: #ffffff; /* Reference --modal-content-bg */
-    --modal-text-color-light: #333333; /* Reference --modal-text-color */
+    --modal-overlay-bg-light: rgba(0,0,0,0.6);
+    --modal-content-bg-light: #ffffff;
+    --modal-text-color-light: #333333;
 
 
     --theme-switcher-light: #4a4a4a;
@@ -105,9 +105,9 @@
     --history-item-hover-bg-dark: #2c3a47;
     --history-item-text-dark: #FFFFFF;
 
-    --modal-overlay-bg-dark: rgba(10, 10, 15, 0.7); /* Reference --modal-bg (dark) */
-    --modal-content-bg-dark: #161b22; /* Reference --modal-content-bg (dark) */
-    --modal-text-color-dark: #c9d1d9; /* Reference --modal-text-color (dark) */
+    --modal-overlay-bg-dark: rgba(10, 10, 15, 0.7);
+    --modal-content-bg-dark: #161b22;
+    --modal-text-color-dark: #c9d1d9;
 
     --theme-switcher-dark: #e0e0e0;
     --input-focus-border-dark: #3282b8;
@@ -191,35 +191,30 @@ body.dark-theme .game-header h1 {
     color: var(--header-text-dark);
 }
 
-/* Header Controls Layout */
+/* Header Controls Layout - Consistent for all screen sizes */
 .header-controls-wrapper {
     display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
+    flex-direction: column; /* Stack rows */
+    align-items: stretch; /* Make rows take full width */
+    gap: 8px; /* Gap between rows */
     margin-bottom: 15px;
 }
 
 .header-row-1, .header-row-2 {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; /* Pushes first child left, last child right */
     align-items: center;
     width: 100%;
-    gap: 8px;
+    gap: 8px; /* Gap between items in a row, adjust if needed */
 }
 
 .header-actions-left, .header-actions-right {
     display: flex;
     align-items: center;
-    gap: 8px;
-    flex-shrink: 0;
+    gap: 8px; /* Space between buttons in the left/right group */
+    flex-shrink: 0; /* Prevent shrinking */
 }
-.header-actions-right {
-    /* margin-left: auto; Ensured by space-between on parent */
-}
-.header-row-1 .header-actions-left {
-    /* margin-right: auto; Ensured by space-between on parent */
-}
+/* No specific margin-left/right auto needed here as space-between on parent handles it */
 
 
 .difficulty-control {
@@ -371,7 +366,7 @@ body.dark-theme .btn.btn-primary:hover {
     background-color: var(--button-primary-hover-bg-dark);
 }
 
-#resetBtn, #checkSolutionBtn, #closeGameBtn { /* #closeGameBtn is now #modalCloseBtn */
+#resetBtn, #checkSolutionBtn, #closeGameBtn {
     background-color: var(--button-bg-light);
     color: var(--button-text-light);
 }
@@ -389,8 +384,8 @@ body.dark-theme #checkSolutionBtn:hover,
 body.dark-theme #closeGameBtn:hover {
     background-color: var(--button-hover-bg-dark);
 }
-/* Modal specific button styling */
-.modal-actions #modalNewGameBtn { /* Primary style for New Game in modal */
+
+.modal-actions #modalNewGameBtn {
     background-color: var(--button-primary-bg-light);
     color: var(--button-primary-text-light);
 }
@@ -405,7 +400,7 @@ body.dark-theme .modal-actions #modalNewGameBtn:hover {
     background-color: var(--button-primary-hover-bg-dark);
 }
 
-.modal-actions #modalCloseBtn { /* Default/Secondary style for Close in modal */
+.modal-actions #modalCloseBtn {
     background-color: var(--button-bg-light);
     color: var(--button-text-light);
 }
@@ -641,7 +636,7 @@ body.dark-theme .footer-credit a {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 2000; /* Ensure it's above other content */
+    z-index: 2000;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0s linear 0.3s;
@@ -659,11 +654,11 @@ body.dark-theme .modal-overlay {
     background-color: var(--modal-content-bg-light);
     color: var(--modal-text-color-light);
     padding: 25px 30px;
-    border-radius: var(--container-border-radius); /* Match game container rounding */
+    border-radius: var(--container-border-radius);
     box-shadow: 0 5px 20px rgba(0,0,0,0.2);
     text-align: center;
     max-width: 90%;
-    width: 380px; /* Adjust as needed */
+    width: 380px;
     transform: scale(0.9);
     transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
 }
@@ -690,82 +685,42 @@ body.dark-theme .modal-content {
     justify-content: space-between; /* New Game left, Close right */
     gap: 15px;
 }
-.modal-actions .btn { /* Buttons in modal use referenced style */
-    flex-grow: 1; /* Allow buttons to share space */
+.modal-actions .btn {
+    flex-grow: 1;
 }
 
-
-/* Responsive adjustments for Header Controls - KEEPING LAYOUT CONSISTENT */
-@media (max-width: 680px) {
-    .header-controls-wrapper {
-        /* Stays column */
-    }
-    .header-row-1, .header-row-2 {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    .header-actions-left, .header-actions-right, .difficulty-control, #timerDisplay {
-        flex-basis: 100%; /* Stack items within each row */
-        justify-content: center;
-        text-align: center;
-        margin-bottom: 8px; /* Space between stacked items */
-    }
-    .header-actions-left {
-        gap: 8px;
-        order: 1; /* New Game/Reset first */
-    }
-     .header-actions-right {
-        order: 2; /* Check Solution second */
-        margin-left: 0; /* Reset margin */
-    }
-    .difficulty-control {
-        order: 1; /* Difficulty first in second row */
-    }
-    #timerDisplay {
-        order: 2; /* Timer second in second row */
-        margin-bottom: 0; /* No margin if last */
-    }
-
-
-    .game-history-dropdown {
-        width: calc(100% - 20px);
-        left: 10px;
-        right: auto;
-    }
-     .game-header h1 { font-size: 2em; }
-}
-
-
-@media (max-width: 480px) {
-    .header-actions-left, .header-actions-right {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    .header-actions-left .btn, .header-actions-right .btn {
-        width: 100%;
-        max-width: 260px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    .difficulty-control, #timerDisplay {
-        /* Already full width and centered from 680px breakpoint */
-    }
-
-     .game-header h1 { font-size: 1.8em; }
-     .cell { font-size: clamp(0.7em, 6vw, 1.2em); }
-     .end-game-controls { flex-direction: column; gap: 8px; } /* This is for old footer buttons, now modal */
-     .modal-actions { flex-direction: column; } /* Stack modal buttons on small screens */
-     .modal-actions .btn { width: 100%; }
-}
-
-/* General small screen adjustments from before */
-@media (max-width: 600px) {
+/* Responsive adjustments - Minimal changes to keep layout consistent */
+@media (max-width: 600px) { /* General small screen adjustments */
     body { padding: 10px; }
     .game-container { padding: 15px; }
-    /* game-header h1 size is handled by more specific breakpoints above */
+    .game-header h1 { font-size: 2em; }
     
     .theme-switcher-container { top: 10px; right: 10px; }
     #themeSwitcher { width: 25px; height: 25px; }
     .sudoku-board { max-width: 100%; margin-bottom: 15px;}
     .cell { font-size: clamp(0.8em, 5vw, 1.4em); }
+
+    .header-row-1, .header-row-2 {
+        flex-wrap: wrap; /* Allow wrapping if absolutely necessary */
+        justify-content: center; /* Center items if they wrap */
+    }
+    .header-actions-left, .header-actions-right, .difficulty-control, #timerDisplay {
+        margin-bottom: 5px; /* Add a small margin if items wrap */
+    }
+    .modal-actions { flex-direction: column; } /* Stack modal buttons on small screens */
+    .modal-actions .btn { width: 100%; }
+
+}
+
+@media (max-width: 480px) {
+     .game-header h1 { font-size: 1.8em; }
+     .cell { font-size: clamp(0.7em, 6vw, 1.2em); }
+     /* Buttons and select might need slightly smaller font/padding if still too large */
+     .btn, #difficultySelect, #timerDisplay {
+         font-size: calc(var(--button-font-size-ref) * 0.9); /* Slightly smaller */
+         padding: calc(var(--button-padding-vertical-ref) * 0.9) calc(var(--button-padding-horizontal-ref) * 0.9);
+     }
+     #difficultySelect {
+         padding-right: 2em; /* Adjust for arrow */
+     }
 }
