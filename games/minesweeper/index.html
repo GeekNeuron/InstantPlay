@@ -7,34 +7,30 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💣</text></svg>">
 </head>
-<body class="light-theme"> <div class="game-container">
-        <header class="game-header">
+<body class="light-theme"> <div class="container"> <header>
             <h1 id="game-title" title="Switch Theme">Minesweeper</h1>
-
-            <div class="header-controls-wrapper">
-                <div class="header-row-1">
-                    <div class="difficulty-control">
-                        <label for="difficultySelect">Difficulty:</label>
-                        <select id="difficultySelect"> <option value="beginner">Beginner (8x8)</option>
-                            <option value="easy" selected>Easy (10x10)</option>
-                            <option value="medium">Medium (16x16)</option>
-                            <option value="hard">Hard (16x30)</option>
-                            <option value="huge">Huge (24x24)</option>
-                            <option value="extreme">Extreme (30x30)</option>
-                        </select>
-                    </div>
-                    <div class="game-stats"> <div id="minesDisplay" class="info-item">Mines: <span id="mines-count">0</span></div>
-                        <div id="timerDisplay" class="info-item">Time: <span id="timer">0</span>s</div>
-                    </div>
+            <div class="controls">
+                <div class="control-group difficulty-group">
+                    <label for="difficultySelect">Difficulty:</label>
+                    <select id="difficultySelect"> <option value="beginner">Beginner (8x8)</option>
+                        <option value="easy" selected>Easy (10x10)</option>
+                        <option value="medium">Medium (16x16)</option>
+                        <option value="hard">Hard (16x30)</option>
+                        <option value="huge">Huge (24x24)</option>
+                        <option value="extreme">Extreme (30x30)</option>
+                    </select>
                 </div>
-                <div class="header-row-2">
-                    <div class="action-mode-container">
-                        <button id="action-mode-reveal" class="action-btn active" title="Reveal Mode">⛏️</button>
-                        <button id="action-mode-flag" class="action-btn" title="Flag Mode">🚩</button>
-                    </div>
-                    <button id="easy-peasy-button" class="btn" title="Toggle Chord Click Assist">Easy Peasy</button>
-                    <button id="new-game-button" class="btn btn-primary">New Game</button> </div>
-            </div>
+
+                <div class="action-mode-container">
+                    <button id="action-mode-reveal" class="action-btn active" title="Reveal Mode">⛏️</button>
+                    <button id="action-mode-flag" class="action-btn" title="Flag Mode">🚩</button>
+                </div>
+                
+                <button id="easy-peasy-button" class="btn" title="Toggle Chord Click Assist">Easy Peasy</button>
+                <button id="new-game-button" class="btn">New Game</button> </div>
+            <div class="game-info">
+                <div class="info-item">Mines: <span id="mines-count">0</span></div>
+                <div class="info-item">Time: <span id="timer">0</span>s</div> </div>
         </header>
         <main>
             <div id="game-board-container">
@@ -42,17 +38,14 @@
                     </div>
             </div>
         </main>
-        <footer class="game-footer">
-            <div id="messageArea">
-                </div>
-            <p class="footer-credit">Created by GeekNeuron</p>
+        <footer> <p>Created by GeekNeuron</p>
         </footer>
     </div>
 
-    <div id="message-modal" class="modal-overlay"> <div class="modal-content">
+    <div id="message-modal" class="modal"> <div class="modal-content">
             <h2 id="message-title">Message</h2>
             <p id="message-text"></p>
-            <button id="message-close-button" class="btn btn-primary">OK</button>
+            <button id="message-close-button" class="btn">OK</button>
         </div>
     </div>
 
