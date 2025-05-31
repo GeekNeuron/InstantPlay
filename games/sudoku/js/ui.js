@@ -1,4 +1,3 @@
-// js/ui.js
 const UI = (() => {
     const themeSwitcherBtn = document.getElementById('themeSwitcher');
     const messageArea = document.getElementById('messageArea');
