@@ -3,12 +3,19 @@ const UI = (() => {
     const themeSwitcherBtn = document.getElementById('themeSwitcher');
     const messageArea = document.getElementById('messageArea');
     const difficultySelect = document.getElementById('difficultySelect');
-    const endGameControlsElement = document.getElementById('endGameControls');
+    // const endGameControlsElement = document.getElementById('endGameControls'); // Replaced by modal
     const footerCreditElement = document.querySelector('.footer-credit');
     const timerDisplayElement = document.getElementById('timerDisplay');
     const gameHistoryDropdownElement = document.getElementById('gameHistoryDropdown');
-    // const historyHeaderElement = gameHistoryDropdownElement ? gameHistoryDropdownElement.querySelector('.history-header') : null; // No longer needed for text
     const historyListElement = document.getElementById('historyList');
+
+    // Modal Elements
+    const gameOverModalElement = document.getElementById('gameOverModal');
+    const modalTitleElement = document.getElementById('modalTitle');
+    const modalMessageElement = document.getElementById('modalMessage');
+    const modalNewGameBtn = document.getElementById('modalNewGameBtn');
+    const modalCloseBtn = document.getElementById('modalCloseBtn');
+
 
     const THEME_KEY = 'sudokuThemeGeekNeuron_v1';
     let currentTheme = localStorage.getItem(THEME_KEY) || 'light';
@@ -44,19 +51,39 @@ const UI = (() => {
         messageArea.className = '';
     }
     
-    function showEndGameControls() {
-        if (endGameControlsElement) {
-            endGameControlsElement.style.display = 'flex';
-            if(footerCreditElement) footerCreditElement.style.display = 'none';
+    // --- Modal Functions ---
+    /**
+     * Shows the game over/status modal.
+     * @param {string} title - The title for the modal.
+     * @param {string} message - The message content for the modal.
+     * @param {boolean} showNewGame - Whether to show the "New Game" button.
+     * @param {boolean} showClose - Whether to show the "Close" button.
+     */
+    function showModal(title, message, showNewGame = true, showClose = true) {
+        if (gameOverModalElement && modalTitleElement && modalMessageElement && modalNewGameBtn && modalCloseBtn) {
+            modalTitleElement.textContent = title;
+            modalMessageElement.textContent = message;
+
+            modalNewGameBtn.style.display = showNewGame ? 'inline-block' : 'none';
+            modalCloseBtn.style.display = showClose ? 'inline-block' : 'none';
+            
+            // Ensure modal actions div is visible if any button is shown
+            const modalActionsDiv = gameOverModalElement.querySelector('.modal-actions');
+            if (modalActionsDiv) {
+                modalActionsDiv.style.display = (showNewGame || showClose) ? 'flex' : 'none';
+            }
+
+            gameOverModalElement.classList.add('show');
         }
     }
 
-    function hideEndGameControls() {
-        if (endGameControlsElement) {
-            endGameControlsElement.style.display = 'none';
-            if(footerCreditElement) footerCreditElement.style.display = 'block';
+    function hideModal() {
+        if (gameOverModalElement) {
+            gameOverModalElement.classList.remove('show');
         }
     }
+    // --- End Modal Functions ---
+
 
     function updateTimerDisplay(timeString) {
         if (timerDisplayElement) {
@@ -68,19 +95,17 @@ const UI = (() => {
         if (!historyListElement) return;
         historyListElement.innerHTML = ''; 
 
-        // Remove the main history header text content if it exists
         const mainHistoryHeader = gameHistoryDropdownElement ? gameHistoryDropdownElement.querySelector('.history-header') : null;
         if (mainHistoryHeader) {
-            // mainHistoryHeader.textContent = ''; // Remove text, keep element for styling if needed
-            // Or hide it completely if it's just for text
-            mainHistoryHeader.style.display = 'none'; 
+            mainHistoryHeader.textContent = 'Game History'; // Set header text
+            mainHistoryHeader.style.display = 'block'; // Ensure it's visible
         }
 
 
         if (!historyData || historyData.length === 0) {
             const li = document.createElement('li');
-            li.textContent = 'No game history to display.'; // Keep this message
-            li.style.textAlign = 'center'; // Center if it's the only item
+            li.textContent = 'No game history to display.';
+            li.style.textAlign = 'center';
             historyListElement.appendChild(li);
             return;
         }
@@ -95,22 +120,17 @@ const UI = (() => {
         }, {});
 
         const difficultyOrder = ['easy', 'medium', 'hard', 'expert', 'Unknown']; 
-        let firstGroup = true;
+        let firstGroupRendered = false; // To track if any group has been rendered yet
         
         difficultyOrder.forEach(difficultyKey => {
             if (groupedHistory[difficultyKey]) {
-                if (!firstGroup) { // Add a separator before the next group, but not before the first
+                if (firstGroupRendered) { // Add a separator before the next group, but not before the first *rendered* group
                     const separator = document.createElement('div');
-                    separator.classList.add('difficulty-group-separator'); // New class for styling
+                    separator.classList.add('difficulty-group-separator');
                     historyListElement.appendChild(separator);
                 }
-                firstGroup = false;
+                firstGroupRendered = true;
 
-                // Removed: Group header text
-                // const groupHeader = document.createElement('div');
-                // groupHeader.classList.add('difficulty-group-header');
-                // groupHeader.textContent = `Level: ${difficultyKey.charAt(0).toUpperCase() + difficultyKey.slice(1)}`;
-                // historyListElement.appendChild(groupHeader);
 
                 groupedHistory[difficultyKey].sort((a, b) => new Date(b.date) - new Date(a.date));
 
@@ -146,10 +166,11 @@ const UI = (() => {
         return isHistoryVisible;
     }
 
-    function init(onTimerClickCallback) {
+    function init(onTimerClickCallback, onModalNewGameCallback, onModalCloseCallback) {
         _applyTheme();
         themeSwitcherBtn.addEventListener('click', toggleTheme);
-        hideEndGameControls();
+        // hideEndGameControls(); // Old footer controls, now handled by modal logic
+        hideModal(); // Ensure modal is hidden initially
         updateTimerDisplay("00:00:00");
 
         if (timerDisplayElement) {
@@ -161,6 +182,9 @@ const UI = (() => {
                 }
             });
         }
+        if (modalNewGameBtn) modalNewGameBtn.addEventListener('click', onModalNewGameCallback);
+        if (modalCloseBtn) modalCloseBtn.addEventListener('click', onModalCloseCallback);
+
         document.addEventListener('click', (event) => {
             if (isHistoryVisible && 
                 gameHistoryDropdownElement && 
@@ -199,8 +223,10 @@ const UI = (() => {
         getSelectedDifficulty,
         setSelectedDifficulty,
         setBoardDisabled,
-        showEndGameControls,
-        hideEndGameControls,
+        // showEndGameControls, // Replaced by modal
+        // hideEndGameControls, // Replaced by modal
+        showModal,
+        hideModal,
         updateTimerDisplay,
         toggleGameHistory,
         getIsHistoryVisible 
