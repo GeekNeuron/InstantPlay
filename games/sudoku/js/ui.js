@@ -3,7 +3,6 @@ const UI = (() => {
     const themeSwitcherBtn = document.getElementById('themeSwitcher');
     const messageArea = document.getElementById('messageArea');
     const difficultySelect = document.getElementById('difficultySelect');
-    // const endGameControlsElement = document.getElementById('endGameControls'); // Replaced by modal
     const footerCreditElement = document.querySelector('.footer-credit');
     const timerDisplayElement = document.getElementById('timerDisplay');
     const gameHistoryDropdownElement = document.getElementById('gameHistoryDropdown');
@@ -56,18 +55,23 @@ const UI = (() => {
      * Shows the game over/status modal.
      * @param {string} title - The title for the modal.
      * @param {string} message - The message content for the modal.
+     * @param {boolean} isWin - Whether this is a win modal (for animation).
      * @param {boolean} showNewGame - Whether to show the "New Game" button.
      * @param {boolean} showClose - Whether to show the "Close" button.
      */
-    function showModal(title, message, showNewGame = true, showClose = true) {
+    function showModal(title, message, isWin = false, showNewGame = true, showClose = true) {
         if (gameOverModalElement && modalTitleElement && modalMessageElement && modalNewGameBtn && modalCloseBtn) {
             modalTitleElement.textContent = title;
             modalMessageElement.textContent = message;
 
+            modalTitleElement.classList.remove('win-animated'); // Remove first
+            if (isWin) {
+                modalTitleElement.classList.add('win-animated');
+            }
+
             modalNewGameBtn.style.display = showNewGame ? 'inline-block' : 'none';
             modalCloseBtn.style.display = showClose ? 'inline-block' : 'none';
             
-            // Ensure modal actions div is visible if any button is shown
             const modalActionsDiv = gameOverModalElement.querySelector('.modal-actions');
             if (modalActionsDiv) {
                 modalActionsDiv.style.display = (showNewGame || showClose) ? 'flex' : 'none';
@@ -80,6 +84,9 @@ const UI = (() => {
     function hideModal() {
         if (gameOverModalElement) {
             gameOverModalElement.classList.remove('show');
+            if (modalTitleElement) {
+                modalTitleElement.classList.remove('win-animated'); // Clean up animation class
+            }
         }
     }
     // --- End Modal Functions ---
@@ -97,8 +104,8 @@ const UI = (() => {
 
         const mainHistoryHeader = gameHistoryDropdownElement ? gameHistoryDropdownElement.querySelector('.history-header') : null;
         if (mainHistoryHeader) {
-            mainHistoryHeader.textContent = 'Game History'; // Set header text
-            mainHistoryHeader.style.display = 'block'; // Ensure it's visible
+            mainHistoryHeader.textContent = 'Game History';
+            mainHistoryHeader.style.display = 'block';
         }
 
 
@@ -120,17 +127,16 @@ const UI = (() => {
         }, {});
 
         const difficultyOrder = ['easy', 'medium', 'hard', 'expert', 'Unknown']; 
-        let firstGroupRendered = false; // To track if any group has been rendered yet
+        let firstGroupRendered = false;
         
         difficultyOrder.forEach(difficultyKey => {
             if (groupedHistory[difficultyKey]) {
-                if (firstGroupRendered) { // Add a separator before the next group, but not before the first *rendered* group
+                if (firstGroupRendered) {
                     const separator = document.createElement('div');
                     separator.classList.add('difficulty-group-separator');
                     historyListElement.appendChild(separator);
                 }
                 firstGroupRendered = true;
-
 
                 groupedHistory[difficultyKey].sort((a, b) => new Date(b.date) - new Date(a.date));
 
@@ -169,8 +175,7 @@ const UI = (() => {
     function init(onTimerClickCallback, onModalNewGameCallback, onModalCloseCallback) {
         _applyTheme();
         themeSwitcherBtn.addEventListener('click', toggleTheme);
-        // hideEndGameControls(); // Old footer controls, now handled by modal logic
-        hideModal(); // Ensure modal is hidden initially
+        hideModal();
         updateTimerDisplay("00:00:00");
 
         if (timerDisplayElement) {
@@ -223,8 +228,6 @@ const UI = (() => {
         getSelectedDifficulty,
         setSelectedDifficulty,
         setBoardDisabled,
-        // showEndGameControls, // Replaced by modal
-        // hideEndGameControls, // Replaced by modal
         showModal,
         hideModal,
         updateTimerDisplay,
