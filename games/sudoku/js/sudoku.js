@@ -114,9 +114,6 @@ const Sudoku = (() => {
             default:        cellsToRemove = 45;
         }
 
-        let attempts = 0; // To prevent infinite loops if too many cells are removed
-        const maxAttemptsPerCell = 5; // Try a few times to remove a cell before giving up on that one
-
         // Create a list of all cell coordinates and shuffle it
         let cellCoordinates = [];
         for (let r = 0; r < GRID_SIZE; r++) {
@@ -131,15 +128,17 @@ const Sudoku = (() => {
             if (removedCount >= cellsToRemove) break;
 
             if (puzzle[r][c] !== EMPTY_CELL) {
-                const tempVal = puzzle[r][c];
+                // const tempVal = puzzle[r][c]; // Not strictly needed for simple removal
                 puzzle[r][c] = EMPTY_CELL;
                 
-                // Basic check: For a more robust unique solution guarantee,
-                // you'd need a counter for solutions here.
-                // This simplified version prioritizes speed of generation.
-                // For a truly unique puzzle, you'd check if `countSolutions(Utils.deepCopy2DArray(puzzle))` is 1.
-                // This is computationally expensive.
-                
+                // For a robust unique solution guarantee, this is where you'd check:
+                // let tempPuzzleForChecking = Utils.deepCopy2DArray(puzzle);
+                // if (countSolutions(tempPuzzleForChecking) !== 1) {
+                //     puzzle[r][c] = tempVal; // Put it back if not unique
+                // } else {
+                //     removedCount++;
+                // }
+                // This simplified version just removes and counts.
                 removedCount++;
             }
         }
@@ -165,7 +164,7 @@ const Sudoku = (() => {
     //             }
     //         }
     //     }
-    //     _solveAndCount(board);
+    //     _solveAndCount(Utils.deepCopy2DArray(board)); // Pass a copy to avoid modifying original
     //     return count;
     // }
 
@@ -180,7 +179,7 @@ const Sudoku = (() => {
      * @returns {boolean} - True if the move is valid, false otherwise.
      */
     function isMoveValid(board, row, col, num) {
-        // Check row (excluding the cell itself if it already had that number)
+        // Check row (excluding the cell itself if it already had that number from user input)
         for (let c = 0; c < GRID_SIZE; c++) {
             if (c !== col && board[row][c] === num) return false;
         }
@@ -231,10 +230,10 @@ const Sudoku = (() => {
         EMPTY_CELL,
         generateSolution,
         createPuzzle,
-        solve, // Expose solver for hint/solve functionality
+        solve, // Expose solver for potential hint/solve functionality if added later
         isMoveValid,
         isBoardSolved,
         isBoardFull,
-        _isValidPlacement // Exposed for potential use in UI for highlighting conflicts
+        // _isValidPlacement // Not typically needed externally if isMoveValid is comprehensive
     };
 })();
