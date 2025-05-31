@@ -1,18 +1,17 @@
-
 /* CSS Variables for Theming */
 :root {
     /* Light Theme (Pure White & Modern Grays) */
-    --body-bg: #f8f9fa; /* Slightly off-white for eye comfort */
+    --body-bg: #f8f9fa;
     --text-color-primary: #212529;
     --container-bg: #ffffff;
-    --grid-bg: #dee2e6; /* Grid background */
-    --tile-bg: #f8f9fa; /* Initial tile color */
-    --tile-bg-revealed: #e9ecef; /* Revealed tile color */
+    --grid-bg: #dee2e6;
+    --tile-bg: #f0f0f0; /* Slightly darker than container for contrast */
+    --tile-bg-revealed: #e9ecef;
     --tile-border: #ced4da;
     --tile-text-color: #495057;
-    --score-box-bg: #e9ecef; /* For game info */
+    --score-box-bg: #e9ecef;
     --score-box-text: #212529;
-    --button-bg: #007bff; /* Primary blue */
+    --button-bg: #007bff;
     --button-text: #ffffff;
     --button-hover-bg: #0056b3;
     --select-bg: #ffffff;
@@ -22,29 +21,35 @@
     --modal-content-bg: #ffffff;
     --modal-text-color: #212529;
     --border-color: var(--grid-bg);
-    --mine-color: #dc3545; /* Red for mines */
-    --flag-color: #fd7e14; /* Orange for flags */
-    --safe-color: #28a745; /* Green for safe numbers */
+    --mine-color: #dc3545;
+    --flag-color: #fd7e14;
+    --safe-color: #28a745;
+    --action-button-bg: #e9ecef;
+    --action-button-border: #ced4da;
+    --action-button-text: #495057;
+    --action-button-active-bg: var(--button-bg);
+    --action-button-active-text: var(--button-text);
 
-    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Changed to a common English font */
-    --border-radius: 8px; /* Slightly more rounded */
-    --gap-size: 2px; /* Smaller gap for a tighter look */
-    --header-text-color: #007bff; /* Main title color */
+
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --border-radius: 8px;
+    --gap-size: 2px;
+    --header-text-color: #007bff;
 }
 
 /* Dark Theme (Dark Blue) */
 body.dark-theme {
-    --body-bg: #0d1117; /* GitHub dark background */
+    --body-bg: #0d1117;
     --text-color-primary: #c9d1d9;
-    --container-bg: #161b22; /* Darker content background */
-    --grid-bg: #010409; /* Very dark grid background */
-    --tile-bg: #21262d; /* Initial tile color in dark theme */
-    --tile-bg-revealed: #30363d; /* Darker revealed tiles */
+    --container-bg: #161b22;
+    --grid-bg: #010409;
+    --tile-bg: #21262d; /* Darker initial tile */
+    --tile-bg-revealed: #252b31; /* UPDATED: Slightly lighter than tile-bg for revealed tiles */
     --tile-border: #30363d;
     --tile-text-color: #c9d1d9;
     --score-box-bg: #21262d;
     --score-box-text: #c9d1d9;
-    --button-bg: #238636; /* GitHub green */
+    --button-bg: #238636;
     --button-text: #ffffff;
     --button-hover-bg: #2ea043;
     --select-bg: #21262d;
@@ -54,7 +59,12 @@ body.dark-theme {
     --modal-content-bg: #161b22;
     --modal-text-color: #c9d1d9;
     --border-color: var(--container-bg);
-    --header-text-color: #58a6ff; /* GitHub light blue */
+    --header-text-color: #58a6ff;
+    --action-button-bg: #21262d;
+    --action-button-border: #30363d;
+    --action-button-text: #c9d1d9;
+    --action-button-active-bg: var(--button-bg); /* Use main button color for active state */
+    --action-button-active-text: var(--button-text);
 }
 
 /* General Styles */
@@ -91,7 +101,7 @@ body {
     flex-direction: column;
     align-items: center;
     width: 100%;
-    max-width: 95vw; /* Better use of screen width on mobile */
+    max-width: 95vw;
     transition: background-color 0.3s ease;
 }
 
@@ -107,7 +117,7 @@ header h1#game-title {
     font-size: 2.8em;
     margin: 0 0 15px 0;
     font-weight: bold;
-    color: var(--header-text-color); /* Using title color variable */
+    color: var(--header-text-color);
     cursor: pointer;
     user-select: none;
     transition: color 0.3s ease;
@@ -118,24 +128,29 @@ header h1#game-title:hover {
 
 .controls {
     display: flex;
-    flex-wrap: wrap; /* For better layout on small screens */
+    flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between; /* Better distribution of controls */
+    justify-content: space-between;
     width: 100%;
-    gap: 15px; /* Increased gap */
+    gap: 10px; /* Reduced gap slightly for more controls */
     margin-bottom: 15px;
 }
 .control-group {
     display: flex;
     align-items: center;
     gap: 8px;
+    flex-grow: 1; /* Allow groups to grow */
 }
+.control-group.difficulty {
+    min-width: 220px; /* Ensure difficulty selector doesn't get too squished */
+}
+
 
 .game-info {
     display: flex;
     justify-content: space-around;
     width: 100%;
-    max-width: 300px; /* Limit width for better appearance */
+    max-width: 300px;
     margin-top: 10px;
     background-color: var(--score-box-bg);
     padding: 10px;
@@ -153,13 +168,14 @@ header h1#game-title:hover {
     background-color: var(--button-bg);
     color: var(--button-text);
     border: none;
-    padding: 10px 18px; /* Increased padding */
+    padding: 10px 18px;
     border-radius: calc(var(--border-radius) - 2px);
     font-size: 1em;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.1s ease;
     user-select: none;
+    white-space: nowrap; /* Prevent button text from wrapping */
 }
 
 .btn:hover {
@@ -172,7 +188,7 @@ header h1#game-title:hover {
 }
 
 select#difficulty {
-    padding: 9px 12px; /* Increased padding */
+    padding: 9px 12px;
     border: 1px solid var(--select-border);
     border-radius: calc(var(--border-radius) - 2px);
     background-color: var(--select-bg);
@@ -181,34 +197,75 @@ select#difficulty {
     font-size: 0.95em;
     cursor: pointer;
     transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+    flex-grow: 1;
 }
+
+/* Action Mode Toggle Buttons */
+.action-mode-container {
+    display: flex;
+    background-color: var(--action-button-bg);
+    border: 1px solid var(--action-button-border);
+    border-radius: var(--border-radius);
+    padding: 4px;
+    gap: 4px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.action-btn {
+    background-color: transparent; /* Initially transparent within the container */
+    color: var(--action-button-text);
+    border: 1px solid transparent; /* No border initially */
+    width: 40px;
+    height: 40px;
+    border-radius: 50%; /* Circular buttons */
+    font-size: 1.5em; /* Icon size */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    line-height: 1;
+}
+.action-btn:hover {
+    background-color: rgba(0,0,0,0.05); /* Subtle hover */
+}
+body.dark-theme .action-btn:hover {
+    background-color: rgba(255,255,255,0.08);
+}
+
+.action-btn.active {
+    background-color: var(--action-button-active-bg);
+    color: var(--action-button-active-text);
+    border-color: var(--action-button-active-bg); /* Or a contrasting border */
+    box-shadow: 0 0 5px var(--action-button-active-bg);
+}
+/* End Action Mode Toggle Buttons */
+
 
 main {
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 10px; /* Reduced top margin */
+    margin-top: 10px;
 }
 
 #game-board-container {
-    display: flex; /* For better size control and overflow prevention */
+    display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
-    overflow: auto; /* Allow scroll if needed for very large grids */
+    overflow: auto;
 }
 
 .grid-container {
     display: grid;
     background-color: var(--grid-bg);
-    border: 2px solid var(--border-color); /* More defined border */
+    border: 2px solid var(--border-color);
     border-radius: var(--border-radius);
-    padding: var(--gap-size); /* Padding equal to gap for uniform look */
+    padding: var(--gap-size);
     gap: var(--gap-size);
     transition: background-color 0.3s ease, border-color 0.3s ease;
-    /* Size is set by JavaScript */
-    /* To prevent unwanted text selection on rapid clicks */
     user-select: none;
 }
 
@@ -218,39 +275,48 @@ main {
     align-items: center;
     background-color: var(--tile-bg);
     border: 1px solid var(--tile-border);
-    border-radius: calc(var(--border-radius) / 2); /* Less rounded tiles */
+    border-radius: calc(var(--border-radius) / 2);
     font-weight: bold;
-    cursor: pointer; /* Change to pointer to indicate clickability */
+    cursor: pointer;
     transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
-    /* Size and font are set by JavaScript */
-    aspect-ratio: 1 / 1; /* Maintain square ratio */
-    font-size: 1em; /* Base font size, adjusted by JS */
-    color: transparent; /* Numbers are initially hidden */
+    aspect-ratio: 1 / 1;
+    font-size: 1em; /* Base, JS will adjust */
+    color: transparent;
 }
+.tile.marked.flag::before { /* For flag mode marking */
+    content: '🚩';
+    opacity: 0.5;
+}
+.tile.marked.question::before { /* For question mode marking */
+    content: '❓';
+    opacity: 0.5;
+}
+
 
 .tile.revealed {
     background-color: var(--tile-bg-revealed);
     cursor: default;
-    color: var(--tile-text-color); /* Show main text color for numbers */
+    color: var(--tile-text-color);
 }
 .tile.revealed.mine {
     background-color: var(--mine-color);
-    color: white; /* Mine icon color */
+    color: white;
 }
-.tile.flagged {
-    color: var(--flag-color); /* Flag icon color */
+.tile.flagged { /* Actual flag placed */
+    color: var(--flag-color);
+    font-size: inherit; /* Ensure flag icon scales with tile font size */
 }
 
 /* Mine number colors */
-.tile.revealed[data-mines="1"] { color: #007bff; } /* Blue */
-.tile.revealed[data-mines="2"] { color: var(--safe-color); } /* Green */
-.tile.revealed[data-mines="3"] { color: var(--mine-color); } /* Red */
-.tile.revealed[data-mines="4"] { color: #004085; } /* Dark Blue */
-.tile.revealed[data-mines="5"] { color: #800000; } /* Maroon */
-.tile.revealed[data-mines="6"] { color: #008080; } /* Teal */
-.tile.revealed[data-mines="7"] { color: #000000; } /* Black */
-body.dark-theme .tile.revealed[data-mines="7"] { color: #ffffff; } /* White in dark theme */
-.tile.revealed[data-mines="8"] { color: #808080; } /* Gray */
+.tile.revealed[data-mines="1"] { color: #007bff; }
+.tile.revealed[data-mines="2"] { color: var(--safe-color); }
+.tile.revealed[data-mines="3"] { color: var(--mine-color); }
+.tile.revealed[data-mines="4"] { color: #004085; }
+.tile.revealed[data-mines="5"] { color: #800000; }
+.tile.revealed[data-mines="6"] { color: #008080; }
+.tile.revealed[data-mines="7"] { color: #000000; }
+body.dark-theme .tile.revealed[data-mines="7"] { color: #ffffff; }
+.tile.revealed[data-mines="8"] { color: #808080; }
 
 
 /* Modal Styles */
@@ -291,14 +357,22 @@ footer {
         font-size: 2.2em;
     }
     .controls {
-        flex-direction: column; /* Controls stack on mobile */
-        align-items: stretch; /* Stretch controls to full width */
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px; /* Adjust gap for column layout */
+    }
+    .control-group, .action-mode-container, .btn#easy-peasy-button {
+        width: 100%; /* Full width for control groups in column layout */
+        justify-content: center; /* Center items in action mode container */
+    }
+    .control-group.difficulty {
+        min-width: unset;
     }
     select#difficulty, .btn {
-        width: 100%; /* Full width button and selector */
+        width: 100%;
     }
     .game-info {
-        max-width: none; /* Allow game info to take more width */
+        max-width: none;
         padding: 8px;
     }
     .info-item {
@@ -322,6 +396,11 @@ footer {
     .btn, select#difficulty {
         padding: 8px 15px;
         font-size: 0.9em;
+    }
+    .action-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 1.3em;
     }
     .info-item {
         font-size: 0.85em;
