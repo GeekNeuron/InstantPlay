@@ -36,16 +36,16 @@
     --button-secondary-text-light: #ffffff;
     --button-secondary-hover-bg-light: #545b62;
     --button-border-radius: 8px;
-    --button-padding-vertical: 6px;   /* Further reduced padding for smaller buttons */
-    --button-padding-horizontal: 10px;/* Further reduced padding for smaller buttons */
-    --button-font-size: 0.85em;      /* Further reduced font size for smaller buttons */
+    --button-padding-vertical: 6px;
+    --button-padding-horizontal: 10px;
+    --button-font-size: 0.85em;
 
 
     --select-bg-light: #ffffff;
     --select-border-light: #ced4da;
     --select-text-light: #495057;
     --select-border-radius: 8px;
-    --select-padding-vertical: 7px;   /* Adjusted to align with new button height */
+    --select-padding-vertical: 7px;
     --select-padding-horizontal: 10px;
     --select-font-size: 0.85em;
 
@@ -184,40 +184,65 @@ body.dark-theme .game-header h1 {
 .header-controls-wrapper {
     display: flex;
     flex-direction: column; /* Stack rows */
-    align-items: center; /* Center rows horizontally */
+    align-items: stretch; /* Make rows take full width */
     gap: 10px; /* Gap between rows */
     margin-bottom: 20px;
 }
 
-.header-row-1 {
+.header-row-1, .header-row-2 {
     display: flex;
-    justify-content: space-between; /* Pushes game-actions to center and timer to right */
+    justify-content: space-between; /* Pushes first child left, last child right */
     align-items: center;
     width: 100%;
-    gap: 10px; /* Gap between game-actions and timer */
+    gap: 10px; /* Gap between items in a row if they are close */
 }
 
-.game-actions {
+/* Specific styling for items within rows if needed */
+.header-row-1 .btn { /* Buttons in the first row */
+    /* No specific alignment needed here if space-between works */
+}
+.header-row-1 #newGameBtn {
+    /* margin-right: auto; */ /* Could be used if only two items and one needs to be far left */
+}
+.header-row-1 #resetBtn {
+    /* margin-left: auto; */ /* Could be used if only two items and one needs to be far right */
+}
+
+
+.difficulty-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+.difficulty-control label {
+    color: inherit;
+    font-weight: 500;
+    font-size: var(--button-font-size);
+    white-space: nowrap;
+}
+
+.game-actions { /* This class is no longer in HTML for this layout, but keeping if used elsewhere */
     display: flex;
     gap: 10px;
     align-items: center;
-    justify-content: center; /* Center buttons within this div */
-    flex-grow: 1; /* Allow it to take space and center buttons */
+    justify-content: center;
+    flex-shrink: 0;
 }
 
 #timerDisplay {
-    font-size: var(--select-font-size); /* Match select font size for consistency */
+    font-size: var(--select-font-size);
     font-weight: bold;
     color: var(--timer-text-light);
     background-color: transparent;
     border: none;
-    padding: var(--select-padding-vertical) 8px; /* Match select vertical padding */
+    padding: var(--select-padding-vertical) 8px;
     cursor: pointer;
     user-select: none;
-    text-align: right; /* Align timer to the right within its space */
+    text-align: center; /* Timer text centered within its own div */
     line-height: 1.2;
     white-space: nowrap;
-    flex-shrink: 0; /* Prevent timer from shrinking */
+    flex-shrink: 0;
 }
 body.dark-theme #timerDisplay {
     color: var(--timer-text-dark);
@@ -225,24 +250,6 @@ body.dark-theme #timerDisplay {
 #timerDisplay:focus, #timerDisplay:hover {
     outline: none;
     opacity: 0.8;
-}
-
-.header-row-2 {
-    display: flex;
-    justify-content: center; /* Center difficulty control */
-    width: 100%;
-}
-
-.difficulty-control {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.difficulty-control label {
-    color: inherit;
-    font-weight: 500;
-    font-size: var(--button-font-size);
-    white-space: nowrap;
 }
 
 .game-history-dropdown {
@@ -588,32 +595,29 @@ body.dark-theme .footer-credit a {
 }
 
 /* Responsive adjustments for Header Controls */
-@media (max-width: 680px) { /* Breakpoint where header structure changes */
+@media (max-width: 680px) { /* Breakpoint when header rows content might need to adjust */
     .header-controls-wrapper {
-        /* No specific changes needed here, children will handle their layout */
+        /* Stays column, children rows will adapt */
     }
-    .header-row-1 {
-        flex-wrap: wrap; /* Allow timer to wrap below game-actions if needed */
-        justify-content: center; /* Center items if they wrap */
+    .header-row-1, .header-row-2 {
+        flex-wrap: wrap; /* Allow items within a row to wrap */
+        justify-content: center; /* Center items if they wrap within a row */
     }
-    .game-actions {
-        order: 1; /* Buttons first in the wrapped flow */
-        width: 100%; /* Take full width to center buttons */
-        margin-bottom: 10px; /* Space if timer wraps below */
-    }
-    #timerDisplay {
-        order: 2; /* Timer second in the wrapped flow */
-        width: 100%; /* Full width, text-align will center it */
+    .header-row-1 .btn {
+        flex-basis: 45%; /* Try to keep buttons side-by-side if space allows */
         text-align: center;
-        margin-bottom: 10px;
+        margin-bottom: 5px; /* Space if they stack */
     }
-    .header-row-2 {
-        order: 3; /* Difficulty last */
-    }
-    .difficulty-control {
-        width: 100%;
+    .header-row-2 .difficulty-control, .header-row-2 #timerDisplay {
+        flex-basis: 45%; /* Try to keep difficulty and timer side-by-side */
         justify-content: center;
+        text-align: center;
+        margin-bottom: 5px;
     }
+    .header-row-2 .difficulty-control {
+         min-width: 180px; /* Ensure difficulty select has enough space */
+    }
+
 
     .game-history-dropdown {
         width: calc(100% - 40px);
@@ -624,16 +628,23 @@ body.dark-theme .footer-credit a {
 }
 
 
-@media (max-width: 420px) {
-     .game-actions {
+@media (max-width: 480px) { /* Stacking items within rows more aggressively */
+    .header-row-1, .header-row-2 {
         flex-direction: column;
+        align-items: stretch; /* Make items full width in their column */
+        gap: 8px;
     }
-    .game-actions .btn {
+    .header-row-1 .btn, .header-row-2 .difficulty-control, .header-row-2 #timerDisplay {
         width: 100%;
-        max-width: 280px; /* Prevent buttons from being too wide on small screens */
+        max-width: 280px; /* Max width for better appearance */
         margin-left: auto;
         margin-right: auto;
+        text-align: center;
     }
+    .header-row-2 .difficulty-control {
+        justify-content: center; /* Center label and select */
+    }
+
      .game-header h1 { font-size: 1.8em; }
      .cell { font-size: clamp(0.7em, 6vw, 1.2em); }
      .end-game-controls { flex-direction: column; gap: 8px; }
