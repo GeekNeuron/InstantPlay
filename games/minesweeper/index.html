@@ -12,7 +12,7 @@
         <header>
             <h1 id="game-title" title="Switch Theme">Minesweeper</h1>
             <div class="controls">
-                <div class="control-group">
+                <div class="control-group difficulty">
                     <label for="difficulty">Difficulty:</label>
                     <select id="difficulty">
                         <option value="beginner">Beginner (8x8)</option>
@@ -23,6 +23,12 @@
                         <option value="extreme">Extreme (30x30)</option>
                     </select>
                 </div>
+
+                <div class="action-mode-container">
+                    <button id="action-mode-reveal" class="action-btn active" title="Reveal Mode">⛏️</button> <button id="action-mode-flag" class="action-btn" title="Flag Mode">🚩</button>
+                </div>
+                
+                <button id="easy-peasy-button" class="btn" title="Toggle Chord Click Assist">Easy Peasy</button>
                 <button id="new-game-button" class="btn">New Game</button>
             </div>
             <div class="game-info">
