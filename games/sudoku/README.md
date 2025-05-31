@@ -32,7 +32,7 @@ A classic Sudoku puzzle game implemented in vanilla JavaScript, HTML, and CSS. D
 6.  **Win**: The game is won when all cells are filled correctly. A success message will appear.
 
 ## Project Structure
-```
+
 Sudoku/
 ├── index.html             # Main game page
 ├── css/
@@ -44,7 +44,7 @@ Sudoku/
 │   ├── ui.js              # Theme management, user messages
 │   └── utils.js           # Utility functions (if any)
 └── README.md              # This documentation
-```
+
 
 ## Technologies Used
 
