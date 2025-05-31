@@ -23,17 +23,32 @@ const Utils = (() => {
         return array2D.map(arr => [...arr]);
     }
 
-    // You can add other utility functions here if needed.
-    // For example, a function to get a random integer in a range:
-    // function getRandomInt(min, max) {
-    //     min = Math.ceil(min);
-    //     max = Math.floor(max);
-    //     return Math.floor(Math.random() * (max - min + 1)) + min;
-    // }
+    /**
+     * Converts Persian/Arabic numerals in a string to their English equivalents.
+     * @param {string} str The input string, expected to be a single character for this game.
+     * @returns {string} The string with numerals converted to English.
+     */
+    function convertNumeralsToEnglish(str) {
+        if (typeof str !== 'string' || str.length === 0) return str;
+        
+        const numeralMap = {
+            // Persian numerals
+            '۰': '0', '۱': '1', '۲': '2', '۳': '3', '۴': '4', 
+            '۵': '5', '۶': '6', '۷': '7', '۸': '8', '۹': '9',
+            // Eastern Arabic numerals
+            '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4', 
+            '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9'
+            // Add other numeral systems if needed, e.g., Devanagari, etc.
+        };
+
+        // Since input is maxLength=1, we only care about the first character
+        const char = str[0];
+        return numeralMap[char] || char;
+    }
 
     return {
         shuffleArray,
-        deepCopy2DArray
-        // getRandomInt
+        deepCopy2DArray,
+        convertNumeralsToEnglish
     };
 })();
