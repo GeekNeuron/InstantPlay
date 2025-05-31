@@ -52,7 +52,7 @@
 
     /* Dark Theme Variables (User Provided Palette) */
     --bg-color-dark: #0d1117;
-    --text-color-dark: #c9d1d9;
+    --text-color-dark: #c9d1d9; /* Default text color for dark theme */
     --container-bg-dark: #161b22;
     --container-border-dark: #21262d;
     --header-text-dark: #c9d1d9;
@@ -87,6 +87,8 @@
     --history-border-dark: #3282b8;
     --history-separator-color-dark: #21262d;
     --history-item-hover-bg-dark: #2c3a47;
+    --history-item-text-dark: #FFFFFF; /* Explicit white for history items text in dark theme */
+
 
     --theme-switcher-dark: #e0e0e0;
     --input-focus-border-dark: #3282b8;
@@ -110,7 +112,7 @@ body {
 
 body.dark-theme {
     background-color: var(--bg-color-dark);
-    color: var(--text-color-dark);
+    color: var(--text-color-dark); /* Default body text color for dark theme */
 }
 
 .theme-switcher-container {
@@ -182,7 +184,7 @@ body.dark-theme .game-header h1 {
     display: flex;
     align-items: center;
     gap: 10px;
-    flex-shrink: 0; /* Prevent shrinking if possible, let wrapper handle space */
+    flex-shrink: 0;
 }
 
 .difficulty-control {
@@ -197,18 +199,17 @@ body.dark-theme .game-header h1 {
     white-space: nowrap;
 }
 .timer-display {
-    font-size: 0.95em; /* Match select font-size */
+    font-size: 0.95em;
     font-weight: bold;
     color: var(--timer-text-light);
     background-color: transparent;
     border: none;
-    padding: 9px 8px; /* Matched vertical padding with select, added small horizontal padding */
+    padding: 9px 8px;
     cursor: pointer;
     user-select: none;
-    /* min-width: auto; */ /* Removed min-width to allow content to define width */
     text-align: center;
-    line-height: 1.2; /* Match select line-height */
-    white-space: nowrap; /* Prevent time string from wrapping */
+    line-height: 1.2;
+    white-space: nowrap;
 }
 body.dark-theme .timer-display {
     color: var(--timer-text-dark);
@@ -261,7 +262,7 @@ body.dark-theme .difficulty-group-separator {
 .history-list li {
     padding: 8px 5px;
     font-size: 0.9em;
-    color: var(--text-color-light);
+    color: var(--text-color-light); /* Default for light theme */
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
@@ -271,8 +272,9 @@ body.dark-theme .difficulty-group-separator {
     border-bottom: 1px solid var(--history-item-hover-bg-light);
 }
 
-body.dark-theme .history-list li:not(:last-child) {
-    border-bottom-color: var(--history-item-hover-bg-dark);
+body.dark-theme .history-list li {
+    border-bottom-color: var(--history-item-hover-bg-dark); /* Separator for dark theme */
+    color: var(--history-item-text-dark); /* Using the new variable for white text */
 }
 
 .history-list li:hover {
@@ -283,14 +285,15 @@ body.dark-theme .history-list li:hover {
 }
 .history-item-date {
     font-size: 0.85em;
-    color: var(--text-color-light);
+    color: var(--text-color-light); /* Default for light theme */
     opacity: 0.8;
     white-space: nowrap;
 }
 body.dark-theme .history-item-date {
-    color: var(--text-color-dark);
+    color: var(--history-item-text-dark); /* Using the new variable for white text */
+    opacity: 0.85; /* Adjusted opacity for white text on dark */
 }
-.history-item-time {
+.history-item-time { /* Inherits color from li */
     font-weight: 500;
     white-space: nowrap;
 }
@@ -342,25 +345,25 @@ body.dark-theme #resetBtn:hover {
     background-color: var(--select-bg-light);
     color: var(--select-text-light);
     border: 1px solid var(--select-border-light);
-    padding: 9px 12px; /* Note: select has more horizontal padding due to arrow */
+    padding: 9px 12px;
     border-radius: var(--select-border-radius);
     font-weight: normal;
     line-height: 1.2;
     font-size: 0.95em;
-    -webkit-appearance: none; /* Basic styling for select */
+    -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23212529%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'); /* Arrow color for light theme */
     background-repeat: no-repeat;
     background-position: right .7em top 50%;
     background-size: .65em auto;
-    padding-right: 2.5em; /* Make space for custom arrow */
+    padding-right: 2.5em;
 }
 body.dark-theme #difficultySelect {
     background-color: var(--select-bg-dark);
     color: var(--select-text-dark);
     border-color: var(--select-border-dark);
-    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23c9d1d9%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23c9d1d9%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'); /* Arrow color for dark theme */
 }
 
 
