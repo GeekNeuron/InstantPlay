@@ -201,42 +201,55 @@ document.addEventListener('DOMContentLoaded', () => {
 
         userBoard[row][col] = value;
         cellElement.dataset.value = value;
-
-        cellElement.classList.remove('error');
-        if(inputElement) {
-            inputElement.classList.remove('error');
-            inputElement.style.borderColor = ''; 
-        }
         UI.clearMessage();
 
+        // Clear previous error state for this specific cell
+        cellElement.classList.remove('error');
+        if (inputElement) {
+            inputElement.classList.remove('error');
+        }
+
+        let moveIsImmediatelyValid = true;
         if (value !== Sudoku.EMPTY_CELL) {
             if (!Sudoku.isMoveValid(userBoard, row, col, value)) {
                 cellElement.classList.add('error');
-                if(inputElement) inputElement.classList.add('error');
-            } else {
-                if (Sudoku.isBoardSolved(userBoard, solutionBoard)) {
-                    gameWon = true;
-                    boardShouldBeDisabled = true; 
-                    stopTimer();
-                    Board.highlightRelatedCells(row, col, userBoard);
-                    UI.setBoardDisabled(true);
-                    UI.showModal("YOU WIN!", "Congratulations, you solved the puzzle!", 'win'); // No auto-hide for win
-                    addGameToHistory(UI.getSelectedDifficulty(), elapsedTimeInSeconds, new Date().toISOString());
-                    clearSavedBoardState();
-                } else if (Sudoku.isBoardFull(userBoard)) {
-                    boardShouldBeDisabled = true;
-                    UI.setBoardDisabled(true);
-                    UI.showModal("Keep Going!", "The board is full but incorrect. Please check your numbers and try again.", 'error-continue', 4000, () => {
-                        boardShouldBeDisabled = false; // Re-enable board after "Keep Going" modal auto-hides
-                        UI.setBoardDisabled(false);
-                    });
-                }
+                if (inputElement) inputElement.classList.add('error');
+                moveIsImmediatelyValid = false; // The current move itself is invalid by rule
             }
         }
-        if (!gameWon) {
+
+        // Check game state (win or full but incorrect)
+        // This check happens regardless of the immediate validity of the last move,
+        // as long as the board state is updated.
+        if (Sudoku.isBoardSolved(userBoard, solutionBoard)) {
+            gameWon = true;
+            boardShouldBeDisabled = true;
+            stopTimer();
+            Board.highlightRelatedCells(row, col, userBoard); // Final highlight
+            UI.setBoardDisabled(true);
+            UI.showModal("YOU WIN!", "Congratulations, you solved the puzzle!", 'win');
+            addGameToHistory(UI.getSelectedDifficulty(), elapsedTimeInSeconds, new Date().toISOString());
+            clearSavedBoardState();
+        } else if (Sudoku.isBoardFull(userBoard)) {
+            // This will now be reached even if the last move was an immediate conflict,
+            // as long as that move resulted in a full board.
+            boardShouldBeDisabled = true;
+            UI.setBoardDisabled(true);
+            UI.showModal("Keep Going!", "The board is full but incorrect. Please check your numbers and try again.", 'error-continue', 4000, () => {
+                boardShouldBeDisabled = false;
+                UI.setBoardDisabled(false);
+            });
+        }
+        
+        if (!gameWon && !boardShouldBeDisabled) { // Only save if game is ongoing
             saveGameState();
         }
-        Board.highlightRelatedCells(row, col, userBoard);
+        // Always re-highlight based on current selection
+        if (selectedCell.element) {
+            Board.highlightRelatedCells(selectedCell.row, selectedCell.col, userBoard);
+        } else {
+            Board.clearAllHighlights();
+        }
     }
 
     function resetGame() {
@@ -315,7 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Event Listeners & Initialization ---
     loadGameHistory();
-    UI.init(handleTimerClick); // Removed modal button callbacks from init
+    UI.init(handleTimerClick); // Modal button callbacks removed from UI.init
 
     newGameBtn.addEventListener('click', () => startGame(true));
     resetBtn.addEventListener('click', resetGame);
@@ -330,12 +343,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const gameOverModalElement = document.getElementById('gameOverModal');
         if (gameOverModalElement && gameOverModalElement.classList.contains('show')) {
              if (gameOverModalElement.querySelector('.modal-content').contains(event.target)) return;
-             // If click is outside modal content AND modal is shown, AND it's not the "Keep Going" modal (which auto-hides)
-             // then perhaps hide it. For "YOU WIN", it stays until main buttons are used.
-             // For "Keep Going", it auto-hides. So, this might not be needed.
         }
         if (UI.getIsHistoryVisible() && document.getElementById('gameHistoryDropdown').style.display !== 'none') {
-            // Let UI module handle closing history dropdown if click is outside
             return;
         }
 
