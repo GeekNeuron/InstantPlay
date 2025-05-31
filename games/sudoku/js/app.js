@@ -4,10 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const difficultySelect = document.getElementById('difficultySelect');
     const newGameBtn = document.getElementById('newGameBtn');
     const resetBtn = document.getElementById('resetBtn');
-    const checkSolutionBtn = document.getElementById('checkSolutionBtn');
+    const checkSolutionBtn = document.getElementById('checkSolutionBtn'); // Restored
     const sudokuBoardElement = document.getElementById('sudokuBoard');
-    // const closeGameBtn = document.getElementById('closeGameBtn'); // Part of modal now
-    // const newGameFromWinBtn = document.getElementById('newGameFromWinBtn'); // Part of modal now
+    // const closeGameBtn = document.getElementById('closeGameBtn'); // Removed from direct access, part of modal logic now handled differently
+    // const newGameFromWinBtn = document.getElementById('newGameFromWinBtn'); // Removed
     const timerDisplayElement = document.getElementById('timerDisplay');
 
     // localStorage Keys
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let userBoard = [];
     let selectedCell = { row: -1, col: -1, element: null, inputElement: null };
     let gameWon = false;
-    let boardDisabledForModal = false; // To track if board was disabled due to win modal
+    let boardDisabledForModal = false; // Still useful if modal is shown for "Keep Going"
 
     // Timer Variables
     let timerInterval = null;
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Game State Management ---
     function saveGameState() {
-        if (gameWon) return;
+        if (gameWon) return; // Don't save if game is won and modal is up
         try {
             localStorage.setItem(USER_BOARD_KEY, JSON.stringify(userBoard));
             localStorage.setItem(INITIAL_PUZZLE_KEY, JSON.stringify(initialPuzzle));
@@ -138,11 +138,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 boardDisabledForModal = false;
                 UI.setBoardDisabled(false);
                 Board.render(sudokuBoardElement, userBoard, initialPuzzle, handleCellClick, handleCellInput);
-                UI.hideModal();
+                UI.hideModal(); // Ensure modal is hidden on load
                 
                 const resumedTime = savedElapsedTime ? parseInt(savedElapsedTime, 10) : 0;
                 startTimer(resumedTime);
-                // UI.showMessage("Previous game loaded.", "info", 2000); // Removed
                 return true;
             }
         } catch (e) {
@@ -219,17 +218,17 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 if (Sudoku.isBoardSolved(userBoard, solutionBoard)) {
                     gameWon = true;
-                    boardDisabledForModal = true;
+                    boardDisabledForModal = true; // Board is disabled until New Game or Reset
                     stopTimer();
-                    Board.highlightRelatedCells(row, col, userBoard); // Final highlight
+                    Board.highlightRelatedCells(row, col, userBoard);
                     UI.setBoardDisabled(true);
-                    UI.showModal("YOU WIN!", "Congratulations, you solved the puzzle!", true, true);
+                    UI.showModal("YOU WIN!", "Congratulations, you solved the puzzle!", true, false, false); // isWin=true, no NewGame, no Close
                     addGameToHistory(UI.getSelectedDifficulty(), elapsedTimeInSeconds, new Date().toISOString());
                     clearSavedBoardState();
                 } else if (Sudoku.isBoardFull(userBoard)) {
-                    // Board is full but not solved
-                    UI.showModal("Keep Going!", "The board is full but incorrect. Please check your numbers and try again.", false, true);
-                    // User can close modal and continue playing
+                    boardDisabledForModal = true;
+                    UI.setBoardDisabled(true);
+                    UI.showModal("Keep Going!", "The board is full but incorrect. Please check your numbers and try again.", false, false, true); // isWin=false, no NewGame, show Close
                 }
             }
         }
@@ -240,15 +239,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function resetGame() {
-        if (initialPuzzle.length === 0) {
-            UI.showMessage("Start a new game first.", "info", 2000);
-            return;
-        }
         UI.clearMessage();
         UI.hideModal();
         UI.setBoardDisabled(false);
         gameWon = false;
         boardDisabledForModal = false;
+        
+        // If initialPuzzle is not set (e.g., first load and no saved game), start a new one
+        if (initialPuzzle.length === 0) {
+            startGame(true);
+            return;
+        }
+
         userBoard = Utils.deepCopy2DArray(initialPuzzle);
         Board.render(sudokuBoardElement, userBoard, initialPuzzle, handleCellClick, handleCellInput);
         clearSelection();
@@ -293,52 +295,52 @@ document.addEventListener('DOMContentLoaded', () => {
             boardDisabledForModal = true;
             stopTimer();
             UI.setBoardDisabled(true);
-            UI.showModal("YOU WIN!", "Congratulations! You've solved it!", true, true);
+            UI.showModal("YOU WIN!", "Congratulations! You've solved it!", true, false, false); // isWin=true, no NewGame, no Close
             addGameToHistory(UI.getSelectedDifficulty(), elapsedTimeInSeconds, new Date().toISOString());
             clearSavedBoardState();
         } else if (Sudoku.isBoardFull(userBoard) && errorsFound === 0) {
-             UI.showModal("Keep Going!", "Board is full, and no direct errors found, but it's not the solution. Try again!", false, true);
+             boardDisabledForModal = true;
+             UI.setBoardDisabled(true);
+             UI.showModal("Keep Going!", "Board is full, and no direct errors found, but it's not the solution. Try again!", false, false, true); // isWin=false, no NewGame, show Close
         } else {
             UI.showMessage('No errors found in your current entries. Keep going!', 'info', 3000);
         }
-        if(selectedCell.element && !gameWon) { // Re-highlight only if game not won
+        if(selectedCell.element && !gameWon) {
             Board.highlightRelatedCells(selectedCell.row, selectedCell.col, userBoard);
         }
     }
 
-    // --- Modal Button Callbacks ---
-    function handleModalNewGame() {
+    // --- Modal Button Callbacks (Now only for a potential "Close" on "Keep Going" modal) ---
+    function handleModalClose() { // This is the only modal action now
         UI.hideModal();
-        startGame(true); // Force a new game
-    }
-
-    function handleModalClose() {
-        UI.hideModal();
-        if (!gameWon) { // If game was not won (e.g. "Keep Going" modal)
-            boardDisabledForModal = false; // Allow interaction again
+        if (!gameWon) { // If it was the "Keep Going" modal
+            boardDisabledForModal = false;
             UI.setBoardDisabled(false);
         }
-        // If game was won, board remains disabled.
+        // If "YOU WIN!" modal, it just displays message, user uses main New Game/Reset
     }
 
     // --- Event Listeners & Initialization ---
     loadGameHistory();
-    UI.init(handleTimerClick, handleModalNewGame, handleModalClose); // Pass modal callbacks
+    // Pass only the close callback, as New Game button is removed from modal
+    UI.init(handleTimerClick, null, handleModalClose); 
 
     newGameBtn.addEventListener('click', () => startGame(true));
     resetBtn.addEventListener('click', resetGame);
-    if (checkSolutionBtn) {
+    if (checkSolutionBtn) { // Check if button exists
         checkSolutionBtn.addEventListener('click', validateUserSolution);
     }
     difficultySelect.addEventListener('change', () => startGame(true));
 
-    // Modal button listeners are now set in UI.init
-
     startGame(false);
 
     document.addEventListener('click', (event) => {
-        if (gameWon && gameOverModalElement && gameOverModalElement.classList.contains('show')) {
-             if (gameOverModalElement.querySelector('.modal-content').contains(event.target)) return;
+        const gameOverModalElement = document.getElementById('gameOverModal');
+        if (gameOverModalElement && gameOverModalElement.classList.contains('show')) {
+            // If modal is shown, don't clear selection for clicks outside board,
+            // unless the click is outside the modal content itself (to close it if we had such a feature)
+            // For now, modal closing is handled by its own button or starting a new game.
+            if (gameOverModalElement.querySelector('.modal-content').contains(event.target)) return;
         }
         if (UI.getIsHistoryVisible() && document.getElementById('gameHistoryDropdown').style.display !== 'none') {
             return;
