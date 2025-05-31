@@ -36,18 +36,18 @@
     --button-secondary-text-light: #ffffff;
     --button-secondary-hover-bg-light: #545b62;
     --button-border-radius: 8px;
-    --button-padding-vertical: 8px;   /* Adjusted padding for smaller buttons */
-    --button-padding-horizontal: 12px;/* Adjusted padding for smaller buttons */
-    --button-font-size: 0.875em;      /* Adjusted font size for smaller buttons */
+    --button-padding-vertical: 6px;   /* Further reduced padding for smaller buttons */
+    --button-padding-horizontal: 10px;/* Further reduced padding for smaller buttons */
+    --button-font-size: 0.85em;      /* Further reduced font size for smaller buttons */
 
 
     --select-bg-light: #ffffff;
     --select-border-light: #ced4da;
     --select-text-light: #495057;
     --select-border-radius: 8px;
-    --select-padding-vertical: 8px;   /* Match button vertical padding */
-    --select-padding-horizontal: 12px;/* Match button horizontal padding */
-    --select-font-size: 0.875em;      /* Match button font size */
+    --select-padding-vertical: 7px;   /* Adjusted to align with new button height */
+    --select-padding-horizontal: 10px;
+    --select-font-size: 0.85em;
 
 
     --timer-text-light: #495057;
@@ -180,53 +180,44 @@ body.dark-theme .game-header h1 {
     color: var(--header-text-dark);
 }
 
-/* Updated Header Controls Layout */
-.header-controls {
+/* Header Controls Layout */
+.header-controls-wrapper {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
+    flex-direction: column; /* Stack rows */
+    align-items: center; /* Center rows horizontally */
+    gap: 10px; /* Gap between rows */
     margin-bottom: 20px;
-    flex-wrap: wrap;
 }
 
-.difficulty-control {
+.header-row-1 {
     display: flex;
+    justify-content: space-between; /* Pushes game-actions to center and timer to right */
     align-items: center;
-    gap: 8px;
-    flex-shrink: 0;
-    /* order: 1; For explicit ordering if needed, but natural order in HTML is preferred */
-}
-.difficulty-control label {
-    color: inherit;
-    font-weight: 500;
-    font-size: var(--button-font-size); /* Match button font size */
-    white-space: nowrap;
+    width: 100%;
+    gap: 10px; /* Gap between game-actions and timer */
 }
 
 .game-actions {
     display: flex;
     gap: 10px;
     align-items: center;
-    flex-grow: 1; /* Allow this to take up space to center itself */
-    justify-content: center; /* Center the buttons within this container */
-    /* order: 2; */
+    justify-content: center; /* Center buttons within this div */
+    flex-grow: 1; /* Allow it to take space and center buttons */
 }
 
 #timerDisplay {
-    font-size: var(--button-font-size); /* Match button font size */
+    font-size: var(--select-font-size); /* Match select font size for consistency */
     font-weight: bold;
     color: var(--timer-text-light);
     background-color: transparent;
     border: none;
-    padding: var(--button-padding-vertical) 8px; /* Match vertical padding, adjust horizontal */
+    padding: var(--select-padding-vertical) 8px; /* Match select vertical padding */
     cursor: pointer;
     user-select: none;
-    text-align: center;
+    text-align: right; /* Align timer to the right within its space */
     line-height: 1.2;
     white-space: nowrap;
-    flex-shrink: 0;
-    /* order: 3; */
+    flex-shrink: 0; /* Prevent timer from shrinking */
 }
 body.dark-theme #timerDisplay {
     color: var(--timer-text-dark);
@@ -234,6 +225,24 @@ body.dark-theme #timerDisplay {
 #timerDisplay:focus, #timerDisplay:hover {
     outline: none;
     opacity: 0.8;
+}
+
+.header-row-2 {
+    display: flex;
+    justify-content: center; /* Center difficulty control */
+    width: 100%;
+}
+
+.difficulty-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.difficulty-control label {
+    color: inherit;
+    font-weight: 500;
+    font-size: var(--button-font-size);
+    white-space: nowrap;
 }
 
 .game-history-dropdown {
@@ -316,9 +325,9 @@ body.dark-theme .history-item-date {
 
 
 .btn {
-    padding: var(--button-padding-vertical) var(--button-padding-horizontal); /* Using variables */
+    padding: var(--button-padding-vertical) var(--button-padding-horizontal);
     border-radius: var(--button-border-radius);
-    font-size: var(--button-font-size); /* Using variable */
+    font-size: var(--button-font-size);
     cursor: pointer;
     font-weight: bold;
     transition: background-color 0.1s ease, opacity 0.1s ease, transform 0.1s ease;
@@ -361,11 +370,11 @@ body.dark-theme #resetBtn:hover {
     background-color: var(--select-bg-light);
     color: var(--select-text-light);
     border: 1px solid var(--select-border-light);
-    padding: var(--select-padding-vertical) var(--select-padding-horizontal); /* Using variables */
+    padding: var(--select-padding-vertical) var(--select-padding-horizontal);
     border-radius: var(--select-border-radius);
     font-weight: normal;
     line-height: 1.2;
-    font-size: var(--select-font-size); /* Using variable */
+    font-size: var(--select-font-size);
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -373,7 +382,7 @@ body.dark-theme #resetBtn:hover {
     background-repeat: no-repeat;
     background-position: right .7em top 50%;
     background-size: .65em auto;
-    padding-right: 2.5em; /* Make space for custom arrow */
+    padding-right: 2.5em;
 }
 body.dark-theme #difficultySelect {
     background-color: var(--select-bg-dark);
@@ -579,48 +588,51 @@ body.dark-theme .footer-credit a {
 }
 
 /* Responsive adjustments for Header Controls */
-@media (max-width: 680px) { /* Adjust breakpoint for when controls stack */
-    .header-controls {
-        flex-direction: column;
-        align-items: stretch; /* Make children take full width */
+@media (max-width: 680px) { /* Breakpoint where header structure changes */
+    .header-controls-wrapper {
+        /* No specific changes needed here, children will handle their layout */
     }
-    .difficulty-control, .game-actions, #timerDisplay {
-        width: 100%; /* Make each item take full width */
-        justify-content: center; /* Center content within each item */
-        margin-bottom: 10px; /* Add space between stacked items */
-    }
-    .difficulty-control {
-        order: 1; /* Difficulty first */
+    .header-row-1 {
+        flex-wrap: wrap; /* Allow timer to wrap below game-actions if needed */
+        justify-content: center; /* Center items if they wrap */
     }
     .game-actions {
-        order: 2; /* Buttons second */
-        display: flex;
-        justify-content: space-around; /* Space out buttons if there's room */
-    }
-    .game-actions .btn {
-        flex-grow: 1; /* Allow buttons to share space */
-        max-width: 48%; /* Limit button width to allow side-by-side if possible */
+        order: 1; /* Buttons first in the wrapped flow */
+        width: 100%; /* Take full width to center buttons */
+        margin-bottom: 10px; /* Space if timer wraps below */
     }
     #timerDisplay {
-        order: 3; /* Timer last */
-        margin-bottom: 0;
+        order: 2; /* Timer second in the wrapped flow */
+        width: 100%; /* Full width, text-align will center it */
         text-align: center;
+        margin-bottom: 10px;
     }
+    .header-row-2 {
+        order: 3; /* Difficulty last */
+    }
+    .difficulty-control {
+        width: 100%;
+        justify-content: center;
+    }
+
     .game-history-dropdown {
         width: calc(100% - 40px);
         left: 20px;
         right: auto;
-        top: calc(100% + 10px); /* Position below the now taller header */
+        top: calc(100% + 10px);
     }
 }
 
+
 @media (max-width: 420px) {
      .game-actions {
-        flex-direction: column; /* Stack New Game and Reset buttons */
+        flex-direction: column;
     }
     .game-actions .btn {
-        max-width: 100%; /* Allow buttons to be full width when stacked */
         width: 100%;
+        max-width: 280px; /* Prevent buttons from being too wide on small screens */
+        margin-left: auto;
+        margin-right: auto;
     }
      .game-header h1 { font-size: 1.8em; }
      .cell { font-size: clamp(0.7em, 6vw, 1.2em); }
@@ -629,7 +641,7 @@ body.dark-theme .footer-credit a {
 }
 
 /* General small screen adjustments from before */
-@media (max-width: 600px) { /* This is a general small screen, specific overrides above take precedence */
+@media (max-width: 600px) {
     body { padding: 10px; }
     .game-container { padding: 15px; }
     .game-header h1 { font-size: 2em; }
