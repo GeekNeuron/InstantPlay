@@ -3,7 +3,7 @@ const UI = (() => {
     const themeSwitcherBtn = document.getElementById('themeSwitcher');
     const messageArea = document.getElementById('messageArea');
     const difficultySelect = document.getElementById('difficultySelect');
-    const footerCreditElement = document.querySelector('.footer-credit');
+    // const footerCreditElement = document.querySelector('.footer-credit'); // Not directly manipulated
     const timerDisplayElement = document.getElementById('timerDisplay');
     const gameHistoryDropdownElement = document.getElementById('gameHistoryDropdown');
     const historyListElement = document.getElementById('historyList');
@@ -12,8 +12,9 @@ const UI = (() => {
     const gameOverModalElement = document.getElementById('gameOverModal');
     const modalTitleElement = document.getElementById('modalTitle');
     const modalMessageElement = document.getElementById('modalMessage');
-    const modalNewGameBtn = document.getElementById('modalNewGameBtn');
-    const modalCloseBtn = document.getElementById('modalCloseBtn');
+    // const modalNewGameBtn = document.getElementById('modalNewGameBtn'); // Button removed from modal
+    // const modalCloseBtn = document.getElementById('modalCloseBtn');   // Button removed from modal
+    const modalActionsDiv = gameOverModalElement ? gameOverModalElement.querySelector('.modal-actions') : null;
 
 
     const THEME_KEY = 'sudokuThemeGeekNeuron_v1';
@@ -55,29 +56,38 @@ const UI = (() => {
      * Shows the game over/status modal.
      * @param {string} title - The title for the modal.
      * @param {string} message - The message content for the modal.
-     * @param {boolean} isWin - Whether this is a win modal (for animation).
-     * @param {boolean} showNewGame - Whether to show the "New Game" button.
-     * @param {boolean} showClose - Whether to show the "Close" button.
+     * @param {string} type - 'win' or 'error-continue' to control animation.
+     * @param {number} [autoHideDuration=0] - Duration in ms to auto-hide. 0 for no auto-hide.
+     * @param {Function} [onHideCallback=null] - Callback after modal auto-hides.
      */
-    function showModal(title, message, isWin = false, showNewGame = true, showClose = true) {
-        if (gameOverModalElement && modalTitleElement && modalMessageElement && modalNewGameBtn && modalCloseBtn) {
+    function showModal(title, message, type = 'info', autoHideDuration = 0, onHideCallback = null) {
+        if (gameOverModalElement && modalTitleElement && modalMessageElement) {
             modalTitleElement.textContent = title;
             modalMessageElement.textContent = message;
 
-            modalTitleElement.classList.remove('win-animated'); // Remove first
-            if (isWin) {
-                modalTitleElement.classList.add('win-animated');
-            }
+            modalTitleElement.classList.remove('win-animated', 'error-animated'); 
 
-            modalNewGameBtn.style.display = showNewGame ? 'inline-block' : 'none';
-            modalCloseBtn.style.display = showClose ? 'inline-block' : 'none';
+            if (type === 'win') {
+                modalTitleElement.classList.add('win-animated');
+            } else if (type === 'error-continue') { 
+                modalTitleElement.classList.add('error-animated');
+            }
             
-            const modalActionsDiv = gameOverModalElement.querySelector('.modal-actions');
+            // Hide the actions div as buttons are removed
             if (modalActionsDiv) {
-                modalActionsDiv.style.display = (showNewGame || showClose) ? 'flex' : 'none';
+                modalActionsDiv.style.display = 'none';
             }
 
             gameOverModalElement.classList.add('show');
+
+            if (autoHideDuration > 0) {
+                setTimeout(() => {
+                    hideModal();
+                    if (onHideCallback) {
+                        onHideCallback();
+                    }
+                }, autoHideDuration);
+            }
         }
     }
 
@@ -85,7 +95,7 @@ const UI = (() => {
         if (gameOverModalElement) {
             gameOverModalElement.classList.remove('show');
             if (modalTitleElement) {
-                modalTitleElement.classList.remove('win-animated'); // Clean up animation class
+                modalTitleElement.classList.remove('win-animated', 'error-animated');
             }
         }
     }
@@ -172,7 +182,7 @@ const UI = (() => {
         return isHistoryVisible;
     }
 
-    function init(onTimerClickCallback, onModalNewGameCallback, onModalCloseCallback) {
+    function init(onTimerClickCallback /* Removed modal button callbacks */) {
         _applyTheme();
         themeSwitcherBtn.addEventListener('click', toggleTheme);
         hideModal();
@@ -187,8 +197,7 @@ const UI = (() => {
                 }
             });
         }
-        if (modalNewGameBtn) modalNewGameBtn.addEventListener('click', onModalNewGameCallback);
-        if (modalCloseBtn) modalCloseBtn.addEventListener('click', onModalCloseCallback);
+        // Removed event listeners for modal buttons as they are removed from HTML
 
         document.addEventListener('click', (event) => {
             if (isHistoryVisible && 
@@ -197,6 +206,18 @@ const UI = (() => {
                 timerDisplayElement && 
                 !timerDisplayElement.contains(event.target)) {
                 toggleGameHistory(false);
+            }
+             // Logic to close modal on overlay click (optional)
+            if (gameOverModalElement && gameOverModalElement.classList.contains('show') && event.target === gameOverModalElement) {
+                // Only hide if it's not the "YOU WIN!" modal, or if specific close behavior is desired
+                // For "Keep Going!" modal, it auto-hides. For "YOU WIN!", user uses main controls.
+                // So, this might not be strictly necessary if auto-hide is sufficient for "Keep Going".
+                // If "YOU WIN!" should also close on overlay click:
+                // hideModal();
+                // if (!gameWon) { // If it was not a win modal that was closed by overlay
+                //     boardShouldBeDisabled = false; // This variable is in app.js
+                //     UI.setBoardDisabled(false);
+                // }
             }
         });
     }
