@@ -58,7 +58,6 @@
     --history-separator-color-light: #dee2e6;
     --history-item-hover-bg-light: #f8f9fa;
 
-    /* Modal Colors - Light Theme (Referenced from user's 2048 CSS) */
     --modal-overlay-bg-light: rgba(0,0,0,0.6); 
     --modal-content-bg-light: #ffffff; 
     --modal-text-color-light: #333333; 
@@ -106,7 +105,6 @@
     --history-item-hover-bg-dark: #2c3a47;
     --history-item-text-dark: #FFFFFF;
 
-    /* Modal Colors - Dark Theme (Referenced from user's 2048 CSS) */
     --modal-overlay-bg-dark: rgba(10, 10, 15, 0.7); 
     --modal-content-bg-dark: #161b22; 
     --modal-text-color-dark: #c9d1d9; 
@@ -179,7 +177,7 @@ body.dark-theme .game-container {
 }
 
 .game-header {
-    position: relative; /* For positioning history dropdown */
+    position: relative;
 }
 
 .game-header h1 {
@@ -207,13 +205,13 @@ body.dark-theme .game-header h1 {
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    gap: 8px; /* Gap between left and right groups in each row */
+    gap: 8px;
 }
 
 .header-actions-left, .header-actions-right {
     display: flex;
     align-items: center;
-    gap: 8px; /* Space between buttons within a group */
+    gap: 8px;
     flex-shrink: 0; 
 }
 
@@ -254,7 +252,7 @@ body.dark-theme #timerDisplay {
 
 .game-history-dropdown {
     position: absolute;
-    top: calc(100% + 5px); 
+    top: calc(100% + 5px);
     right: 0; 
     width: 300px;
     max-width: 90%;
@@ -366,7 +364,7 @@ body.dark-theme .btn.btn-primary:hover {
     background-color: var(--button-primary-hover-bg-dark);
 }
 
-#resetBtn, #checkSolutionBtn { /* General buttons in header */
+#resetBtn, #checkSolutionBtn { /* #closeGameBtn removed from here */
     background-color: var(--button-bg-light);
     color: var(--button-text-light);
 }
@@ -400,7 +398,6 @@ body.dark-theme #checkSolutionBtn:hover {
     background-position: right .7em top 50%;
     background-size: .65em auto;
     padding-right: 2.5em;
-    flex-shrink: 0; /* Prevent select from shrinking too much */
 }
 body.dark-theme #difficultySelect {
     background-color: var(--select-bg-dark);
@@ -643,67 +640,88 @@ body.dark-theme .modal-content {
     font-size: 1.8em;
     margin-bottom: 15px;
 }
+.modal-content h2.win-animated {
+    animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+@keyframes heartbeat {
+    0% { transform: scale(1); }
+    10% { transform: scale(0.9); }
+    17% { transform: scale(1.1); }
+    25% { transform: scale(1); }
+    60% { transform: scale(1); }
+    100% { transform: scale(1); }
+}
+
 .modal-content p {
     font-size: 1.1em;
     margin-bottom: 25px;
     line-height: 1.5;
 }
-.modal-actions {
-    display: flex;
-    justify-content: space-between;
-    gap: 15px;
+.modal-actions { /* This div is now hidden in HTML as buttons were removed */
+    /* display: flex; */
+    /* justify-content: space-between; */
+    /* gap: 15px; */
 }
-.modal-actions .btn {
-    flex-grow: 1;
-}
+/* .modal-actions .btn { */ /* Buttons inside modal are removed */
+    /* flex-grow: 1; */
+/* } */
 
 
 /* Responsive adjustments - Focus on keeping header layout consistent */
-@media (max-width: 600px) { /* More aggressive breakpoint for consistent layout */
+@media (max-width: 600px) {
     body { padding: 10px; }
     .game-container { padding: 15px; }
     .game-header h1 { font-size: 2em; }
     
-    .header-controls-wrapper {
-        gap: 5px; /* Slightly reduce gap between rows */
-    }
     .header-row-1, .header-row-2 {
-        gap: 5px; /* Reduce gap between items in rows */
-        flex-wrap: nowrap; /* Force items to stay in one line as much as possible */
-        overflow: hidden; /* Prevent content overflow from breaking layout; might clip text */
+        gap: 5px;
+        /* flex-wrap: wrap; */ /* Removed to enforce single line */
+        overflow: hidden; /* Hide overflow if items are too wide */
     }
-
     .btn, #difficultySelect, #timerDisplay {
-         font-size: calc(var(--button-font-size-ref) * 0.85); /* Further reduce font size */
-         padding: calc(var(--button-padding-vertical-ref) * 0.8) calc(var(--button-padding-horizontal-ref) * 0.8);
+         font-size: calc(var(--button-font-size-ref) * 0.9);
+         padding: calc(var(--button-padding-vertical-ref) * 0.9) calc(var(--button-padding-horizontal-ref) * 0.85); /* Slightly less horizontal for buttons */
     }
     #difficultySelect {
-        padding-right: 1.8em; /* Ensure arrow space */
-        min-width: 120px; /* Give select some minimum width */
+        padding-right: 1.8em;
+        min-width: 100px; /* Adjusted min-width */
     }
      .difficulty-control label {
-        font-size: calc(var(--button-font-size-ref) * 0.85);
+        font-size: calc(var(--button-font-size-ref) * 0.9);
     }
     #timerDisplay {
-        padding: calc(var(--button-padding-vertical-ref) * 0.8) 5px; /* Adjust timer padding */
-        min-width: 65px; /* Min width for timer */
+        padding: calc(var(--button-padding-vertical-ref) * 0.9) 5px;
+        min-width: 60px;
     }
-
     .header-actions-left .btn, .header-actions-right .btn {
-        /* Ensure buttons can shrink */
         flex-shrink: 1;
     }
-    
+
     .theme-switcher-container { top: 10px; right: 10px; }
     #themeSwitcher { width: 25px; height: 25px; }
     .sudoku-board { max-width: 100%; margin-bottom: 15px;}
     .cell { font-size: clamp(0.8em, 5vw, 1.4em); }
-    .modal-actions { flex-direction: column; }
-    .modal-actions .btn { width: 100%; }
+    /* .modal-actions { flex-direction: column; } */ /* Modal buttons removed */
+    /* .modal-actions .btn { width: 100%; } */
 }
 
 @media (max-width: 420px) {
      .game-header h1 { font-size: 1.8em; }
      .cell { font-size: clamp(0.7em, 6vw, 1.2em); }
-     /* Minimal further changes to header, relying on flexbox shrink */
+     .btn, #difficultySelect, #timerDisplay {
+         font-size: calc(var(--button-font-size-ref) * 0.8);
+         padding: calc(var(--button-padding-vertical-ref) * 0.8) calc(var(--button-padding-horizontal-ref) * 0.7);
+     }
+      #difficultySelect {
+        padding-right: 1.5em;
+        min-width: 90px;
+    }
+    .difficulty-control label {
+        font-size: calc(var(--button-font-size-ref) * 0.8);
+    }
+    #timerDisplay {
+        min-width: 50px;
+        padding: calc(var(--button-padding-vertical-ref) * 0.8) 4px;
+    }
 }
