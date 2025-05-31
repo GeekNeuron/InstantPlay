@@ -1,0 +1,332 @@
+
+/* CSS Variables for Theming */
+:root {
+    /* Light Theme (Pure White & Modern Grays) */
+    --body-bg: #f8f9fa; /* Slightly off-white for eye comfort */
+    --text-color-primary: #212529;
+    --container-bg: #ffffff;
+    --grid-bg: #dee2e6; /* Grid background */
+    --tile-bg: #f8f9fa; /* Initial tile color */
+    --tile-bg-revealed: #e9ecef; /* Revealed tile color */
+    --tile-border: #ced4da;
+    --tile-text-color: #495057;
+    --score-box-bg: #e9ecef; /* For game info */
+    --score-box-text: #212529;
+    --button-bg: #007bff; /* Primary blue */
+    --button-text: #ffffff;
+    --button-hover-bg: #0056b3;
+    --select-bg: #ffffff;
+    --select-border: #ced4da;
+    --select-text: #495057;
+    --modal-bg: rgba(0, 0, 0, 0.5);
+    --modal-content-bg: #ffffff;
+    --modal-text-color: #212529;
+    --border-color: var(--grid-bg);
+    --mine-color: #dc3545; /* Red for mines */
+    --flag-color: #fd7e14; /* Orange for flags */
+    --safe-color: #28a745; /* Green for safe numbers */
+
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Changed to a common English font */
+    --border-radius: 8px; /* Slightly more rounded */
+    --gap-size: 2px; /* Smaller gap for a tighter look */
+    --header-text-color: #007bff; /* Main title color */
+}
+
+/* Dark Theme (Dark Blue) */
+body.dark-theme {
+    --body-bg: #0d1117; /* GitHub dark background */
+    --text-color-primary: #c9d1d9;
+    --container-bg: #161b22; /* Darker content background */
+    --grid-bg: #010409; /* Very dark grid background */
+    --tile-bg: #21262d; /* Initial tile color in dark theme */
+    --tile-bg-revealed: #30363d; /* Darker revealed tiles */
+    --tile-border: #30363d;
+    --tile-text-color: #c9d1d9;
+    --score-box-bg: #21262d;
+    --score-box-text: #c9d1d9;
+    --button-bg: #238636; /* GitHub green */
+    --button-text: #ffffff;
+    --button-hover-bg: #2ea043;
+    --select-bg: #21262d;
+    --select-border: #30363d;
+    --select-text: #c9d1d9;
+    --modal-bg: rgba(10, 10, 15, 0.7);
+    --modal-content-bg: #161b22;
+    --modal-text-color: #c9d1d9;
+    --border-color: var(--container-bg);
+    --header-text-color: #58a6ff; /* GitHub light blue */
+}
+
+/* General Styles */
+html {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--body-bg);
+    color: var(--text-color-primary);
+    margin: 0;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    text-align: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    overflow-x: hidden;
+}
+
+.container {
+    background-color: var(--container-bg);
+    padding: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 95vw; /* Better use of screen width on mobile */
+    transition: background-color 0.3s ease;
+}
+
+header {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+header h1#game-title {
+    font-size: 2.8em;
+    margin: 0 0 15px 0;
+    font-weight: bold;
+    color: var(--header-text-color); /* Using title color variable */
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.3s ease;
+}
+header h1#game-title:hover {
+    opacity: 0.8;
+}
+
+.controls {
+    display: flex;
+    flex-wrap: wrap; /* For better layout on small screens */
+    align-items: center;
+    justify-content: space-between; /* Better distribution of controls */
+    width: 100%;
+    gap: 15px; /* Increased gap */
+    margin-bottom: 15px;
+}
+.control-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.game-info {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    max-width: 300px; /* Limit width for better appearance */
+    margin-top: 10px;
+    background-color: var(--score-box-bg);
+    padding: 10px;
+    border-radius: var(--border-radius);
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+}
+
+.info-item {
+    font-size: 1em;
+    color: var(--score-box-text);
+    font-weight: bold;
+}
+
+.btn {
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    padding: 10px 18px; /* Increased padding */
+    border-radius: calc(var(--border-radius) - 2px);
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    user-select: none;
+}
+
+.btn:hover {
+    background-color: var(--button-hover-bg);
+    transform: translateY(-1px);
+}
+
+.btn:active {
+    transform: translateY(0px);
+}
+
+select#difficulty {
+    padding: 9px 12px; /* Increased padding */
+    border: 1px solid var(--select-border);
+    border-radius: calc(var(--border-radius) - 2px);
+    background-color: var(--select-bg);
+    color: var(--select-text);
+    font-family: var(--font-family);
+    font-size: 0.95em;
+    cursor: pointer;
+    transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+}
+
+main {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px; /* Reduced top margin */
+}
+
+#game-board-container {
+    display: flex; /* For better size control and overflow prevention */
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    overflow: auto; /* Allow scroll if needed for very large grids */
+}
+
+.grid-container {
+    display: grid;
+    background-color: var(--grid-bg);
+    border: 2px solid var(--border-color); /* More defined border */
+    border-radius: var(--border-radius);
+    padding: var(--gap-size); /* Padding equal to gap for uniform look */
+    gap: var(--gap-size);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    /* Size is set by JavaScript */
+    /* To prevent unwanted text selection on rapid clicks */
+    user-select: none;
+}
+
+.tile {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--tile-bg);
+    border: 1px solid var(--tile-border);
+    border-radius: calc(var(--border-radius) / 2); /* Less rounded tiles */
+    font-weight: bold;
+    cursor: pointer; /* Change to pointer to indicate clickability */
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    /* Size and font are set by JavaScript */
+    aspect-ratio: 1 / 1; /* Maintain square ratio */
+    font-size: 1em; /* Base font size, adjusted by JS */
+    color: transparent; /* Numbers are initially hidden */
+}
+
+.tile.revealed {
+    background-color: var(--tile-bg-revealed);
+    cursor: default;
+    color: var(--tile-text-color); /* Show main text color for numbers */
+}
+.tile.revealed.mine {
+    background-color: var(--mine-color);
+    color: white; /* Mine icon color */
+}
+.tile.flagged {
+    color: var(--flag-color); /* Flag icon color */
+}
+
+/* Mine number colors */
+.tile.revealed[data-mines="1"] { color: #007bff; } /* Blue */
+.tile.revealed[data-mines="2"] { color: var(--safe-color); } /* Green */
+.tile.revealed[data-mines="3"] { color: var(--mine-color); } /* Red */
+.tile.revealed[data-mines="4"] { color: #004085; } /* Dark Blue */
+.tile.revealed[data-mines="5"] { color: #800000; } /* Maroon */
+.tile.revealed[data-mines="6"] { color: #008080; } /* Teal */
+.tile.revealed[data-mines="7"] { color: #000000; } /* Black */
+body.dark-theme .tile.revealed[data-mines="7"] { color: #ffffff; } /* White in dark theme */
+.tile.revealed[data-mines="8"] { color: #808080; } /* Gray */
+
+
+/* Modal Styles */
+.modal {
+    position: fixed; left: 0; top: 0; width: 100%; height: 100%;
+    background-color: var(--modal-bg); display: flex; justify-content: center; align-items: center;
+    z-index: 1000; opacity: 0; visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+.modal.show { opacity: 1; visibility: visible; transition: opacity 0.3s ease, visibility 0s linear 0s; }
+.modal-content {
+    background-color: var(--modal-content-bg); padding: 25px 35px; border-radius: var(--border-radius);
+    text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.25); color: var(--modal-text-color);
+    transform: scale(0.9);
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    width: 90%;
+    max-width: 400px;
+}
+.modal.show .modal-content { transform: scale(1); }
+.modal-content h2 { margin-top: 0; font-size: 1.6em; margin-bottom: 10px; }
+.modal-content p { font-size: 1.1em; margin-bottom: 20px; }
+.modal-content .btn { padding: 10px 20px; font-size: 1em; }
+
+footer {
+    margin-top: 25px;
+    padding-bottom: 10px;
+    font-size: 0.9em;
+    color: var(--text-color-primary);
+    transition: color 0.3s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    header h1#game-title {
+        font-size: 2.2em;
+    }
+    .controls {
+        flex-direction: column; /* Controls stack on mobile */
+        align-items: stretch; /* Stretch controls to full width */
+    }
+    select#difficulty, .btn {
+        width: 100%; /* Full width button and selector */
+    }
+    .game-info {
+        max-width: none; /* Allow game info to take more width */
+        padding: 8px;
+    }
+    .info-item {
+        font-size: 0.9em;
+    }
+    .modal-content {
+        padding: 20px;
+    }
+    .modal-content h2 { font-size: 1.4em; }
+    .modal-content p { font-size: 1em; }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    header h1#game-title {
+        font-size: 1.8em;
+        margin-bottom: 10px;
+    }
+    .btn, select#difficulty {
+        padding: 8px 15px;
+        font-size: 0.9em;
+    }
+    .info-item {
+        font-size: 0.85em;
+    }
+    footer {
+        font-size: 0.8em;
+    }
+}
