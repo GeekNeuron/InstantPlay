@@ -1,40 +1,43 @@
-/* CSS Variables for Theming - Based on original Minesweeper variables with additions for select and button color changes */
+/* CSS Variables for Theming */
 :root {
     /* Light Theme Variables */
     --body-bg: #f8f9fa;
-    --text-color-primary: #212529;
-    --container-bg: #ffffff; /* This will be for .container */
+    --text-color-primary: #212529; /* Renamed from --text-color-light for clarity */
+    --container-bg: #ffffff;
+    --container-border-radius: 8px; /* Original Minesweeper container radius */
+    --header-text-color: #007bff; /* Original Minesweeper header color */
+
+    /* Grid and Tile variables (reverted to simpler Minesweeper names) */
     --grid-bg: #dee2e6;
     --tile-bg: #f0f0f0;
     --tile-bg-revealed: #e9ecef;
-    --tile-border: #ced4da;
-    --tile-text-color: #495057;
-    --score-box-bg: #e9ecef;
-    --score-box-text: #212529;
-    
-    /* Button colors (light theme) - Using blues as primary from your Sudoku ref */
-    --button-bg: #007bff; /* Default button blue */
+    --tile-border: #ced4da; /* Used for both tile border and grid outer border */
+    --tile-text-color: #495057; /* Default text for revealed numbers */
+    --gap-size: 2px; /* Original gap for Minesweeper */
+
+    /* Button colors (light theme) - Using blues as primary */
+    --button-bg: #007bff;
     --button-text: #ffffff;
     --button-hover-bg: #0056b3;
-    --button-primary-bg: #007bff; /* Explicit primary */
-    --button-primary-text: #ffffff;
-    --button-primary-hover-bg: #0056b3;
+    /* No separate --button-primary-bg, default button is primary */
 
     /* Select styles from your Sudoku reference (light theme) */
     --select-bg-light: #ffffff;
     --select-border-light: #ced4da;
     --select-text-light: #495057;
-    --select-border-radius: 6px;
-    --select-padding-vertical: 7px;
-    --select-padding-horizontal: 10px;
-    --select-font-size: 0.9em;
-    --input-focus-border-light: #86b7fe; /* For select focus */
+    --select-border-radius: 6px; /* Sudoku reference */
+    --select-padding-vertical: 7px; /* Sudoku reference */
+    --select-padding-horizontal: 10px; /* Sudoku reference */
+    --select-font-size: 0.9em; /* Sudoku reference */
+    --input-focus-border-light: #86b7fe;
 
+    --score-box-bg: #e9ecef; /* For game info */
+    --score-box-text: #212529;
 
     --modal-bg: rgba(0, 0, 0, 0.5);
     --modal-content-bg: #ffffff;
     --modal-text-color: #212529;
-    
+
     --mine-color: #dc3545;
     --flag-color: #fd7e14;
     --safe-color: #28a745;
@@ -42,13 +45,10 @@
     --action-button-bg: #e9ecef;
     --action-button-border: #ced4da;
     --action-button-text: #495057;
-    --action-button-active-bg: var(--button-primary-bg); /* Use primary button color */
-    --action-button-active-text: var(--button-primary-text);
+    --action-button-active-bg: var(--button-bg); 
+    --action-button-active-text: var(--button-text);
 
-    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Reverted to original font */
-    --border-radius: 8px; /* Original border-radius for .container */
-    --gap-size: 2px; /* Original gap for tiles */
-    --header-text-color: #007bff; /* Original header color */
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Reverted global font */
 }
 
 /* Dark Theme Variables */
@@ -56,43 +56,42 @@ body.dark-theme {
     --body-bg: #0d1117;
     --text-color-primary: #c9d1d9;
     --container-bg: #161b22;
+    --header-text-color: #58a6ff;
+
+    /* Grid and Tile variables (dark theme) */
     --grid-bg: #010409;
     --tile-bg: #21262d;
     --tile-bg-revealed: #252b31; /* Kept the slightly lighter revealed tile */
     --tile-border: #30363d;
     --tile-text-color: #c9d1d9;
-    --score-box-bg: #21262d;
-    --score-box-text: #c9d1d9;
 
-    /* Button colors (dark theme) - Using BLUE as requested, from your Sudoku ref */
-    --button-bg: #3282b8; 
+    /* Button colors (dark theme) - BLUE */
+    --button-bg: #3282b8;
     --button-text: #ffffff;
     --button-hover-bg: #1d4357;
-    --button-primary-bg: #58a6ff; /* Brighter blue for primary */
-    --button-primary-text: #0d1117; /* Dark text for contrast */
-    --button-primary-hover-bg: #3282b8;
-
+    /* No separate --button-primary-bg, default button is primary */
 
     /* Select styles from your Sudoku reference (dark theme) */
-    --select-bg-dark: #161b22; /* Sudoku --select-bg-dark: #161b22; */
-    --select-border-dark: #3282b8; /* Sudoku --select-border-dark: #3282b8; */
-    --select-text-dark: #c9d1d9; /* Sudoku --select-text-dark: #c9d1d9; */
+    --select-bg-dark: #161b22;
+    --select-border-dark: #3282b8;
+    --select-text-dark: #c9d1d9;
     --input-focus-border-dark: #3282b8;
 
+    --score-box-bg: #21262d;
+    --score-box-text: #c9d1d9;
 
     --modal-bg: rgba(10, 10, 15, 0.7);
     --modal-content-bg: #161b22;
     --modal-text-color: #c9d1d9;
-    --header-text-color: #58a6ff;
 
     --action-button-bg: #21262d;
     --action-button-border: #30363d;
     --action-button-text: #c9d1d9;
-    --action-button-active-bg: var(--button-primary-bg);
-    --action-button-active-text: var(--button-primary-text);
+    --action-button-active-bg: var(--button-bg);
+    --action-button-active-text: var(--button-text);
 }
 
-/* Global Resets (from your Sudoku CSS) */
+/* Global Resets */
 *,
 *::before,
 *::after {
@@ -101,13 +100,13 @@ body.dark-theme {
     padding: 0;
 }
 
-/* General Styles - Reverted to original Minesweeper structure */
+/* General Styles */
 html {
     -webkit-tap-highlight-color: transparent;
 }
 
 body {
-    font-family: var(--font-family);
+    font-family: var(--font-family); /* Global font */
     background-color: var(--body-bg);
     color: var(--text-color-primary);
     padding: 15px;
@@ -123,19 +122,18 @@ body {
 .container { /* Main game wrapper */
     background-color: var(--container-bg);
     padding: 20px;
-    border-radius: var(--border-radius); /* Ensuring this is applied */
+    border-radius: var(--container-border-radius); /* Reverted to original variable */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
-    max-width: 600px; /* Max width for the game area */
+    max-width: 600px;
     transition: background-color 0.3s ease;
 }
 body.dark-theme .container {
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* Darker shadow for dark theme */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
-
 
 header {
     width: 100%;
@@ -162,25 +160,24 @@ header h1#game-title:hover {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: center; /* Center controls if they wrap */
+    justify-content: center;
     width: 100%;
     gap: 10px;
     margin-bottom: 15px;
 }
-.control-group { /* For difficulty label and select */
+.control-group {
     display: flex;
     align-items: center;
     gap: 8px;
 }
-.difficulty-group label { /* Label for difficulty */
+.difficulty-group label {
     font-weight: bold;
-    font-size: 0.9em; /* Consistent with select font size */
+    font-size: 0.9em; /* Match select font size */
     color: var(--text-color-primary);
 }
 body.dark-theme .difficulty-group label {
     color: var(--text-color-dark);
 }
-
 
 .game-info {
     display: flex;
@@ -190,7 +187,7 @@ body.dark-theme .difficulty-group label {
     margin-top: 10px;
     background-color: var(--score-box-bg);
     padding: 10px;
-    border-radius: var(--border-radius);
+    border-radius: var(--container-border-radius); /* Consistent radius */
     box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
 }
 
@@ -204,9 +201,9 @@ body.dark-theme .difficulty-group label {
     background-color: var(--button-bg);
     color: var(--button-text);
     border: none;
-    padding: 10px 18px;
-    border-radius: 6px; /* From Sudoku ref for buttons */
-    font-size: 0.9em; /* From Sudoku ref for buttons */
+    padding: 8px 12px; /* From Sudoku reference for buttons */
+    border-radius: 6px; /* From Sudoku reference for buttons */
+    font-size: 0.9em; /* From Sudoku reference for buttons */
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.1s ease;
@@ -228,10 +225,10 @@ body.dark-theme .difficulty-group label {
     border: 1px solid var(--select-border-light);
     padding: var(--select-padding-vertical) var(--select-padding-horizontal);
     border-radius: var(--select-border-radius);
-    font-weight: normal; /* Sudoku ref used normal */
+    font-weight: normal;
     line-height: 1.2;
     font-size: var(--select-font-size);
-    font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif; /* Font from Sudoku select */
+    font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif; /* Specific font for select */
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -239,13 +236,13 @@ body.dark-theme .difficulty-group label {
     background-repeat: no-repeat;
     background-position: right .7em top 50%;
     background-size: .65em auto;
-    padding-right: 2.5em; /* Space for arrow */
-    min-width: 180px; /* Ensure it has some width */
+    padding-right: 2.5em;
+    min-width: 180px;
 }
 #difficultySelect:focus {
     outline: none;
     border-color: var(--input-focus-border-light);
-    box-shadow: 0 0 0 0.2rem rgba(var(--input-focus-border-light), 0.25);
+    box-shadow: 0 0 0 0.2rem rgba(var(--input-focus-border-light), 0.25); /* Check var usage */
 }
 body.dark-theme #difficultySelect {
     background-color: var(--select-bg-dark);
@@ -255,20 +252,16 @@ body.dark-theme #difficultySelect {
 }
 body.dark-theme #difficultySelect:focus {
     border-color: var(--input-focus-border-dark);
-    box-shadow: 0 0 0 0.2rem rgba(var(--input-focus-border-dark), 0.25);
+    box-shadow: 0 0 0 0.2rem rgba(var(--input-focus-border-dark), 0.25); /* Check var usage */
 }
-
 
 /* Action Mode Toggle Buttons */
 .action-mode-container {
     display: flex;
-    border-radius: var(--border-radius); /* Use main border radius */
+    border-radius: var(--container-border-radius);
     padding: 4px;
     gap: 4px;
-    /* background-color: var(--action-button-bg); Removed, buttons have their own BG */
-    /* border: 1px solid var(--action-button-border); Removed */
 }
-
 .action-btn {
     background-color: var(--action-button-bg);
     color: var(--action-button-text);
@@ -290,11 +283,9 @@ body.dark-theme #difficultySelect:focus {
 .action-btn.active {
     background-color: var(--action-button-active-bg);
     color: var(--action-button-active-text);
-    border-color: var(--action-button-active-bg); /* Or a contrasting border */
+    border-color: var(--action-button-active-bg);
     box-shadow: 0 0 5px var(--action-button-active-bg);
 }
-/* End Action Mode Toggle Buttons */
-
 
 main {
     width: 100%;
@@ -310,67 +301,73 @@ main {
     align-items: center;
     width: 100%;
     overflow: auto;
-    padding: 2px; /* Small padding for the scroller */
+    padding: 2px;
 }
 
+/* REVERTED Grid Container Styles */
 .grid-container {
     display: grid;
-    background-color: var(--grid-bg); /* Main grid area background */
-    border: 2px solid var(--tile-border); /* Use tile border for grid outer border for consistency */
-    border-radius: calc(var(--border-radius) / 2); /* Slightly less rounded than main container */
-    padding: var(--gap-size);
-    gap: var(--gap-size);
+    background-color: var(--grid-bg);
+    border: 2px solid var(--tile-border); /* Using simple border from tile color */
+    border-radius: 4px; /* Simple, less pronounced radius */
+    padding: var(--gap-size); /* e.g., 2px */
+    gap: var(--gap-size); /* e.g., 2px */
     transition: background-color 0.3s ease, border-color 0.3s ease;
     user-select: none;
 }
 
+/* REVERTED Tile Styles */
 .tile {
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: var(--tile-bg);
     border: 1px solid var(--tile-border);
-    border-radius: calc(var(--border-radius) / 3); /* Even less rounded for individual tiles */
+    border-radius: 2px; /* Simple, less pronounced radius */
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.1s ease, border-color 0.1s ease, color 0.1s ease;
     aspect-ratio: 1 / 1;
-    font-size: 1em; /* Base, JS will adjust */
-    color: transparent; /* Initially hidden numbers */
+    font-size: 1em; /* Base, JS adjusts this */
+    color: transparent; /* Numbers hidden initially */
+    min-width: 20px; /* Ensure tiles don't become too small */
+    min-height: 20px;
 }
 
 .tile.revealed {
     background-color: var(--tile-bg-revealed);
     cursor: default;
-    color: var(--tile-text-color);
+    color: var(--tile-text-color); /* Default color for revealed numbers */
 }
 .tile.revealed.mine {
     background-color: var(--mine-color) !important;
     color: white !important;
-    /* Optional: Add shake animation from Sudoku ref if desired */
-    /* animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; */
 }
 .tile.flagged {
     color: var(--flag-color);
-    font-size: inherit;
+    font-size: inherit; /* Ensure flag scales with JS-set font size */
 }
 .tile.flagged::before {
     content: '🚩';
+    display: flex; /* Helps with centering if needed */
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
 }
 
-/* Mine number colors */
+/* Mine number colors (original simple scheme) */
 .tile.revealed[data-mines="1"] { color: #007bff; }
 .tile.revealed[data-mines="2"] { color: var(--safe-color); }
 .tile.revealed[data-mines="3"] { color: var(--mine-color); }
 .tile.revealed[data-mines="4"] { color: #004085; }
 .tile.revealed[data-mines="5"] { color: #800000; }
 .tile.revealed[data-mines="6"] { color: #008080; }
-.tile.revealed[data-mines="7"] { color: #212529; } /* Darker text */
+.tile.revealed[data-mines="7"] { color: #212529; }
 body.dark-theme .tile.revealed[data-mines="7"] { color: #f0f0f0; }
-.tile.revealed[data-mines="8"] { color: #6c757d; } /* Grayish */
+.tile.revealed[data-mines="8"] { color: #6c757d; }
 
-
-/* Modal Styles - Reverted to original Minesweeper modal structure */
+/* Modal Styles (original simple structure) */
 .modal {
     position: fixed; left: 0; top: 0; width: 100%; height: 100%;
     background-color: var(--modal-bg); display: flex; justify-content: center; align-items: center;
@@ -379,7 +376,7 @@ body.dark-theme .tile.revealed[data-mines="7"] { color: #f0f0f0; }
 }
 .modal.show { opacity: 1; visibility: visible; transition: opacity 0.3s ease, visibility 0s linear 0s; }
 .modal-content {
-    background-color: var(--modal-content-bg); padding: 25px 35px; border-radius: var(--border-radius);
+    background-color: var(--modal-content-bg); padding: 25px 35px; border-radius: var(--container-border-radius);
     text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.25); color: var(--modal-text-color);
     transform: scale(0.9);
     transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
@@ -389,60 +386,57 @@ body.dark-theme .tile.revealed[data-mines="7"] { color: #f0f0f0; }
 .modal.show .modal-content { transform: scale(1); }
 .modal-content h2 { margin-top: 0; font-size: 1.6em; margin-bottom: 10px; }
 .modal-content p { font-size: 1.1em; margin-bottom: 20px; }
-.modal-content .btn { padding: 10px 20px; font-size: 1em; } /* Modal button inherits .btn style */
+.modal-content .btn { padding: 10px 20px; font-size: 1em; }
 
 footer {
     margin-top: 25px;
     padding-bottom: 10px;
     font-size: 0.9em;
-    color: var(--text-color-primary); /* Uses primary text color */
+    color: var(--text-color-primary);
     transition: color 0.3s ease;
 }
 body.dark-theme footer {
     color: var(--text-color-dark);
 }
 
-
-/* Responsive adjustments - Simplified based on original Minesweeper structure */
-@media (max-width: 600px) { /* Combined some breakpoints */
+/* Responsive adjustments - Simplified */
+@media (max-width: 600px) {
     body { padding: 10px; }
     .container { padding: 15px; max-width: 100%;}
     header h1#game-title { font-size: 2.2em; }
     
     .controls {
-        flex-direction: column; /* Stack controls */
-        align-items: stretch; /* Full width for control groups */
+        flex-direction: column;
+        align-items: stretch;
     }
     .control-group, .action-mode-container, .btn {
-        width: 100%; /* Make groups and buttons full width when stacked */
-        margin-bottom: 8px; /* Add some space when stacked */
+        width: 100%;
+        margin-bottom: 8px;
     }
      .action-mode-container {
-        justify-content: center; /* Center action buttons */
+        justify-content: center;
     }
-
-    .btn, #difficultySelect, .info-item { /* Targeting info-item too */
+    .btn, #difficultySelect, .info-item {
         font-size: 0.9em;
-        padding: 8px 12px; /* Slightly reduced padding */
+        padding: 8px 12px;
     }
     #difficultySelect {
-        padding-right: 2.5em; /* Ensure arrow space */
+        padding-right: 2.5em;
     }
      .difficulty-group label {
-        margin-bottom: 4px; /* Space if above select */
-        display: block; /* Full width label if needed */
+        margin-bottom: 4px;
+        display: block;
         text-align: left;
     }
     .info-item {
-        text-align: center; /* Center text in info items */
-        flex-grow: 1; /* Allow info items to share space */
+        text-align: center;
+        flex-grow: 1;
     }
     .action-btn {
         width: 38px; height: 38px; font-size: 1.4em;
     }
-
     .grid-container { margin-bottom: 15px;}
-    .tile { font-size: clamp(0.7em, 4.5vw, 1.3em); } /* Responsive tile font */
+    .tile { font-size: clamp(0.7em, 4.5vw, 1.3em); }
 }
 
 @media (max-width: 420px) {
