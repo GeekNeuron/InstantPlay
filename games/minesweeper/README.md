@@ -57,29 +57,8 @@ While this version is a complete game, here are some potential ideas for future 
 * [ ] **Animations:** Add more elaborate animations for tile reveals or game over.
 * [ ] **Accessibility (A11y) Improvements:** Further enhance keyboard navigation and ARIA attributes.
 
-## 🤝 Contributing
-
-Contributions are welcome! If you have ideas for improvements or find any bugs, feel free to:
-
-1.  Fork the Project
-2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4.  Push to the Branch (`git push origin feature/AmazingFeature`)
-5.  Open a Pull Request
-
-Please ensure your code follows the existing style and that any new features are well-tested.
-
-## 📜 License
-
-This project is licensed under the **MIT License**. See the `LICENSE` file for more details (you'll need to create this file if you want one, a common practice).
-
-A simple `LICENSE` file with MIT License content would be:
-MIT LicenseCopyright (c) 2024 GeekNeuron (Your Name/Username)Permission is hereby granted, free of charge, to any person obtaining a copyof this software and associated documentation files (the "Software"), to dealin the Software without restriction, including without limitation the rightsto use, copy, modify, merge, publish, distribute, sublicense, and/or sellcopies of the Software, and to permit persons to whom the Software isfurnished to do so, subject to the following conditions:The above copyright notice and this permission notice shall be included in allcopies or substantial portions of the Software.THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS ORIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THEAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHERLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THESOFTWARE.
-## 🙏 Acknowledgements
-
-* Inspired by the classic Microsoft Minesweeper game.
-* The clean UI and theming approach were influenced by modern web design trends and the structure of the [2048 Game by GeekNeuron](link-to-your-2048-project-if-applicable). *(You can remove or modify this if it's not relevant)*.
-* Placeholder images generated via [placehold.co](https://placehold.co/).
+## LICENSE
+MIT License
 
 ---
 
