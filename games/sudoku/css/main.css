@@ -13,6 +13,7 @@
     --text-color-light: #212529;
     --container-bg-light: #f8f9fa;
     --container-border-light: #dee2e6;
+    --container-border-radius: 16px; /* Increased border-radius for the main container */
     --header-text-light: #212529;
 
     --cell-bg-light: #ffffff;
@@ -52,7 +53,7 @@
 
     /* Dark Theme Variables (User Provided Palette) */
     --bg-color-dark: #0d1117;
-    --text-color-dark: #c9d1d9; /* Default text color for dark theme */
+    --text-color-dark: #c9d1d9;
     --container-bg-dark: #161b22;
     --container-border-dark: #21262d;
     --header-text-dark: #c9d1d9;
@@ -87,7 +88,7 @@
     --history-border-dark: #3282b8;
     --history-separator-color-dark: #21262d;
     --history-item-hover-bg-dark: #2c3a47;
-    --history-item-text-dark: #FFFFFF; /* Explicit white for history items text in dark theme */
+    --history-item-text-dark: #FFFFFF;
 
 
     --theme-switcher-dark: #e0e0e0;
@@ -112,7 +113,7 @@ body {
 
 body.dark-theme {
     background-color: var(--bg-color-dark);
-    color: var(--text-color-dark); /* Default body text color for dark theme */
+    color: var(--text-color-dark);
 }
 
 .theme-switcher-container {
@@ -143,7 +144,7 @@ body.dark-theme #themeSwitcher {
     background-color: var(--container-bg-light);
     border: 1px solid var(--container-border-light);
     padding: 20px;
-    border-radius: 6px;
+    border-radius: var(--container-border-radius); /* Using the new variable */
     box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     text-align: center;
     max-width: 500px;
@@ -228,7 +229,7 @@ body.dark-theme .timer-display {
     max-width: 90%;
     background-color: var(--history-bg-light);
     border: 1px solid var(--history-border-light);
-    border-radius: var(--button-border-radius);
+    border-radius: var(--button-border-radius); /* Consistent with button rounding */
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     z-index: 1000;
     max-height: 300px;
@@ -262,7 +263,7 @@ body.dark-theme .difficulty-group-separator {
 .history-list li {
     padding: 8px 5px;
     font-size: 0.9em;
-    color: var(--text-color-light); /* Default for light theme */
+    color: var(--text-color-light);
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
@@ -273,8 +274,8 @@ body.dark-theme .difficulty-group-separator {
 }
 
 body.dark-theme .history-list li {
-    border-bottom-color: var(--history-item-hover-bg-dark); /* Separator for dark theme */
-    color: var(--history-item-text-dark); /* Using the new variable for white text */
+    border-bottom-color: var(--history-item-hover-bg-dark);
+    color: var(--history-item-text-dark);
 }
 
 .history-list li:hover {
@@ -285,15 +286,15 @@ body.dark-theme .history-list li:hover {
 }
 .history-item-date {
     font-size: 0.85em;
-    color: var(--text-color-light); /* Default for light theme */
+    color: var(--text-color-light);
     opacity: 0.8;
     white-space: nowrap;
 }
 body.dark-theme .history-item-date {
-    color: var(--history-item-text-dark); /* Using the new variable for white text */
-    opacity: 0.85; /* Adjusted opacity for white text on dark */
+    color: var(--history-item-text-dark);
+    opacity: 0.85;
 }
-.history-item-time { /* Inherits color from li */
+.history-item-time {
     font-weight: 500;
     white-space: nowrap;
 }
@@ -353,7 +354,7 @@ body.dark-theme #resetBtn:hover {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23212529%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'); /* Arrow color for light theme */
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23212529%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
     background-repeat: no-repeat;
     background-position: right .7em top 50%;
     background-size: .65em auto;
@@ -363,7 +364,7 @@ body.dark-theme #difficultySelect {
     background-color: var(--select-bg-dark);
     color: var(--select-text-dark);
     border-color: var(--select-border-dark);
-    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23c9d1d9%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'); /* Arrow color for dark theme */
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23c9d1d9%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
 }
 
 
