@@ -10,44 +10,46 @@
 :root {
     /* Light Theme Variables (All White Theme) */
     --bg-color-light: #ffffff;
-    --text-color-light: #212529;
-    --container-bg-light: #f8f9fa;
-    --container-border-light: #dee2e6;
-    --container-border-radius: 16px;
-    --header-text-light: #212529;
+    --text-color-light: #212529; /* Default text */
+    --container-bg-light: #f7f7f7; /* Reference --container-bg */
+    --container-border-light: #e0e0e0; /* Reference --grid-bg as border */
+    --container-border-radius: 16px; /* Reference --border-radius */
+    --header-text-light: #333333; /* Reference --text-color-primary */
 
-    --cell-bg-light: #ffffff;
-    --cell-input-bg-light: #ffffff;
-    --cell-border-light: #ced4da;
-    --cell-readonly-bg-light: #e9ecef;
-    --cell-readonly-text-light: #495057;
+    --cell-bg-light: #f0f0f0; /* Reference --grid-cell-bg */
+    --cell-input-bg-light: #ffffff; /* Keep input white for better UX */
+    --cell-border-light: #e0e0e0; /* Reference --grid-bg */
+    --cell-readonly-bg-light: #e9e9e9; /* Reference --score-box-bg */
+    --cell-readonly-text-light: #333333; /* Reference --score-box-text */
     --cell-selected-bg-light: #cfe2ff;
     --cell-highlight-bg-light: #e7f0ff;
     --cell-error-bg-light: #f8d7da;
     --cell-error-text-light: #721c24;
     --input-error-border-light: #dc3545;
 
-    --grid-strong-border-light: #495057;
+    --grid-strong-border-light: #333333; /* Darker for strong lines */
 
-    --button-primary-bg-light: #007bff;
+    /* Button styles based on reference */
+    --button-bg-light: #6c757d; /* Reference --button-bg */
+    --button-text-light: #ffffff; /* Reference --button-text */
+    --button-hover-bg-light: #5a6268; /* Reference --button-hover-bg */
+    --button-primary-bg-light: #007bff; /* Keep primary distinct for New Game */
     --button-primary-text-light: #ffffff;
     --button-primary-hover-bg-light: #0056b3;
-    --button-secondary-bg-light: #6c757d;
-    --button-secondary-text-light: #ffffff;
-    --button-secondary-hover-bg-light: #545b62;
-    --button-border-radius: 8px;
-    --button-padding-vertical: 6px;
-    --button-padding-horizontal: 10px;
-    --button-font-size: 0.85em;
+    
+    --button-border-radius-ref: 6px; /* calc(var(--border-radius) - 4px) -> 10px - 4px */
+    --button-padding-vertical-ref: 8px;
+    --button-padding-horizontal-ref: 12px; /* Adjusted for potentially smaller text */
+    --button-font-size-ref: 0.9em; /* Slightly smaller for better fit */
 
 
     --select-bg-light: #ffffff;
     --select-border-light: #ced4da;
     --select-text-light: #495057;
-    --select-border-radius: 8px;
-    --select-padding-vertical: 7px;
+    --select-border-radius: 6px; /* Match button style */
+    --select-padding-vertical: 7px; /* Align height with buttons */
     --select-padding-horizontal: 10px;
-    --select-font-size: 0.85em;
+    --select-font-size: 0.9em; 
 
 
     --timer-text-light: #495057;
@@ -56,23 +58,23 @@
     --history-separator-color-light: #dee2e6;
     --history-item-hover-bg-light: #f8f9fa;
 
-    --theme-switcher-light: #212529;
+    --theme-switcher-light: #4a4a4a; /* Reference */
     --input-focus-border-light: #86b7fe;
 
     /* Dark Theme Variables (User Provided Palette) */
     --bg-color-dark: #0d1117;
     --text-color-dark: #c9d1d9;
     --container-bg-dark: #161b22;
-    --container-border-dark: #21262d;
+    --container-border-dark: #161b22; /* Reference --border-color (var(--container-bg)) */
     --header-text-dark: #c9d1d9;
 
     --cell-bg-dark: #2c3a47;
     --cell-input-bg-dark: #2c3a47;
-    --cell-border-dark: #21262d;
+    --cell-border-dark: #1e2732; /* Reference --grid-bg */
     --cell-readonly-bg-dark: #1e2732;
     --cell-readonly-text-dark: #c9d1d9;
-    --cell-selected-bg-dark: #3282b8;
-    --cell-highlight-bg-dark: #1d4357;
+    --cell-selected-bg-dark: #3282b8; /* Reference --button-bg (dark) */
+    --cell-highlight-bg-dark: #1d4357; /* Reference --button-hover-bg (dark) */
     
     --cell-error-bg-dark: #4a2e33;
     --cell-error-text-dark: #f8d7da;
@@ -80,12 +82,13 @@
 
     --grid-strong-border-dark: #c9d1d9;
 
-    --button-primary-bg-dark: #3282b8;
+    --button-bg-dark: #3282b8; /* Reference --button-bg (dark) */
+    --button-text-dark: #ffffff; /* Reference --button-text (dark) */
+    --button-hover-bg-dark: #1d4357; /* Reference --button-hover-bg (dark) */
+    --button-primary-bg-dark: #3282b8; /* Keep primary same as default for dark */
     --button-primary-text-dark: #ffffff;
     --button-primary-hover-bg-dark: #1d4357;
-    --button-secondary-bg-dark: #274c77;
-    --button-secondary-text-dark: #e0e6eb;
-    --button-secondary-hover-bg-dark: #1d3c5e;
+
 
     --select-bg-dark: #161b22;
     --select-border-dark: #3282b8;
@@ -103,7 +106,7 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
     margin: 0;
     padding: 15px;
     display: flex;
@@ -183,9 +186,9 @@ body.dark-theme .game-header h1 {
 /* Header Controls Layout */
 .header-controls-wrapper {
     display: flex;
-    flex-direction: column; /* Stack rows */
-    align-items: stretch; /* Make rows take full width */
-    gap: 10px; /* Gap between rows */
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
     margin-bottom: 20px;
 }
 
@@ -194,18 +197,19 @@ body.dark-theme .game-header h1 {
     justify-content: space-between; /* Pushes first child left, last child right */
     align-items: center;
     width: 100%;
-    gap: 10px; /* Gap between items in a row if they are close */
+    gap: 10px; /* Gap between items in a row */
 }
 
-/* Specific styling for items within rows if needed */
-.header-row-1 .btn { /* Buttons in the first row */
-    /* No specific alignment needed here if space-between works */
+.header-actions-left, .header-actions-right {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Space between buttons in the left group */
 }
-.header-row-1 #newGameBtn {
-    /* margin-right: auto; */ /* Could be used if only two items and one needs to be far left */
+.header-actions-right {
+    margin-left: auto; /* Pushes this group to the right in header-row-1 */
 }
-.header-row-1 #resetBtn {
-    /* margin-left: auto; */ /* Could be used if only two items and one needs to be far right */
+.header-row-1 .header-actions-left {
+    margin-right: auto; /* Pushes this group to the left in header-row-1 */
 }
 
 
@@ -214,35 +218,29 @@ body.dark-theme .game-header h1 {
     align-items: center;
     gap: 8px;
     flex-shrink: 0;
+    /* margin-right: auto; Pushed to left by space-between on parent .header-row-2 */
 }
 .difficulty-control label {
     color: inherit;
-    font-weight: 500;
-    font-size: var(--button-font-size);
+    font-weight: bold;
+    font-size: var(--button-font-size-ref);
     white-space: nowrap;
 }
 
-.game-actions { /* This class is no longer in HTML for this layout, but keeping if used elsewhere */
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
 #timerDisplay {
-    font-size: var(--select-font-size);
+    font-size: var(--button-font-size-ref);
     font-weight: bold;
     color: var(--timer-text-light);
     background-color: transparent;
     border: none;
-    padding: var(--select-padding-vertical) 8px;
+    padding: var(--button-padding-vertical-ref) 8px;
     cursor: pointer;
     user-select: none;
-    text-align: center; /* Timer text centered within its own div */
+    text-align: center;
     line-height: 1.2;
     white-space: nowrap;
     flex-shrink: 0;
+    /* margin-left: auto; Pushed to right by space-between on parent .header-row-2 */
 }
 body.dark-theme #timerDisplay {
     color: var(--timer-text-dark);
@@ -260,7 +258,7 @@ body.dark-theme #timerDisplay {
     max-width: 90%;
     background-color: var(--history-bg-light);
     border: 1px solid var(--history-border-light);
-    border-radius: var(--button-border-radius);
+    border-radius: var(--button-border-radius-ref);
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     z-index: 1000;
     max-height: 300px;
@@ -330,25 +328,33 @@ body.dark-theme .history-item-date {
     white-space: nowrap;
 }
 
-
+/* Button Styling based on Reference */
 .btn {
-    padding: var(--button-padding-vertical) var(--button-padding-horizontal);
-    border-radius: var(--button-border-radius);
-    font-size: var(--button-font-size);
+    padding: var(--button-padding-vertical-ref) var(--button-padding-horizontal-ref);
+    border-radius: var(--button-border-radius-ref);
+    font-size: var(--button-font-size-ref);
     cursor: pointer;
     font-weight: bold;
-    transition: background-color 0.1s ease, opacity 0.1s ease, transform 0.1s ease;
+    transition: background-color 0.2s ease, transform 0.1s ease;
     border: none;
     line-height: 1.2;
+    user-select: none;
+    white-space: nowrap; /* Prevent button text from wrapping */
+}
+.btn:hover {
+    transform: translateY(-1px);
+    opacity: 0.9;
+}
+.btn:active {
+    transform: translateY(0px);
 }
 
-.btn.btn-primary {
+.btn.btn-primary { /* Specific primary button from Sudoku (e.g., New Game) */
     background-color: var(--button-primary-bg-light);
     color: var(--button-primary-text-light);
 }
 .btn.btn-primary:hover {
     background-color: var(--button-primary-hover-bg-light);
-    opacity: 0.9;
 }
 body.dark-theme .btn.btn-primary {
     background-color: var(--button-primary-bg-dark);
@@ -358,20 +364,26 @@ body.dark-theme .btn.btn-primary:hover {
     background-color: var(--button-primary-hover-bg-dark);
 }
 
-#resetBtn {
-    background-color: var(--button-secondary-bg-light);
-    color: var(--button-secondary-text-light);
+/* Default button style (for Reset, Check Solution, Close) uses reference --button-bg */
+#resetBtn, #checkSolutionBtn, #closeGameBtn {
+    background-color: var(--button-bg-light);
+    color: var(--button-text-light);
 }
-#resetBtn:hover {
-     background-color: var(--button-secondary-hover-bg-light);
+#resetBtn:hover, #checkSolutionBtn:hover, #closeGameBtn:hover {
+     background-color: var(--button-hover-bg-light);
 }
-body.dark-theme #resetBtn {
-    background-color: var(--button-secondary-bg-dark);
-    color: var(--button-secondary-text-dark);
+body.dark-theme #resetBtn, 
+body.dark-theme #checkSolutionBtn, 
+body.dark-theme #closeGameBtn {
+    background-color: var(--button-bg-dark);
+    color: var(--button-text-dark);
 }
-body.dark-theme #resetBtn:hover {
-    background-color: var(--button-secondary-hover-bg-dark);
+body.dark-theme #resetBtn:hover, 
+body.dark-theme #checkSolutionBtn:hover, 
+body.dark-theme #closeGameBtn:hover {
+    background-color: var(--button-hover-bg-dark);
 }
+
 
 #difficultySelect {
     background-color: var(--select-bg-light);
@@ -554,9 +566,9 @@ body.dark-theme .cell.error input {
     min-height: 1.5em;
     margin-bottom: 10px;
 }
-.message-success { color: #0f5132; background-color: #d1e7dd; border: 1px solid #badbcc; padding: 5px 8px; border-radius: var(--button-border-radius);}
-.message-error { color: #842029; background-color: #f8d7da; border: 1px solid #f5c2c7; padding: 5px 8px; border-radius: var(--button-border-radius);}
-.message-info { color: #055160; background-color: #cff4fc; border: 1px solid #b6effb; padding: 5px 8px; border-radius: var(--button-border-radius);}
+.message-success { color: #0f5132; background-color: #d1e7dd; border: 1px solid #badbcc; padding: 5px 8px; border-radius: var(--button-border-radius-ref);}
+.message-error { color: #842029; background-color: #f8d7da; border: 1px solid #f5c2c7; padding: 5px 8px; border-radius: var(--button-border-radius-ref);}
+.message-info { color: #055160; background-color: #cff4fc; border: 1px solid #b6effb; padding: 5px 8px; border-radius: var(--button-border-radius-ref);}
 
 
 body.dark-theme .message-success { color: #75b798; background-color: #192f26; border-color: #2a674f;}
@@ -590,34 +602,41 @@ body.dark-theme .footer-credit a {
     margin-top: 10px;
 }
 .end-game-controls .btn {
-    padding: 8px 12px;
-    font-size: 0.9em;
+    padding: var(--button-padding-vertical-ref) var(--button-padding-horizontal-ref);
+    font-size: var(--button-font-size-ref);
 }
 
 /* Responsive adjustments for Header Controls */
-@media (max-width: 680px) { /* Breakpoint when header rows content might need to adjust */
+@media (max-width: 680px) {
     .header-controls-wrapper {
-        /* Stays column, children rows will adapt */
+        /* Stays column */
     }
-    .header-row-1, .header-row-2 {
-        flex-wrap: wrap; /* Allow items within a row to wrap */
-        justify-content: center; /* Center items if they wrap within a row */
+    .header-row-1 {
+        flex-wrap: wrap;
+        justify-content: center; /* Center the groups if they wrap */
     }
-    .header-row-1 .btn {
-        flex-basis: 45%; /* Try to keep buttons side-by-side if space allows */
-        text-align: center;
-        margin-bottom: 5px; /* Space if they stack */
+    .header-actions-left, .header-actions-right {
+        flex-basis: 100%; /* Make each group take full width when row-1 wraps */
+        justify-content: center; /* Center buttons within their group */
+        margin-bottom: 8px;
     }
-    .header-row-2 .difficulty-control, .header-row-2 #timerDisplay {
-        flex-basis: 45%; /* Try to keep difficulty and timer side-by-side */
+    .header-actions-left {
+        gap: 8px; /* Reduce gap between New Game and Reset when stacked */
+    }
+    .header-actions-right {
+        margin-left: 0; /* Reset margin when stacked */
+    }
+    .header-row-2 {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .difficulty-control, #timerDisplay {
+        flex-basis: 100%; /* Make each take full width when row-2 wraps */
         justify-content: center;
         text-align: center;
-        margin-bottom: 5px;
+        margin-bottom: 8px;
     }
-    .header-row-2 .difficulty-control {
-         min-width: 180px; /* Ensure difficulty select has enough space */
-    }
-
+    #timerDisplay { margin-bottom: 0; }
 
     .game-history-dropdown {
         width: calc(100% - 40px);
@@ -628,23 +647,17 @@ body.dark-theme .footer-credit a {
 }
 
 
-@media (max-width: 480px) { /* Stacking items within rows more aggressively */
-    .header-row-1, .header-row-2 {
-        flex-direction: column;
-        align-items: stretch; /* Make items full width in their column */
-        gap: 8px;
+@media (max-width: 480px) {
+    .header-actions-left, .header-actions-right {
+        flex-direction: column; /* Stack buttons within their groups */
+        align-items: stretch;
     }
-    .header-row-1 .btn, .header-row-2 .difficulty-control, .header-row-2 #timerDisplay {
+    .header-actions-left .btn, .header-actions-right .btn {
         width: 100%;
-        max-width: 280px; /* Max width for better appearance */
+        max-width: 260px; /* Limit button width */
         margin-left: auto;
         margin-right: auto;
-        text-align: center;
     }
-    .header-row-2 .difficulty-control {
-        justify-content: center; /* Center label and select */
-    }
-
      .game-header h1 { font-size: 1.8em; }
      .cell { font-size: clamp(0.7em, 6vw, 1.2em); }
      .end-game-controls { flex-direction: column; gap: 8px; }
