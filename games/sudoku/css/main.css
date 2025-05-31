@@ -1,3 +1,4 @@
+
 /* Global Resets and Base Styles */
 *,
 *::before,
@@ -364,7 +365,7 @@ body.dark-theme .btn.btn-primary:hover {
     background-color: var(--button-primary-hover-bg-dark);
 }
 
-#resetBtn, #checkSolutionBtn { /* #closeGameBtn removed from here */
+#resetBtn, #checkSolutionBtn {
     background-color: var(--button-bg-light);
     color: var(--button-text-light);
 }
@@ -643,6 +644,9 @@ body.dark-theme .modal-content {
 .modal-content h2.win-animated {
     animation: heartbeat 1.5s ease-in-out infinite;
 }
+.modal-content h2.error-animated {
+    animation: buzz 0.5s linear 3;
+}
 
 @keyframes heartbeat {
     0% { transform: scale(1); }
@@ -653,22 +657,25 @@ body.dark-theme .modal-content {
     100% { transform: scale(1); }
 }
 
+@keyframes buzz {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-3px) rotate(-1deg); }
+    40% { transform: translateX(3px) rotate(1deg); }
+    60% { transform: translateX(-2px) rotate(0.5deg); }
+    80% { transform: translateX(2px) rotate(-0.5deg); }
+}
+
 .modal-content p {
     font-size: 1.1em;
     margin-bottom: 25px;
     line-height: 1.5;
 }
 .modal-actions { /* This div is now hidden in HTML as buttons were removed */
-    /* display: flex; */
-    /* justify-content: space-between; */
-    /* gap: 15px; */
+    display: none; /* Explicitly hide if buttons are removed from HTML */
 }
-/* .modal-actions .btn { */ /* Buttons inside modal are removed */
-    /* flex-grow: 1; */
-/* } */
 
 
-/* Responsive adjustments - Focus on keeping header layout consistent */
+/* Responsive adjustments - KEEPING LAYOUT CONSISTENT */
 @media (max-width: 600px) {
     body { padding: 10px; }
     .game-container { padding: 15px; }
@@ -676,16 +683,16 @@ body.dark-theme .modal-content {
     
     .header-row-1, .header-row-2 {
         gap: 5px;
-        /* flex-wrap: wrap; */ /* Removed to enforce single line */
-        overflow: hidden; /* Hide overflow if items are too wide */
+        /* flex-wrap: wrap; */ /* Keep as single line */
+        overflow: hidden; 
     }
     .btn, #difficultySelect, #timerDisplay {
          font-size: calc(var(--button-font-size-ref) * 0.9);
-         padding: calc(var(--button-padding-vertical-ref) * 0.9) calc(var(--button-padding-horizontal-ref) * 0.85); /* Slightly less horizontal for buttons */
+         padding: calc(var(--button-padding-vertical-ref) * 0.9) calc(var(--button-padding-horizontal-ref) * 0.85);
     }
     #difficultySelect {
         padding-right: 1.8em;
-        min-width: 100px; /* Adjusted min-width */
+        min-width: 100px;
     }
      .difficulty-control label {
         font-size: calc(var(--button-font-size-ref) * 0.9);
@@ -702,7 +709,7 @@ body.dark-theme .modal-content {
     #themeSwitcher { width: 25px; height: 25px; }
     .sudoku-board { max-width: 100%; margin-bottom: 15px;}
     .cell { font-size: clamp(0.8em, 5vw, 1.4em); }
-    /* .modal-actions { flex-direction: column; } */ /* Modal buttons removed */
+    /* .modal-actions { flex-direction: column; } */ /* No longer needed */
     /* .modal-actions .btn { width: 100%; } */
 }
 
