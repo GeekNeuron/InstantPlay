@@ -208,17 +208,11 @@ document.addEventListener('DOMContentLoaded', () => {
             inputElement.classList.remove('error');
         }
 
-        // DEBUGGING LINES
-        console.log(`Cell (${row},${col}) input. Value entered by user: ${value}`);
+        // console.log(`Cell (${row},${col}) input. Value entered by user: ${value}`); // Debug
         const isSolved = Sudoku.isBoardSolved(userBoard, solutionBoard);
         const isFull = Sudoku.isBoardFull(userBoard);
-        console.log(`DEBUG: isBoardSolved() returns: ${isSolved}`);
-        console.log(`DEBUG: isBoardFull() returns: ${isFull}`);
-        if (isFull && !isSolved) {
-            console.log("DEBUG: Board is full but not solved. User board:", JSON.parse(JSON.stringify(userBoard)));
-            console.log("DEBUG: Solution board:", JSON.parse(JSON.stringify(solutionBoard)));
-        }
-        // END OF DEBUGGING LINES
+        // console.log(`DEBUG: isBoardSolved() returns: ${isSolved}`); // Debug
+        // console.log(`DEBUG: isBoardFull() returns: ${isFull}`); // Debug
 
         if (value !== Sudoku.EMPTY_CELL) {
             if (!Sudoku.isMoveValid(userBoard, row, col, value)) {
@@ -237,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
             addGameToHistory(UI.getSelectedDifficulty(), elapsedTimeInSeconds, new Date().toISOString());
             clearSavedBoardState();
         } else if (isFull) {
-            console.log("DEBUG: Board is full but not solved. Showing 'Keep Going' modal."); // DEBUG Line
+            // console.log("DEBUG: Board is full but not solved. Showing 'Keep Going' modal."); // Debug
             boardShouldBeDisabled = true; 
             UI.setBoardDisabled(true);
             UI.showModal("Keep Going!", "Keep Going! You still need to complete the game!", 'error-continue');
@@ -349,6 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const gameOverModalElement = document.getElementById('gameOverModal');
         if (gameOverModalElement && gameOverModalElement.classList.contains('show')) {
              if (gameOverModalElement.querySelector('.modal-content').contains(event.target)) return;
+             // Overlay click is handled by UI.init
         }
         if (UI.getIsHistoryVisible() && document.getElementById('gameHistoryDropdown').style.display !== 'none') {
             const historyDropdown = document.getElementById('gameHistoryDropdown');
