@@ -44,8 +44,9 @@
     --timer-text-light: #495057;
     --history-bg-light: #ffffff;
     --history-border-light: #ced4da;
-    --history-header-bg-light: #e9ecef;
+    /* --history-header-bg-light: #e9ecef; */ /* No longer needed for text bg */
     --history-item-hover-bg-light: #f8f9fa;
+    --history-separator-color-light: #dee2e6;
 
 
     --theme-switcher-light: #212529;
@@ -86,8 +87,10 @@
     --timer-text-dark: #adb5bd;
     --history-bg-dark: #161b22;
     --history-border-dark: #3282b8;
-    --history-header-bg-dark: #1e2732;
+    /* --history-header-bg-dark: #1e2732; */ /* No longer needed for text bg */
     --history-item-hover-bg-dark: #2c3a47;
+    --history-separator-color-dark: #21262d;
+
 
     --theme-switcher-dark: #e0e0e0;
     --input-focus-border-dark: #3282b8;
@@ -118,7 +121,7 @@ body.dark-theme {
     position: fixed;
     top: 15px;
     right: 15px;
-    z-index: 1001; /* Above history dropdown */
+    z-index: 1001;
 }
 
 #themeSwitcher {
@@ -148,7 +151,7 @@ body.dark-theme #themeSwitcher {
     max-width: 500px;
     width: 100%;
     transition: background-color 0.3s ease, border-color 0.3s ease;
-    position: relative; /* For positioning history dropdown relative to container */
+    position: relative;
 }
 body.dark-theme .game-container {
     background-color: var(--container-bg-dark);
@@ -157,7 +160,7 @@ body.dark-theme .game-container {
 }
 
 .game-header {
-    position: relative; /* For dropdown positioning */
+    position: relative;
 }
 
 .game-header h1 {
@@ -176,17 +179,18 @@ body.dark-theme .game-header h1 {
     justify-content: space-between;
     align-items: center;
     gap: 15px;
-    margin-bottom: 10px; /* Reduced margin as history dropdown is below */
+    margin-bottom: 10px;
     flex-wrap: wrap;
 }
 .game-actions {
     display: flex;
     gap: 10px;
+    align-items: center;
 }
 .difficulty-timer-wrapper {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 10px;
 }
 .difficulty-control {
     display: flex;
@@ -197,40 +201,36 @@ body.dark-theme .game-header h1 {
     color: inherit;
     font-weight: 500;
     font-size: 0.9em;
+    white-space: nowrap;
 }
 .timer-display {
     font-size: 0.95em;
     font-weight: bold;
     color: var(--timer-text-light);
-    background-color: var(--select-bg-light); /* Match select bg */
-    border: 1px solid var(--select-border-light); /* Match select border */
-    padding: 9px 12px;
+    background-color: transparent;
+    border: none;
+    padding: 10px 5px;
     border-radius: var(--select-border-radius);
     cursor: pointer;
     user-select: none;
-    min-width: 90px; /* Ensure it has some width */
+    min-width: 80px;
     text-align: center;
+    line-height: 1.2;
 }
 body.dark-theme .timer-display {
     color: var(--timer-text-dark);
-    background-color: var(--select-bg-dark);
-    border-color: var(--select-border-dark);
 }
 .timer-display:focus, .timer-display:hover {
     outline: none;
-    border-color: var(--input-focus-border-light);
-}
-body.dark-theme .timer-display:focus, 
-body.dark-theme .timer-display:hover {
-    border-color: var(--input-focus-border-dark);
+    opacity: 0.8;
 }
 
 
 .game-history-dropdown {
     position: absolute;
-    top: calc(100% + 5px); /* Below the header controls */
-    right: 0; /* Align to the right of the header or specific element */
-    width: 300px; /* Or a percentage */
+    top: calc(100% + 5px);
+    right: 0; 
+    width: 300px;
     max-width: 90%;
     background-color: var(--history-bg-light);
     border: 1px solid var(--history-border-light);
@@ -239,7 +239,7 @@ body.dark-theme .timer-display:hover {
     z-index: 1000;
     max-height: 300px;
     overflow-y: auto;
-    padding: 10px;
+    padding: 10px; /* Padding for the overall dropdown */
     text-align: left;
 }
 body.dark-theme .game-history-dropdown {
@@ -247,17 +247,10 @@ body.dark-theme .game-history-dropdown {
     border-color: var(--history-border-dark);
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
-.history-header {
-    font-size: 1.1em;
-    font-weight: bold;
-    margin-bottom: 10px;
-    padding-bottom: 5px;
-    border-bottom: 1px solid var(--history-border-light);
-    color: var(--header-text-light);
-}
-body.dark-theme .history-header {
-    border-bottom-color: var(--history-border-dark);
-    color: var(--header-text-dark);
+.history-header { /* This element is now hidden by JS if it was only for text */
+    /* If you want a top border for the list, style .history-list directly or this element */
+    /* display: none; */ /* JS handles hiding this now */
+    margin-bottom: 5px; /* Space before the first item or separator */
 }
 
 .history-list {
@@ -265,39 +258,38 @@ body.dark-theme .history-header {
     padding: 0;
     margin: 0;
 }
-.history-list .difficulty-group-header {
-    font-size: 1em;
-    font-weight: bold;
-    margin-top: 10px;
-    margin-bottom: 5px;
-    padding: 5px;
-    background-color: var(--history-header-bg-light);
-    border-radius: 4px;
-    color: var(--text-color-light);
+.difficulty-group-separator { /* Style for the separator line */
+    height: 1px;
+    background-color: var(--history-separator-color-light);
+    margin: 10px 0; /* Space around the separator */
 }
-body.dark-theme .history-list .difficulty-group-header {
-    background-color: var(--history-header-bg-dark);
-    color: var(--text-color-dark);
+body.dark-theme .difficulty-group-separator {
+    background-color: var(--history-separator-color-dark);
 }
+
+/* Removed .difficulty-group-header styles as text is removed */
 
 .history-list li {
     padding: 8px 5px;
     font-size: 0.9em;
-    border-bottom: 1px dashed var(--history-border-light);
+    /* border-bottom: 1px dashed var(--history-border-light); */ /* Dashed border removed for cleaner look */
     color: var(--text-color-light);
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
+    gap: 5px;
 }
-.history-list li:last-child {
-    border-bottom: none;
+.history-list li:not(:last-child) { /* Add a subtle separator between items if needed */
+    border-bottom: 1px solid var(--history-item-hover-bg-light); /* Very light separator */
 }
+
+body.dark-theme .history-list li:not(:last-child) {
+    border-bottom-color: var(--history-item-hover-bg-dark);
+}
+
+
 .history-list li:hover {
     background-color: var(--history-item-hover-bg-light);
-}
-body.dark-theme .history-list li {
-    border-bottom-color: var(--history-border-dark);
-    color: var(--text-color-dark);
 }
 body.dark-theme .history-list li:hover {
     background-color: var(--history-item-hover-bg-dark);
@@ -306,12 +298,14 @@ body.dark-theme .history-list li:hover {
     font-size: 0.85em;
     color: var(--text-color-light);
     opacity: 0.8;
+    white-space: nowrap;
 }
 body.dark-theme .history-item-date {
     color: var(--text-color-dark);
 }
 .history-item-time {
     font-weight: 500;
+    white-space: nowrap;
 }
 
 
@@ -569,27 +563,30 @@ body.dark-theme .footer-credit a {
 }
 
 /* Responsive adjustments */
-@media (max-width: 768px) { /* Adjust breakpoint for better control layout */
+@media (max-width: 768px) {
     .header-controls {
         flex-direction: column;
-        align-items: stretch; /* Make items take full width */
+        align-items: stretch;
+        gap: 10px;
     }
     .game-actions, .difficulty-timer-wrapper {
         width: 100%;
-        justify-content: space-between; /* Space out items within these wrappers */
-    }
-    .difficulty-timer-wrapper {
-        margin-top: 10px;
+        justify-content: space-around;
     }
     .timer-display {
-        flex-grow: 1; /* Allow timer to take available space */
-        margin-left: 10px; /* Space from difficulty */
+        flex-grow: 0;
+        text-align: right;
+        padding-right: 10px;
     }
+    .difficulty-control {
+        flex-grow: 1;
+    }
+
     .game-history-dropdown {
-        width: calc(100% - 40px); /* Adjust width relative to game container padding */
-        left: 20px; /* Center it or align based on container padding */
+        width: calc(100% - 40px);
+        left: 20px;
         right: auto;
-        top: calc(100% + 10px); /* Ensure it's below all header controls */
+        top: calc(100% + 10px);
     }
 }
 
@@ -598,8 +595,7 @@ body.dark-theme .footer-credit a {
     body { padding: 10px; }
     .game-container { padding: 15px; }
     .game-header h1 { font-size: 2em; margin-bottom: 15px; }
-    /* .header-controls already column from 768px */
-    .game-actions .btn { flex-basis: 48%; } /* Try to keep New Game/Reset side-by-side if possible */
+    .game-actions .btn { flex-basis: auto; flex-grow: 1; }
 
 
     .theme-switcher-container { top: 10px; right: 10px; }
@@ -610,23 +606,24 @@ body.dark-theme .footer-credit a {
     .end-game-controls .btn { width: 70%; }
 }
 
-@media (max-width: 480px) { /* More specific for smaller phones */
+@media (max-width: 480px) {
     .game-actions {
-        flex-direction: column; /* Stack New Game and Reset */
+        flex-direction: column;
     }
     .game-actions .btn {
-        width: 100%; /* Full width for stacked buttons */
+        width: 100%;
     }
     .difficulty-timer-wrapper {
         flex-direction: column;
-        align-items: stretch; /* Full width for difficulty and timer */
+        align-items: stretch;
     }
     .difficulty-control, .timer-display {
         width: 100%;
-        margin-left: 0; /* Reset margin for timer */
+        margin-left: 0;
+        text-align: center;
     }
     .difficulty-control { margin-bottom: 10px; }
-    .timer-display { text-align: center; }
+    .timer-display { padding: 10px 5px; }
 }
 
 @media (max-width: 420px) {
