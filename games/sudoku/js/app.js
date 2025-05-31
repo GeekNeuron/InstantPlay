@@ -4,12 +4,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const difficultySelect = document.getElementById('difficultySelect');
     const newGameBtn = document.getElementById('newGameBtn');
     const resetBtn = document.getElementById('resetBtn');
+    const checkSolutionBtn = document.getElementById('checkSolutionBtn'); // New Button
     const sudokuBoardElement = document.getElementById('sudokuBoard');
     const closeGameBtn = document.getElementById('closeGameBtn');
     const newGameFromWinBtn = document.getElementById('newGameFromWinBtn');
     const timerDisplayElement = document.getElementById('timerDisplay');
 
-    // localStorage Keys (Consider adding a prefix for all keys for your app)
+    // localStorage Keys
     const APP_PREFIX = 'geekNeuronSudoku_';
     const USER_BOARD_KEY = `${APP_PREFIX}userBoard_v2`;
     const INITIAL_PUZZLE_KEY = `${APP_PREFIX}initialPuzzle_v2`;
@@ -96,7 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function handleTimerClick() {
-        // Pass a copy of history to prevent direct modification if needed by UI
         UI.toggleGameHistory(undefined, [...gameHistory]); 
     }
 
@@ -109,7 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem(SOLUTION_BOARD_KEY, JSON.stringify(solutionBoard));
             localStorage.setItem(DIFFICULTY_KEY, UI.getSelectedDifficulty());
             localStorage.setItem(ELAPSED_TIME_KEY, elapsedTimeInSeconds.toString());
-            // console.log("Game state saved."); // For debugging
         } catch (e) {
             console.error("Error saving game state:", e);
             UI.showMessage("Could not save game progress.", "error", 3000);
@@ -189,8 +188,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function clearSelection() {
-        if (gameWon) return; // Don't clear if game is won and showing end controls
-        if (UI.getIsHistoryVisible()) return; // Don't clear if history is open
+        if (gameWon) return;
+        if (UI.getIsHistoryVisible()) return;
 
         if (selectedCell.element || selectedCell.inputElement) {
             Board.clearAllHighlights();
@@ -219,14 +218,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (Sudoku.isBoardSolved(userBoard, solutionBoard)) {
                     gameWon = true;
                     stopTimer();
-                    UI.showMessage("Congratulations! You won!", 'success'); // English
-                    Board.highlightRelatedCells(row, col, userBoard); // Final highlight
+                    UI.showMessage("Congratulations! You won!", 'success');
+                    Board.highlightRelatedCells(row, col, userBoard);
                     UI.setBoardDisabled(true);
                     UI.showEndGameControls();
                     addGameToHistory(UI.getSelectedDifficulty(), elapsedTimeInSeconds, new Date().toISOString());
                     clearSavedBoardState();
                 } else if (Sudoku.isBoardFull(userBoard)) {
-                    UI.showMessage("The board is full but incorrect. Please check your numbers.", 'error', 5000); // English
+                    UI.showMessage("The board is full but incorrect. Please check your numbers or use 'Check Solution'.", 'error', 5000);
                 }
             }
         }
@@ -238,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function resetGame() {
         if (initialPuzzle.length === 0) {
-            UI.showMessage("Start a new game first.", "info", 2000); // English
+            UI.showMessage("Start a new game first.", "info", 2000);
             return;
         }
         UI.clearMessage();
@@ -251,8 +250,78 @@ document.addEventListener('DOMContentLoaded', () => {
         resetTimer();
         startTimer();
         saveGameState();
-        UI.showMessage("Game reset to its initial state.", "info", 2000); // English
+        UI.showMessage("Game reset to its initial state.", "info", 2000);
     }
+
+    /**
+     * Validates the user's current board state and highlights errors.
+     */
+    function validateUserSolution() {
+        if (gameWon || userBoard.length === 0) {
+            UI.showMessage("Start or continue a game to check your solution.", "info", 3000);
+            return;
+        }
+        UI.clearMessage();
+        let errorsFound = 0;
+        let filledCells = 0;
+
+        for (let r = 0; r < Sudoku.GRID_SIZE; r++) {
+            for (let c = 0; c < Sudoku.GRID_SIZE; c++) {
+                const cellElement = Board.getCellElement(r, c);
+                if (cellElement && !cellElement.classList.contains('readonly')) {
+                    // Clear previous error state for this cell before re-validating
+                    Board.updateCellDisplay(r, c, userBoard[r][c], false); 
+                    
+                    if (userBoard[r][c] !== Sudoku.EMPTY_CELL) {
+                        filledCells++;
+                        // Check if the number placed by user is correct according to the solution
+                        if (userBoard[r][c] !== solutionBoard[r][c]) {
+                            Board.updateCellDisplay(r, c, userBoard[r][c], true); // Mark as error
+                            errorsFound++;
+                        }
+                        // Also, re-check general Sudoku rule validity for this cell, 
+                        // as user might have created a new conflict that wasn't there before.
+                        // This part is tricky because isMoveValid checks against the *current* board state.
+                        // The primary check should be against the solutionBoard for correctness.
+                        // If you want to highlight rule violations (e.g. two 5s in a row *placed by user*):
+                        else if (!Sudoku.isMoveValid(userBoard, r, c, userBoard[r][c])) {
+                            Board.updateCellDisplay(r, c, userBoard[r][c], true); // Mark as error
+                            errorsFound++;
+                        }
+
+                    }
+                }
+            }
+        }
+
+        if (errorsFound > 0) {
+            UI.showMessage(`${errorsFound} error(s) found. Keep trying!`, 'error', 3000);
+        } else if (filledCells === 0) {
+            UI.showMessage('Board is empty. Fill in some numbers to check.', 'info', 3000);
+        } else if (Sudoku.isBoardSolved(userBoard, solutionBoard)) {
+            // This case should ideally be caught by the win condition in handleCellInput
+            UI.showMessage("Congratulations! You've solved it!", 'success');
+            gameWon = true;
+            stopTimer();
+            UI.setBoardDisabled(true);
+            UI.showEndGameControls();
+            addGameToHistory(UI.getSelectedDifficulty(), elapsedTimeInSeconds, new Date().toISOString());
+            clearSavedBoardState();
+        } else if (Sudoku.isBoardFull(userBoard) && errorsFound === 0) {
+            // This implies the board is full, no direct errors found against solution,
+            // but isBoardSolved returned false. This is an edge case, likely means
+            // isBoardSolved is the ultimate truth.
+             UI.showMessage("Board is full, and no direct errors found, but it's not the solution.", 'info', 4000);
+        }
+         else {
+            UI.showMessage('No errors found in your current entries. Keep going!', 'info', 3000);
+        }
+        // Re-highlight based on selected cell after validation
+        if(selectedCell.element) {
+            Board.highlightRelatedCells(selectedCell.row, selectedCell.col, userBoard);
+        }
+    }
+
 
     // --- Event Listeners & Initialization ---
     loadGameHistory();
@@ -260,6 +329,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     newGameBtn.addEventListener('click', () => startGame(true));
     resetBtn.addEventListener('click', resetGame);
+    checkSolutionBtn.addEventListener('click', validateUserSolution); // Listener for new button
     difficultySelect.addEventListener('change', () => startGame(true));
 
     closeGameBtn.addEventListener('click', () => {
@@ -280,25 +350,24 @@ document.addEventListener('DOMContentLoaded', () => {
             const endControls = document.getElementById('endGameControls');
             if (endControls && endControls.contains(event.target)) return;
         }
-        // History closing is handled by UI.init's event listener
-        // This listener is now primarily for clearing cell selection
+        if (UI.getIsHistoryVisible() && document.getElementById('gameHistoryDropdown').style.display !== 'none') {
+            return;
+        }
 
         const gameContainer = document.getElementById('gameContainer');
         if (gameContainer && !gameContainer.contains(event.target)) {
-            // Click was outside the game container
-            if (!UI.getIsHistoryVisible()) { // Only clear selection if history isn't also trying to close
+            if (!UI.getIsHistoryVisible()) {
                  clearSelection();
             }
         } else if (selectedCell.element && !selectedCell.element.contains(event.target)) {
-            // Click was inside game container but outside the currently selected cell
-            const controls = document.querySelector('.header-controls'); // Includes timer now
+            const controls = document.querySelector('.header-controls-wrapper'); // Updated selector
             const endControls = document.getElementById('endGameControls');
             
             let clickedOnControl = false;
-            if (controls && controls.contains(event.target)) clickedOnControl = true; // Click on any header control
+            if (controls && controls.contains(event.target)) clickedOnControl = true;
             if (endControls && endControls.style.display !== 'none' && endControls.contains(event.target)) clickedOnControl = true;
 
-            if (!clickedOnControl && !UI.getIsHistoryVisible()) { // Don't clear selection if history is open or was just opened
+            if (!clickedOnControl && !UI.getIsHistoryVisible()) {
                  clearSelection();
             }
         }
