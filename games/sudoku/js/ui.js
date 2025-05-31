@@ -49,14 +49,9 @@ const UI = (() => {
     }
     
     // --- Modal Functions ---
-    /**
-     * Shows the game over/status modal.
-     * @param {string} title - The title for the modal.
-     * @param {string} message - The message content for the modal.
-     * @param {string} type - 'win' or 'error-continue' to control animation.
-     */
-    function showModal(title, message, type = 'info') { // autoHideDuration & onHideCallback removed
+    function showModal(title, message, type = 'info') {
         if (gameOverModalElement && modalTitleElement && modalMessageElement) {
+            console.log("UI.showModal called. gameOverModalElement found:", gameOverModalElement); // Debug log
             modalTitleElement.textContent = title;
             modalMessageElement.textContent = message;
 
@@ -69,18 +64,26 @@ const UI = (() => {
             }
             
             if (modalActionsDiv) {
-                modalActionsDiv.style.display = 'none'; // Ensure no buttons are shown in modal
+                modalActionsDiv.style.display = 'none';
             }
 
-            gameOverModalElement.classList.add('show');
-            // Modal no longer auto-hides based on a timer here.
-            // It's dismissed by overlay click (see init) or by starting a new game/reset.
+            gameOverModalElement.style.display = 'flex'; // Explicitly set display to ensure it overrides inline styles
+            gameOverModalElement.classList.add('show'); // Controls opacity and visibility via CSS transitions
+        } else {
+            console.error("UI.showModal: Critical modal elements (gameOverModal, modalTitle, modalMessage) not found in DOM!");
         }
     }
 
     function hideModal() {
         if (gameOverModalElement) {
+            console.log("UI.hideModal called."); // Debug log
             gameOverModalElement.classList.remove('show');
+            // Optional: set display back to none after transition, though visibility:hidden should suffice
+            // setTimeout(() => {
+            //     if (!gameOverModalElement.classList.contains('show')) {
+            //         gameOverModalElement.style.display = 'none';
+            //     }
+            // }, 300); // Match transition duration (0.3s)
             if (modalTitleElement) {
                 modalTitleElement.classList.remove('win-animated', 'error-animated');
             }
@@ -170,7 +173,7 @@ const UI = (() => {
     function init(onTimerClickCallback, onModalOverlayCloseCallback) {
         _applyTheme();
         if(themeSwitcherBtn) themeSwitcherBtn.addEventListener('click', toggleTheme);
-        hideModal(); // Ensure modal is hidden initially
+        hideModal();
         updateTimerDisplay("00:00:00");
 
         if (timerDisplayElement) {
@@ -185,10 +188,10 @@ const UI = (() => {
         
         if (gameOverModalElement) {
             gameOverModalElement.addEventListener('click', (event) => {
-                if (event.target === gameOverModalElement) { // Clicked on the overlay itself
+                if (event.target === gameOverModalElement) {
                     hideModal();
                     if (typeof onModalOverlayCloseCallback === 'function') {
-                        onModalOverlayCloseCallback(); // Notify app.js
+                        onModalOverlayCloseCallback();
                     }
                 }
             });
