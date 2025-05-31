@@ -4,10 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const difficultySelect = document.getElementById('difficultySelect');
     const newGameBtn = document.getElementById('newGameBtn');
     const resetBtn = document.getElementById('resetBtn');
-    const checkSolutionBtn = document.getElementById('checkSolutionBtn'); // New Button
+    const checkSolutionBtn = document.getElementById('checkSolutionBtn');
     const sudokuBoardElement = document.getElementById('sudokuBoard');
-    const closeGameBtn = document.getElementById('closeGameBtn');
-    const newGameFromWinBtn = document.getElementById('newGameFromWinBtn');
+    // const closeGameBtn = document.getElementById('closeGameBtn'); // Part of modal now
+    // const newGameFromWinBtn = document.getElementById('newGameFromWinBtn'); // Part of modal now
     const timerDisplayElement = document.getElementById('timerDisplay');
 
     // localStorage Keys
@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let userBoard = [];
     let selectedCell = { row: -1, col: -1, element: null, inputElement: null };
     let gameWon = false;
+    let boardDisabledForModal = false; // To track if board was disabled due to win modal
 
     // Timer Variables
     let timerInterval = null;
@@ -134,14 +135,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 initialPuzzle = savedInitialPuzzle;
                 solutionBoard = savedSolutionBoard;
                 gameWon = false;
+                boardDisabledForModal = false;
                 UI.setBoardDisabled(false);
                 Board.render(sudokuBoardElement, userBoard, initialPuzzle, handleCellClick, handleCellInput);
-                UI.hideEndGameControls();
+                UI.hideModal();
                 
                 const resumedTime = savedElapsedTime ? parseInt(savedElapsedTime, 10) : 0;
                 startTimer(resumedTime);
-
-                // UI.showMessage("Previous game loaded.", "info", 2000); // Message removed as requested
+                // UI.showMessage("Previous game loaded.", "info", 2000); // Removed
                 return true;
             }
         } catch (e) {
@@ -161,9 +162,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Game Logic ---
     function startGame(forceNew = false) {
         UI.clearMessage();
-        UI.hideEndGameControls();
+        UI.hideModal();
         UI.setBoardDisabled(false);
         gameWon = false;
+        boardDisabledForModal = false;
         resetTimer();
 
         if (!forceNew && loadGameState()) {
@@ -182,13 +184,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleCellClick(row, col, cellElement, inputElement) {
-        if (gameWon) return;
+        if (gameWon || boardDisabledForModal) return;
         selectedCell = { row, col, element: cellElement, inputElement };
         Board.highlightRelatedCells(row, col, userBoard);
     }
     
     function clearSelection() {
-        if (gameWon) return;
+        if (gameWon || boardDisabledForModal) return;
         if (UI.getIsHistoryVisible()) return;
 
         if (selectedCell.element || selectedCell.inputElement) {
@@ -198,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleCellInput(row, col, value, cellElement, inputElement) {
-        if (gameWon) return;
+        if (gameWon || boardDisabledForModal) return;
 
         userBoard[row][col] = value;
         cellElement.dataset.value = value;
@@ -217,15 +219,17 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 if (Sudoku.isBoardSolved(userBoard, solutionBoard)) {
                     gameWon = true;
+                    boardDisabledForModal = true;
                     stopTimer();
-                    UI.showMessage("Congratulations! You won!", 'success');
-                    Board.highlightRelatedCells(row, col, userBoard);
+                    Board.highlightRelatedCells(row, col, userBoard); // Final highlight
                     UI.setBoardDisabled(true);
-                    UI.showEndGameControls();
+                    UI.showModal("YOU WIN!", "Congratulations, you solved the puzzle!", true, true);
                     addGameToHistory(UI.getSelectedDifficulty(), elapsedTimeInSeconds, new Date().toISOString());
                     clearSavedBoardState();
                 } else if (Sudoku.isBoardFull(userBoard)) {
-                    UI.showMessage("The board is full but incorrect. Please check your numbers or use 'Check Solution'.", 'error', 5000);
+                    // Board is full but not solved
+                    UI.showModal("Keep Going!", "The board is full but incorrect. Please check your numbers and try again.", false, true);
+                    // User can close modal and continue playing
                 }
             }
         }
@@ -241,9 +245,10 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         UI.clearMessage();
-        UI.hideEndGameControls();
+        UI.hideModal();
         UI.setBoardDisabled(false);
         gameWon = false;
+        boardDisabledForModal = false;
         userBoard = Utils.deepCopy2DArray(initialPuzzle);
         Board.render(sudokuBoardElement, userBoard, initialPuzzle, handleCellClick, handleCellInput);
         clearSelection();
@@ -253,11 +258,8 @@ document.addEventListener('DOMContentLoaded', () => {
         UI.showMessage("Game reset to its initial state.", "info", 2000);
     }
 
-    /**
-     * Validates the user's current board state and highlights errors.
-     */
     function validateUserSolution() {
-        if (gameWon || userBoard.length === 0) {
+        if (gameWon || boardDisabledForModal || userBoard.length === 0) {
             UI.showMessage("Start or continue a game to check your solution.", "info", 3000);
             return;
         }
@@ -276,15 +278,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (userBoard[r][c] !== solutionBoard[r][c]) {
                             Board.updateCellDisplay(r, c, userBoard[r][c], true);
                             errorsFound++;
-                        } else if (!Sudoku.isMoveValid(userBoard, r, c, userBoard[r][c])) {
-                            // This condition checks for rule violations even if the number matches the solution
-                            // which can happen if the user created a conflict with another user-entered number
-                            // that also happens to be correct in its own spot.
-                            // However, for "Check Solution", the primary goal is to check against the *final* solution.
-                            // If a number is correct per solution but creates a conflict with *another user number*,
-                            // that other number should be the one flagged when its turn comes.
-                            // So, the simple check against solutionBoard[r][c] is usually sufficient.
-                            // For more advanced validation highlighting internal conflicts, logic would be more complex.
                         }
                     }
                 }
@@ -296,53 +289,56 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (filledCells === 0) {
             UI.showMessage('Board is empty. Fill in some numbers to check.', 'info', 3000);
         } else if (Sudoku.isBoardSolved(userBoard, solutionBoard)) {
-            UI.showMessage("Congratulations! You've solved it!", 'success');
             gameWon = true;
+            boardDisabledForModal = true;
             stopTimer();
             UI.setBoardDisabled(true);
-            UI.showEndGameControls();
+            UI.showModal("YOU WIN!", "Congratulations! You've solved it!", true, true);
             addGameToHistory(UI.getSelectedDifficulty(), elapsedTimeInSeconds, new Date().toISOString());
             clearSavedBoardState();
         } else if (Sudoku.isBoardFull(userBoard) && errorsFound === 0) {
-             UI.showMessage("Board is full, and no direct errors found, but it's not the solution.", 'info', 4000);
-        }
-         else {
+             UI.showModal("Keep Going!", "Board is full, and no direct errors found, but it's not the solution. Try again!", false, true);
+        } else {
             UI.showMessage('No errors found in your current entries. Keep going!', 'info', 3000);
         }
-        if(selectedCell.element) {
+        if(selectedCell.element && !gameWon) { // Re-highlight only if game not won
             Board.highlightRelatedCells(selectedCell.row, selectedCell.col, userBoard);
         }
     }
 
+    // --- Modal Button Callbacks ---
+    function handleModalNewGame() {
+        UI.hideModal();
+        startGame(true); // Force a new game
+    }
+
+    function handleModalClose() {
+        UI.hideModal();
+        if (!gameWon) { // If game was not won (e.g. "Keep Going" modal)
+            boardDisabledForModal = false; // Allow interaction again
+            UI.setBoardDisabled(false);
+        }
+        // If game was won, board remains disabled.
+    }
 
     // --- Event Listeners & Initialization ---
     loadGameHistory();
-    UI.init(handleTimerClick);
+    UI.init(handleTimerClick, handleModalNewGame, handleModalClose); // Pass modal callbacks
 
     newGameBtn.addEventListener('click', () => startGame(true));
     resetBtn.addEventListener('click', resetGame);
-    if (checkSolutionBtn) { // Check if button exists before adding listener
+    if (checkSolutionBtn) {
         checkSolutionBtn.addEventListener('click', validateUserSolution);
     }
     difficultySelect.addEventListener('change', () => startGame(true));
 
-    closeGameBtn.addEventListener('click', () => {
-        UI.clearMessage();
-        UI.hideEndGameControls();
-        UI.setBoardDisabled(true);
-    });
-
-    newGameFromWinBtn.addEventListener('click', () => {
-        UI.hideEndGameControls();
-        startGame(true);
-    });
+    // Modal button listeners are now set in UI.init
 
     startGame(false);
 
     document.addEventListener('click', (event) => {
-        if (gameWon && document.getElementById('endGameControls').style.display !== 'none') {
-            const endControls = document.getElementById('endGameControls');
-            if (endControls && endControls.contains(event.target)) return;
+        if (gameWon && gameOverModalElement && gameOverModalElement.classList.contains('show')) {
+             if (gameOverModalElement.querySelector('.modal-content').contains(event.target)) return;
         }
         if (UI.getIsHistoryVisible() && document.getElementById('gameHistoryDropdown').style.display !== 'none') {
             return;
@@ -355,12 +351,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } else if (selectedCell.element && !selectedCell.element.contains(event.target)) {
             const controlsWrapper = document.querySelector('.header-controls-wrapper');
-            const endControls = document.getElementById('endGameControls');
             
             let clickedOnControl = false;
             if (controlsWrapper && controlsWrapper.contains(event.target)) clickedOnControl = true;
-            if (endControls && endControls.style.display !== 'none' && endControls.contains(event.target)) clickedOnControl = true;
-
+            
             if (!clickedOnControl && !UI.getIsHistoryVisible()) {
                  clearSelection();
             }
