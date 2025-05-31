@@ -58,6 +58,11 @@
     --history-separator-color-light: #dee2e6;
     --history-item-hover-bg-light: #f8f9fa;
 
+    --modal-overlay-bg-light: rgba(0,0,0,0.6); /* Reference --modal-bg */
+    --modal-content-bg-light: #ffffff; /* Reference --modal-content-bg */
+    --modal-text-color-light: #333333; /* Reference --modal-text-color */
+
+
     --theme-switcher-light: #4a4a4a;
     --input-focus-border-light: #86b7fe;
 
@@ -99,6 +104,10 @@
     --history-separator-color-dark: #21262d;
     --history-item-hover-bg-dark: #2c3a47;
     --history-item-text-dark: #FFFFFF;
+
+    --modal-overlay-bg-dark: rgba(10, 10, 15, 0.7); /* Reference --modal-bg (dark) */
+    --modal-content-bg-dark: #161b22; /* Reference --modal-content-bg (dark) */
+    --modal-text-color-dark: #c9d1d9; /* Reference --modal-text-color (dark) */
 
     --theme-switcher-dark: #e0e0e0;
     --input-focus-border-dark: #3282b8;
@@ -156,7 +165,7 @@ body.dark-theme #themeSwitcher {
     border-radius: var(--container-border-radius);
     box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     text-align: center;
-    max-width: 500px; /* Max width of the game area */
+    max-width: 500px;
     width: 100%;
     transition: background-color 0.3s ease, border-color 0.3s ease;
     position: relative;
@@ -182,31 +191,35 @@ body.dark-theme .game-header h1 {
     color: var(--header-text-dark);
 }
 
-/* Header Controls Layout - Consistent for all screen sizes */
+/* Header Controls Layout */
 .header-controls-wrapper {
     display: flex;
-    flex-direction: column; /* Stack rows */
-    align-items: stretch; /* Make rows take full width */
-    gap: 8px; /* Reduced gap between rows */
-    margin-bottom: 15px; /* Adjusted margin */
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    margin-bottom: 15px;
 }
 
 .header-row-1, .header-row-2 {
     display: flex;
-    justify-content: space-between; /* Pushes first child left, last child right */
+    justify-content: space-between;
     align-items: center;
     width: 100%;
-    gap: 8px; /* Reduced gap between items in a row */
+    gap: 8px;
 }
 
 .header-actions-left, .header-actions-right {
     display: flex;
     align-items: center;
-    gap: 8px; /* Space between buttons in the left/right group */
-    flex-shrink: 0; /* Prevent shrinking */
+    gap: 8px;
+    flex-shrink: 0;
 }
-/* .header-actions-right { margin-left: auto; } /* Ensured by space-between on parent */
-/* .header-row-1 .header-actions-left { margin-right: auto; } /* Ensured by space-between on parent */
+.header-actions-right {
+    /* margin-left: auto; Ensured by space-between on parent */
+}
+.header-row-1 .header-actions-left {
+    /* margin-right: auto; Ensured by space-between on parent */
+}
 
 
 .difficulty-control {
@@ -358,7 +371,7 @@ body.dark-theme .btn.btn-primary:hover {
     background-color: var(--button-primary-hover-bg-dark);
 }
 
-#resetBtn, #checkSolutionBtn, #closeGameBtn {
+#resetBtn, #checkSolutionBtn, #closeGameBtn { /* #closeGameBtn is now #modalCloseBtn */
     background-color: var(--button-bg-light);
     color: var(--button-text-light);
 }
@@ -374,6 +387,36 @@ body.dark-theme #closeGameBtn {
 body.dark-theme #resetBtn:hover, 
 body.dark-theme #checkSolutionBtn:hover, 
 body.dark-theme #closeGameBtn:hover {
+    background-color: var(--button-hover-bg-dark);
+}
+/* Modal specific button styling */
+.modal-actions #modalNewGameBtn { /* Primary style for New Game in modal */
+    background-color: var(--button-primary-bg-light);
+    color: var(--button-primary-text-light);
+}
+.modal-actions #modalNewGameBtn:hover {
+    background-color: var(--button-primary-hover-bg-light);
+}
+body.dark-theme .modal-actions #modalNewGameBtn {
+    background-color: var(--button-primary-bg-dark);
+    color: var(--button-primary-text-dark);
+}
+body.dark-theme .modal-actions #modalNewGameBtn:hover {
+    background-color: var(--button-primary-hover-bg-dark);
+}
+
+.modal-actions #modalCloseBtn { /* Default/Secondary style for Close in modal */
+    background-color: var(--button-bg-light);
+    color: var(--button-text-light);
+}
+.modal-actions #modalCloseBtn:hover {
+    background-color: var(--button-hover-bg-light);
+}
+body.dark-theme .modal-actions #modalCloseBtn {
+    background-color: var(--button-bg-dark);
+    color: var(--button-text-dark);
+}
+body.dark-theme .modal-actions #modalCloseBtn:hover {
     background-color: var(--button-hover-bg-dark);
 }
 
@@ -587,43 +630,105 @@ body.dark-theme .footer-credit a {
     color: var(--button-primary-bg-dark);
 }
 
-.end-game-controls {
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--modal-overlay-bg-light);
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 2000; /* Ensure it's above other content */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+.modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+}
+body.dark-theme .modal-overlay {
+    background-color: var(--modal-overlay-bg-dark);
+}
+
+.modal-content {
+    background-color: var(--modal-content-bg-light);
+    color: var(--modal-text-color-light);
+    padding: 25px 30px;
+    border-radius: var(--container-border-radius); /* Match game container rounding */
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    text-align: center;
+    max-width: 90%;
+    width: 380px; /* Adjust as needed */
+    transform: scale(0.9);
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+.modal-overlay.show .modal-content {
+    transform: scale(1);
+}
+body.dark-theme .modal-content {
+    background-color: var(--modal-content-bg-dark);
+    color: var(--modal-text-color-dark);
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    font-size: 1.8em;
+    margin-bottom: 15px;
+}
+.modal-content p {
+    font-size: 1.1em;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+.modal-actions {
+    display: flex;
+    justify-content: space-between; /* New Game left, Close right */
     gap: 15px;
-    margin-top: 10px;
 }
-.end-game-controls .btn {
-    padding: var(--button-padding-vertical-ref) var(--button-padding-horizontal-ref);
-    font-size: var(--button-font-size-ref);
+.modal-actions .btn { /* Buttons in modal use referenced style */
+    flex-grow: 1; /* Allow buttons to share space */
 }
+
 
 /* Responsive adjustments for Header Controls - KEEPING LAYOUT CONSISTENT */
-@media (max-width: 680px) { /* Adjust this breakpoint if items start to overlap too much */
+@media (max-width: 680px) {
+    .header-controls-wrapper {
+        /* Stays column */
+    }
     .header-row-1, .header-row-2 {
-        /* Allow items to shrink a bit more if needed, but maintain row */
-        gap: 5px; /* Reduce gap on smaller screens */
+        flex-wrap: wrap;
+        justify-content: center;
     }
-    .btn { /* Slightly reduce padding on very small screens if needed */
-        padding: var(--button-padding-vertical-ref) 8px;
-        font-size: calc(var(--button-font-size-ref) * 0.95); /* Slightly smaller font */
+    .header-actions-left, .header-actions-right, .difficulty-control, #timerDisplay {
+        flex-basis: 100%; /* Stack items within each row */
+        justify-content: center;
+        text-align: center;
+        margin-bottom: 8px; /* Space between stacked items */
     }
-    #difficultySelect {
-        padding: var(--select-padding-vertical) 8px;
-        font-size: calc(var(--select-font-size) * 0.95);
-        padding-right: 2em; /* Ensure arrow is still visible */
+    .header-actions-left {
+        gap: 8px;
+        order: 1; /* New Game/Reset first */
     }
-    .difficulty-control label {
-        font-size: calc(var(--button-font-size-ref) * 0.95);
+     .header-actions-right {
+        order: 2; /* Check Solution second */
+        margin-left: 0; /* Reset margin */
+    }
+    .difficulty-control {
+        order: 1; /* Difficulty first in second row */
     }
     #timerDisplay {
-        font-size: calc(var(--button-font-size-ref) * 0.95);
-        padding: var(--button-padding-vertical-ref) 5px;
+        order: 2; /* Timer second in second row */
+        margin-bottom: 0; /* No margin if last */
     }
 
+
     .game-history-dropdown {
-        width: calc(100% - 20px); /* Adjust width to fit better */
+        width: calc(100% - 20px);
         left: 10px;
         right: auto;
     }
@@ -632,35 +737,29 @@ body.dark-theme .footer-credit a {
 
 
 @media (max-width: 480px) {
-    /* Further reduce button/select padding and font if absolutely necessary to prevent overflow */
-    /* This tries to keep them in a row as much as possible */
-    .btn {
-        padding: 6px 8px;
-        font-size: 0.8em;
+    .header-actions-left, .header-actions-right {
+        flex-direction: column;
+        align-items: stretch;
     }
-    #difficultySelect {
-        padding: 6px 8px;
-        font-size: 0.8em;
-        padding-right: 1.8em;
+    .header-actions-left .btn, .header-actions-right .btn {
+        width: 100%;
+        max-width: 260px;
+        margin-left: auto;
+        margin-right: auto;
     }
-     .difficulty-control label {
-        font-size: 0.8em;
+    .difficulty-control, #timerDisplay {
+        /* Already full width and centered from 680px breakpoint */
     }
-    #timerDisplay {
-        font-size: 0.8em;
-        padding: 6px 4px;
-    }
-    .header-row-1, .header-row-2 {
-        gap: 5px; /* Minimal gap */
-    }
+
      .game-header h1 { font-size: 1.8em; }
      .cell { font-size: clamp(0.7em, 6vw, 1.2em); }
-     .end-game-controls { flex-direction: column; gap: 8px; }
-     .end-game-controls .btn { width: 80%; }
+     .end-game-controls { flex-direction: column; gap: 8px; } /* This is for old footer buttons, now modal */
+     .modal-actions { flex-direction: column; } /* Stack modal buttons on small screens */
+     .modal-actions .btn { width: 100%; }
 }
 
 /* General small screen adjustments from before */
-@media (max-width: 600px) { /* This is a general small screen, specific overrides above take precedence */
+@media (max-width: 600px) {
     body { padding: 10px; }
     .game-container { padding: 15px; }
     /* game-header h1 size is handled by more specific breakpoints above */
