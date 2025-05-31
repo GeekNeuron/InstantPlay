@@ -14,14 +14,10 @@
     <div id="gameContainer" class="game-container">
         <header class="game-header">
             <h1>Sudoku</h1>
-            <div class="header-controls-wrapper"> <div class="header-row-1">
-                    <div class="game-actions">
-                        <button id="newGameBtn" class="btn btn-primary">New Game</button>
-                        <button id="resetBtn" class="btn">Reset Board</button>
-                    </div>
-                    <div id="timerDisplay" class="timer-display" tabindex="0" aria-label="Game Timer, click to view history">
-                        00:00:00
-                    </div>
+            <div class="header-controls-wrapper">
+                <div class="header-row-1">
+                    <button id="newGameBtn" class="btn btn-primary">New Game</button>
+                    <button id="resetBtn" class="btn">Reset Board</button>
                 </div>
                 <div class="header-row-2">
                     <div class="difficulty-control">
@@ -32,6 +28,9 @@
                             <option value="hard">Hard</option>
                             <option value="expert">Expert</option>
                         </select>
+                    </div>
+                    <div id="timerDisplay" class="timer-display" tabindex="0" aria-label="Game Timer, click to view history">
+                        00:00:00
                     </div>
                 </div>
             </div>
