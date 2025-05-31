@@ -1,4 +1,98 @@
-/* Global Resets and Base Styles */
+/* CSS Variables for Theming - Based on original Minesweeper variables with additions for select and button color changes */
+:root {
+    /* Light Theme Variables */
+    --body-bg: #f8f9fa;
+    --text-color-primary: #212529;
+    --container-bg: #ffffff; /* This will be for .container */
+    --grid-bg: #dee2e6;
+    --tile-bg: #f0f0f0;
+    --tile-bg-revealed: #e9ecef;
+    --tile-border: #ced4da;
+    --tile-text-color: #495057;
+    --score-box-bg: #e9ecef;
+    --score-box-text: #212529;
+    
+    /* Button colors (light theme) - Using blues as primary from your Sudoku ref */
+    --button-bg: #007bff; /* Default button blue */
+    --button-text: #ffffff;
+    --button-hover-bg: #0056b3;
+    --button-primary-bg: #007bff; /* Explicit primary */
+    --button-primary-text: #ffffff;
+    --button-primary-hover-bg: #0056b3;
+
+    /* Select styles from your Sudoku reference (light theme) */
+    --select-bg-light: #ffffff;
+    --select-border-light: #ced4da;
+    --select-text-light: #495057;
+    --select-border-radius: 6px;
+    --select-padding-vertical: 7px;
+    --select-padding-horizontal: 10px;
+    --select-font-size: 0.9em;
+    --input-focus-border-light: #86b7fe; /* For select focus */
+
+
+    --modal-bg: rgba(0, 0, 0, 0.5);
+    --modal-content-bg: #ffffff;
+    --modal-text-color: #212529;
+    
+    --mine-color: #dc3545;
+    --flag-color: #fd7e14;
+    --safe-color: #28a745;
+
+    --action-button-bg: #e9ecef;
+    --action-button-border: #ced4da;
+    --action-button-text: #495057;
+    --action-button-active-bg: var(--button-primary-bg); /* Use primary button color */
+    --action-button-active-text: var(--button-primary-text);
+
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Reverted to original font */
+    --border-radius: 8px; /* Original border-radius for .container */
+    --gap-size: 2px; /* Original gap for tiles */
+    --header-text-color: #007bff; /* Original header color */
+}
+
+/* Dark Theme Variables */
+body.dark-theme {
+    --body-bg: #0d1117;
+    --text-color-primary: #c9d1d9;
+    --container-bg: #161b22;
+    --grid-bg: #010409;
+    --tile-bg: #21262d;
+    --tile-bg-revealed: #252b31; /* Kept the slightly lighter revealed tile */
+    --tile-border: #30363d;
+    --tile-text-color: #c9d1d9;
+    --score-box-bg: #21262d;
+    --score-box-text: #c9d1d9;
+
+    /* Button colors (dark theme) - Using BLUE as requested, from your Sudoku ref */
+    --button-bg: #3282b8; 
+    --button-text: #ffffff;
+    --button-hover-bg: #1d4357;
+    --button-primary-bg: #58a6ff; /* Brighter blue for primary */
+    --button-primary-text: #0d1117; /* Dark text for contrast */
+    --button-primary-hover-bg: #3282b8;
+
+
+    /* Select styles from your Sudoku reference (dark theme) */
+    --select-bg-dark: #161b22; /* Sudoku --select-bg-dark: #161b22; */
+    --select-border-dark: #3282b8; /* Sudoku --select-border-dark: #3282b8; */
+    --select-text-dark: #c9d1d9; /* Sudoku --select-text-dark: #c9d1d9; */
+    --input-focus-border-dark: #3282b8;
+
+
+    --modal-bg: rgba(10, 10, 15, 0.7);
+    --modal-content-bg: #161b22;
+    --modal-text-color: #c9d1d9;
+    --header-text-color: #58a6ff;
+
+    --action-button-bg: #21262d;
+    --action-button-border: #30363d;
+    --action-button-text: #c9d1d9;
+    --action-button-active-bg: var(--button-primary-bg);
+    --action-button-active-text: var(--button-primary-text);
+}
+
+/* Global Resets (from your Sudoku CSS) */
 *,
 *::before,
 *::after {
@@ -7,284 +101,182 @@
     padding: 0;
 }
 
-:root {
-    /* Light Theme Variables */
-    --bg-color-light: #ffffff;
-    --text-color-light: #212529;
-    --container-bg-light: #f7f7f7;
-    --container-border-light: #e0e0e0;
-    --container-border-radius: 16px;
-    --header-text-light: #333333;
-
-    --grid-bg-light: #e0e0e0; /* Adapted for Minesweeper grid bg */
-    --tile-bg-light: #f0f0f0; /* Minesweeper tile bg */
-    --tile-revealed-bg-light: #e9e9e9; /* Minesweeper revealed tile bg */
-    --tile-border-light: #cccccc; /* Sharper border for tiles */
-    --tile-text-color-light: #333333;
-
-    --grid-strong-border-light: #333333; /* For main grid border */
-
-    --button-bg-light: #6c757d;
-    --button-text-light: #ffffff;
-    --button-hover-bg-light: #5a6268;
-    --button-primary-bg-light: #007bff;
-    --button-primary-text-light: #ffffff;
-    --button-primary-hover-bg-light: #0056b3;
-    
-    --button-border-radius-ref: 6px;
-    --button-padding-vertical-ref: 8px;
-    --button-padding-horizontal-ref: 12px;
-    --button-font-size-ref: 0.9em;
-
-    --select-bg-light: #ffffff;
-    --select-border-light: #ced4da;
-    --select-text-light: #495057;
-    --select-border-radius: 6px;
-    --select-padding-vertical: 7px;
-    --select-padding-horizontal: 10px;
-    --select-font-size: 0.9em;
-
-    --info-text-light: #495057; /* For timer/mines count */
-    --info-bg-light: transparent; /* No specific background for these items */
-
-    --modal-overlay-bg-light: rgba(0,0,0,0.6);
-    --modal-content-bg-light: #ffffff;
-    --modal-text-color-light: #333333;
-
-    --input-focus-border-light: #86b7fe; /* For general focus, not used much here yet */
-
-    --mine-color: #dc3545;
-    --flag-color: #fd7e14;
-    --safe-color: #28a745;
-
-    --action-button-bg-light: #e9ecef;
-    --action-button-border-light: #ced4da;
-    --action-button-text-light: #495057;
-    --action-button-active-bg-light: var(--button-primary-bg-light);
-    --action-button-active-text-light: var(--button-primary-text-light);
-
-
-    /* Dark Theme Variables */
-    --bg-color-dark: #0d1117;
-    --text-color-dark: #c9d1d9;
-    --container-bg-dark: #161b22;
-    --container-border-dark: #30363d; /* Slightly visible border for dark container */
-    --header-text-dark: #c9d1d9;
-
-    --grid-bg-dark: #010409;
-    --tile-bg-dark: #21262d;
-    --tile-revealed-bg-dark: #272e35; /* Slightly lighter revealed tile */
-    --tile-border-dark: #3a4047; /* Slightly lighter border for tiles in dark */
-    --tile-text-color-dark: #c9d1d9;
-
-    --grid-strong-border-dark: #58a6ff; /* Brighter border for dark grid */
-
-    --button-bg-dark: #3282b8; /* Blue for dark theme buttons */
-    --button-text-dark: #ffffff;
-    --button-hover-bg-dark: #1d4357; /* Darker blue for hover */
-    --button-primary-bg-dark: #58a6ff; /* Brighter blue for primary dark theme buttons */
-    --button-primary-text-dark: #0d1117; /* Dark text on bright blue */
-    --button-primary-hover-bg-dark: #3282b8;
-
-    --select-bg-dark: #21262d; /* Darker select */
-    --select-border-dark: #58a6ff; /* Blue border for select */
-    --select-text-dark: #c9d1d9;
-
-    --info-text-dark: #adb5bd;
-    --info-bg-dark: transparent;
-
-    --modal-overlay-bg-dark: rgba(10, 10, 15, 0.7);
-    --modal-content-bg-dark: #161b22;
-    --modal-text-color-dark: #c9d1d9;
-
-    --input-focus-border-dark: #3282b8;
-
-    --action-button-bg-dark: #21262d;
-    --action-button-border-dark: #30363d;
-    --action-button-text-dark: #c9d1d9;
-    --action-button-active-bg-dark: var(--button-primary-bg-dark);
-    --action-button-active-text-dark: var(--button-primary-text-dark);
+/* General Styles - Reverted to original Minesweeper structure */
+html {
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
-    font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
-    margin: 0;
+    font-family: var(--font-family);
+    background-color: var(--body-bg);
+    color: var(--text-color-primary);
     padding: 15px;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Center game container vertically */
     align-items: center;
     min-height: 100vh;
-    background-color: var(--bg-color-light);
-    color: var(--text-color-light);
-    transition: background-color 0.3s ease, color 0.3s ease;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-body.dark-theme {
-    background-color: var(--bg-color-dark);
-    color: var(--text-color-dark);
-}
-
-.game-container {
-    background-color: var(--container-bg-light);
-    border: 1px solid var(--container-border-light);
-    padding: 20px;
-    border-radius: var(--container-border-radius);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     text-align: center;
-    max-width: 600px; /* Adjusted max-width for Minesweeper controls */
-    width: 100%;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-    position: relative;
-}
-body.dark-theme .game-container {
-    background-color: var(--container-bg-dark);
-    border-color: var(--container-border-dark);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    overflow-x: hidden;
 }
 
-.game-header {
-    position: relative; /* For potential absolute positioned elements inside if needed */
-    margin-bottom: 20px; /* Space between header and game board */
-}
-
-.game-header h1 {
-    margin-top: 0;
-    margin-bottom: 15px;
-    font-size: 2.5em;
-    color: var(--header-text-light);
-    font-weight: bold;
-    cursor: pointer; /* For theme switching */
-    user-select: none;
-}
-body.dark-theme .game-header h1 {
-    color: var(--header-text-dark);
-}
-
-.header-controls-wrapper {
+.container { /* Main game wrapper */
+    background-color: var(--container-bg);
+    padding: 20px;
+    border-radius: var(--border-radius); /* Ensuring this is applied */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    align-items: stretch;
-    gap: 10px; /* Gap between rows of controls */
-    margin-bottom: 15px;
-}
-
-.header-row-1, .header-row-2 {
-    display: flex;
-    justify-content: space-between;
     align-items: center;
     width: 100%;
-    gap: 10px; /* Gap between items in a row */
+    max-width: 600px; /* Max width for the game area */
+    transition: background-color 0.3s ease;
+}
+body.dark-theme .container {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* Darker shadow for dark theme */
 }
 
-.difficulty-control {
+
+header {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+header h1#game-title {
+    font-size: 2.8em;
+    margin: 0 0 15px 0;
+    font-weight: bold;
+    color: var(--header-text-color);
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.3s ease;
+}
+header h1#game-title:hover {
+    opacity: 0.8;
+}
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center; /* Center controls if they wrap */
+    width: 100%;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+.control-group { /* For difficulty label and select */
     display: flex;
     align-items: center;
     gap: 8px;
-    flex-grow: 1; /* Allow difficulty to take available space */
 }
-.difficulty-control label {
-    color: inherit; /* Inherits from body text color */
+.difficulty-group label { /* Label for difficulty */
     font-weight: bold;
-    font-size: var(--button-font-size-ref);
-    white-space: nowrap;
+    font-size: 0.9em; /* Consistent with select font size */
+    color: var(--text-color-primary);
+}
+body.dark-theme .difficulty-group label {
+    color: var(--text-color-dark);
 }
 
-.game-stats {
+
+.game-info {
     display: flex;
-    align-items: center;
-    gap: 15px; /* Space between Mines and Timer */
-    flex-shrink: 0; /* Prevent shrinking */
+    justify-content: space-around;
+    width: 100%;
+    max-width: 300px;
+    margin-top: 10px;
+    background-color: var(--score-box-bg);
+    padding: 10px;
+    border-radius: var(--border-radius);
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
 }
 
-.info-item { /* For Mines and Timer display */
-    font-size: var(--button-font-size-ref);
+.info-item {
+    font-size: 1em;
+    color: var(--score-box-text);
     font-weight: bold;
-    color: var(--info-text-light);
-    background-color: var(--info-bg-light);
-    padding: var(--button-padding-vertical-ref) 8px;
-    border-radius: var(--button-border-radius-ref);
-    white-space: nowrap;
-    line-height: 1.2;
-}
-body.dark-theme .info-item {
-    color: var(--info-text-dark);
-    background-color: var(--info-bg-dark);
 }
 
-
-/* Button Styling */
 .btn {
-    padding: var(--button-padding-vertical-ref) var(--button-padding-horizontal-ref);
-    border-radius: var(--button-border-radius-ref);
-    font-size: var(--button-font-size-ref);
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.2s ease, transform 0.1s ease, opacity 0.2s ease;
+    background-color: var(--button-bg);
+    color: var(--button-text);
     border: none;
-    line-height: 1.2;
+    padding: 10px 18px;
+    border-radius: 6px; /* From Sudoku ref for buttons */
+    font-size: 0.9em; /* From Sudoku ref for buttons */
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
     user-select: none;
     white-space: nowrap;
-    background-color: var(--button-bg-light);
-    color: var(--button-text-light);
 }
 .btn:hover {
+    background-color: var(--button-hover-bg);
     transform: translateY(-1px);
-    background-color: var(--button-hover-bg-light);
-    opacity: 0.9;
 }
 .btn:active {
     transform: translateY(0px);
-    opacity: 1;
-}
-body.dark-theme .btn {
-    background-color: var(--button-bg-dark);
-    color: var(--button-text-dark);
-}
-body.dark-theme .btn:hover {
-    background-color: var(--button-hover-bg-dark);
 }
 
-.btn.btn-primary {
-    background-color: var(--button-primary-bg-light);
-    color: var(--button-primary-text-light);
+/* Specific styling for difficultySelect from your reference */
+#difficultySelect {
+    background-color: var(--select-bg-light);
+    color: var(--select-text-light);
+    border: 1px solid var(--select-border-light);
+    padding: var(--select-padding-vertical) var(--select-padding-horizontal);
+    border-radius: var(--select-border-radius);
+    font-weight: normal; /* Sudoku ref used normal */
+    line-height: 1.2;
+    font-size: var(--select-font-size);
+    font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif; /* Font from Sudoku select */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23212529%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right .7em top 50%;
+    background-size: .65em auto;
+    padding-right: 2.5em; /* Space for arrow */
+    min-width: 180px; /* Ensure it has some width */
 }
-.btn.btn-primary:hover {
-    background-color: var(--button-primary-hover-bg-light);
+#difficultySelect:focus {
+    outline: none;
+    border-color: var(--input-focus-border-light);
+    box-shadow: 0 0 0 0.2rem rgba(var(--input-focus-border-light), 0.25);
 }
-body.dark-theme .btn.btn-primary {
-    background-color: var(--button-primary-bg-dark);
-    color: var(--button-primary-text-dark);
+body.dark-theme #difficultySelect {
+    background-color: var(--select-bg-dark);
+    color: var(--select-text-dark);
+    border-color: var(--select-border-dark);
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23c9d1d9%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
 }
-body.dark-theme .btn.btn-primary:hover {
-    background-color: var(--button-primary-hover-bg-dark);
+body.dark-theme #difficultySelect:focus {
+    border-color: var(--input-focus-border-dark);
+    box-shadow: 0 0 0 0.2rem rgba(var(--input-focus-border-dark), 0.25);
 }
+
 
 /* Action Mode Toggle Buttons */
 .action-mode-container {
     display: flex;
-    /* background-color: var(--action-button-bg-light); */ /* Container itself is transparent */
-    /* border: 1px solid var(--action-button-border-light); */
-    border-radius: var(--button-border-radius-ref); /* Match button radius */
-    padding: 0px; /* No padding, buttons will have their own */
+    border-radius: var(--border-radius); /* Use main border radius */
+    padding: 4px;
     gap: 4px;
-    /* box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); */
+    /* background-color: var(--action-button-bg); Removed, buttons have their own BG */
+    /* border: 1px solid var(--action-button-border); Removed */
 }
-/* body.dark-theme .action-mode-container {
-    background-color: var(--action-button-bg-dark);
-    border-color: var(--action-button-border-dark);
-} */
 
 .action-btn {
-    background-color: var(--action-button-bg-light);
-    color: var(--action-button-text-light);
-    border: 1px solid var(--action-button-border-light);
-    width: 42px; /* Slightly larger */
-    height: 42px;
+    background-color: var(--action-button-bg);
+    color: var(--action-button-text);
+    border: 1px solid var(--action-button-border);
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    font-size: 1.6em; /* Larger icon */
+    font-size: 1.5em;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -294,60 +286,17 @@ body.dark-theme .btn.btn-primary:hover {
 }
 .action-btn:hover {
     opacity: 0.8;
-    border-color: var(--action-button-active-bg-light); /* Use active color for hover border */
 }
-body.dark-theme .action-btn {
-    background-color: var(--action-button-bg-dark);
-    color: var(--action-button-text-dark);
-    border-color: var(--action-button-border-dark);
-}
-body.dark-theme .action-btn:hover {
-    border-color: var(--action-button-active-bg-dark);
-}
-
 .action-btn.active {
-    background-color: var(--action-button-active-bg-light);
-    color: var(--action-button-active-text-light);
-    border-color: var(--action-button-active-bg-light);
-    box-shadow: 0 0 8px var(--action-button-active-bg-light);
+    background-color: var(--action-button-active-bg);
+    color: var(--action-button-active-text);
+    border-color: var(--action-button-active-bg); /* Or a contrasting border */
+    box-shadow: 0 0 5px var(--action-button-active-bg);
 }
-body.dark-theme .action-btn.active {
-    background-color: var(--action-button-active-bg-dark);
-    color: var(--action-button-active-text-dark);
-    border-color: var(--action-button-active-bg-dark);
-    box-shadow: 0 0 8px var(--action-button-active-bg-dark);
-}
+/* End Action Mode Toggle Buttons */
 
 
-#difficultySelect { /* Renamed from #difficulty */
-    background-color: var(--select-bg-light);
-    color: var(--select-text-light);
-    border: 1px solid var(--select-border-light);
-    padding: var(--select-padding-vertical) var(--select-padding-horizontal);
-    border-radius: var(--select-border-radius);
-    font-weight: normal; /* Was bold, changed to normal */
-    line-height: 1.2;
-    font-size: var(--select-font-size);
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23212529%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
-    background-repeat: no-repeat;
-    background-position: right .7em top 50%;
-    background-size: .65em auto;
-    padding-right: 2.5em; /* Space for arrow */
-    flex-grow: 1; /* Allow select to take available space in its group */
-    min-width: 150px; /* Minimum width */
-}
-body.dark-theme #difficultySelect {
-    background-color: var(--select-bg-dark);
-    color: var(--select-text-dark);
-    border-color: var(--select-border-dark);
-    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23c9d1d9%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
-}
-
-
-main { /* Container for the game board itself */
+main {
     width: 100%;
     display: flex;
     justify-content: center;
@@ -355,204 +304,154 @@ main { /* Container for the game board itself */
     margin-top: 10px;
 }
 
-#game-board-container { /* Added for potential scrolling of very large boards */
+#game-board-container {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
-    overflow: auto; /* Enable scroll if grid is too large */
-    padding: 5px; /* Small padding around the scrollable area */
+    overflow: auto;
+    padding: 2px; /* Small padding for the scroller */
 }
 
-.grid-container { /* Minesweeper board */
+.grid-container {
     display: grid;
-    /* grid-template-columns and rows set by JS */
-    width: auto; /* Fit content */
-    margin: 0 auto; /* Center if smaller than container */
-    border: 3px solid var(--grid-strong-border-light);
-    border-radius: 6px; /* Consistent with Sudoku example */
-    overflow: hidden;
-    transition: border-color 0.3s ease;
-    background-color: var(--grid-bg-light); /* Use specific grid background */
-    gap: 1px; /* Thinner gap for Minesweeper tiles */
-    padding: 2px; /* Small padding inside the strong border */
-}
-body.dark-theme .grid-container {
-    border-color: var(--grid-strong-border-dark);
-    background-color: var(--grid-bg-dark);
+    background-color: var(--grid-bg); /* Main grid area background */
+    border: 2px solid var(--tile-border); /* Use tile border for grid outer border for consistency */
+    border-radius: calc(var(--border-radius) / 2); /* Slightly less rounded than main container */
+    padding: var(--gap-size);
+    gap: var(--gap-size);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    user-select: none;
 }
 
-.tile { /* Minesweeper cell */
+.tile {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: clamp(0.8em, 3vw, 1.5em); /* Responsive font size for tile content */
+    background-color: var(--tile-bg);
+    border: 1px solid var(--tile-border);
+    border-radius: calc(var(--border-radius) / 3); /* Even less rounded for individual tiles */
     font-weight: bold;
-    background-color: var(--tile-bg-light);
-    color: var(--tile-text-color-light);
-    border-radius: 2px; /* Slightly rounded tiles */
     cursor: pointer;
-    transition: background-color 0.1s ease, color 0.1s ease, border-color 0.1s ease;
-    position: relative;
-    user-select: none;
-    border: 1px solid var(--tile-border-light);
-    aspect-ratio: 1 / 1; /* Ensure tiles are square */
-    min-width: 20px; /* Minimum tile size */
-    min-height: 20px;
-}
-body.dark-theme .tile {
-    background-color: var(--tile-bg-dark);
-    color: var(--tile-text-color-dark);
-    border-color: var(--tile-border-dark);
+    transition: background-color 0.1s ease, border-color 0.1s ease, color 0.1s ease;
+    aspect-ratio: 1 / 1;
+    font-size: 1em; /* Base, JS will adjust */
+    color: transparent; /* Initially hidden numbers */
 }
 
 .tile.revealed {
-    background-color: var(--tile-revealed-bg-light);
+    background-color: var(--tile-bg-revealed);
     cursor: default;
-    /* Text color for numbers is set by data-mines attribute */
+    color: var(--tile-text-color);
 }
-body.dark-theme .tile.revealed {
-    background-color: var(--tile-revealed-bg-dark);
-}
-
 .tile.revealed.mine {
-    background-color: var(--mine-color) !important; /* Ensure override */
+    background-color: var(--mine-color) !important;
     color: white !important;
-    animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; /* Add shake for mine */
+    /* Optional: Add shake animation from Sudoku ref if desired */
+    /* animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; */
 }
-
 .tile.flagged {
-    font-size: inherit; /* Make flag icon scale with tile font size */
     color: var(--flag-color);
+    font-size: inherit;
 }
-.tile.flagged::before { /* Using pseudo-element for flag to not interfere with potential numbers if logic changes */
+.tile.flagged::before {
     content: '🚩';
 }
 
-
-/* Number Colors */
+/* Mine number colors */
 .tile.revealed[data-mines="1"] { color: #007bff; }
 .tile.revealed[data-mines="2"] { color: var(--safe-color); }
-.tile.revealed[data-mines="3"] { color: var(--mine-color); } /* Red for 3 */
-.tile.revealed[data-mines="4"] { color: #004085; } /* Dark Blue */
-.tile.revealed[data-mines="5"] { color: #800000; } /* Maroon */
-.tile.revealed[data-mines="6"] { color: #008080; } /* Teal */
-.tile.revealed[data-mines="7"] { color: #000000; }
-body.dark-theme .tile.revealed[data-mines="7"] { color: #f0f0f0; } /* Lighter for dark theme */
-.tile.revealed[data-mines="8"] { color: #808080; }
+.tile.revealed[data-mines="3"] { color: var(--mine-color); }
+.tile.revealed[data-mines="4"] { color: #004085; }
+.tile.revealed[data-mines="5"] { color: #800000; }
+.tile.revealed[data-mines="6"] { color: #008080; }
+.tile.revealed[data-mines="7"] { color: #212529; } /* Darker text */
+body.dark-theme .tile.revealed[data-mines="7"] { color: #f0f0f0; }
+.tile.revealed[data-mines="8"] { color: #6c757d; } /* Grayish */
 
 
-@keyframes shake {
-  10%, 90% { transform: translateX(-1px); }
-  20%, 80% { transform: translateX(2px); }
-  30%, 50%, 70% { transform: translateX(-3px); }
-  40%, 60% { transform: translateX(3px); }
-}
-
-.game-footer {
-    margin-top: 20px;
-    font-size: 0.9em;
-    color: inherit;
-    min-height: 40px; /* Reduced height */
-    position: relative;
-}
-#messageArea { /* For potential non-modal messages */
-    font-weight: 500;
-    min-height: 1.5em;
-    margin-bottom: 10px;
-    padding: 5px 8px;
-    border-radius: var(--button-border-radius-ref);
-    display: none; /* Hidden by default, shown by JS */
-}
-#messageArea.message-success { color: #0f5132; background-color: #d1e7dd; border: 1px solid #badbcc;}
-#messageArea.message-error { color: #842029; background-color: #f8d7da; border: 1px solid #f5c2c7;}
-#messageArea.message-info { color: #055160; background-color: #cff4fc; border: 1px solid #b6effb;}
-
-body.dark-theme #messageArea.message-success { color: #75b798; background-color: #192f26; border-color: #2a674f;}
-body.dark-theme #messageArea.message-error { color: #ea868f; background-color: #3a2426; border-color: #a33f4c;}
-body.dark-theme #messageArea.message-info { color: #6edff6; background-color: #11323d; border-color: #1789a3;}
-
-
-.footer-credit {
-    font-size: 0.85em;
-    color: var(--text-color-light);
-}
-.footer-credit a {
-    color: var(--button-primary-bg-light);
-    text-decoration: none;
-}
-.footer-credit a:hover {
-    text-decoration: underline;
-}
-body.dark-theme .footer-credit {
-    color: var(--text-color-dark);
-}
-body.dark-theme .footer-credit a {
-    color: var(--button-primary-bg-dark);
-}
-
-/* Modal Styles */
-.modal-overlay { /* Renamed from .modal */
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: var(--modal-overlay-bg-light);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
-    opacity: 0;
-    visibility: hidden;
+/* Modal Styles - Reverted to original Minesweeper modal structure */
+.modal {
+    position: fixed; left: 0; top: 0; width: 100%; height: 100%;
+    background-color: var(--modal-bg); display: flex; justify-content: center; align-items: center;
+    z-index: 1000; opacity: 0; visibility: hidden;
     transition: opacity 0.3s ease, visibility 0s linear 0.3s;
 }
-.modal-overlay.show {
-    opacity: 1;
-    visibility: visible;
-    transition-delay: 0s;
+.modal.show { opacity: 1; visibility: visible; transition: opacity 0.3s ease, visibility 0s linear 0s; }
+.modal-content {
+    background-color: var(--modal-content-bg); padding: 25px 35px; border-radius: var(--border-radius);
+    text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.25); color: var(--modal-text-color);
+    transform: scale(0.9);
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    width: 90%;
+    max-width: 400px;
 }
-body.dark-theme .modal-overlay {
-    background-color: var(--modal-overlay-bg-dark);
+.modal.show .modal-content { transform: scale(1); }
+.modal-content h2 { margin-top: 0; font-size: 1.6em; margin-bottom: 10px; }
+.modal-content p { font-size: 1.1em; margin-bottom: 20px; }
+.modal-content .btn { padding: 10px 20px; font-size: 1em; } /* Modal button inherits .btn style */
+
+footer {
+    margin-top: 25px;
+    padding-bottom: 10px;
+    font-size: 0.9em;
+    color: var(--text-color-primary); /* Uses primary text color */
+    transition: color 0.3s ease;
+}
+body.dark-theme footer {
+    color: var(--text-color-dark);
 }
 
-.modal-content { /* This class is used from your original HTML */
-    background-color: var(--modal-content-bg-light);
-    color: var(--modal-text-color-light);
-    padding: 25px 30px;
-    border-radius: var(--container-border-radius); /* Use main container radius */
-    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-    text-align: center;
-    max-width: 90%;
-    width: 380px;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-body.dark-theme .modal-content {
-    background-color: var(--modal-content-bg-dark);
-    color: var(--modal-text-color-dark);
-}
 
-.modal-content h2 {
-    margin-top: 0;
-    font-size: 1.8em;
-    margin-bottom: 15px;
-}
-.modal-content p {
-    font-size: 1.1em;
-    margin-bottom: 20px; /* Increased margin for button */
-    line-height: 1.5;
-}
-/* Modal button already styled by .btn and .btn-primary */
-
-
-/* Responsive adjustments */
-@media (max-width: 600px) {
+/* Responsive adjustments - Simplified based on original Minesweeper structure */
+@media (max-width: 600px) { /* Combined some breakpoints */
     body { padding: 10px; }
-    .game-container { padding: 15px; max-width: 100%; }
-    .game-header h1 { font-size: 2em; }
+    .container { padding: 15px; max-width: 100%;}
+    header h1#game-title { font-size: 2.2em; }
     
-    .header-controls-wrapper { gap: 8px; }
-    .header-row-1, .header-row-2 {
-        flex-direction: column; /* Stack rows on smaller screens */
-        align-items: stretch; /* Full width for items in column */
-        gap
+    .controls {
+        flex-direction: column; /* Stack controls */
+        align-items: stretch; /* Full width for control groups */
+    }
+    .control-group, .action-mode-container, .btn {
+        width: 100%; /* Make groups and buttons full width when stacked */
+        margin-bottom: 8px; /* Add some space when stacked */
+    }
+     .action-mode-container {
+        justify-content: center; /* Center action buttons */
+    }
+
+    .btn, #difficultySelect, .info-item { /* Targeting info-item too */
+        font-size: 0.9em;
+        padding: 8px 12px; /* Slightly reduced padding */
+    }
+    #difficultySelect {
+        padding-right: 2.5em; /* Ensure arrow space */
+    }
+     .difficulty-group label {
+        margin-bottom: 4px; /* Space if above select */
+        display: block; /* Full width label if needed */
+        text-align: left;
+    }
+    .info-item {
+        text-align: center; /* Center text in info items */
+        flex-grow: 1; /* Allow info items to share space */
+    }
+    .action-btn {
+        width: 38px; height: 38px; font-size: 1.4em;
+    }
+
+    .grid-container { margin-bottom: 15px;}
+    .tile { font-size: clamp(0.7em, 4.5vw, 1.3em); } /* Responsive tile font */
+}
+
+@media (max-width: 420px) {
+    header h1#game-title { font-size: 1.8em; }
+    .tile { font-size: clamp(0.6em, 5.5vw, 1.1em); }
+    .btn, #difficultySelect, .info-item {
+        font-size: 0.85em;
+    }
+    .action-btn {
+        width: 36px; height: 36px; font-size: 1.3em;
+    }
+}
