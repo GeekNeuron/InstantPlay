@@ -7,6 +7,7 @@ const UI = (() => {
     const footerCreditElement = document.querySelector('.footer-credit');
     const timerDisplayElement = document.getElementById('timerDisplay');
     const gameHistoryDropdownElement = document.getElementById('gameHistoryDropdown');
+    // const historyHeaderElement = gameHistoryDropdownElement ? gameHistoryDropdownElement.querySelector('.history-header') : null; // No longer needed for text
     const historyListElement = document.getElementById('historyList');
 
     const THEME_KEY = 'sudokuThemeGeekNeuron_v1';
@@ -65,18 +66,27 @@ const UI = (() => {
 
     function _renderGameHistory(historyData) {
         if (!historyListElement) return;
-        historyListElement.innerHTML = ''; // Clear previous items
+        historyListElement.innerHTML = ''; 
+
+        // Remove the main history header text content if it exists
+        const mainHistoryHeader = gameHistoryDropdownElement ? gameHistoryDropdownElement.querySelector('.history-header') : null;
+        if (mainHistoryHeader) {
+            // mainHistoryHeader.textContent = ''; // Remove text, keep element for styling if needed
+            // Or hide it completely if it's just for text
+            mainHistoryHeader.style.display = 'none'; 
+        }
+
 
         if (!historyData || historyData.length === 0) {
             const li = document.createElement('li');
-            li.textContent = 'تاریخچه‌ای برای نمایش وجود ندارد.';
+            li.textContent = 'No game history to display.'; // Keep this message
+            li.style.textAlign = 'center'; // Center if it's the only item
             historyListElement.appendChild(li);
             return;
         }
 
-        // Group by difficulty
         const groupedHistory = historyData.reduce((acc, item) => {
-            const difficulty = item.difficulty || 'نامشخص';
+            const difficulty = item.difficulty || 'Unknown';
             if (!acc[difficulty]) {
                 acc[difficulty] = [];
             }
@@ -84,18 +94,24 @@ const UI = (() => {
             return acc;
         }, {});
 
-        // Sort difficulties (e.g., easy, medium, hard, expert) - can be customized
-        const difficultyOrder = ['easy', 'medium', 'hard', 'expert', 'نامشخص'];
+        const difficultyOrder = ['easy', 'medium', 'hard', 'expert', 'Unknown']; 
+        let firstGroup = true;
         
         difficultyOrder.forEach(difficultyKey => {
             if (groupedHistory[difficultyKey]) {
-                const groupHeader = document.createElement('div');
-                groupHeader.classList.add('difficulty-group-header');
-                // Capitalize first letter for display
-                groupHeader.textContent = `سطح: ${difficultyKey.charAt(0).toUpperCase() + difficultyKey.slice(1)}`;
-                historyListElement.appendChild(groupHeader);
+                if (!firstGroup) { // Add a separator before the next group, but not before the first
+                    const separator = document.createElement('div');
+                    separator.classList.add('difficulty-group-separator'); // New class for styling
+                    historyListElement.appendChild(separator);
+                }
+                firstGroup = false;
 
-                // Sort items within group by date (most recent first)
+                // Removed: Group header text
+                // const groupHeader = document.createElement('div');
+                // groupHeader.classList.add('difficulty-group-header');
+                // groupHeader.textContent = `Level: ${difficultyKey.charAt(0).toUpperCase() + difficultyKey.slice(1)}`;
+                // historyListElement.appendChild(groupHeader);
+
                 groupedHistory[difficultyKey].sort((a, b) => new Date(b.date) - new Date(a.date));
 
                 groupedHistory[difficultyKey].forEach(item => {
@@ -103,11 +119,11 @@ const UI = (() => {
                     
                     const timeSpan = document.createElement('span');
                     timeSpan.classList.add('history-item-time');
-                    timeSpan.textContent = `زمان: ${item.time}`;
+                    timeSpan.textContent = `Time: ${item.time}`;
                     
                     const dateSpan = document.createElement('span');
                     dateSpan.classList.add('history-item-date');
-                    dateSpan.textContent = new Date(item.date).toLocaleDateString('fa-IR'); // Persian date
+                    dateSpan.textContent = new Date(item.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }); 
 
                     li.appendChild(timeSpan);
                     li.appendChild(dateSpan);
@@ -127,23 +143,24 @@ const UI = (() => {
         } else {
             gameHistoryDropdownElement.style.display = 'none';
         }
+        return isHistoryVisible;
     }
 
     function init(onTimerClickCallback) {
         _applyTheme();
         themeSwitcherBtn.addEventListener('click', toggleTheme);
         hideEndGameControls();
-        updateTimerDisplay("00:00:00"); // Initial timer display
+        updateTimerDisplay("00:00:00");
 
         if (timerDisplayElement) {
             timerDisplayElement.addEventListener('click', onTimerClickCallback);
-            timerDisplayElement.addEventListener('keydown', (e) => { // Allow keyboard activation
+            timerDisplayElement.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
                     onTimerClickCallback();
                 }
             });
         }
-        // Close history if clicked outside
         document.addEventListener('click', (event) => {
             if (isHistoryVisible && 
                 gameHistoryDropdownElement && 
@@ -171,6 +188,10 @@ const UI = (() => {
         document.getElementById('sudokuBoard').classList.toggle('disabled', disabled);
     }
 
+    function getIsHistoryVisible() {
+        return isHistoryVisible;
+    }
+
     return {
         init,
         showMessage,
@@ -181,6 +202,7 @@ const UI = (() => {
         showEndGameControls,
         hideEndGameControls,
         updateTimerDisplay,
-        toggleGameHistory
+        toggleGameHistory,
+        getIsHistoryVisible 
     };
 })();
