@@ -1,4 +1,3 @@
-
 /* Global Resets and Base Styles */
 *,
 *::before,
@@ -599,7 +598,7 @@ body.dark-theme .footer-credit a {
     width: 100%;
     height: 100%;
     background-color: var(--modal-overlay-bg-light);
-    display: flex;
+    display: flex; /* Changed from none by JS */
     justify-content: center;
     align-items: center;
     z-index: 2000;
@@ -625,11 +624,11 @@ body.dark-theme .modal-overlay {
     text-align: center;
     max-width: 90%;
     width: 380px;
-    transform: scale(0.9);
-    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    /* transform: scale(0.9); Removed for simplicity, can be added back if desired */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Removed transform from transition */
 }
 .modal-overlay.show .modal-content {
-    transform: scale(1);
+    /* transform: scale(1); Removed */
 }
 body.dark-theme .modal-content {
     background-color: var(--modal-content-bg-dark);
@@ -667,11 +666,11 @@ body.dark-theme .modal-content {
 
 .modal-content p {
     font-size: 1.1em;
-    margin-bottom: 25px;
+    margin-bottom: 15px; /* Reduced margin as there are no buttons */
     line-height: 1.5;
 }
-.modal-actions { /* This div is now hidden in HTML as buttons were removed */
-    display: none; /* Explicitly hide if buttons are removed from HTML */
+.modal-actions { /* This div is hidden in HTML as buttons were removed */
+    display: none;
 }
 
 
@@ -684,7 +683,7 @@ body.dark-theme .modal-content {
     .header-row-1, .header-row-2 {
         gap: 5px;
         /* flex-wrap: wrap; */ /* Keep as single line */
-        overflow: hidden; 
+        /* overflow: hidden; */ /* Commented out to see if it helps with mobile display */
     }
     .btn, #difficultySelect, #timerDisplay {
          font-size: calc(var(--button-font-size-ref) * 0.9);
@@ -710,7 +709,6 @@ body.dark-theme .modal-content {
     .sudoku-board { max-width: 100%; margin-bottom: 15px;}
     .cell { font-size: clamp(0.8em, 5vw, 1.4em); }
     /* .modal-actions { flex-direction: column; } */ /* No longer needed */
-    /* .modal-actions .btn { width: 100%; } */
 }
 
 @media (max-width: 420px) {
