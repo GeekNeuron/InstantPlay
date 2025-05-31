@@ -37,19 +37,19 @@
     --button-primary-text-light: #ffffff;
     --button-primary-hover-bg-light: #0056b3;
     
-    --button-border-radius-ref: 6px; /* calc(var(--border-radius) - 4px) -> 10px - 4px */
+    --button-border-radius-ref: 6px;
     --button-padding-vertical-ref: 8px;
-    --button-padding-horizontal-ref: 12px; /* Adjusted for potentially smaller text */
-    --button-font-size-ref: 0.9em; /* Slightly smaller for better fit */
+    --button-padding-horizontal-ref: 12px;
+    --button-font-size-ref: 0.9em;
 
 
     --select-bg-light: #ffffff;
     --select-border-light: #ced4da;
     --select-text-light: #495057;
-    --select-border-radius: 6px; /* Match button style */
-    --select-padding-vertical: 7px; /* Align height with buttons */
+    --select-border-radius: 6px;
+    --select-padding-vertical: 7px;
     --select-padding-horizontal: 10px;
-    --select-font-size: 0.9em; 
+    --select-font-size: 0.9em;
 
 
     --timer-text-light: #495057;
@@ -58,23 +58,23 @@
     --history-separator-color-light: #dee2e6;
     --history-item-hover-bg-light: #f8f9fa;
 
-    --theme-switcher-light: #4a4a4a; /* Reference */
+    --theme-switcher-light: #4a4a4a;
     --input-focus-border-light: #86b7fe;
 
     /* Dark Theme Variables (User Provided Palette) */
     --bg-color-dark: #0d1117;
     --text-color-dark: #c9d1d9;
     --container-bg-dark: #161b22;
-    --container-border-dark: #161b22; /* Reference --border-color (var(--container-bg)) */
+    --container-border-dark: #161b22;
     --header-text-dark: #c9d1d9;
 
     --cell-bg-dark: #2c3a47;
     --cell-input-bg-dark: #2c3a47;
-    --cell-border-dark: #1e2732; /* Reference --grid-bg */
+    --cell-border-dark: #1e2732;
     --cell-readonly-bg-dark: #1e2732;
     --cell-readonly-text-dark: #c9d1d9;
-    --cell-selected-bg-dark: #3282b8; /* Reference --button-bg (dark) */
-    --cell-highlight-bg-dark: #1d4357; /* Reference --button-hover-bg (dark) */
+    --cell-selected-bg-dark: #3282b8;
+    --cell-highlight-bg-dark: #1d4357;
     
     --cell-error-bg-dark: #4a2e33;
     --cell-error-text-dark: #f8d7da;
@@ -82,13 +82,12 @@
 
     --grid-strong-border-dark: #c9d1d9;
 
-    --button-bg-dark: #3282b8; /* Reference --button-bg (dark) */
-    --button-text-dark: #ffffff; /* Reference --button-text (dark) */
-    --button-hover-bg-dark: #1d4357; /* Reference --button-hover-bg (dark) */
-    --button-primary-bg-dark: #3282b8; /* Keep primary same as default for dark */
+    --button-bg-dark: #3282b8;
+    --button-text-dark: #ffffff;
+    --button-hover-bg-dark: #1d4357;
+    --button-primary-bg-dark: #3282b8;
     --button-primary-text-dark: #ffffff;
     --button-primary-hover-bg-dark: #1d4357;
-
 
     --select-bg-dark: #161b22;
     --select-border-dark: #3282b8;
@@ -157,7 +156,7 @@ body.dark-theme #themeSwitcher {
     border-radius: var(--container-border-radius);
     box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     text-align: center;
-    max-width: 500px;
+    max-width: 500px; /* Max width of the game area */
     width: 100%;
     transition: background-color 0.3s ease, border-color 0.3s ease;
     position: relative;
@@ -183,13 +182,13 @@ body.dark-theme .game-header h1 {
     color: var(--header-text-dark);
 }
 
-/* Header Controls Layout */
+/* Header Controls Layout - Consistent for all screen sizes */
 .header-controls-wrapper {
     display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-    margin-bottom: 20px;
+    flex-direction: column; /* Stack rows */
+    align-items: stretch; /* Make rows take full width */
+    gap: 8px; /* Reduced gap between rows */
+    margin-bottom: 15px; /* Adjusted margin */
 }
 
 .header-row-1, .header-row-2 {
@@ -197,20 +196,17 @@ body.dark-theme .game-header h1 {
     justify-content: space-between; /* Pushes first child left, last child right */
     align-items: center;
     width: 100%;
-    gap: 10px; /* Gap between items in a row */
+    gap: 8px; /* Reduced gap between items in a row */
 }
 
 .header-actions-left, .header-actions-right {
     display: flex;
     align-items: center;
-    gap: 8px; /* Space between buttons in the left group */
+    gap: 8px; /* Space between buttons in the left/right group */
+    flex-shrink: 0; /* Prevent shrinking */
 }
-.header-actions-right {
-    margin-left: auto; /* Pushes this group to the right in header-row-1 */
-}
-.header-row-1 .header-actions-left {
-    margin-right: auto; /* Pushes this group to the left in header-row-1 */
-}
+/* .header-actions-right { margin-left: auto; } /* Ensured by space-between on parent */
+/* .header-row-1 .header-actions-left { margin-right: auto; } /* Ensured by space-between on parent */
 
 
 .difficulty-control {
@@ -218,7 +214,6 @@ body.dark-theme .game-header h1 {
     align-items: center;
     gap: 8px;
     flex-shrink: 0;
-    /* margin-right: auto; Pushed to left by space-between on parent .header-row-2 */
 }
 .difficulty-control label {
     color: inherit;
@@ -240,7 +235,6 @@ body.dark-theme .game-header h1 {
     line-height: 1.2;
     white-space: nowrap;
     flex-shrink: 0;
-    /* margin-left: auto; Pushed to right by space-between on parent .header-row-2 */
 }
 body.dark-theme #timerDisplay {
     color: var(--timer-text-dark);
@@ -339,7 +333,7 @@ body.dark-theme .history-item-date {
     border: none;
     line-height: 1.2;
     user-select: none;
-    white-space: nowrap; /* Prevent button text from wrapping */
+    white-space: nowrap;
 }
 .btn:hover {
     transform: translateY(-1px);
@@ -349,7 +343,7 @@ body.dark-theme .history-item-date {
     transform: translateY(0px);
 }
 
-.btn.btn-primary { /* Specific primary button from Sudoku (e.g., New Game) */
+.btn.btn-primary {
     background-color: var(--button-primary-bg-light);
     color: var(--button-primary-text-light);
 }
@@ -364,7 +358,6 @@ body.dark-theme .btn.btn-primary:hover {
     background-color: var(--button-primary-hover-bg-dark);
 }
 
-/* Default button style (for Reset, Check Solution, Close) uses reference --button-bg */
 #resetBtn, #checkSolutionBtn, #closeGameBtn {
     background-color: var(--button-bg-light);
     color: var(--button-text-light);
@@ -606,57 +599,59 @@ body.dark-theme .footer-credit a {
     font-size: var(--button-font-size-ref);
 }
 
-/* Responsive adjustments for Header Controls */
-@media (max-width: 680px) {
-    .header-controls-wrapper {
-        /* Stays column */
+/* Responsive adjustments for Header Controls - KEEPING LAYOUT CONSISTENT */
+@media (max-width: 680px) { /* Adjust this breakpoint if items start to overlap too much */
+    .header-row-1, .header-row-2 {
+        /* Allow items to shrink a bit more if needed, but maintain row */
+        gap: 5px; /* Reduce gap on smaller screens */
     }
-    .header-row-1 {
-        flex-wrap: wrap;
-        justify-content: center; /* Center the groups if they wrap */
+    .btn { /* Slightly reduce padding on very small screens if needed */
+        padding: var(--button-padding-vertical-ref) 8px;
+        font-size: calc(var(--button-font-size-ref) * 0.95); /* Slightly smaller font */
     }
-    .header-actions-left, .header-actions-right {
-        flex-basis: 100%; /* Make each group take full width when row-1 wraps */
-        justify-content: center; /* Center buttons within their group */
-        margin-bottom: 8px;
+    #difficultySelect {
+        padding: var(--select-padding-vertical) 8px;
+        font-size: calc(var(--select-font-size) * 0.95);
+        padding-right: 2em; /* Ensure arrow is still visible */
     }
-    .header-actions-left {
-        gap: 8px; /* Reduce gap between New Game and Reset when stacked */
+    .difficulty-control label {
+        font-size: calc(var(--button-font-size-ref) * 0.95);
     }
-    .header-actions-right {
-        margin-left: 0; /* Reset margin when stacked */
+    #timerDisplay {
+        font-size: calc(var(--button-font-size-ref) * 0.95);
+        padding: var(--button-padding-vertical-ref) 5px;
     }
-    .header-row-2 {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    .difficulty-control, #timerDisplay {
-        flex-basis: 100%; /* Make each take full width when row-2 wraps */
-        justify-content: center;
-        text-align: center;
-        margin-bottom: 8px;
-    }
-    #timerDisplay { margin-bottom: 0; }
 
     .game-history-dropdown {
-        width: calc(100% - 40px);
-        left: 20px;
+        width: calc(100% - 20px); /* Adjust width to fit better */
+        left: 10px;
         right: auto;
-        top: calc(100% + 10px);
     }
+     .game-header h1 { font-size: 2em; }
 }
 
 
 @media (max-width: 480px) {
-    .header-actions-left, .header-actions-right {
-        flex-direction: column; /* Stack buttons within their groups */
-        align-items: stretch;
+    /* Further reduce button/select padding and font if absolutely necessary to prevent overflow */
+    /* This tries to keep them in a row as much as possible */
+    .btn {
+        padding: 6px 8px;
+        font-size: 0.8em;
     }
-    .header-actions-left .btn, .header-actions-right .btn {
-        width: 100%;
-        max-width: 260px; /* Limit button width */
-        margin-left: auto;
-        margin-right: auto;
+    #difficultySelect {
+        padding: 6px 8px;
+        font-size: 0.8em;
+        padding-right: 1.8em;
+    }
+     .difficulty-control label {
+        font-size: 0.8em;
+    }
+    #timerDisplay {
+        font-size: 0.8em;
+        padding: 6px 4px;
+    }
+    .header-row-1, .header-row-2 {
+        gap: 5px; /* Minimal gap */
     }
      .game-header h1 { font-size: 1.8em; }
      .cell { font-size: clamp(0.7em, 6vw, 1.2em); }
@@ -665,10 +660,10 @@ body.dark-theme .footer-credit a {
 }
 
 /* General small screen adjustments from before */
-@media (max-width: 600px) {
+@media (max-width: 600px) { /* This is a general small screen, specific overrides above take precedence */
     body { padding: 10px; }
     .game-container { padding: 15px; }
-    .game-header h1 { font-size: 2em; }
+    /* game-header h1 size is handled by more specific breakpoints above */
     
     .theme-switcher-container { top: 10px; right: 10px; }
     #themeSwitcher { width: 25px; height: 25px; }
