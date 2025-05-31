@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Game State Management ---
     function saveGameState() {
-        if (gameWon || boardShouldBeDisabled) return; // Don't save if game won or modal is about to make board disabled
+        if (gameWon || boardShouldBeDisabled) return;
         try {
             localStorage.setItem(USER_BOARD_KEY, JSON.stringify(userBoard));
             localStorage.setItem(INITIAL_PUZZLE_KEY, JSON.stringify(initialPuzzle));
@@ -208,25 +208,37 @@ document.addEventListener('DOMContentLoaded', () => {
             inputElement.classList.remove('error');
         }
 
-        // let moveIsImmediatelyValid = true; // Not directly used to gate the full/solved checks anymore
-        if (value !== Sudoku.EMPTY_CELL) {
+        // DEBUGGING LINES ADDED HERE
+        console.log(`Cell (${row},${col}) input. Value entered by user: ${value}`);
+        const isSolved = Sudoku.isBoardSolved(userBoard, solutionBoard);
+        const isFull = Sudoku.isBoardFull(userBoard);
+        console.log(`DEBUG: isBoardSolved() returns: ${isSolved}`);
+        console.log(`DEBUG: isBoardFull() returns: ${isFull}`);
+        if (isFull && !isSolved) {
+            console.log("DEBUG: Board is full but not solved. User board:", JSON.parse(JSON.stringify(userBoard)));
+            console.log("DEBUG: Solution board:", JSON.parse(JSON.stringify(solutionBoard)));
+        }
+        // END OF DEBUGGING LINES
+
+        if (value !== Sudoku.EMPTY_CELL) { // Only check for immediate errors if a number was entered
             if (!Sudoku.isMoveValid(userBoard, row, col, value)) {
                 cellElement.classList.add('error');
                 if (inputElement) inputElement.classList.add('error');
-                // moveIsImmediatelyValid = false;
             }
         }
 
-        if (Sudoku.isBoardSolved(userBoard, solutionBoard)) {
+        // Check game state (win or full but incorrect)
+        if (isSolved) { // Use the 'isSolved' variable from above
             gameWon = true;
-            boardShouldBeDisabled = true;
+            boardShouldBeDisabled = true; 
             stopTimer();
-            Board.highlightRelatedCells(row, col, userBoard);
+            Board.highlightRelatedCells(row, col, userBoard); 
             UI.setBoardDisabled(true);
             UI.showModal("YOU WIN!", "Congratulations, you solved the puzzle!", 'win');
             addGameToHistory(UI.getSelectedDifficulty(), elapsedTimeInSeconds, new Date().toISOString());
             clearSavedBoardState();
-        } else if (Sudoku.isBoardFull(userBoard)) {
+        } else if (isFull) { // Use the 'isFull' variable from above
+            console.log("DEBUG: Board is full but not solved. Showing 'Keep Going' modal.");
             boardShouldBeDisabled = true; 
             UI.setBoardDisabled(true);
             UI.showModal("Keep Going!", "Keep Going! You still need to complete the game!", 'error-continue');
@@ -315,18 +327,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Modal Overlay Close Callback ---
     function handleModalOverlayClose() {
-        // This is called when the modal overlay is clicked (as set up in UI.init)
         if (!gameWon && boardShouldBeDisabled) { 
-            // If it was the "Keep Going" modal (or any other non-win modal that disabled the board)
             boardShouldBeDisabled = false;
             UI.setBoardDisabled(false);
         }
-        // If gameWon is true, the board remains disabled. User must use header buttons.
     }
 
     // --- Event Listeners & Initialization ---
     loadGameHistory();
-    UI.init(handleTimerClick, handleModalOverlayClose); // Pass the new callback
+    UI.init(handleTimerClick, handleModalOverlayClose);
 
     newGameBtn.addEventListener('click', () => startGame(true));
     resetBtn.addEventListener('click', resetGame);
@@ -339,33 +348,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.addEventListener('click', (event) => {
         const gameOverModalElement = document.getElementById('gameOverModal');
-        // Check if modal is shown AND if the click is NOT on its content.
-        // The modal overlay click is now handled by the listener in UI.init.
-        // This general document click listener is primarily for clearing cell selection.
-        // if (gameOverModalElement && gameOverModalElement.classList.contains('show')) {
-        //      if (gameOverModalElement.querySelector('.modal-content').contains(event.target)) return;
-        // }
-
+        if (gameOverModalElement && gameOverModalElement.classList.contains('show')) {
+            // Allow clicks on modal content; overlay click is handled by UI.init
+            if (gameOverModalElement.querySelector('.modal-content').contains(event.target)) return;
+        }
         if (UI.getIsHistoryVisible() && document.getElementById('gameHistoryDropdown').style.display !== 'none') {
-            // If history dropdown is visible and click is outside, UI.init handles closing it.
-            // We don't want to clear cell selection if a click was to close history.
+            // Let UI.init handle closing history dropdown if click is outside
             const historyDropdown = document.getElementById('gameHistoryDropdown');
             const timerDisp = document.getElementById('timerDisplay');
-            if (historyDropdown && !historyDropdown.contains(event.target) && timerDisp && !timerDisp.contains(event.target)) {
-                // Click was outside history and timer, proceed to check for cell deselection.
-            } else {
-                return; // Click was on history or timer, let UI handle it.
-            }
+             if (!(historyDropdown && historyDropdown.contains(event.target)) && !(timerDisp && timerDisp.contains(event.target))) {
+                // Click was outside history and timer, allow cell deselection to proceed if applicable
+             } else {
+                return; // Click was on history or timer
+             }
         }
 
         const gameContainer = document.getElementById('gameContainer');
         if (gameContainer && !gameContainer.contains(event.target)) {
-            // Click was outside the game container
-            if (!UI.getIsHistoryVisible()) { 
+            if (!UI.getIsHistoryVisible()) {
                  clearSelection();
             }
         } else if (selectedCell.element && !selectedCell.element.contains(event.target)) {
-            // Click was inside game container but outside the currently selected cell
             const controlsWrapper = document.querySelector('.header-controls-wrapper');
             
             let clickedOnControl = false;
@@ -378,7 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     window.addEventListener('beforeunload', () => {
-        if (!gameWon && !boardShouldBeDisabled) { // Only save if game is truly in an active, editable state
+        if (!gameWon && !boardShouldBeDisabled) {
             saveGameState();
         }
     });
