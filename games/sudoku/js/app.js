@@ -7,15 +7,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const sudokuBoardElement = document.getElementById('sudokuBoard');
     const closeGameBtn = document.getElementById('closeGameBtn');
     const newGameFromWinBtn = document.getElementById('newGameFromWinBtn');
-    const timerDisplayElement = document.getElementById('timerDisplay'); // For click listener
+    const timerDisplayElement = document.getElementById('timerDisplay');
 
-    // localStorage Keys
-    const USER_BOARD_KEY = 'sudokuUserBoard_GN_v2'; // Incremented version
-    const INITIAL_PUZZLE_KEY = 'sudokuInitialPuzzle_GN_v2';
-    const SOLUTION_BOARD_KEY = 'sudokuSolutionBoard_GN_v2';
-    const DIFFICULTY_KEY = 'sudokuDifficulty_GN_v2';
-    const ELAPSED_TIME_KEY = 'sudokuElapsedTime_GN_v2';
-    const GAME_HISTORY_KEY = 'sudokuGameHistory_GN_v1';
+    // localStorage Keys (Consider adding a prefix for all keys for your app)
+    const APP_PREFIX = 'geekNeuronSudoku_';
+    const USER_BOARD_KEY = `${APP_PREFIX}userBoard_v2`;
+    const INITIAL_PUZZLE_KEY = `${APP_PREFIX}initialPuzzle_v2`;
+    const SOLUTION_BOARD_KEY = `${APP_PREFIX}solutionBoard_v2`;
+    const DIFFICULTY_KEY = `${APP_PREFIX}difficulty_v2`;
+    const ELAPSED_TIME_KEY = `${APP_PREFIX}elapsedTime_v2`;
+    const GAME_HISTORY_KEY = `${APP_PREFIX}gameHistory_v1`;
 
     // Game State Variables
     let solutionBoard = [];
@@ -31,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Game History
     let gameHistory = [];
-    const MAX_HISTORY_ITEMS = 30; // Limit history size
+    const MAX_HISTORY_ITEMS = 30;
 
     // --- Timer Functions ---
     function formatTime(totalSeconds) {
@@ -48,17 +49,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function startTimer(resumedTime = 0) {
-        stopTimer(); // Clear any existing interval
+        stopTimer();
         elapsedTimeInSeconds = resumedTime;
         startTime = Date.now() - (elapsedTimeInSeconds * 1000);
-        updateTimer(); // Update display immediately
+        updateTimer();
         timerInterval = setInterval(updateTimer, 1000);
     }
 
     function stopTimer() {
         clearInterval(timerInterval);
         timerInterval = null;
-        // elapsedTimeInSeconds is already updated by updateTimer
     }
 
     function resetTimer() {
@@ -71,11 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadGameHistory() {
         try {
             const storedHistory = localStorage.getItem(GAME_HISTORY_KEY);
-            if (storedHistory) {
-                gameHistory = JSON.parse(storedHistory);
-            } else {
-                gameHistory = [];
-            }
+            gameHistory = storedHistory ? JSON.parse(storedHistory) : [];
         } catch (e) {
             console.error("Error loading game history:", e);
             gameHistory = [];
@@ -92,17 +88,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function addGameToHistory(difficulty, timeInSeconds, dateISOString) {
         const timeString = formatTime(timeInSeconds);
-        gameHistory.unshift({ difficulty, time: timeString, date: dateISOString }); // Add to beginning
+        gameHistory.unshift({ difficulty, time: timeString, date: dateISOString });
         if (gameHistory.length > MAX_HISTORY_ITEMS) {
-            gameHistory.pop(); // Remove oldest if limit exceeded
+            gameHistory.pop();
         }
         saveGameHistory();
     }
     
     function handleTimerClick() {
-        UI.toggleGameHistory(undefined, gameHistory); // undefined toggles, pass current history
+        // Pass a copy of history to prevent direct modification if needed by UI
+        UI.toggleGameHistory(undefined, [...gameHistory]); 
     }
-
 
     // --- Game State Management ---
     function saveGameState() {
@@ -113,8 +109,10 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem(SOLUTION_BOARD_KEY, JSON.stringify(solutionBoard));
             localStorage.setItem(DIFFICULTY_KEY, UI.getSelectedDifficulty());
             localStorage.setItem(ELAPSED_TIME_KEY, elapsedTimeInSeconds.toString());
+            // console.log("Game state saved."); // For debugging
         } catch (e) {
             console.error("Error saving game state:", e);
+            UI.showMessage("Could not save game progress.", "error", 3000);
         }
     }
 
@@ -128,7 +126,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (savedDifficulty) UI.setSelectedDifficulty(savedDifficulty);
 
-            if (savedUserBoard && savedInitialPuzzle && savedSolutionBoard) {
+            if (savedUserBoard && savedInitialPuzzle && savedSolutionBoard &&
+                savedUserBoard.length === Sudoku.GRID_SIZE &&
+                savedInitialPuzzle.length === Sudoku.GRID_SIZE &&
+                savedSolutionBoard.length === Sudoku.GRID_SIZE) {
+                
                 userBoard = savedUserBoard;
                 initialPuzzle = savedInitialPuzzle;
                 solutionBoard = savedSolutionBoard;
@@ -138,9 +140,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 UI.hideEndGameControls();
                 
                 const resumedTime = savedElapsedTime ? parseInt(savedElapsedTime, 10) : 0;
-                startTimer(resumedTime); // Start timer with loaded time
+                startTimer(resumedTime);
 
-                UI.showMessage("بازی قبلی بارگذاری شد.", "info", 2000);
+                UI.showMessage("Previous game loaded.", "info", 2000);
                 return true;
             }
         } catch (e) {
@@ -155,7 +157,6 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem(INITIAL_PUZZLE_KEY);
         localStorage.removeItem(SOLUTION_BOARD_KEY);
         localStorage.removeItem(ELAPSED_TIME_KEY);
-        // Difficulty, Theme, and History are preserved
     }
 
     // --- Game Logic ---
@@ -164,10 +165,9 @@ document.addEventListener('DOMContentLoaded', () => {
         UI.hideEndGameControls();
         UI.setBoardDisabled(false);
         gameWon = false;
-        resetTimer(); // Reset timer for any new game start scenario
+        resetTimer();
 
         if (!forceNew && loadGameState()) {
-            // Game was loaded, timer already started by loadGameState
             return;
         }
         
@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         Board.render(sudokuBoardElement, userBoard, initialPuzzle, handleCellClick, handleCellInput);
         clearSelection();
-        startTimer(); // Start timer from 0 for a brand new game
+        startTimer();
         saveGameState();
     }
 
@@ -189,7 +189,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function clearSelection() {
-        if (gameWon) return;
+        if (gameWon) return; // Don't clear if game is won and showing end controls
+        if (UI.getIsHistoryVisible()) return; // Don't clear if history is open
+
         if (selectedCell.element || selectedCell.inputElement) {
             Board.clearAllHighlights();
         }
@@ -217,14 +219,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (Sudoku.isBoardSolved(userBoard, solutionBoard)) {
                     gameWon = true;
                     stopTimer();
-                    UI.showMessage("تبریک! شما برنده شدید!", 'success');
-                    Board.highlightRelatedCells(row, col, userBoard);
+                    UI.showMessage("Congratulations! You won!", 'success'); // English
+                    Board.highlightRelatedCells(row, col, userBoard); // Final highlight
                     UI.setBoardDisabled(true);
                     UI.showEndGameControls();
                     addGameToHistory(UI.getSelectedDifficulty(), elapsedTimeInSeconds, new Date().toISOString());
                     clearSavedBoardState();
                 } else if (Sudoku.isBoardFull(userBoard)) {
-                    UI.showMessage("بازی اشتباه است و تمام نشده. اعداد خود را بررسی کنید.", 'error', 5000);
+                    UI.showMessage("The board is full but incorrect. Please check your numbers.", 'error', 5000); // English
                 }
             }
         }
@@ -236,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function resetGame() {
         if (initialPuzzle.length === 0) {
-            UI.showMessage("ابتدا یک بازی جدید شروع کنید.", "info", 2000);
+            UI.showMessage("Start a new game first.", "info", 2000); // English
             return;
         }
         UI.clearMessage();
@@ -246,14 +248,15 @@ document.addEventListener('DOMContentLoaded', () => {
         userBoard = Utils.deepCopy2DArray(initialPuzzle);
         Board.render(sudokuBoardElement, userBoard, initialPuzzle, handleCellClick, handleCellInput);
         clearSelection();
-        resetTimer(); // Reset timer
-        startTimer(); // And start it for the reset puzzle
+        resetTimer();
+        startTimer();
         saveGameState();
+        UI.showMessage("Game reset to its initial state.", "info", 2000); // English
     }
 
     // --- Event Listeners & Initialization ---
-    loadGameHistory(); // Load history at the very beginning
-    UI.init(handleTimerClick); // Pass callback for timer click
+    loadGameHistory();
+    UI.init(handleTimerClick);
 
     newGameBtn.addEventListener('click', () => startGame(true));
     resetBtn.addEventListener('click', resetGame);
@@ -270,39 +273,39 @@ document.addEventListener('DOMContentLoaded', () => {
         startGame(true);
     });
 
-    startGame(false); // Initial game load/start
+    startGame(false);
 
     document.addEventListener('click', (event) => {
         if (gameWon && document.getElementById('endGameControls').style.display !== 'none') {
-             // If game is won and end game controls are visible, don't clear selection for clicks outside board
             const endControls = document.getElementById('endGameControls');
-            if (endControls && endControls.contains(event.target)) return; // Click on end game controls
+            if (endControls && endControls.contains(event.target)) return;
         }
-        if (UI.isHistoryVisible && document.getElementById('gameHistoryDropdown').style.display !== 'none') {
-            // If history is visible, let UI module handle clicks outside
-            return;
-        }
-
+        // History closing is handled by UI.init's event listener
+        // This listener is now primarily for clearing cell selection
 
         const gameContainer = document.getElementById('gameContainer');
         if (gameContainer && !gameContainer.contains(event.target)) {
-            clearSelection();
+            // Click was outside the game container
+            if (!UI.getIsHistoryVisible()) { // Only clear selection if history isn't also trying to close
+                 clearSelection();
+            }
         } else if (selectedCell.element && !selectedCell.element.contains(event.target)) {
-            const controls = document.querySelector('.header-controls');
-            // Check if click is on timer itself, if so, history toggle will handle it
-            if (timerDisplayElement && timerDisplayElement.contains(event.target)) return;
+            // Click was inside game container but outside the currently selected cell
+            const controls = document.querySelector('.header-controls'); // Includes timer now
+            const endControls = document.getElementById('endGameControls');
             
             let clickedOnControl = false;
-            if (controls && controls.contains(event.target)) clickedOnControl = true;
+            if (controls && controls.contains(event.target)) clickedOnControl = true; // Click on any header control
+            if (endControls && endControls.style.display !== 'none' && endControls.contains(event.target)) clickedOnControl = true;
 
-            if (!clickedOnControl) {
+            if (!clickedOnControl && !UI.getIsHistoryVisible()) { // Don't clear selection if history is open or was just opened
                  clearSelection();
             }
         }
     });
 
     window.addEventListener('beforeunload', () => {
-        if (!gameWon) { // Only save if game is in progress
+        if (!gameWon) {
             saveGameState();
         }
     });
