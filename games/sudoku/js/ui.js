@@ -1,3 +1,4 @@
+// js/ui.js
 const UI = (() => {
     const themeSwitcherBtn = document.getElementById('themeSwitcher');
     const messageArea = document.getElementById('messageArea');
@@ -48,9 +49,15 @@ const UI = (() => {
     }
     
     // --- Modal Functions ---
+    /**
+     * Shows the game over/status modal.
+     * @param {string} title - The title for the modal.
+     * @param {string} message - The message content for the modal.
+     * @param {string} type - 'win' or 'error-continue' to control animation.
+     */
     function showModal(title, message, type = 'info') {
         if (gameOverModalElement && modalTitleElement && modalMessageElement) {
-            console.log("UI.showModal called. gameOverModalElement found:", gameOverModalElement); // Debug log
+            console.log("UI.showModal called. Title:", title, "Type:", type); // Debug log
             modalTitleElement.textContent = title;
             modalMessageElement.textContent = message;
 
@@ -62,14 +69,14 @@ const UI = (() => {
                 modalTitleElement.classList.add('error-animated');
             }
             
-            if (modalActionsDiv) {
+            if (modalActionsDiv) { // Ensure actions div is hidden as buttons are removed from HTML
                 modalActionsDiv.style.display = 'none';
             }
 
-            gameOverModalElement.style.display = 'flex'; // Explicitly set display to ensure it overrides inline styles
-            gameOverModalElement.classList.add('show'); // Controls opacity and visibility via CSS transitions
+            gameOverModalElement.style.display = 'flex'; // Ensure overlay is flex for centering content
+            gameOverModalElement.classList.add('show');
         } else {
-            console.error("UI.showModal: Critical modal elements (gameOverModal, modalTitle, modalMessage) not found in DOM!");
+            console.error("UI.showModal: Critical modal elements not found!");
         }
     }
 
@@ -77,12 +84,10 @@ const UI = (() => {
         if (gameOverModalElement) {
             console.log("UI.hideModal called."); // Debug log
             gameOverModalElement.classList.remove('show');
-            // Optional: set display back to none after transition, though visibility:hidden should suffice
-            // setTimeout(() => {
-            //     if (!gameOverModalElement.classList.contains('show')) {
-            //         gameOverModalElement.style.display = 'none';
-            //     }
-            // }, 300); // Match transition duration (0.3s)
+            // The timeout to set display:none after transition can be helpful
+            // but visibility:hidden from .show removal should be enough.
+            // Forcing display:none might interfere if another showModal is called quickly.
+            // Let's rely on opacity/visibility for hiding.
             if (modalTitleElement) {
                 modalTitleElement.classList.remove('win-animated', 'error-animated');
             }
@@ -187,7 +192,7 @@ const UI = (() => {
         
         if (gameOverModalElement) {
             gameOverModalElement.addEventListener('click', (event) => {
-                if (event.target === gameOverModalElement) {
+                if (event.target === gameOverModalElement) { // Clicked on the overlay itself
                     hideModal();
                     if (typeof onModalOverlayCloseCallback === 'function') {
                         onModalOverlayCloseCallback();
