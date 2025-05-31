@@ -3,7 +3,6 @@ const UI = (() => {
     const themeSwitcherBtn = document.getElementById('themeSwitcher');
     const messageArea = document.getElementById('messageArea');
     const difficultySelect = document.getElementById('difficultySelect');
-    // const footerCreditElement = document.querySelector('.footer-credit'); // Not directly manipulated
     const timerDisplayElement = document.getElementById('timerDisplay');
     const gameHistoryDropdownElement = document.getElementById('gameHistoryDropdown');
     const historyListElement = document.getElementById('historyList');
@@ -12,10 +11,7 @@ const UI = (() => {
     const gameOverModalElement = document.getElementById('gameOverModal');
     const modalTitleElement = document.getElementById('modalTitle');
     const modalMessageElement = document.getElementById('modalMessage');
-    // const modalNewGameBtn = document.getElementById('modalNewGameBtn'); // Button removed from modal
-    // const modalCloseBtn = document.getElementById('modalCloseBtn');   // Button removed from modal
     const modalActionsDiv = gameOverModalElement ? gameOverModalElement.querySelector('.modal-actions') : null;
-
 
     const THEME_KEY = 'sudokuThemeGeekNeuron_v1';
     let currentTheme = localStorage.getItem(THEME_KEY) || 'light';
@@ -23,7 +19,7 @@ const UI = (() => {
 
     function _applyTheme() {
         document.body.classList.toggle('dark-theme', currentTheme === 'dark');
-        themeSwitcherBtn.style.backgroundColor = '';
+        if (themeSwitcherBtn) themeSwitcherBtn.style.backgroundColor = '';
     }
 
     function toggleTheme() {
@@ -33,6 +29,7 @@ const UI = (() => {
     }
 
     function showMessage(text, type = 'info', duration = 0) {
+        if (!messageArea) return;
         messageArea.textContent = text;
         messageArea.className = '';
         messageArea.classList.add(`message-${type}`);
@@ -47,8 +44,8 @@ const UI = (() => {
     }
 
     function clearMessage() {
-        messageArea.textContent = '';
-        messageArea.className = '';
+        if (messageArea) messageArea.textContent = '';
+        if (messageArea) messageArea.className = '';
     }
     
     // --- Modal Functions ---
@@ -57,10 +54,8 @@ const UI = (() => {
      * @param {string} title - The title for the modal.
      * @param {string} message - The message content for the modal.
      * @param {string} type - 'win' or 'error-continue' to control animation.
-     * @param {number} [autoHideDuration=0] - Duration in ms to auto-hide. 0 for no auto-hide.
-     * @param {Function} [onHideCallback=null] - Callback after modal auto-hides.
      */
-    function showModal(title, message, type = 'info', autoHideDuration = 0, onHideCallback = null) {
+    function showModal(title, message, type = 'info') {
         if (gameOverModalElement && modalTitleElement && modalMessageElement) {
             modalTitleElement.textContent = title;
             modalMessageElement.textContent = message;
@@ -73,21 +68,11 @@ const UI = (() => {
                 modalTitleElement.classList.add('error-animated');
             }
             
-            // Hide the actions div as buttons are removed
             if (modalActionsDiv) {
-                modalActionsDiv.style.display = 'none';
+                modalActionsDiv.style.display = 'none'; // Ensure no buttons are shown in modal
             }
 
             gameOverModalElement.classList.add('show');
-
-            if (autoHideDuration > 0) {
-                setTimeout(() => {
-                    hideModal();
-                    if (onHideCallback) {
-                        onHideCallback();
-                    }
-                }, autoHideDuration);
-            }
         }
     }
 
@@ -100,7 +85,6 @@ const UI = (() => {
         }
     }
     // --- End Modal Functions ---
-
 
     function updateTimerDisplay(timeString) {
         if (timerDisplayElement) {
@@ -117,7 +101,6 @@ const UI = (() => {
             mainHistoryHeader.textContent = 'Game History';
             mainHistoryHeader.style.display = 'block';
         }
-
 
         if (!historyData || historyData.length === 0) {
             const li = document.createElement('li');
@@ -182,9 +165,9 @@ const UI = (() => {
         return isHistoryVisible;
     }
 
-    function init(onTimerClickCallback /* Removed modal button callbacks */) {
+    function init(onTimerClickCallback, onModalOverlayCloseCallback) {
         _applyTheme();
-        themeSwitcherBtn.addEventListener('click', toggleTheme);
+        if(themeSwitcherBtn) themeSwitcherBtn.addEventListener('click', toggleTheme);
         hideModal();
         updateTimerDisplay("00:00:00");
 
@@ -197,7 +180,17 @@ const UI = (() => {
                 }
             });
         }
-        // Removed event listeners for modal buttons as they are removed from HTML
+        
+        if (gameOverModalElement) {
+            gameOverModalElement.addEventListener('click', (event) => {
+                if (event.target === gameOverModalElement) { // Clicked on the overlay itself
+                    hideModal();
+                    if (typeof onModalOverlayCloseCallback === 'function') {
+                        onModalOverlayCloseCallback();
+                    }
+                }
+            });
+        }
 
         document.addEventListener('click', (event) => {
             if (isHistoryVisible && 
@@ -207,23 +200,11 @@ const UI = (() => {
                 !timerDisplayElement.contains(event.target)) {
                 toggleGameHistory(false);
             }
-             // Logic to close modal on overlay click (optional)
-            if (gameOverModalElement && gameOverModalElement.classList.contains('show') && event.target === gameOverModalElement) {
-                // Only hide if it's not the "YOU WIN!" modal, or if specific close behavior is desired
-                // For "Keep Going!" modal, it auto-hides. For "YOU WIN!", user uses main controls.
-                // So, this might not be strictly necessary if auto-hide is sufficient for "Keep Going".
-                // If "YOU WIN!" should also close on overlay click:
-                // hideModal();
-                // if (!gameWon) { // If it was not a win modal that was closed by overlay
-                //     boardShouldBeDisabled = false; // This variable is in app.js
-                //     UI.setBoardDisabled(false);
-                // }
-            }
         });
     }
 
     function getSelectedDifficulty() {
-        return difficultySelect.value;
+        return difficultySelect ? difficultySelect.value : 'easy'; // Provide a default
     }
 
     function setSelectedDifficulty(difficultyValue) {
@@ -233,9 +214,12 @@ const UI = (() => {
     }
     
     function setBoardDisabled(disabled) {
-        const inputs = document.querySelectorAll('#sudokuBoard input');
-        inputs.forEach(input => input.disabled = disabled);
-        document.getElementById('sudokuBoard').classList.toggle('disabled', disabled);
+        const board = document.getElementById('sudokuBoard');
+        if (board) {
+            const inputs = board.querySelectorAll('input');
+            inputs.forEach(input => input.disabled = disabled);
+            board.classList.toggle('disabled', disabled);
+        }
     }
 
     function getIsHistoryVisible() {
