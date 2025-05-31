@@ -45,40 +45,6 @@ A modern, responsive, and engaging implementation of the classic Minesweeper gam
 * **CSS3:** For styling, theming, and responsive design (using Flexbox and CSS Grid).
 * **JavaScript (ES6+):** For all game logic, DOM manipulation, and interactivity. No external libraries or frameworks are used for the core game mechanics.
 
-## 🚀 Setup and Installation
-
-This project is designed to be run directly in a web browser and is perfect for hosting on GitHub Pages.
-
-1.  **Clone the repository:**
-    ```bash
-    git clone [https://github.com/GeekNeuron/Minesweeper.git](https://github.com/GeekNeuron/Minesweeper.git)
-    ```
-    *(Replace with your repository URL if you fork it)*
-2.  **Navigate to the project directory:**
-    ```bash
-    cd Minesweeper
-    ```
-3.  **Open `index.html` in your browser:**
-    Simply open the `index.html` file in your preferred web browser to play the game locally.
-
-### Deployment to GitHub Pages
-
-1.  Ensure your code is pushed to the `main` (or `master`) branch of your GitHub repository.
-2.  Go to your repository's **Settings** tab.
-3.  Scroll down to the **GitHub Pages** section.
-4.  Under **Source**, select your `main` branch (or `master`) and the `/ (root)` folder.
-5.  Click **Save**. Your site should be published at `https://<your-username>.github.io/<repository-name>/` (e.g., `https://geekneuron.github.io/Minesweeper/`). It might take a few minutes for the site to go live.
-
-## 🖼️ Screenshots / Demo
-
-*(Here you can add more screenshots or a GIF showcasing the gameplay and theme switching)*
-
-**Light Theme:**
-![Minesweeper Light Theme Placeholder](https://placehold.co/400x300/f8f9fa/212529?text=Light+Theme)
-
-**Dark Theme:**
-![Minesweeper Dark Theme Placeholder](https://placehold.co/400x300/0d1117/c9d1d9?text=Dark+Theme)
-
 ## 🌱 Future Enhancements
 
 While this version is a complete game, here are some potential ideas for future improvements:
