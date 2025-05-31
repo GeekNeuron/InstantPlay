@@ -11,29 +11,29 @@
     /* Light Theme Variables (All White Theme) */
     --bg-color-light: #ffffff;
     --text-color-light: #212529; /* Default text */
-    --container-bg-light: #f7f7f7; /* Reference --container-bg */
-    --container-border-light: #e0e0e0; /* Reference --grid-bg as border */
-    --container-border-radius: 16px; /* Reference --border-radius */
-    --header-text-light: #333333; /* Reference --text-color-primary */
+    --container-bg-light: #f7f7f7; 
+    --container-border-light: #e0e0e0; 
+    --container-border-radius: 16px; 
+    --header-text-light: #333333; 
 
-    --cell-bg-light: #f0f0f0; /* Reference --grid-cell-bg */
-    --cell-input-bg-light: #ffffff; /* Keep input white for better UX */
-    --cell-border-light: #e0e0e0; /* Reference --grid-bg */
-    --cell-readonly-bg-light: #e9e9e9; /* Reference --score-box-bg */
-    --cell-readonly-text-light: #333333; /* Reference --score-box-text */
+    --cell-bg-light: #f0f0f0; 
+    --cell-input-bg-light: #ffffff; 
+    --cell-border-light: #e0e0e0; 
+    --cell-readonly-bg-light: #e9e9e9; 
+    --cell-readonly-text-light: #333333; 
     --cell-selected-bg-light: #cfe2ff;
     --cell-highlight-bg-light: #e7f0ff;
     --cell-error-bg-light: #f8d7da;
     --cell-error-text-light: #721c24;
     --input-error-border-light: #dc3545;
 
-    --grid-strong-border-light: #333333; /* Darker for strong lines */
+    --grid-strong-border-light: #333333; 
 
     /* Button styles based on reference */
-    --button-bg-light: #6c757d; /* Reference --button-bg */
-    --button-text-light: #ffffff; /* Reference --button-text */
-    --button-hover-bg-light: #5a6268; /* Reference --button-hover-bg */
-    --button-primary-bg-light: #007bff; /* Keep primary distinct for New Game */
+    --button-bg-light: #6c757d; 
+    --button-text-light: #ffffff; 
+    --button-hover-bg-light: #5a6268; 
+    --button-primary-bg-light: #007bff; 
     --button-primary-text-light: #ffffff;
     --button-primary-hover-bg-light: #0056b3;
     
@@ -49,7 +49,7 @@
     --select-border-radius: 6px;
     --select-padding-vertical: 7px;
     --select-padding-horizontal: 10px;
-    --select-font-size: 0.9em;
+    --select-font-size: 0.9em; 
 
 
     --timer-text-light: #495057;
@@ -58,9 +58,10 @@
     --history-separator-color-light: #dee2e6;
     --history-item-hover-bg-light: #f8f9fa;
 
-    --modal-overlay-bg-light: rgba(0,0,0,0.6);
-    --modal-content-bg-light: #ffffff;
-    --modal-text-color-light: #333333;
+    /* Modal Colors - Light Theme (Referenced from user's 2048 CSS) */
+    --modal-overlay-bg-light: rgba(0,0,0,0.6); 
+    --modal-content-bg-light: #ffffff; 
+    --modal-text-color-light: #333333; 
 
 
     --theme-switcher-light: #4a4a4a;
@@ -105,9 +106,10 @@
     --history-item-hover-bg-dark: #2c3a47;
     --history-item-text-dark: #FFFFFF;
 
-    --modal-overlay-bg-dark: rgba(10, 10, 15, 0.7);
-    --modal-content-bg-dark: #161b22;
-    --modal-text-color-dark: #c9d1d9;
+    /* Modal Colors - Dark Theme (Referenced from user's 2048 CSS) */
+    --modal-overlay-bg-dark: rgba(10, 10, 15, 0.7); 
+    --modal-content-bg-dark: #161b22; 
+    --modal-text-color-dark: #c9d1d9; 
 
     --theme-switcher-dark: #e0e0e0;
     --input-focus-border-dark: #3282b8;
@@ -177,7 +179,7 @@ body.dark-theme .game-container {
 }
 
 .game-header {
-    position: relative;
+    position: relative; /* For positioning history dropdown */
 }
 
 .game-header h1 {
@@ -194,28 +196,26 @@ body.dark-theme .game-header h1 {
 /* Header Controls Layout - Consistent for all screen sizes */
 .header-controls-wrapper {
     display: flex;
-    flex-direction: column; /* Stack rows */
-    align-items: stretch; /* Make rows take full width */
-    gap: 8px; /* Gap between rows */
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
     margin-bottom: 15px;
 }
 
 .header-row-1, .header-row-2 {
     display: flex;
-    justify-content: space-between; /* Pushes first child left, last child right */
+    justify-content: space-between;
     align-items: center;
     width: 100%;
-    gap: 8px; /* Gap between items in a row, adjust if needed */
+    gap: 8px; /* Gap between left and right groups in each row */
 }
 
 .header-actions-left, .header-actions-right {
     display: flex;
     align-items: center;
-    gap: 8px; /* Space between buttons in the left/right group */
-    flex-shrink: 0; /* Prevent shrinking */
+    gap: 8px; /* Space between buttons within a group */
+    flex-shrink: 0; 
 }
-/* No specific margin-left/right auto needed here as space-between on parent handles it */
-
 
 .difficulty-control {
     display: flex;
@@ -254,7 +254,7 @@ body.dark-theme #timerDisplay {
 
 .game-history-dropdown {
     position: absolute;
-    top: calc(100% + 5px);
+    top: calc(100% + 5px); 
     right: 0; 
     width: 300px;
     max-width: 90%;
@@ -366,55 +366,22 @@ body.dark-theme .btn.btn-primary:hover {
     background-color: var(--button-primary-hover-bg-dark);
 }
 
-#resetBtn, #checkSolutionBtn, #closeGameBtn {
+#resetBtn, #checkSolutionBtn { /* General buttons in header */
     background-color: var(--button-bg-light);
     color: var(--button-text-light);
 }
-#resetBtn:hover, #checkSolutionBtn:hover, #closeGameBtn:hover {
+#resetBtn:hover, #checkSolutionBtn:hover {
      background-color: var(--button-hover-bg-light);
 }
 body.dark-theme #resetBtn, 
-body.dark-theme #checkSolutionBtn, 
-body.dark-theme #closeGameBtn {
+body.dark-theme #checkSolutionBtn {
     background-color: var(--button-bg-dark);
     color: var(--button-text-dark);
 }
 body.dark-theme #resetBtn:hover, 
-body.dark-theme #checkSolutionBtn:hover, 
-body.dark-theme #closeGameBtn:hover {
+body.dark-theme #checkSolutionBtn:hover {
     background-color: var(--button-hover-bg-dark);
 }
-
-.modal-actions #modalNewGameBtn {
-    background-color: var(--button-primary-bg-light);
-    color: var(--button-primary-text-light);
-}
-.modal-actions #modalNewGameBtn:hover {
-    background-color: var(--button-primary-hover-bg-light);
-}
-body.dark-theme .modal-actions #modalNewGameBtn {
-    background-color: var(--button-primary-bg-dark);
-    color: var(--button-primary-text-dark);
-}
-body.dark-theme .modal-actions #modalNewGameBtn:hover {
-    background-color: var(--button-primary-hover-bg-dark);
-}
-
-.modal-actions #modalCloseBtn {
-    background-color: var(--button-bg-light);
-    color: var(--button-text-light);
-}
-.modal-actions #modalCloseBtn:hover {
-    background-color: var(--button-hover-bg-light);
-}
-body.dark-theme .modal-actions #modalCloseBtn {
-    background-color: var(--button-bg-dark);
-    color: var(--button-text-dark);
-}
-body.dark-theme .modal-actions #modalCloseBtn:hover {
-    background-color: var(--button-hover-bg-dark);
-}
-
 
 #difficultySelect {
     background-color: var(--select-bg-light);
@@ -433,6 +400,7 @@ body.dark-theme .modal-actions #modalCloseBtn:hover {
     background-position: right .7em top 50%;
     background-size: .65em auto;
     padding-right: 2.5em;
+    flex-shrink: 0; /* Prevent select from shrinking too much */
 }
 body.dark-theme #difficultySelect {
     background-color: var(--select-bg-dark);
@@ -682,45 +650,60 @@ body.dark-theme .modal-content {
 }
 .modal-actions {
     display: flex;
-    justify-content: space-between; /* New Game left, Close right */
+    justify-content: space-between;
     gap: 15px;
 }
 .modal-actions .btn {
     flex-grow: 1;
 }
 
-/* Responsive adjustments - Minimal changes to keep layout consistent */
-@media (max-width: 600px) { /* General small screen adjustments */
+
+/* Responsive adjustments - Focus on keeping header layout consistent */
+@media (max-width: 600px) { /* More aggressive breakpoint for consistent layout */
     body { padding: 10px; }
     .game-container { padding: 15px; }
     .game-header h1 { font-size: 2em; }
+    
+    .header-controls-wrapper {
+        gap: 5px; /* Slightly reduce gap between rows */
+    }
+    .header-row-1, .header-row-2 {
+        gap: 5px; /* Reduce gap between items in rows */
+        flex-wrap: nowrap; /* Force items to stay in one line as much as possible */
+        overflow: hidden; /* Prevent content overflow from breaking layout; might clip text */
+    }
+
+    .btn, #difficultySelect, #timerDisplay {
+         font-size: calc(var(--button-font-size-ref) * 0.85); /* Further reduce font size */
+         padding: calc(var(--button-padding-vertical-ref) * 0.8) calc(var(--button-padding-horizontal-ref) * 0.8);
+    }
+    #difficultySelect {
+        padding-right: 1.8em; /* Ensure arrow space */
+        min-width: 120px; /* Give select some minimum width */
+    }
+     .difficulty-control label {
+        font-size: calc(var(--button-font-size-ref) * 0.85);
+    }
+    #timerDisplay {
+        padding: calc(var(--button-padding-vertical-ref) * 0.8) 5px; /* Adjust timer padding */
+        min-width: 65px; /* Min width for timer */
+    }
+
+    .header-actions-left .btn, .header-actions-right .btn {
+        /* Ensure buttons can shrink */
+        flex-shrink: 1;
+    }
     
     .theme-switcher-container { top: 10px; right: 10px; }
     #themeSwitcher { width: 25px; height: 25px; }
     .sudoku-board { max-width: 100%; margin-bottom: 15px;}
     .cell { font-size: clamp(0.8em, 5vw, 1.4em); }
-
-    .header-row-1, .header-row-2 {
-        flex-wrap: wrap; /* Allow wrapping if absolutely necessary */
-        justify-content: center; /* Center items if they wrap */
-    }
-    .header-actions-left, .header-actions-right, .difficulty-control, #timerDisplay {
-        margin-bottom: 5px; /* Add a small margin if items wrap */
-    }
-    .modal-actions { flex-direction: column; } /* Stack modal buttons on small screens */
+    .modal-actions { flex-direction: column; }
     .modal-actions .btn { width: 100%; }
-
 }
 
-@media (max-width: 480px) {
+@media (max-width: 420px) {
      .game-header h1 { font-size: 1.8em; }
      .cell { font-size: clamp(0.7em, 6vw, 1.2em); }
-     /* Buttons and select might need slightly smaller font/padding if still too large */
-     .btn, #difficultySelect, #timerDisplay {
-         font-size: calc(var(--button-font-size-ref) * 0.9); /* Slightly smaller */
-         padding: calc(var(--button-padding-vertical-ref) * 0.9) calc(var(--button-padding-horizontal-ref) * 0.9);
-     }
-     #difficultySelect {
-         padding-right: 2em; /* Adjust for arrow */
-     }
+     /* Minimal further changes to header, relying on flexbox shrink */
 }
