@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const resumedTime = savedElapsedTime ? parseInt(savedElapsedTime, 10) : 0;
                 startTimer(resumedTime);
 
-                UI.showMessage("Previous game loaded.", "info", 2000);
+                // UI.showMessage("Previous game loaded.", "info", 2000); // Message removed as requested
                 return true;
             }
         } catch (e) {
@@ -269,26 +269,23 @@ document.addEventListener('DOMContentLoaded', () => {
             for (let c = 0; c < Sudoku.GRID_SIZE; c++) {
                 const cellElement = Board.getCellElement(r, c);
                 if (cellElement && !cellElement.classList.contains('readonly')) {
-                    // Clear previous error state for this cell before re-validating
                     Board.updateCellDisplay(r, c, userBoard[r][c], false); 
                     
                     if (userBoard[r][c] !== Sudoku.EMPTY_CELL) {
                         filledCells++;
-                        // Check if the number placed by user is correct according to the solution
                         if (userBoard[r][c] !== solutionBoard[r][c]) {
-                            Board.updateCellDisplay(r, c, userBoard[r][c], true); // Mark as error
+                            Board.updateCellDisplay(r, c, userBoard[r][c], true);
                             errorsFound++;
+                        } else if (!Sudoku.isMoveValid(userBoard, r, c, userBoard[r][c])) {
+                            // This condition checks for rule violations even if the number matches the solution
+                            // which can happen if the user created a conflict with another user-entered number
+                            // that also happens to be correct in its own spot.
+                            // However, for "Check Solution", the primary goal is to check against the *final* solution.
+                            // If a number is correct per solution but creates a conflict with *another user number*,
+                            // that other number should be the one flagged when its turn comes.
+                            // So, the simple check against solutionBoard[r][c] is usually sufficient.
+                            // For more advanced validation highlighting internal conflicts, logic would be more complex.
                         }
-                        // Also, re-check general Sudoku rule validity for this cell, 
-                        // as user might have created a new conflict that wasn't there before.
-                        // This part is tricky because isMoveValid checks against the *current* board state.
-                        // The primary check should be against the solutionBoard for correctness.
-                        // If you want to highlight rule violations (e.g. two 5s in a row *placed by user*):
-                        else if (!Sudoku.isMoveValid(userBoard, r, c, userBoard[r][c])) {
-                            Board.updateCellDisplay(r, c, userBoard[r][c], true); // Mark as error
-                            errorsFound++;
-                        }
-
                     }
                 }
             }
@@ -299,7 +296,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (filledCells === 0) {
             UI.showMessage('Board is empty. Fill in some numbers to check.', 'info', 3000);
         } else if (Sudoku.isBoardSolved(userBoard, solutionBoard)) {
-            // This case should ideally be caught by the win condition in handleCellInput
             UI.showMessage("Congratulations! You've solved it!", 'success');
             gameWon = true;
             stopTimer();
@@ -308,15 +304,11 @@ document.addEventListener('DOMContentLoaded', () => {
             addGameToHistory(UI.getSelectedDifficulty(), elapsedTimeInSeconds, new Date().toISOString());
             clearSavedBoardState();
         } else if (Sudoku.isBoardFull(userBoard) && errorsFound === 0) {
-            // This implies the board is full, no direct errors found against solution,
-            // but isBoardSolved returned false. This is an edge case, likely means
-            // isBoardSolved is the ultimate truth.
              UI.showMessage("Board is full, and no direct errors found, but it's not the solution.", 'info', 4000);
         }
          else {
             UI.showMessage('No errors found in your current entries. Keep going!', 'info', 3000);
         }
-        // Re-highlight based on selected cell after validation
         if(selectedCell.element) {
             Board.highlightRelatedCells(selectedCell.row, selectedCell.col, userBoard);
         }
@@ -329,7 +321,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     newGameBtn.addEventListener('click', () => startGame(true));
     resetBtn.addEventListener('click', resetGame);
-    checkSolutionBtn.addEventListener('click', validateUserSolution); // Listener for new button
+    if (checkSolutionBtn) { // Check if button exists before adding listener
+        checkSolutionBtn.addEventListener('click', validateUserSolution);
+    }
     difficultySelect.addEventListener('change', () => startGame(true));
 
     closeGameBtn.addEventListener('click', () => {
@@ -360,11 +354,11 @@ document.addEventListener('DOMContentLoaded', () => {
                  clearSelection();
             }
         } else if (selectedCell.element && !selectedCell.element.contains(event.target)) {
-            const controls = document.querySelector('.header-controls-wrapper'); // Updated selector
+            const controlsWrapper = document.querySelector('.header-controls-wrapper');
             const endControls = document.getElementById('endGameControls');
             
             let clickedOnControl = false;
-            if (controls && controls.contains(event.target)) clickedOnControl = true;
+            if (controlsWrapper && controlsWrapper.contains(event.target)) clickedOnControl = true;
             if (endControls && endControls.style.display !== 'none' && endControls.contains(event.target)) clickedOnControl = true;
 
             if (!clickedOnControl && !UI.getIsHistoryVisible()) {
