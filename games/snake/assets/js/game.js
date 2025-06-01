@@ -23,8 +23,7 @@ export class Game {
 
         const scoreElement = document.getElementById(scoreId);
         const highScoreElement = document.getElementById(highScoreId);
-        // --- اصلاح کلیدی در اینجا ---
-        // messageOverlayId را به عنصر DOM واقعی یا null تبدیل می‌کنیم
+        // --- این خط برای تبدیل ID به عنصر DOM یا null بسیار مهم است ---
         const resolvedMessageOverlayElement = messageOverlayId ? document.getElementById(messageOverlayId) : null;
 
         this.gameState = GAME_STATE.LOADING;
@@ -37,7 +36,7 @@ export class Game {
         this.powerUpManager = new PowerUpManager(this.board, this.snake, this);
         this.food = new Food(this.board, this.snake, this.powerUpManager);
         this.inputHandler = new InputHandler(this);
-        // --- resolvedMessageOverlayElement به UIManager پاس داده می‌شود ---
+        // --- resolvedMessageOverlayElement (که یا عنصر است یا null) به UIManager پاس داده می‌شود ---
         this.uiManager = new UIManager(scoreElement, highScoreElement, resolvedMessageOverlayElement, this);
 
         this.score = 0;
