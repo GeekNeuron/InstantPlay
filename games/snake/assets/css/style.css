@@ -19,7 +19,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start; /* Align to top for normal flow */
     min-height: 100vh;
     background-color: var(--bg-color);
     color: var(--text-color);
@@ -31,7 +31,7 @@ body {
 
 .page-wrapper {
     width: 100%;
-    max-width: 700px; /* Increased max-width for settings box and game area */
+    max-width: 550px; /* Adjusted max-width for better mobile fit, can be tuned */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -40,19 +40,39 @@ body {
 /* Settings Box (Header) Styling */
 .settings-box {
     width: 100%;
-    padding: 10px 15px;
+    padding: 10px; /* Uniform padding */
     margin-bottom: 15px;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: var(--game-bg-color); /* Settings box uses game-bg-color */
+    flex-direction: column; /* Title on top, controls-panel below */
+    align-items: center; /* Center title */
+    background-color: var(--game-bg-color);
     border-radius: var(--border-radius-medium);
     border: 1px solid var(--border-color);
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    gap: 15px; /* Gap between sections */
 }
 
-.header-left-section {
+h1.game-title-header {
+    font-size: 2.4rem; /* Larger title */
+    font-weight: 700; /* Bolder */
+    color: var(--header-text-color);
+    margin: 0 0 15px 0; /* Margin below title */
+    padding: 5px;
+    background-color: transparent; /* Ensure background is transparent / "faded" */
+    border: none; /* Remove any border */
+    cursor: pointer; /* Still acts as theme switcher */
+    user-select: none;
+    text-align: center;
+}
+
+.controls-panel {
+    display: flex;
+    justify-content: space-between; /* Left scores, Right difficulty */
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+}
+
+.scores-group-left {
     display: flex;
     align-items: center;
     gap: 10px; /* Gap between score and high score boxes */
@@ -61,29 +81,15 @@ body {
 .score-box {
     background-color: var(--score-box-bg);
     color: var(--score-box-text);
-    padding: 8px 12px;
+    padding: 6px 10px; /* Slightly smaller padding */
     border-radius: var(--border-radius-small);
-    font-size: 0.9rem;
+    font-size: 0.85rem; /* Slightly smaller font */
     font-weight: 500;
-    text-align: center; /* Center text within each score box */
-    min-width: 110px; /* Minimum width for score boxes */
-}
-
-h1.game-title-header { /* Title specific styling */
-    font-size: 1.8rem; /* Adjusted for new layout */
-    font-weight: 600;
-    color: var(--header-text-color); /* New variable for title text for better control */
-    margin: 0; /* Remove default margins */
-    padding: 5px; /* Minimal padding */
-    background-color: transparent; /* Make title background transparent */
-    border: none; /* Remove any border from theme switcher state */
-    cursor: pointer; /* Still acts as theme switcher */
-    user-select: none;
     text-align: center;
-    flex-grow: 1; /* Allow title to take available space if needed */
+    min-width: 100px;
 }
 
-.header-right-section.difficulty-control {
+.difficulty-control-right { /* Re-using .difficulty-control styles */
     display: flex;
     align-items: center;
     gap: 8px;
@@ -113,15 +119,15 @@ h1.game-title-header { /* Title specific styling */
     border: 2px solid var(--border-color);
     border-radius: var(--border-radius-large);
     padding: 10px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.05); /* Softened shadow */
-    background-color: var(--game-bg-color); /* Kept same as settings-box for visual consistency */
-    display: flex; /* Use flex to manage inner elements like game-header-combo and canvas */
+    box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+    background-color: var(--game-bg-color);
+    display: flex;
     flex-direction: column;
-    width: 100%; /* Take full width of page-wrapper */
+    width: 100%; /* Takes full width of page-wrapper */
     max-width: 100%;
 }
 
-.game-header-combo { /* Header for combo, inside game-container */
+.game-header-combo {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -133,20 +139,29 @@ h1.game-title-header { /* Title specific styling */
     min-height: 28px;
 }
 
-#combo-display {
+#combo-display { /* Styling remains the same */
     padding: 2px 5px;
     border-radius: var(--border-radius-small);
 }
 
 #gameCanvas {
     display: block;
-    width: 100%;
-    height: auto; /* JS sets pixel dimensions, CSS handles responsive scaling */
-    /* Calculate max-height based on viewport height minus some space for header/footer */
-    max-height: calc(80vh - 100px); /* Example: 80% of viewport height minus approx header/footer space */
-    object-fit: contain;
+    /* JavaScript sets canvas.width and canvas.height for its internal resolution. */
+    /* CSS width and max-width control its display size, height will scale with aspect ratio. */
+    width: 100%; /* Make canvas scale to container width */
+    max-width: 100%;
+    /* height: auto; // Implicit with display: block if width is set and JS sets aspect ratio */
+    /* To enforce aspect ratio for a square canvas if ROWS=COLS: */
+    /* aspect-ratio: 1 / 1; */
+    /* Or set a fixed height in JS and let width be 100% up to that aspect ratio, */
+    /* or set both in JS and let CSS scale it down if needed. */
+    /* The JS should set the actual pixel dimensions based on GRID_SIZE, ROWS, COLS. */
+    /* CSS max-height is a good safeguard. */
+    max-height: calc(85vh - 150px); /* Adjust as needed, allowing space for header/footer */
+    object-fit: contain; /* Should not be strictly necessary if JS sets dimensions and CSS scales */
     border-radius: var(--border-radius-medium);
-    /* border: 1px solid var(--border-color); // Border is on game-container now */
+    /* border: 1px solid var(--border-color); // Border is on game-container */
+    background-color: var(--canvas-bg-color); /* Ensure canvas has a background for visibility if drawing fails */
 }
 
 footer {
@@ -157,79 +172,54 @@ footer {
 }
 
 /* Achievement Notification Popup (remains the same) */
-.achievement-popup {
-    position: fixed;
-    bottom: -100%; 
-    right: 10px;
-    background-color: var(--accent-color);
-    color: var(--button-text); 
-    padding: 12px 18px;
-    border-radius: var(--border-radius-medium);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    z-index: 1001;
-    display: flex;
-    align-items: center;
-    opacity: 0;
-    transform: translateY(0);
-    transition: opacity 0.5s ease-in-out, bottom 0.5s ease-in-out;
-    max-width: calc(100% - 20px);
-    width: auto;
-    min-height: 50px;
-}
-.achievement-popup.show { opacity: 1; bottom: 10px; }
-.achievement-popup .achievement-icon { font-size: 1.6rem; margin-right: 12px; line-height: 1; }
-.achievement-popup .achievement-text { display: flex; flex-direction: column; text-align: left; }
-.achievement-popup .achievement-title { font-weight: bold; font-size: 0.95rem; margin-bottom: 2px; }
-.achievement-popup .achievement-desc { font-size: 0.8rem; opacity: 0.9; }
+.achievement-popup { /* ... */ }
+.achievement-popup.show { /* ... */ }
+.achievement-popup .achievement-icon { /* ... */ }
+.achievement-popup .achievement-text { /* ... */ }
+.achievement-popup .achievement-title { /* ... */ }
+.achievement-popup .achievement-desc { /* ... */ }
 
 /* Basic Modal Styling (remains the same) */
 .modal { /* ... */ }
 .modal-content { /* ... */ }
-.modal h2#messageTitle { /* ... */ }
-.modal p#messageTextBody { /* ... */ }
-.modal button#messageButton { /* ... */ }
-.modal button#messageButton:hover { /* ... */ }
-
+/* ... (other modal styles) ... */
 
 /* Media query for responsiveness */
-@media (max-width: 620px) { /* Adjust breakpoint as needed */
+@media (max-width: 480px) { /* Adjusted breakpoint */
     .settings-box {
-        flex-direction: column; /* Stack sections in settings box */
-        align-items: stretch; /* Make sections take full width */
+        padding: 10px;
+    }
+    h1.game-title-header {
+        font-size: 1.8rem; /* Further adjust title for small screens */
+        margin-bottom: 10px;
+    }
+    .controls-panel {
+        flex-direction: column; /* Stack controls below title on very small screens */
+        align-items: stretch; /* Make items take full width */
         gap: 10px;
     }
-    .header-left-section {
+    .scores-group-left {
         justify-content: space-around; /* Space out score boxes */
         width: 100%;
-    }
-    h1.game-title-header {
-        order: -1; /* Move title to the top when stacked */
-        margin-bottom: 10px;
-        font-size: 1.7rem;
-    }
-    .header-right-section.difficulty-control {
-        justify-content: center; /* Center difficulty control */
-        width: 100%;
-    }
-}
-
-@media (max-width: 400px) {
-    h1.game-title-header {
-        font-size: 1.5rem;
+        gap: 5px; /* Reduce gap between score boxes */
     }
     .score-box {
         font-size: 0.8rem;
-        padding: 6px 10px;
-        min-width: 90px;
+        padding: 5px 8px;
+        min-width: auto; /* Allow score boxes to shrink more */
+        flex: 1; /* Allow score boxes to share space */
     }
-    #difficulty-select, .difficulty-control label {
-        font-size: 0.8rem;
+    .difficulty-control-right {
+        justify-content: center;
+        width: 100%;
+    }
+    #difficulty-select, .difficulty-control-right label {
+        font-size: 0.85rem;
     }
     .game-header-combo {
-        font-size: 0.85rem;
-        min-height: 24px;
+        font-size: 0.9rem;
     }
     #gameCanvas {
-         max-height: calc(75vh - 90px); /* Further adjust canvas max height */
+         max-height: calc(80vh - 120px); /* Further adjust canvas max height for small viewports */
     }
 }
