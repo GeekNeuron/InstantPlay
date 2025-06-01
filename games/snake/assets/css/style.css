@@ -64,7 +64,7 @@ header h1#page-title-clickable { /* Specific selector for the theme switcher tit
     align-items: center;
     padding: 10px 15px;
     margin-bottom: 10px;
-    font-size: 1.1rem; /* Slightly adjusted */
+    font-size: 1.1rem;
     border-bottom: 1px solid var(--border-color); /* Or a specific score-box-border-color */
     font-weight: 500;
     /* Background and text color for score box are defined in theme files */
@@ -74,27 +74,33 @@ header h1#page-title-clickable { /* Specific selector for the theme switcher tit
 }
 
 .score-container, .highscore-container {
-    flex: 1;
+    flex: 1; /* Distribute space */
+}
+.score-container {
+    text-align: left;
 }
 .highscore-container {
     text-align: right;
 }
 
 .combo-container {
-    flex: 1; /* Allow it to take space */
+    flex: 1.5; /* Allow it to take a bit more space if needed */
     font-size: 0.9rem;
     font-weight: bold;
-    min-width: 120px; /* Provide some space for the combo text */
+    min-width: 120px; /* Provide some base space for the combo text */
+    padding: 0 10px; /* Add some padding around combo text */
     text-align: center;
     opacity: 0.9;
     color: var(--accent-color); /* Use accent color for combo text, or a specific var */
+    white-space: nowrap; /* Prevent wrapping if text gets long */
 }
 
 #combo-display {
     padding: 2px 5px;
     border-radius: var(--border-radius-small);
     /* Optional background for combo text for better visibility
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.1); // Example for dark theme
+    background-color: rgba(0, 0, 0, 0.05); // Example for light theme
     */
 }
 
@@ -130,40 +136,35 @@ footer {
     height: 100%;
     overflow: auto; /* Enable scroll if content is too long */
     background-color: var(--modal-overlay-bg); /* Defined in theme files */
-    /* For centering content if using flex: */
-    /* display: flex; */
-    /* justify-content: center; */
-    /* align-items: center; */
 }
 
 .modal-content {
     /* Colors defined in theme files */
     background-color: var(--modal-content-bg);
     color: var(--modal-text-color);
-    border: 1px solid var(--border-color); /* Or a specific modal-border-color */
-    margin: 15% auto; /* Default for block display; adjust if using flex for .modal */
+    border: 1px solid var(--border-color);
+    margin: 15% auto;
     padding: 25px 30px;
     border-radius: var(--border-radius-medium);
     text-align: center;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.25); /* Slightly more pronounced shadow for modals */
-    max-width: 90%; /* Ensure responsiveness on small screens */
-    width: 320px; /* A base width, can be adjusted */
+    box-shadow: 0 5px 20px rgba(0,0,0,0.25);
+    max-width: 90%;
+    width: 320px;
 }
 
-.modal h2#messageTitle { /* Assumes an h2 with id="messageTitle" inside modal-content */
+.modal h2#messageTitle {
     font-size: 1.5rem;
     margin-bottom: 15px;
-    color: var(--modal-text-color); /* Or a specific modal-title-color */
+    color: var(--modal-text-color);
 }
 
-.modal p#messageTextBody { /* Assumes a p with id="messageTextBody" */
+.modal p#messageTextBody {
     font-size: 1rem;
     line-height: 1.5;
     margin-bottom: 20px;
 }
 
-.modal button#messageButton { /* Assumes a button with id="messageButton" */
-    /* Colors defined in theme files */
+.modal button#messageButton {
     background-color: var(--button-bg);
     color: var(--button-text);
     border: none;
@@ -179,6 +180,54 @@ footer {
 }
 
 .modal button#messageButton:hover {
-    background-color: var(--button-hover-bg); /* Defined in theme files */
-    opacity: 0.9; /* Slight opacity change on hover */
+    background-color: var(--button-hover-bg);
+    opacity: 0.9;
+}
+
+/* --- Achievement Notification Popup --- */
+.achievement-popup { /* Class name used in index.html, correct from previous .achievement-popup */
+    position: fixed;
+    bottom: -100%; /* Start off-screen (bottom) */
+    right: 20px;
+    background-color: var(--accent-color); /* Or a specific notification background from theme */
+    color: var(--button-text); /* Or a specific notification text color (often white on accent) */
+    padding: 15px 20px;
+    border-radius: var(--border-radius-medium);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    z-index: 1001; /* Above game, below modals if any are higher */
+    display: flex;
+    align-items: center;
+    opacity: 0;
+    transform: translateY(0); /* Correct initial transform is not needed if starting with bottom: -100% */
+    transition: opacity 0.5s ease-in-out, bottom 0.5s ease-in-out; /* Transition bottom property */
+    max-width: 300px;
+    min-height: 60px; /* Ensure some minimum height */
+}
+
+.achievement-popup.show {
+    opacity: 1;
+    bottom: 20px; /* Slide in from bottom */
+}
+
+.achievement-popup .achievement-icon {
+    font-size: 1.8rem; /* Size of the icon/emoji */
+    margin-right: 15px;
+    line-height: 1; /* Helps align emoji if it has odd spacing */
+}
+
+.achievement-popup .achievement-text {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.achievement-popup .achievement-title {
+    font-weight: bold;
+    font-size: 1rem;
+    margin-bottom: 3px;
+}
+
+.achievement-popup .achievement-desc { /* Corrected this class from previous example in ui.js */
+    font-size: 0.85rem;
+    opacity: 0.9;
 }
