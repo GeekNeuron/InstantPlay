@@ -1,7 +1,6 @@
 // assets/js/main.js
 
 import { Game } from './game.js';
-// --- DIFFICULTY_LEVELS و DIFFICULTY_SETTINGS برای پر کردن منو و ارسال به Game استفاده می‌شوند ---
 import { DIFFICULTY_LEVELS, DIFFICULTY_SETTINGS } from './constants.js';
 import { populateLegend } from './legend.js';
 
@@ -11,44 +10,56 @@ const difficultySelectElement = document.getElementById('difficulty-select');
 
 let gameInstance = null;
 
-const THEME_FILES = { /* ... as before ... */ };
-let currentTheme = 'light';
+const THEME_FILES = {
+    light: 'assets/css/light-theme.css',
+    dark: 'assets/css/dark-theme.css'
+};
+let currentTheme = 'light'; // Default theme
 
-function toggleTheme() { /* ... as before ... */ }
-function loadTheme() { /* ... as before ... */ }
+function toggleTheme() {
+    console.log('toggleTheme function called. Current theme before change:', currentTheme); // LOG
+    currentTheme = (currentTheme === 'light') ? 'dark' : 'light';
+    themeLink.setAttribute('href', THEME_FILES[currentTheme]);
+    localStorage.setItem('snakeGameTheme', currentTheme);
+    console.log(`Theme changed to ${currentTheme}. Link href: ${themeLink.getAttribute('href')}`); // LOG
+}
 
-/**
- * Populates the difficulty dropdown menu with Easy, Medium, Hard.
- */
+function loadTheme() {
+    const savedTheme = localStorage.getItem('snakeGameTheme');
+    if (savedTheme && THEME_FILES[savedTheme]) {
+        currentTheme = savedTheme;
+    }
+    themeLink.setAttribute('href', THEME_FILES[currentTheme]);
+    // console.log(`Theme loaded: ${currentTheme}`); // Optional log
+}
+
 function populateDifficultyOptions() {
     if (difficultySelectElement) {
-        difficultySelectElement.innerHTML = ''; // Clear existing options
-
-        // Iterate through the simplified DIFFICULTY_LEVELS enum/object
-        for (const levelKey in DIFFICULTY_LEVELS) { // e.g., EASY, MEDIUM, HARD
-            const levelValue = DIFFICULTY_LEVELS[levelKey]; // The string value like 'EASY'
-            const levelDisplayName = DIFFICULTY_SETTINGS[levelValue]?.name || levelValue; // Get "Easy" from settings
-
+        difficultySelectElement.innerHTML = '';
+        // Only Easy, Medium, Hard as per last request
+        const difficultyOrder = [DIFFICULTY_LEVELS.EASY, DIFFICULTY_LEVELS.MEDIUM, DIFFICULTY_LEVELS.HARD];
+        
+        difficultyOrder.forEach(levelKey => {
+            const levelValue = levelKey; // DIFFICULTY_LEVELS already provides the key as string
+            const levelDisplayName = DIFFICULTY_SETTINGS[levelValue]?.name || levelValue;
             const option = document.createElement('option');
-            option.value = levelValue; // Store the key, e.g., 'EASY'
-            option.textContent = levelDisplayName; // Display "Easy"
+            option.value = levelValue;
+            option.textContent = levelDisplayName;
             difficultySelectElement.appendChild(option);
-        }
+        });
 
         const savedDifficulty = localStorage.getItem('snakeGameDifficulty');
-        // Check if savedDifficulty is one of the valid new keys
-        if (savedDifficulty && DIFFICULTY_LEVELS[savedDifficulty]) {
+        if (savedDifficulty && DIFFICULTY_SETTINGS[savedDifficulty]) {
             difficultySelectElement.value = savedDifficulty;
         } else {
-            // Default to Medium if saved value is invalid or not found
             difficultySelectElement.value = DIFFICULTY_LEVELS.MEDIUM;
-            localStorage.setItem('snakeGameDifficulty', DIFFICULTY_LEVELS.MEDIUM); // Save default
+            localStorage.setItem('snakeGameDifficulty', DIFFICULTY_LEVELS.MEDIUM);
         }
     }
 }
 
 function handleDifficultyChange(event) {
-    const selectedDifficultyKey = event.target.value; // This will be 'EASY', 'MEDIUM', or 'HARD'
+    const selectedDifficultyKey = event.target.value;
     if (gameInstance && typeof gameInstance.setDifficulty === 'function') {
         gameInstance.setDifficulty(selectedDifficultyKey);
         localStorage.setItem('snakeGameDifficulty', selectedDifficultyKey);
@@ -57,10 +68,26 @@ function handleDifficultyChange(event) {
 
 function initGame() {
     loadTheme();
-    populateDifficultyOptions(); // Populate with new difficulty levels
+    populateDifficultyOptions();
     populateLegend();
 
-    if (themeToggleElement) { /* ... theme listener ... */ }
+    if (themeToggleElement) {
+        console.log("Attaching listeners to theme toggle element:", themeToggleElement); // LOG
+        themeToggleElement.addEventListener('click', () => {
+            console.log("Title CLICKED"); // LOG
+            toggleTheme();
+        });
+        themeToggleElement.addEventListener('touchend', (e) => {
+            console.log("Title TOUCHED (touchend)"); // LOG
+            e.preventDefault();
+            toggleTheme();
+            // It's possible both touchend and click fire.
+            // Consider a flag or more sophisticated handling if double toggling occurs.
+        });
+    } else {
+        console.error("Theme toggle element ('page-title-clickable') not found!");
+    }
+
     if (difficultySelectElement) {
         difficultySelectElement.addEventListener('change', handleDifficultyChange);
     } else {
@@ -70,10 +97,18 @@ function initGame() {
     try {
         const initialDifficultyKey = difficultySelectElement ? difficultySelectElement.value : DIFFICULTY_LEVELS.MEDIUM;
         gameInstance = new Game(
-            'gameCanvas', 'score', 'highscore',
-            'combo-display', null, initialDifficultyKey // Pass the key like 'MEDIUM'
+            'gameCanvas',
+            'score',
+            'highscore',
+            'combo-display',
+            null, 
+            initialDifficultyKey
         );
-    } catch (error) { /* ... error handling ... */ }
+    } catch (error) {
+        console.error("Failed to initialize game:", error);
+        const pageWrapper = document.querySelector('.page-wrapper') || document.body;
+        pageWrapper.innerHTML = `<p style="color: red; text-align: center;">Error initializing game. Please check console.</p>`;
+    }
 }
 
 document.addEventListener('DOMContentLoaded', initGame);
