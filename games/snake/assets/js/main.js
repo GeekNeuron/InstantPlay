@@ -27,7 +27,7 @@ function loadTheme() {
 }
 
 function initGame() {
-    console.log("Initializing Snake Game...");
+    console.log("Initializing Snake Game..."); // این باید اولین لاگ مربوط به بازی باشد
     loadTheme();
 
     if (themeToggleElement) {
@@ -41,14 +41,12 @@ function initGame() {
     }
 
     try {
-        // Saat ini messageOverlayId ارسال نمی‌شود، بنابراین UIManager از آن استفاده نخواهد کرد
-        // مگر اینکه یک div با id مربوطه در HTML و شناسه آن در اینجا پاس داده شود.
+        // در اینجا، هیچ شناسه‌ای برای messageOverlayId پاس داده نمی‌شود.
+        // بنابراین، در سازنده Game، مقدار messageOverlayId برابر null خواهد بود.
+        // و در نتیجه، resolvedMessageOverlayElement هم null شده و به UIManager پاس داده می‌شود.
         const gameInstance = new Game('gameCanvas', 'score', 'highscore');
-        // مثال برای استفاده از overlay:
-        // 1. در index.html بخش gameMessageOverlay را از کامنت خارج کنید.
-        // 2. در اینجا شناسه را پاس دهید:
-        // const gameInstance = new Game('gameCanvas', 'score', 'highscore', 'gameMessageOverlay');
-        console.log("Game instance should be created now.");
+        
+        console.log("Game instance created successfully."); // این لاگ باید بعد از اجرای سازنده Game نمایش داده شود
     } catch (error) {
         console.error("Failed to initialize game:", error);
         const gameContainer = document.querySelector('.game-container');
