@@ -1,198 +1,259 @@
 // assets/js/powerups.js
 
-import { getRandomGridPosition } from './utils.js';
+import { getRandomGridPosition, arePositionsEqual } from './utils.js';
 import { GRID_SIZE } from './constants.js';
 
 /**
- * @fileoverview Manages power-ups and power-downs in the game.
+ * @fileoverview Manages collectible power-ups and power-downs in the game.
+ * Distinct from food effects, these are items that appear on the board to be collected.
  */
 
-export const POWERUP_TYPES = {
-    SPEED_BOOST: 'speedBoost',
-    SLOW_MOTION: 'slowMotion',
-    SCORE_MULTIPLIER: 'scoreMultiplier',
-    SHIELD: 'shield', // Pass through self or one obstacle
-    SHORTEN_TAIL: 'shortenTail',
-    // Add more types as features are developed
+// Define various types of power-ups/downs
+export const POWERUP_COLLECTIBLE_TYPES = {
+    SHIELD: 'shield',
+    SCORE_BOOST_ITEM: 'scoreBoostItem', // e.g., a bag of points
+    // INVINCIBILITY: 'invincibility', // Could allow passing through self/walls
+    // CLEAR_OBSTACLES: 'clearObstacles',
+    // ... more complex power-ups
 };
 
-// Define appearance and duration for each power-up
+// Define properties for each collectible power-up
 const POWERUP_PROPERTIES = {
-    [POWERUP_TYPES.SPEED_BOOST]: { color: '#42f5b0', duration: 5000, symbol: 'S+' }, // 5 seconds
-    [POWERUP_TYPES.SLOW_MOTION]: { color: '#f5ad42', duration: 5000, symbol: 'S-' },
-    [POWERUP_TYPES.SCORE_MULTIPLIER]: { color: '#f542dd', duration: 10000, symbol: '2x' },
-    [POWERUP_TYPES.SHIELD]: { color: '#429ef5', duration: 7000, symbol: 'H' },
-    [POWERUP_TYPES.SHORTEN_TAIL]: { color: '#ffffff', symbol: 'T-' }, // Instantaneous
+    [POWERUP_COLLECTIBLE_TYPES.SHIELD]: {
+        color: 'var(--powerup-color-shield)', // e.g., a blue
+        duration: 10000, // Shield lasts for 10 seconds or one hit
+        symbol: '🛡️', // Shield emoji or letter 'S'
+        effect: (game) => { game.isShieldActive = true; game.shieldHitCount = 0; console.log("Shield Activated!"); },
+        deactivate: (game) => { game.isShieldActive = false; console.log("Shield Deactivated."); },
+        onHitWhileActive: (game) => { // Special logic for shield
+            game.shieldHitCount = (game.shieldHitCount || 0) + 1;
+            if (game.shieldHitCount >= 1) { // Shield breaks after 1 hit
+                return true; // true means shield should break/deactivate
+            }
+            return false; // false means shield remains active
+        }
+    },
+    [POWERUP_COLLECTIBLE_TYPES.SCORE_BOOST_ITEM]: {
+        color: 'var(--powerup-color-scoreboost)', // e.g., a green or gold
+        symbol: '💰', // Money bag emoji or '$'
+        scoreAmount: 100, // Instant score boost
+        effect: (game, powerUpData) => { game.score += powerUpData.scoreAmount; game.uiManager.updateScore(game.score); console.log(`+${powerUpData.scoreAmount} points!`); },
+        duration: null, // Instantaneous
+    },
+    // Define more power-ups here
 };
 
 
 export class PowerUpManager {
     /**
-     * @param {Board} board Reference to the game board
-     * @param {Snake} snake Reference to the snake
-     * @param {Game} game Reference to the main game instance for applying effects
+     * @param {Board} board Reference to the game board.
+     * @param {Snake} snake Reference to the snake.
+     * @param {Game} game Reference to the main game instance for applying effects and sounds.
      */
     constructor(board, snake, game) {
         this.board = board;
         this.snake = snake;
-        this.game = game; // To apply global effects like score multiplier or game speed
-        this.activePowerUps = []; // Power-ups currently on the board
-        this.activeEffects = []; // Effects currently applied to the snake/game
-        this.spawnInterval = 15000; // Spawn a power-up every 15 seconds (example)
+        this.game = game;
+        this.activePowerUpItems = []; // Power-ups currently visible on the board
+        this.activeEffects = [];      // Effects currently applied to the snake/game from collectibles
+
+        this.spawnInterval = 10000; // Try to spawn a power-up collectible every 10-20 seconds (example)
         this.lastSpawnTime = 0;
+        this.maxOnScreen = 1; // Max number of collectible power-ups on screen at once
         this.gridSize = GRID_SIZE;
     }
 
     /**
-     * Updates power-up states, spawns new ones, and manages active effects.
-     * @param {number} currentTime The current game time.
+     * Updates power-up states: spawns new ones, checks for collection, manages active effect durations.
+     * @param {number} currentTime The current game time from performance.now().
      */
     update(currentTime) {
-        // Spawn new power-ups periodically
-        if (currentTime - this.lastSpawnTime > this.spawnInterval) {
-            this.spawnRandomPowerUp();
+        // Try to spawn new power-up items
+        if (this.activePowerUpItems.length < this.maxOnScreen && (currentTime - this.lastSpawnTime > this.spawnInterval + Math.random() * 5000) ) {
+            this.spawnRandomPowerUpItem();
             this.lastSpawnTime = currentTime;
         }
 
-        // Check for collected power-ups
+        // Check for collected power-up items by snake's head
         const headPos = this.snake.getHeadPosition();
-        this.activePowerUps = this.activePowerUps.filter(powerUp => {
-            if (headPos.x === powerUp.position.x && headPos.y === powerUp.position.y) {
-                this.activateEffect(powerUp, currentTime);
-                this.game.sfx.play('powerUp'); // Play sound effect
-                return false; // Remove from board
+        this.activePowerUpItems = this.activePowerUpItems.filter(item => {
+            if (arePositionsEqual(headPos, item.position)) {
+                this.applyCollectibleEffect(item, currentTime);
+                this.game.sfx.play('powerUp'); // Play sound effect for collecting
+                return false; // Remove item from board
             }
+            // Optional: Remove power-ups if they expire on the board
+            // if (item.lifeSpan && currentTime > item.spawnTime + item.lifeSpan) return false;
             return true;
         });
 
-        // Update durations of active effects
+        // Update durations of active effects from collectibles
         this.activeEffects = this.activeEffects.filter(effect => {
-            if (effect.duration && currentTime >= effect.endTime) {
-                this.deactivateEffect(effect);
+            if (effect.endTime && currentTime >= effect.endTime) {
+                if (effect.properties.deactivate) {
+                    effect.properties.deactivate(this.game, effect.data);
+                }
                 return false; // Effect expired
             }
             return true;
         });
     }
 
-    spawnRandomPowerUp() {
-        if (this.activePowerUps.length >= 2) return; // Limit number of power-ups on screen
+    spawnRandomPowerUpItem() {
+        const availableTypes = Object.keys(POWERUP_COLLECTIBLE_TYPES);
+        if (availableTypes.length === 0) return;
 
-        const typeKeys = Object.keys(POWERUP_TYPES);
-        const randomTypeKey = typeKeys[Math.floor(Math.random() * typeKeys.length)];
-        const type = POWERUP_TYPES[randomTypeKey];
+        const randomTypeKey = availableTypes[Math.floor(Math.random() * availableTypes.length)];
+        const type = POWERUP_COLLECTIBLE_TYPES[randomTypeKey];
         const properties = POWERUP_PROPERTIES[type];
 
+        if (!properties) {
+            console.warn(`Properties for power-up type ${type} not found.`);
+            return;
+        }
+
         let position;
+        let attempts = 0;
+        const maxAttempts = ROWS * COLS;
         do {
             position = getRandomGridPosition(this.board.cols, this.board.rows);
+            attempts++;
+            if (attempts > maxAttempts) {
+                console.warn("Could not find a free spot for power-up item.");
+                return; // Don't spawn if no spot found
+            }
         } while (
             this.board.isObstacle(position) ||
             this.snake.isSnakeSegment(position) ||
-            this.activePowerUps.some(p => p.position.x === position.x && p.position.y === position.y) ||
-            (this.game.food && this.game.food.getPosition().x === position.x && this.game.food.getPosition().y === position.y) // Avoid food
+            this.isPowerUpAt(position) || // Check against other collectible items
+            (this.game.food && arePositionsEqual(this.game.food.getPosition(), position)) // Avoid food
         );
 
-        this.activePowerUps.push({
+        this.activePowerUpItems.push({
             type: type,
             position: position,
-            color: properties.color,
-            symbol: properties.symbol, // For drawing
-            spawnTime: performance.now(), // For timed life if needed
-            properties: properties
+            symbol: properties.symbol,
+            color: properties.color, // CSS variable name
+            properties: properties,    // Full properties object
+            spawnTime: performance.now(),
+            // lifeSpan: 20000 // Optional: e.g., power-up disappears after 20s
         });
+        console.log(`Spawned power-up item: ${type} at ${position.x},${position.y}`);
     }
 
-    activateEffect(powerUp, currentTime) {
-        console.log(`Activating power-up: ${powerUp.type}`);
-        const effect = {
-            type: powerUp.type,
-            startTime: currentTime,
-            duration: powerUp.properties.duration,
-            endTime: powerUp.properties.duration ? currentTime + powerUp.properties.duration : null,
-            originalValue: null // Store original value if changed (e.g., speed)
-        };
+    applyCollectibleEffect(item, currentTime) {
+        console.log(`Collected power-up: ${item.type}`);
+        const properties = item.properties;
 
-        switch (powerUp.type) {
-            case POWERUP_TYPES.SPEED_BOOST:
-                effect.originalValue = this.snake.speed;
-                this.snake.speed *= 1.5; // Increase speed by 50%
-                this.game.updateGameSpeed(); // Game class method to update interval
-                break;
-            case POWERUP_TYPES.SLOW_MOTION:
-                effect.originalValue = this.snake.speed;
-                this.snake.speed *= 0.66; // Decrease speed
-                this.game.updateGameSpeed();
-                break;
-            case POWERUP_TYPES.SCORE_MULTIPLIER:
-                effect.originalValue = this.game.scoreMultiplier || 1;
-                this.game.scoreMultiplier = (this.game.scoreMultiplier || 1) * 2;
-                break;
-            case POWERUP_TYPES.SHIELD:
-                this.game.isShieldActive = true; // A flag in the game or snake object
-                break;
-            case POWERUP_TYPES.SHORTEN_TAIL:
-                this.snake.body.splice(Math.max(1, Math.floor(this.snake.body.length / 2))); // Remove half, keep head
-                if (this.snake.body.length === 0) this.snake.reset(this.snake.body[0].x, this.snake.body[0].y); // Should not happen ideally
-                break;
+        if (properties.effect) {
+            properties.effect(this.game, properties); // Pass game and specific power-up data
         }
-        if(effect.duration) { // Only add to activeEffects if it has a duration
-            this.activeEffects.push(effect);
-        }
-    }
 
-    deactivateEffect(effect) {
-        console.log(`Deactivating effect: ${effect.type}`);
-        switch (effect.type) {
-            case POWERUP_TYPES.SPEED_BOOST:
-            case POWERUP_TYPES.SLOW_MOTION:
-                this.snake.speed = effect.originalValue;
-                this.game.updateGameSpeed();
-                break;
-            case POWERUP_TYPES.SCORE_MULTIPLIER:
-                this.game.scoreMultiplier = effect.originalValue;
-                break;
-            case POWERUP_TYPES.SHIELD:
-                this.game.isShieldActive = false;
-                break;
-            // SHORTEN_TAIL is instantaneous, no deactivation needed
+        // If the effect has a duration and a deactivate function, add it to activeEffects
+        if (properties.duration && properties.deactivate) {
+            this.activeEffects.push({
+                type: item.type,
+                endTime: currentTime + properties.duration,
+                properties: properties, // Store properties for deactivation logic
+                data: properties // Pass specific data if needed for deactivation
+            });
         }
     }
 
     /**
-     * Draws active power-ups on the board.
+     * Checks if a specific game effect (like Shield) is currently active.
+     * @param {string} effectType - The type of effect to check (e.g., POWERUP_COLLECTIBLE_TYPES.SHIELD).
+     * @returns {boolean} True if the effect is active.
+     */
+    isEffectActive(effectType) {
+        return this.activeEffects.some(effect => effect.type === effectType);
+    }
+
+    /**
+     * Called when snake collides and an effect (like Shield) might absorb the hit.
+     * @param {string} effectType - The type of effect (e.g., POWERUP_COLLECTIBLE_TYPES.SHIELD).
+     * @returns {boolean} True if the effect absorbed the hit and should be consumed/deactivated.
+     */
+    handleHitWithEffect(effectType) {
+        const effectIndex = this.activeEffects.findIndex(effect => effect.type === effectType);
+        if (effectIndex > -1) {
+            const effect = this.activeEffects[effectIndex];
+            if (effect.properties.onHitWhileActive) {
+                const shouldDeactivate = effect.properties.onHitWhileActive(this.game);
+                if (shouldDeactivate) {
+                    if (effect.properties.deactivate) {
+                        effect.properties.deactivate(this.game, effect.data);
+                    }
+                    this.activeEffects.splice(effectIndex, 1); // Remove effect
+                    return true; // Hit was absorbed, effect ended
+                }
+                return true; // Hit was absorbed, effect remains
+            }
+        }
+        return false; // No such active effect to absorb the hit
+    }
+
+
+    /**
+     * Draws active power-up items on the board.
      * @param {CanvasRenderingContext2D} context
      */
     draw(context) {
-        this.activePowerUps.forEach(powerUp => {
-            context.fillStyle = powerUp.color;
-            const x = powerUp.position.x * this.gridSize;
-            const y = powerUp.position.y * this.gridSize;
+        this.activePowerUpItems.forEach(item => {
+            const itemColorValue = getCssVariable(item.color, 'purple'); // Fallback
+            context.fillStyle = itemColorValue;
 
-            // Draw a circle or a rounded rect
+            const x = item.position.x * this.gridSize;
+            const y = item.position.y * this.gridSize;
+
+            // Draw a circle or a rounded rect for the item
             context.beginPath();
             context.arc(
                 x + this.gridSize / 2,
                 y + this.gridSize / 2,
-                this.gridSize / 2.2, // Slightly smaller than cell
+                this.gridSize / 2.1, // Slightly smaller than cell for distinct look
                 0, 2 * Math.PI
             );
             context.fill();
 
-            // Draw symbol
-            context.fillStyle = '#000'; // Black or white for contrast
-            context.font = `bold ${this.gridSize / 2}px Arial`;
+            // Draw symbol (emoji or text)
+            context.fillStyle = getCssVariable('var(--text-color-on-accent)', '#FFFFFF'); // Text color on power-up
+            context.font = `bold ${this.gridSize / 1.8}px Arial`; // Adjust size as needed
             context.textAlign = 'center';
             context.textBaseline = 'middle';
-            context.fillText(powerUp.symbol, x + this.gridSize / 2, y + this.gridSize / 2);
+            context.fillText(item.symbol, x + this.gridSize / 2, y + this.gridSize / 2 + 1); // Small offset for better centering of emojis
         });
     }
 
+    /**
+     * Checks if there is an active collectible power-up item at the given grid position.
+     * @param {{x: number, y: number}} position - The grid position to check.
+     * @returns {boolean} True if a power-up item exists at the position.
+     */
+    isPowerUpAt(position) {
+        return this.activePowerUpItems.some(p => arePositionsEqual(p.position, position));
+    }
+
+
     reset() {
-        this.activePowerUps = [];
-        // Deactivate all ongoing effects cleanly
-        this.activeEffects.forEach(effect => this.deactivateEffect(effect)); // Ensure cleanup
+        // Deactivate any ongoing effects from collectibles
+        this.activeEffects.forEach(effect => {
+            if (effect.properties.deactivate) {
+                effect.properties.deactivate(this.game, effect.data);
+            }
+        });
         this.activeEffects = [];
-        this.lastSpawnTime = 0; // Reset spawn timer
+        this.activePowerUpItems = [];
+        this.lastSpawnTime = performance.now(); // Reset spawn timer for fairness on new game
     }
 }
+// Add to theme files: --powerup-color-shield, --powerup-color-scoreboost, --text-color-on-accent
+// e.g. in light-theme.css:
+// --powerup-color-shield: #2196f3; /* Blue */
+// --powerup-color-scoreboost: #4caf50; /* Green */
+// --text-color-on-accent: #FFFFFF;
+//
+// e.g. in dark-theme.css:
+// --powerup-color-shield: #90caf9; /* Lighter Blue */
+// --powerup-color-scoreboost: #a5d6a7; /* Lighter Green */
+// --text-color-on-accent: #000000; (or keep #FFFFFF if background is dark enough)
