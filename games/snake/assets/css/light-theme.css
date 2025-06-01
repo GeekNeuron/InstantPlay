@@ -33,10 +33,12 @@
     --powerup-color-score-multiplier: #ffc107;      /* Gold/Yellow for score multiplier item */
     --text-color-on-accent: #FFFFFF;                /* Text color on top of power-up items (if their background is colored) */
 
-    /* --- Modals (if used) --- */
-    --modal-overlay-bg: rgba(33, 37, 41, 0.5);      /* Semi-transparent dark overlay for modal */
+    /* --- Modals & Overlays --- */
+    --modal-overlay-bg: rgba(33, 37, 41, 0.65);     /* Semi-transparent dark overlay for modal/pause */
     --modal-content-bg: #FFFFFF;                    /* Modal content background: white */
     --modal-text-color: var(--text-color);          /* Modal text color */
+    --text-color-on-overlay: #FFFFFF;               /* Text color for messages on dark overlays (like Ready, Game Over, Pause messages drawn on canvas) */
+
 
     /* --- Buttons (inside modals or other UI parts) --- */
     --button-bg: var(--accent-color);
@@ -44,16 +46,23 @@
     --button-hover-bg: #0056b3;                     /* Darker blue for button hover */
 
     /* --- Theme Switcher (appearance of the switcher when light theme is active) --- */
-    /* These variables can be used if specific styling for the theme switcher is needed in this theme */
-    /* Example:
-    --theme-switcher-bg-light-active: #343a40;
-    --theme-switcher-text-light-active: #FFFFFF;
-    --theme-switcher-border-light-active: #495057;
-    */
+    /* Style directly in style.css or override here if needed */
+    /* --theme-switcher-bg-light-active: #343a40; */
+    /* --theme-switcher-text-light-active: #FFFFFF; */
+    /* --theme-switcher-border-light-active: #495057; */
 }
 
 /*
    Specific overrides for elements when light theme is active.
    Most base styles are in style.css and use the variables defined above.
    The body, header h1, game-container etc. in style.css will automatically pick these up.
+*/
+
+/* Example: If the theme switcher (header h1) needs specific styling in light mode */
+/*
+header h1#page-title-clickable {
+    background-color: var(--theme-switcher-bg-light-active, transparent);
+    color: var(--theme-switcher-text-light-active, var(--header-color));
+    border-color: var(--theme-switcher-border-light-active, transparent);
+}
 */
