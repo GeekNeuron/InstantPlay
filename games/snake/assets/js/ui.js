@@ -10,7 +10,7 @@ export class UIManager {
     constructor(scoreElement, highScoreElement, messageOverlayElement = null, gameInstance = null) {
         this.scoreElement = scoreElement;
         this.highScoreElement = highScoreElement;
-        this.messageOverlayElement = messageOverlayElement; // Should be a DOM element or null
+        this.messageOverlayElement = messageOverlayElement; // This is the parameter received
         this.game = gameInstance;
 
         this.currentScore = 0;
@@ -20,19 +20,29 @@ export class UIManager {
         this.updateScoreDisplay();
         this.updateHighScoreDisplay();
 
-        // Setup button listener ONLY if messageOverlayElement is a valid DOM element
-        if (this.messageOverlayElement && typeof this.messageOverlayElement.querySelector === 'function') {
-            const messageButton = this.messageOverlayElement.querySelector('#messageButton'); // Assumes a button with this ID exists in the overlay
+        // --- بررسی دقیق‌تر و اصلاح شده برای messageOverlayElement ---
+        if (this.messageOverlayElement &&
+            typeof this.messageOverlayElement === 'object' && // باید یک آبجکت باشد (عناصر DOM آبجکت هستند)
+            typeof this.messageOverlayElement.querySelector === 'function') { // باید متد querySelector را داشته باشد
+
+            // این بخش فقط در صورتی اجرا می‌شود که messageOverlayElement یک عنصر DOM معتبر باشد
+            const messageButton = this.messageOverlayElement.querySelector('#messageButton'); // فرض می‌کنیم دکمه‌ای با این ID در overlay وجود دارد
             if (messageButton) {
                 messageButton.addEventListener('click', () => {
                     this.hideMessageOverlay();
-                    // Potentially add specific button actions if needed, passed via showMessageOverlay
+                    // اینجا می‌توان اقدامات دیگری برای دکمه تعریف کرد اگر لازم باشد
                 });
             }
-        } else if (messageOverlayElement) {
-            // This case means messageOverlayElement was truthy but not a valid element for querySelector
-            console.warn("UIManager: messageOverlayElement was provided but is not a valid DOM element for querySelector.", messageOverlayElement);
+        } else if (this.messageOverlayElement) {
+            // این بخش اجرا می‌شود اگر messageOverlayElement مقدار داشته باشد (null یا undefined نباشد)
+            // اما یک عنصر DOM معتبر با متد querySelector نباشد.
+            console.warn(
+                "UIManager Constructor: 'messageOverlayElement' provided but it's not a valid DOM element with 'querySelector' method.",
+                "Value received for messageOverlayElement:", this.messageOverlayElement,
+                "Type:", typeof this.messageOverlayElement
+            );
         }
+        // اگر messageOverlayElement برابر با null یا undefined باشد، هر دو شرط بالا false خواهند بود و خطایی رخ نمی‌دهد.
     }
 
     updateScore(newScore) {
@@ -82,21 +92,14 @@ export class UIManager {
         }
     }
 
-    /**
-     * Displays a message using the modal overlay if available and configured.
-     * @param {string} titleText - The title for the message.
-     * @param {string} bodyText - The main content of the message.
-     * @param {string} [buttonText='OK'] - Text for the action button.
-     * @param {function} [buttonAction=null] - Custom action for the button click. If null, default is to hide overlay.
-     */
     showMessageOverlay(titleText, bodyText, buttonText = 'OK', buttonAction = null) {
         if (!this.messageOverlayElement || typeof this.messageOverlayElement.querySelector !== 'function') {
-            console.log(`UI Message (Overlay not available): ${titleText} - ${bodyText}`);
+            console.log(`UI Message (Overlay not available or invalid): ${titleText} - ${bodyText}`);
             return;
         }
 
-        const titleEl = this.messageOverlayElement.querySelector('#messageTitle'); // Assumes an element with id="messageTitle"
-        const bodyEl = this.messageOverlayElement.querySelector('#messageTextBody');   // Assumes an element with id="messageTextBody"
+        const titleEl = this.messageOverlayElement.querySelector('#messageTitle');
+        const bodyEl = this.messageOverlayElement.querySelector('#messageTextBody');
         const buttonEl = this.messageOverlayElement.querySelector('#messageButton');
 
         if (titleEl) titleEl.textContent = titleText;
@@ -104,17 +107,16 @@ export class UIManager {
 
         if (buttonEl) {
             buttonEl.textContent = buttonText;
-            // Clone and replace to ensure old event listeners are removed before adding new one
             const newButton = buttonEl.cloneNode(true);
             buttonEl.parentNode.replaceChild(newButton, buttonEl);
             newButton.addEventListener('click', () => {
                 if (buttonAction && typeof buttonAction === 'function') {
                     buttonAction();
                 }
-                this.hideMessageOverlay(); // Always hide after action or by default
+                this.hideMessageOverlay();
             });
         }
-        this.messageOverlayElement.style.display = 'flex'; // Or 'block' or your preferred display style for modal
+        this.messageOverlayElement.style.display = 'flex';
     }
 
     hideMessageOverlay() {
