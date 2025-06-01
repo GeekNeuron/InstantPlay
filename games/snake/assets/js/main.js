@@ -58,7 +58,7 @@ function initGame() {
             'score',
             'highscore',
             'combo-display', // ID for the combo display span
-            null             // Pass null for messageOverlayId if not using the modal overlay yet
+            null             // Pass null for messageOverlayId if not using the modal overlay from HTML
         );
         // console.log("Game instance created successfully."); // Log was here
     } catch (error) {
