@@ -42,5 +42,16 @@
         "game_url": "games/sudoku/index.html",
         "genre_en": "Puzzle",
         "genre_fa": "پازل"
-    }
+    },
+    {
+    "id": "game_snake",
+    "name_en": "Snake",
+    "name_fa": "مار",
+    "description_en": "Control the snake to eat food, grow longer, and avoid hitting walls or its own tail. A classic arcade game.",
+    "description_fa": "مار را کنترل کنید تا غذا بخورد، بلندتر شود و از برخورد با دیوارها یا دم خود جلوگیری کند. یک بازی آرکید کلاسیک.",
+    "thumbnail_url": "assets/images/snake_thumb.png",
+    "game_url": "games/snake/index.html",
+    "genre_en": "Arcade",
+    "genre_fa": "آرکید"
+}
 ]
