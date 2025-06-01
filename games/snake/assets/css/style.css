@@ -6,8 +6,8 @@
     --border-radius-medium: 8px;
     --border-radius-large: 12px;
     --transition-speed: 0.25s;
-    --page-wrapper-max-width: 550px; /* For legend to reference */
-    --grid-size-js: 15px; /* Default, for legend item icon sizing */
+    --page-wrapper-max-width: 550px; /* For legend and overall page to reference */
+    --grid-size-js: 15px; /* Default, for legend item icon sizing if needed by CSS */
 }
 
 * {
@@ -21,10 +21,10 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: flex-start; /* Align content to the top for normal page flow */
     min-height: 100vh;
-    background-color: var(--bg-color);
-    color: var(--text-color);
+    background-color: var(--bg-color); /* Defined in active theme file */
+    color: var(--text-color);           /* Defined in active theme file */
     transition: background-color var(--transition-speed) ease-in-out, color var(--transition-speed) ease-in-out;
     padding: 10px;
     text-align: center;
@@ -39,73 +39,74 @@ body {
     align-items: center;
 }
 
+/* Settings Box (Header) - Now encompasses title, controls, game container, and legend */
 .settings-box {
     width: 100%;
     padding: 15px;
     margin-bottom: 15px;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: var(--game-bg-color); /* Renamed from --settings-box-bg for clarity with game container role */
+    flex-direction: column; /* Stack children: title, controls-panel, game-container, legend */
+    align-items: center;    /* Center title and controls panel if they don't take full width */
+    background-color: var(--game-bg-color); /* Uses game-bg-color from theme */
     border-radius: var(--border-radius-large);
     border: 1px solid var(--border-color);
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-h1.game-title-header {
+h1.game-title-header { /* Title, also acts as theme switcher */
     font-size: 2.4rem;
     font-weight: 700;
-    color: var(--header-text-color);
-    margin: 0 0 15px 0;
+    color: var(--header-text-color); /* Specific variable for title text */
+    margin: 0 0 15px 0; /* Margin below title */
     padding: 5px;
-    background-color: transparent;
-    border: none;
+    background-color: transparent; /* Ensure title background is transparent */
+    border: none; /* No border for the title itself */
     cursor: pointer;
     user-select: none;
     text-align: center;
-    width: 100%;
+    width: 100%; /* Title can take full width */
 }
 
 .controls-panel {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; /* Left scores, Right difficulty */
     align-items: center;
-    width: 100%;
-    gap: 10px;
-    margin-bottom: 15px;
+    width: 100%; /* Controls panel takes full width */
+    gap: 10px; /* Gap between left and right sections */
+    margin-bottom: 15px; /* Space between controls and game-container */
 }
 
 .scores-group-left {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 10px; /* Gap between score and high score boxes */
 }
 
 .score-box {
-    background-color: var(--score-box-bg);
-    color: var(--score-box-text);
+    background-color: var(--score-box-bg); /* From theme */
+    color: var(--score-box-text);       /* From theme */
     padding: 6px 10px;
     border-radius: var(--border-radius-small);
     font-size: 0.85rem;
     font-weight: 500;
     text-align: center;
-    min-width: 100px;
+    min-width: 100px; /* Ensure score boxes have some width */
 }
 
-.difficulty-control { /* Used for header-right-section */
+.difficulty-control { /* Class used by header-right-section */
     display: flex;
     align-items: center;
     gap: 8px;
     font-size: 0.9rem;
-    color: var(--text-color-muted);
+    color: var(--text-color-muted); /* From theme */
 }
 
 #difficulty-select {
     padding: 6px 8px;
     border-radius: var(--border-radius-small);
-    border: 1px solid var(--border-color);
-    background-color: var(--canvas-bg-color);
-    color: var(--text-color);
+    border: 1px solid var(--border-color); /* From theme */
+    background-color: var(--canvas-bg-color); /* Use a subtle background, from theme */
+    color: var(--text-color); /* From theme */
     font-family: var(--font-main);
     font-size: 0.9rem;
     cursor: pointer;
@@ -113,32 +114,33 @@ h1.game-title-header {
 
 #difficulty-select:focus {
     outline: none;
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 2px var(--accent-color-translucent, rgba(0, 123, 255, 0.25));
+    border-color: var(--accent-color); /* From theme */
+    box-shadow: 0 0 0 2px var(--accent-color-translucent, rgba(0, 123, 255, 0.25)); /* From theme */
 }
 
+/* Game Container - Now inside settings-box */
 .game-container {
-    padding: 0;
-    border: none;
-    box-shadow: none;
-    background-color: transparent;
+    padding: 0; /* Settings-box provides outer padding */
+    border: none; /* Border is on settings-box */
+    box-shadow: none; /* Shadow is on settings-box */
+    background-color: transparent; /* Game container itself is transparent */
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 100%; /* Takes full width of its parent (.settings-box) */
     max-width: 100%;
 }
 
-.game-header-combo {
+.game-header-combo { /* Header for combo, inside game-container */
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 8px 10px;
-    margin-bottom: 8px;
+    margin-bottom: 8px; /* Space above canvas */
     font-size: 1rem;
-    color: var(--accent-color);
+    color: var(--accent-color); /* Combo text color from theme */
     min-height: 28px;
-    background-color: var(--canvas-bg-color);
-    border-radius: var(--border-radius-medium) var(--border-radius-medium) 0 0;
+    background-color: var(--canvas-bg-color); /* Give combo header same bg as canvas */
+    border-radius: var(--border-radius-medium) var(--border-radius-medium) 0 0; /* Round top corners */
 }
 
 #combo-display {
@@ -148,38 +150,32 @@ h1.game-title-header {
 
 #gameCanvas {
     display: block;
-    width: 100%;
-    height: auto;
-    max-height: calc(80vh - 180px);
-    object-fit: contain;
-    border-radius: 0 0 var(--border-radius-medium) var(--border-radius-medium);
-    background-color: var(--canvas-bg-color);
+    width: 100%; /* Canvas scales to container width */
+    height: auto; /* Aspect ratio maintained by JS width/height attributes */
+    max-height: calc(80vh - 180px); /* Max height considering elements above and below within viewport */
+    object-fit: contain; /* Should ideally not be needed if JS sets aspect ratio correctly */
+    border-radius: 0 0 var(--border-radius-medium) var(--border-radius-medium); /* Round bottom corners */
+    background-color: var(--canvas-bg-color); /* Explicitly set canvas background */
 }
 
-/* Game Legend Styling */
+/* Game Legend Styling - Now inside settings-box, below game-container */
 .game-legend {
-    width: 100%;
-    /* max-width is inherited from .page-wrapper if needed, or set explicitly */
-    margin-top: 20px;
-    padding: 15px;
-    background-color: var(--game-bg-color); /* Use theme's game background color */
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-medium);
+    width: 100%; /* Takes full width of settings-box */
+    margin-top: 15px; /* Space between game-container and legend */
+    padding: 10px;
+    /* background-color: var(--canvas-bg-color); */ /* Optional: if different bg desired, or keep it same as settings-box-bg */
+    border-top: 1px solid var(--border-color); /* Optional: a separator line */
+    border-radius: 0 0 var(--border-radius-medium) var(--border-radius-medium); /* If it's the last element in settings-box */
     text-align: center;
 }
 
-.legend-title {
-    font-size: 1.2rem;
-    color: var(--text-color);
-    margin-bottom: 15px;
-    font-weight: 600;
-}
+/* .legend-title was removed from HTML, so style is not needed */
 
 .legend-items-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 15px; /* Gap between legend items */
+    gap: 12px;
 }
 
 .legend-item {
@@ -194,28 +190,28 @@ h1.game-title-header {
 }
 
 .legend-item:hover, .legend-item:focus {
-    background-color: var(--canvas-bg-color); /* Subtle hover/focus effect */
+    background-color: var(--canvas-bg-color); /* Subtle hover/focus effect using canvas bg color */
     outline: none;
 }
 
 .legend-item-icon {
-    width: calc(var(--grid-size-js) * 1.8); /* Using CSS variable set from JS GRID_SIZE */
+    width: calc(var(--grid-size-js) * 1.8); /* Uses CSS var for base size */
     height: calc(var(--grid-size-js) * 1.8);
-    border-radius: 4px; /* Slightly rounded square */
+    border-radius: 4px;
     margin-bottom: 5px;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: calc(var(--grid-size-js) * 1.2); /* For emoji/symbol icons */
-    border: 1px solid var(--border-color); /* Subtle border for icon */
-    overflow: hidden; /* In case symbol is too big */
+    border: 1px solid var(--border-color);
+    overflow: hidden;
 }
 
 .legend-item-name {
     font-size: 0.75rem;
     color: var(--text-color-muted);
     margin-top: 3px;
-    max-width: 100%; /* Ensure name doesn't overflow item width */
+    max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -223,7 +219,7 @@ h1.game-title-header {
 
 /* Legend Info Bubble (Tooltip) Styling */
 .legend-info-bubble {
-    background-color: var(--modal-content-bg); /* Consistent with modal styling */
+    background-color: var(--modal-content-bg);
     color: var(--modal-text-color);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-medium);
@@ -233,33 +229,32 @@ h1.game-title-header {
     max-width: 280px;
     text-align: left;
     opacity: 0;
-    visibility: hidden; /* Use visibility for smoother transitions with transform */
+    visibility: hidden;
     transform: translateY(15px) scale(0.95);
-    transition: opacity 0.25s ease-out, transform 0.25s ease-out, visibility 0s 0.25s; /* Delay visibility change */
-    pointer-events: none; /* Bubble itself should not be interactive for clicks meant for page */
+    transition: opacity 0.25s ease-out, transform 0.25s ease-out, visibility 0s linear 0.25s;
+    pointer-events: none;
 }
 
 .legend-info-bubble.show {
     opacity: 1;
     visibility: visible;
     transform: translateY(0) scale(1);
-    transition: opacity 0.25s ease-out, transform 0.25s ease-out, visibility 0s 0s;
+    transition-delay: 0s;
 }
 
 .legend-info-bubble .bubble-title {
     font-weight: bold;
-    font-size: 1rem;
+    font-size: 1rem; /* Increased slightly */
     display: block;
     margin-bottom: 6px;
     color: var(--accent-color);
 }
 
 .legend-info-bubble .bubble-description {
-    font-size: 0.9rem;
+    font-size: 0.9rem; /* Increased slightly */
     line-height: 1.45;
 }
 
-/* Arrow for the bubble (basic top arrow) */
 .legend-info-bubble .bubble-arrow {
     content: "";
     position: absolute;
@@ -267,11 +262,8 @@ h1.game-title-header {
     height: 0;
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
-    border-bottom: 8px solid var(--modal-content-bg); /* Arrow color matches bubble bg */
-    /* Positioning of arrow will be handled by JS based on bubble placement relative to target */
-    /* Example: top: -8px; left: calc(50% - 8px); */
+    /* Arrow color and direction will be set by JS or more specific CSS if needed */
 }
-
 
 footer {
     margin-top: 20px;
@@ -280,15 +272,111 @@ footer {
     color: var(--text-color-muted);
 }
 
-/* Achievement Notification Popup (remains the same) */
-.achievement-popup { /* ... */ }
-.achievement-popup.show { /* ... */ }
-/* ... (other achievement styles) ... */
+/* Achievement Notification Popup */
+.achievement-popup {
+    position: fixed;
+    bottom: -100%; 
+    right: 10px;
+    background-color: var(--accent-color);
+    color: var(--button-text); 
+    padding: 12px 18px;
+    border-radius: var(--border-radius-medium);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    opacity: 0;
+    transform: translateY(0);
+    transition: opacity 0.5s ease-in-out, bottom 0.5s ease-in-out;
+    max-width: calc(100% - 20px);
+    width: auto;
+    min-height: 50px;
+}
+.achievement-popup.show { opacity: 1; bottom: 10px; }
+.achievement-popup .achievement-icon { font-size: 1.6rem; margin-right: 12px; line-height: 1; }
+.achievement-popup .achievement-text { display: flex; flex-direction: column; text-align: left; }
+.achievement-popup .achievement-title { font-weight: bold; font-size: 0.95rem; margin-bottom: 2px; }
+.achievement-popup .achievement-desc { font-size: 0.8rem; opacity: 0.9; }
 
-/* Basic Modal Styling (remains the same) */
-.modal { /* ... */ }
-.modal-content { /* ... */ }
-/* ... (other modal styles) ... */
+/* Basic Modal Styling (if used for game messages) */
+.modal {
+    display: none; 
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    overflow: auto;
+    background-color: var(--modal-overlay-bg);
+}
+.modal-content {
+    background-color: var(--modal-content-bg);
+    color: var(--modal-text-color);
+    border: 1px solid var(--border-color);
+    margin: 15% auto;
+    padding: 25px 30px;
+    border-radius: var(--border-radius-medium);
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.25);
+    max-width: 90%;
+    width: 320px;
+}
+.modal h2#messageTitle { font-size: 1.5rem; margin-bottom: 15px; }
+.modal p#messageTextBody { font-size: 1rem; line-height: 1.5; margin-bottom: 20px; }
+.modal button#messageButton {
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none; padding: 12px 25px;
+    font-size: 1rem; font-weight: 500;
+    border-radius: var(--border-radius-small);
+    cursor: pointer; transition: background-color var(--transition-speed), opacity var(--transition-speed);
+}
+.modal button#messageButton:hover { background-color: var(--button-hover-bg); opacity: 0.9; }
 
 /* Media query for responsiveness */
-@media (max-width: 480px) { /* ... (media queries as before) ... */ }
+@media (max-width: 480px) {
+    .settings-box {
+        padding: 10px;
+    }
+    h1.game-title-header {
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+    }
+    .controls-panel {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+    .scores-group-left {
+        justify-content: space-around;
+        width: 100%;
+        gap: 8px;
+    }
+    .score-box {
+        font-size: 0.8rem;
+        padding: 5px 8px;
+        min-width: auto;
+        flex: 1;
+    }
+    .difficulty-control { /* difficulty-control-right also has this class */
+        justify-content: center;
+        width: 100%;
+    }
+    #difficulty-select, .difficulty-control label {
+        font-size: 0.85rem;
+    }
+    .game-header-combo {
+        font-size: 0.9rem;
+        min-height: 24px;
+    }
+    #gameCanvas {
+         max-height: calc(75vh - 150px); /* Adjust canvas max height for small viewports */
+    }
+    .game-legend {
+        padding: 8px;
+        margin-top: 10px;
+    }
+    .legend-items-container {
+        gap: 10px;
+    }
+}
