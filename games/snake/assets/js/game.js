@@ -9,7 +9,8 @@ import { UIManager } from './ui.js';
 import { PowerUpManager, POWERUP_COLLECTIBLE_TYPES } from './powerups.js';
 import {
     ROWS, COLS, GAME_STATE, FOOD_EFFECTS, INITIAL_SNAKE_SPEED, GRID_SIZE,
-    COMBO_TIMER_DURATION, COMBO_MIN_FOR_MULTIPLIER, COMBO_SCORE_MULTIPLIER, COMBO_ITEM_BONUS_SCORE
+    COMBO_TIMER_DURATION, COMBO_MIN_FOR_MULTIPLIER, COMBO_SCORE_MULTIPLIER, COMBO_ITEM_BONUS_SCORE,
+    SURVIVAL_START_SPEED, SURVIVAL_SPEED_INCREASE_INTERVAL, SURVIVAL_SPEED_INCREASE_AMOUNT, GAME_MODES
 } from './constants.js';
 import { arePositionsEqual, getCssVariable } from './utils.js';
 
@@ -29,6 +30,16 @@ export class Game {
         this.lastFrameTime = 0;
         this.gameLoopRequestId = null;
 
+        // --- Game Mode Selection ---
+        // To test different modes, change this value:
+        this.currentGameMode = GAME_MODES.SURVIVAL; 
+        // this.currentGameMode = GAME_MODES.CLASSIC;
+        console.log("Game Mode Set To:", this.currentGameMode);
+
+
+        // --- Survival Mode Specific ---
+        this.lastSurvivalSpeedIncreaseTime = 0; // Timestamp of the last speed increase in survival mode
+
         this.board = new Board(this.canvas, this.context);
         this.snake = new Snake(Math.floor(COLS / 4), Math.floor(ROWS / 2), this.board, this);
         this.powerUpManager = new PowerUpManager(this.board, this.snake, this);
@@ -37,11 +48,12 @@ export class Game {
         this.uiManager = new UIManager(scoreElement, highScoreElement, comboDisplayElement, resolvedMessageOverlayElement, this);
 
         this.score = 0;
-        this.scoreMultiplier = 1;
+        this.scoreMultiplier = 1; // From collectible power-ups
         this.isShieldActive = false;
-        this.shieldHitCount = 0;
-        this.effectiveGameSpeed = this.snake.speed;
+        this.shieldHitCount = 0; 
+        this.effectiveGameSpeed = this.snake.speed; // For logging or other systems if needed
 
+        // Combo related properties
         this.comboCount = 0;
         this.lastFoodEatTime = 0;
         this.activeComboMultiplier = 1;
@@ -54,11 +66,8 @@ export class Game {
         this.uiManager.resetScore();
         this.uiManager.loadHighScore();
         this.uiManager.updateHighScoreDisplay();
-        this.resetGame();
+        this.resetGame(); // This will also call updateComboDisplay to clear it
         this.gameState = GAME_STATE.READY;
-        if (this.uiManager.updateComboDisplay) { // Check if method exists
-            this.uiManager.updateComboDisplay(this.comboCount, this.activeComboMultiplier, this.currentComboBonusScore);
-        }
         this.draw();
     }
 
@@ -66,13 +75,24 @@ export class Game {
         const startX = Math.floor(COLS / 4);
         const startY = Math.floor(ROWS / 2);
 
-        this.board.obstacles = [];
-        this.board.setupDefaultObstacles();
+        this.board.obstacles = []; // Clear previous obstacles
+        this.board.setupDefaultObstacles(); // Setup new obstacles for this game
 
-        this.snake.reset(startX, startY);
+        // Set snake's initial speed based on the current game mode
+        if (this.currentGameMode === GAME_MODES.SURVIVAL) {
+            this.snake.initialSpeed = SURVIVAL_START_SPEED;
+            this.lastSurvivalSpeedIncreaseTime = performance.now(); // Set for the first interval check
+            console.log(`Game Reset: Survival Mode. Start speed: ${this.snake.initialSpeed}`);
+        } else { // Classic mode (or any other mode not explicitly survival)
+            this.snake.initialSpeed = INITIAL_SNAKE_SPEED;
+            console.log(`Game Reset: Classic Mode. Start speed: ${this.snake.initialSpeed}`);
+        }
+        // Snake's reset method will use its this.initialSpeed to set its current this.speed
+        this.snake.reset(startX, startY); 
+
         this.inputHandler.reset();
-        this.food.spawnNew();
-        this.powerUpManager.reset();
+        this.food.spawnNew(); 
+        this.powerUpManager.reset(); 
         
         this.score = 0;
         this.uiManager.updateScore(this.score);
@@ -80,22 +100,29 @@ export class Game {
         this.scoreMultiplier = 1; 
         this.isShieldActive = false; 
 
+        // Reset combo state
         this.comboCount = 0;
         this.lastFoodEatTime = 0;
         this.activeComboMultiplier = 1;
         this.currentComboBonusScore = 0;
-        if (this.uiManager && this.uiManager.updateComboDisplay) { // Check if method exists
+        if (this.uiManager && typeof this.uiManager.updateComboDisplay === 'function') { 
             this.uiManager.updateComboDisplay(this.comboCount, this.activeComboMultiplier, this.currentComboBonusScore);
         }
 
-        this.updateGameSpeed();
+        this.updateGameSpeed(); // Reflects the initial speed of the mode in game.effectiveGameSpeed
     }
 
     start() {
+        // this.sfx.resumeContext(); // Sound system disabled
+
         if (this.gameState === GAME_STATE.READY || this.gameState === GAME_STATE.GAME_OVER) {
-            this.resetGame();
+            this.resetGame(); 
             this.gameState = GAME_STATE.PLAYING;
             this.lastFrameTime = performance.now();
+            // Reset survival speed increase timer specifically at game start if in survival mode
+            if (this.currentGameMode === GAME_MODES.SURVIVAL) {
+                this.lastSurvivalSpeedIncreaseTime = performance.now();
+            }
             if (this.gameLoopRequestId) cancelAnimationFrame(this.gameLoopRequestId);
             this.gameLoopRequestId = requestAnimationFrame(this.gameLoop.bind(this));
         } else if (this.gameState === GAME_STATE.PAUSED) {
@@ -110,9 +137,10 @@ export class Game {
         }
         this.gameLoopRequestId = requestAnimationFrame(this.gameLoop.bind(this));
         const deltaTime = timestamp - this.lastFrameTime;
+        // Interval based on the snake's current speed (which can be affected by food effects or survival mode)
         const interval = 1000 / this.snake.speed; 
         if (deltaTime >= interval) {
-            this.lastFrameTime = timestamp - (deltaTime % interval);
+            this.lastFrameTime = timestamp - (deltaTime % interval); 
             this.inputHandler.applyQueuedDirection();
             this.update(timestamp); 
             this.draw();
@@ -121,8 +149,28 @@ export class Game {
 
     update(currentTime) {
         this.snake.move();
-        this.powerUpManager.update(currentTime);
+        this.powerUpManager.update(currentTime); 
 
+        // Survival Mode: Increase speed over time
+        if (this.currentGameMode === GAME_MODES.SURVIVAL && this.gameState === GAME_STATE.PLAYING) {
+            if (currentTime - this.lastSurvivalSpeedIncreaseTime > SURVIVAL_SPEED_INCREASE_INTERVAL) {
+                // Increase the snake's current speed directly.
+                // Food effects will apply temporarily on top of this progressively increasing speed.
+                this.snake.speed += SURVIVAL_SPEED_INCREASE_AMOUNT;
+                
+                // If a food speed effect is active, its base (speedBeforeFoodEffect) also needs to conceptually increase,
+                // so when it reverts, it reverts to a higher base.
+                if (this.snake.speedBeforeFoodEffect !== null) {
+                    this.snake.speedBeforeFoodEffect += SURVIVAL_SPEED_INCREASE_AMOUNT;
+                }
+
+                // console.log(`Survival Speed Increased to: ${this.snake.speed.toFixed(2)}`);
+                this.updateGameSpeed(); // Update game's tracker/log
+                this.lastSurvivalSpeedIncreaseTime = currentTime;
+            }
+        }
+
+        // Combo break check
         if (this.comboCount > 0 && (currentTime - this.lastFoodEatTime > COMBO_TIMER_DURATION)) {
             this.comboCount = 0;
             this.activeComboMultiplier = 1;
@@ -130,6 +178,7 @@ export class Game {
             if (this.uiManager.updateComboDisplay) this.uiManager.updateComboDisplay(this.comboCount, this.activeComboMultiplier, this.currentComboBonusScore);
         }
 
+        // Food eating and combo logic
         const foodData = this.food.getData();
         if (foodData && arePositionsEqual(this.snake.getHeadPosition(), this.food.getPosition())) {
             if (this.comboCount > 0 && (currentTime - this.lastFoodEatTime) < COMBO_TIMER_DURATION) {
@@ -165,7 +214,6 @@ export class Game {
                 case FOOD_EFFECTS.EXTRA_GROWTH:
                     this.snake.grow(foodData.growAmount);
                     break;
-                case FOOD_EFFECTS.NONE:
                 default:
                     this.snake.grow(1);
                     break;
@@ -173,11 +221,11 @@ export class Game {
             this.food.spawnNew();
         }
 
+        // Collision check
         if (this.snake.checkCollision()) {
             let hitAbsorbedByShield = false;
             if (this.isShieldActive) { 
                 if (this.powerUpManager.handleHitWithEffect(POWERUP_COLLECTIBLE_TYPES.SHIELD)) {
-                    // console.log("Game: Shield absorbed hit via PowerUpManager."); // Log in PowerUpManager
                     hitAbsorbedByShield = true;
                 }
             }
@@ -194,7 +242,7 @@ export class Game {
         this.snake.draw(this.context);
 
         if (this.gameState === GAME_STATE.GAME_OVER) this.drawGameOverMessage();
-        else if (this.gameState === GAME_STATE.PAUSED) this.drawPausedMessage(); // This will call the updated method
+        else if (this.gameState === GAME_STATE.PAUSED) this.drawPausedMessage();
         else if (this.gameState === GAME_STATE.READY) this.drawReadyMessage();
     }
 
@@ -205,7 +253,7 @@ export class Game {
         const titleFontSize = Math.min(24, GRID_SIZE * 1.5);
         const instructionFontSize = Math.min(16, GRID_SIZE);
         this.context.font = `bold ${titleFontSize}px ${mainFont}`;
-        this.context.fillStyle = getCssVariable('--text-color-on-overlay', '#FFFFFF'); // Use consistent variable
+        this.context.fillStyle = getCssVariable('--text-color-on-overlay', '#FFFFFF');
         this.context.textAlign = 'center';
         this.context.fillText('Snake Game 🌌', this.canvas.width / 2, this.canvas.height / 2 - 10);
         this.context.font = `${instructionFontSize}px ${mainFont}`;
@@ -221,7 +269,7 @@ export class Game {
         const instructionFontSize = Math.min(16, GRID_SIZE);
         let yPos = this.canvas.height / 2 - 40;
         this.context.font = `bold ${titleFontSize}px ${mainFont}`;
-        this.context.fillStyle = getCssVariable('--food-color', '#FF5252'); // Using a distinct color for "Game Over!"
+        this.context.fillStyle = getCssVariable('--food-color', '#FF5252');
         this.context.textAlign = 'center';
         this.context.fillText('Game Over!', this.canvas.width / 2, yPos);
         yPos += titleFontSize * 1.2;
@@ -236,20 +284,17 @@ export class Game {
     }
 
     drawPausedMessage() {
-        // Background overlay for the pause message box
-        const overlayBgColor = getCssVariable('--modal-overlay-bg', 'rgba(0, 0, 0, 0.75)'); // Use modal overlay for consistency
+        const overlayBgColor = getCssVariable('--modal-overlay-bg', 'rgba(0, 0, 0, 0.75)');
         this.context.fillStyle = overlayBgColor;
-        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height); // Full screen overlay
+        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        // Message Box
-        const boxWidth = Math.min(this.canvas.width * 0.7, 300); // Max width for the box
-        const boxHeight = GRID_SIZE * 10;    // Height of the message box
+        const boxWidth = Math.min(this.canvas.width * 0.7, 300);
+        const boxHeight = GRID_SIZE * 10;
         const boxX = (this.canvas.width - boxWidth) / 2;
         const boxY = (this.canvas.height - boxHeight) / 2;
         
-        const boxBgColor = getCssVariable('--modal-content-bg', '#333333'); // Use modal content bg
+        const boxBgColor = getCssVariable('--modal-content-bg', '#333333');
         this.context.fillStyle = boxBgColor;
-        // Simple rect for now, can add rounded corners later if desired
         this.context.fillRect(boxX, boxY, boxWidth, boxHeight);
 
         const boxBorderColor = getCssVariable('--border-color', '#444444');
@@ -259,21 +304,19 @@ export class Game {
 
         const mainFont = getCssVariable('--font-main', 'Arial');
         const titleColor = getCssVariable('--accent-color', '#FFEB3B');
-        const instructionColor = getCssVariable('--modal-text-color', '#FFFFFF'); // Use modal text color
+        const instructionColor = getCssVariable('--modal-text-color', '#FFFFFF');
 
-        // "GAME PAUSED" title
-        const titleFontSize = Math.min(28, GRID_SIZE * 1.7); // Adjusted size
+        const titleFontSize = Math.min(28, GRID_SIZE * 1.7);
         this.context.font = `bold ${titleFontSize}px ${mainFont}`;
         this.context.fillStyle = titleColor;
         this.context.textAlign = 'center';
-        let textY = boxY + boxHeight * 0.35; // Position title higher in the box
+        let textY = boxY + boxHeight * 0.35;
         this.context.fillText('GAME PAUSED', this.canvas.width / 2, textY);
 
-        // "Press ... to Resume" instruction
-        const instructionFontSize = Math.min(15, GRID_SIZE * 0.9); // Adjusted size
+        const instructionFontSize = Math.min(15, GRID_SIZE * 0.9);
         this.context.font = `${instructionFontSize}px ${mainFont}`;
         this.context.fillStyle = instructionColor;
-        textY += titleFontSize * 0.8 + instructionFontSize * 0.5; // Position instruction lower
+        textY += titleFontSize * 0.8 + instructionFontSize * 0.5;
         this.context.fillText('Press SPACE / ESC / TAP to Resume', this.canvas.width / 2, textY);
     }
 
@@ -289,8 +332,8 @@ export class Game {
             cancelAnimationFrame(this.gameLoopRequestId);
             this.gameLoopRequestId = null;
         }
-        this.snake.revertSpeed();
-        this.powerUpManager.reset();
+        this.snake.revertSpeed(); 
+        this.powerUpManager.reset(); 
         this.uiManager.updateHighScore();
         this.draw();
     }
@@ -325,5 +368,6 @@ export class Game {
 
     updateGameSpeed() {
         this.effectiveGameSpeed = this.snake.speed;
+        // console.log(`Game effective speed synced: ${this.effectiveGameSpeed.toFixed(2)}`);
     }
 }
