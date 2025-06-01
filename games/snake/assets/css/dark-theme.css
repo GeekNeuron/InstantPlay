@@ -1,0 +1,37 @@
+:root {
+    --bg-color: #121212; /* Common dark theme background */
+    --text-color: #E0E0E0;
+    --text-color-muted: #A0A0A0;
+    --accent-color: #BB86FC; /* A common dark theme accent */
+    --game-bg-color: #333333; /* Darker board container */
+    --canvas-bg-color: #242424; /* Darker canvas */
+    --snake-head-color: #50fa7b; /* Brighter green for dark bg */
+    --snake-body-color: #8be9fd; /* Different color for contrast or preference */
+    --food-color: #ff5555; /* Brighter red */
+    --border-color: #444444;
+    --header-color: #E0E0E0;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+header h1 {
+    color: var(--header-color);
+}
+
+.game-container {
+    border-color: var(--border-color);
+    background-color: var(--game-bg-color);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3); /* Slightly more pronounced shadow for dark */
+}
+
+.game-header {
+    color: var(--text-color);
+    border-color: var(--text-color-muted);
+}
+
+#gameCanvas {
+    background-color: var(--canvas-bg-color);
+}
