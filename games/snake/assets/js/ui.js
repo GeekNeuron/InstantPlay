@@ -11,22 +11,25 @@ export class UIManager {
     constructor(scoreElement, highScoreElement, comboDisplayElement = null, messageOverlayElement = null, gameInstance = null) {
         this.scoreElement = scoreElement;
         this.highScoreElement = highScoreElement;
-        this.comboDisplayElement = comboDisplayElement; // Store combo display element
+        this.comboDisplayElement = comboDisplayElement;
         this.messageOverlayElement = messageOverlayElement;
         this.game = gameInstance;
 
         this.currentScore = 0;
         this.highScore = 0;
 
+        // --- Achievement Notification ---
+        this.achievementNotificationElement = document.getElementById('achievement-notification');
+        this.achievementTimeout = null; // To manage hiding the notification
+
         this.loadHighScore();
         this.updateScoreDisplay();
         this.updateHighScoreDisplay();
-        if(this.comboDisplayElement) { // Initialize combo display if element exists
-            this.updateComboDisplay(0, 1, 0);
+        if (this.comboDisplayElement) { // Initialize combo display if element exists
+            this.updateComboDisplay(0, 1, 0); // Initial state: no combo
         }
 
-
-        // Setup button listener ONLY if messageOverlayElement is a valid DOM element
+        // Setup button listener for modal ONLY if messageOverlayElement is a valid DOM element
         if (this.messageOverlayElement &&
             typeof this.messageOverlayElement === 'object' &&
             typeof this.messageOverlayElement.querySelector === 'function') {
@@ -37,10 +40,10 @@ export class UIManager {
                     this.hideMessageOverlay();
                 });
             }
-        } else if (this.messageOverlayElement) {
+        } else if (this.messageOverlayElement) { // messageOverlayElement was truthy but not a valid DOM element
             console.warn(
-                "UIManager Constructor: 'messageOverlayElement' provided but it's not a valid DOM element with 'querySelector' method.",
-                "Value received for messageOverlayElement:", this.messageOverlayElement,
+                "UIManager Constructor: 'messageOverlayElement' was provided but it's not a valid DOM element with 'querySelector' method.",
+                "Value received:", this.messageOverlayElement,
                 "Type:", typeof this.messageOverlayElement
             );
         }
@@ -79,7 +82,7 @@ export class UIManager {
         try {
             localStorage.setItem('snakeGameHighScore', this.highScore.toString());
         } catch (e) {
-            console.warn("Could not save high score to localStorage:", e);
+            console.warn("UIManager: Could not save high score to localStorage.", e);
         }
     }
 
@@ -88,25 +91,19 @@ export class UIManager {
             const savedHighScore = localStorage.getItem('snakeGameHighScore');
             this.highScore = parseInt(savedHighScore, 10) || 0;
         } catch (e) {
-            console.warn("Could not load high score from localStorage:", e);
-            this.highScore = 0;
+            this.highScore = 0; // Default to 0 on error
+            console.warn("UIManager: Could not load high score from localStorage.", e);
         }
     }
 
-    /**
-     * Updates the combo display UI.
-     * @param {number} count - Current combo count.
-     * @param {number} multiplier - Current combo score multiplier for food base score.
-     * @param {number} bonus - Current flat bonus points from combo items.
-     */
     updateComboDisplay(count, multiplier, bonus) {
         if (this.comboDisplayElement) {
             if (count > 1) { // Only show combo if count is 2 or more
                 let displayText = `Combo: ${count}x `;
-                if (multiplier > 1) { // Show multiplier if it's active
-                    displayText += `(x${multiplier.toFixed(1)}) `;
+                if (multiplier > 1) {
+                    displayText += `(Score x${multiplier.toFixed(1)}) `;
                 }
-                if (bonus > 0) { // Show bonus points if any
+                if (bonus > 0 && count > 1) {
                     displayText += `(+${bonus} pts)`;
                 }
                 this.comboDisplayElement.textContent = displayText.trim();
@@ -118,12 +115,51 @@ export class UIManager {
         }
     }
 
-    showMessageOverlay(titleText, bodyText, buttonText = 'OK', buttonAction = null) {
-        if (!this.messageOverlayElement || typeof this.messageOverlayElement.querySelector !== 'function') {
-            console.log(`UI Message (Overlay not available or invalid): ${titleText} - ${bodyText}`);
+    /**
+     * Shows a temporary notification when an achievement is unlocked.
+     * @param {string} name - The name of the achievement.
+     * @param {string} description - The description of the achievement.
+     * @param {string} icon - The icon/emoji for the achievement.
+     */
+    showAchievementUnlockedNotification(name, description, icon) {
+        if (!this.achievementNotificationElement) {
+            console.log(`Achievement Unlocked (UI element 'achievement-notification' not found): ${icon} ${name} - ${description}`);
             return;
         }
 
+        // Sanitize inputs slightly if they were to come from less trusted sources (not an issue here)
+        const safeName = name || "Achievement Unlocked!";
+        const safeDescription = description || "";
+        const safeIcon = icon || '🏆';
+
+        this.achievementNotificationElement.innerHTML = `
+            <span class="achievement-icon">${safeIcon}</span>
+            <div class="achievement-text">
+                <div class="achievement-title">${safeName}</div>
+                <div class="achievement-desc">${safeDescription}</div>
+            </div>
+        `;
+        this.achievementNotificationElement.classList.add('show');
+
+        // Clear previous timeout if any, to prevent premature hiding if multiple achievements unlock quickly
+        if (this.achievementTimeout) {
+            clearTimeout(this.achievementTimeout);
+        }
+
+        // Hide notification after a few seconds
+        this.achievementTimeout = setTimeout(() => {
+            if (this.achievementNotificationElement) { // Check if element still exists
+                 this.achievementNotificationElement.classList.remove('show');
+            }
+        }, 4000); // Show for 4 seconds
+    }
+
+    // showMessageOverlay and hideMessageOverlay methods remain for potential future modal use
+    showMessageOverlay(titleText, bodyText, buttonText = 'OK', buttonAction = null) {
+        if (!this.messageOverlayElement || typeof this.messageOverlayElement.querySelector !== 'function') {
+            // console.log(`UI Message (Overlay not available or invalid): ${titleText} - ${bodyText}`);
+            return;
+        }
         const titleEl = this.messageOverlayElement.querySelector('#messageTitle');
         const bodyEl = this.messageOverlayElement.querySelector('#messageTextBody');
         const buttonEl = this.messageOverlayElement.querySelector('#messageButton');
@@ -133,7 +169,7 @@ export class UIManager {
 
         if (buttonEl) {
             buttonEl.textContent = buttonText;
-            const newButton = buttonEl.cloneNode(true); // Clone to remove old listeners
+            const newButton = buttonEl.cloneNode(true); 
             if(buttonEl.parentNode) {
                  buttonEl.parentNode.replaceChild(newButton, buttonEl);
             }
@@ -141,10 +177,10 @@ export class UIManager {
                 if (buttonAction && typeof buttonAction === 'function') {
                     buttonAction();
                 }
-                this.hideMessageOverlay(); // Always hide after action or by default
+                this.hideMessageOverlay();
             });
         }
-        this.messageOverlayElement.style.display = 'flex'; // Or 'block' or your preferred display style for modal
+        this.messageOverlayElement.style.display = 'flex';
     }
 
     hideMessageOverlay() {
