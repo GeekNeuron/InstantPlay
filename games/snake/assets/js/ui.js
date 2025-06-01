@@ -1,66 +1,55 @@
 // assets/js/ui.js
 
-/**
- * @fileoverview Manages UI updates for the game (score, messages, high score).
- */
-
 export class UIManager {
     /**
-     * @param {HTMLElement} scoreElement - The HTML element to display the current score.
-     * @param {HTMLElement} highScoreElement - The HTML element to display the high score.
-     * @param {HTMLElement} [messageOverlayElement] - Optional: an overlay element for game messages.
-     * @param {Game} [gameInstance] - Optional: reference to the game for restart functionality from modals.
+     * @param {HTMLElement | null} scoreElement - The HTML element to display the current score.
+     * @param {HTMLElement | null} highScoreElement - The HTML element to display the high score.
+     * @param {HTMLElement | null} [messageOverlayElement=null] - Optional: an overlay DOM element for game messages.
+     * @param {Game} [gameInstance=null] - Optional: reference to the game for restart functionality from modals.
      */
     constructor(scoreElement, highScoreElement, messageOverlayElement = null, gameInstance = null) {
         this.scoreElement = scoreElement;
         this.highScoreElement = highScoreElement;
-        this.messageOverlayElement = messageOverlayElement; // e.g., a modal div
-        this.game = gameInstance; // Store game instance for potential callbacks
+        this.messageOverlayElement = messageOverlayElement; // Should be a DOM element or null
+        this.game = gameInstance;
 
         this.currentScore = 0;
         this.highScore = 0;
 
-        this.loadHighScore(); // Load high score from localStorage
+        this.loadHighScore();
         this.updateScoreDisplay();
         this.updateHighScoreDisplay();
 
-        // If using a modal for messages, setup its button if it exists
-        if (this.messageOverlayElement) {
-            const messageButton = this.messageOverlayElement.querySelector('#messageButton');
+        // Setup button listener ONLY if messageOverlayElement is a valid DOM element
+        if (this.messageOverlayElement && typeof this.messageOverlayElement.querySelector === 'function') {
+            const messageButton = this.messageOverlayElement.querySelector('#messageButton'); // Assumes a button with this ID exists in the overlay
             if (messageButton) {
-                messageButton.addEventListener('click', () => this.hideMessageOverlay());
+                messageButton.addEventListener('click', () => {
+                    this.hideMessageOverlay();
+                    // Potentially add specific button actions if needed, passed via showMessageOverlay
+                });
             }
+        } else if (messageOverlayElement) {
+            // This case means messageOverlayElement was truthy but not a valid element for querySelector
+            console.warn("UIManager: messageOverlayElement was provided but is not a valid DOM element for querySelector.", messageOverlayElement);
         }
     }
 
-    /**
-     * Updates the displayed current score.
-     * @param {number} newScore - The new score to display.
-     */
     updateScore(newScore) {
         this.currentScore = newScore;
         this.updateScoreDisplay();
     }
 
-    /**
-     * Updates the score DOM element with the current score.
-     */
     updateScoreDisplay() {
         if (this.scoreElement) {
             this.scoreElement.textContent = this.currentScore;
         }
     }
 
-    /**
-     * Resets the current score to 0 and updates the display.
-     */
     resetScore() {
         this.updateScore(0);
     }
 
-    /**
-     * Updates the high score if the current score is higher, saves it, and updates display.
-     */
     updateHighScore() {
         if (this.currentScore > this.highScore) {
             this.highScore = this.currentScore;
@@ -69,18 +58,12 @@ export class UIManager {
         }
     }
 
-    /**
-     * Updates the high score DOM element.
-     */
     updateHighScoreDisplay() {
         if (this.highScoreElement) {
             this.highScoreElement.textContent = this.highScore;
         }
     }
 
-    /**
-     * Saves the current high score to localStorage.
-     */
     saveHighScore() {
         try {
             localStorage.setItem('snakeGameHighScore', this.highScore.toString());
@@ -89,9 +72,6 @@ export class UIManager {
         }
     }
 
-    /**
-     * Loads the high score from localStorage. If not found, defaults to 0.
-     */
     loadHighScore() {
         try {
             const savedHighScore = localStorage.getItem('snakeGameHighScore');
@@ -103,53 +83,43 @@ export class UIManager {
     }
 
     /**
-     * Displays a message using a modal overlay if available.
-     * (This is an example, the Game class currently draws messages on canvas).
-     * @param {string} titleText - The title of the message/modal.
-     * @param {string} bodyText - The main body of the message.
-     * @param {string} [buttonText='OK'] - Text for the button.
-     * @param {function} [buttonAction=null] - Action for the button. If null, button hides overlay.
+     * Displays a message using the modal overlay if available and configured.
+     * @param {string} titleText - The title for the message.
+     * @param {string} bodyText - The main content of the message.
+     * @param {string} [buttonText='OK'] - Text for the action button.
+     * @param {function} [buttonAction=null] - Custom action for the button click. If null, default is to hide overlay.
      */
     showMessageOverlay(titleText, bodyText, buttonText = 'OK', buttonAction = null) {
-        if (!this.messageOverlayElement) {
-            console.log(`UI Message: ${titleText} - ${bodyText}`); // Fallback to console
+        if (!this.messageOverlayElement || typeof this.messageOverlayElement.querySelector !== 'function') {
+            console.log(`UI Message (Overlay not available): ${titleText} - ${bodyText}`);
             return;
         }
 
-        const titleEl = this.messageOverlayElement.querySelector('h2') || this.messageOverlayElement.querySelector('p#messageText'); // Adjust selector
-        const bodyEl = this.messageOverlayElement.querySelector('p#messageText') || this.messageOverlayElement.querySelector('.modal-body-text'); // Adjust selector
-        const buttonEl = this.messageOverlayElement.querySelector('button');
+        const titleEl = this.messageOverlayElement.querySelector('#messageTitle'); // Assumes an element with id="messageTitle"
+        const bodyEl = this.messageOverlayElement.querySelector('#messageTextBody');   // Assumes an element with id="messageTextBody"
+        const buttonEl = this.messageOverlayElement.querySelector('#messageButton');
 
-        if (titleEl) titleEl.textContent = titleText; // Simplistic, assumes structure
-        if (bodyEl && titleEl !== bodyEl) bodyEl.textContent = bodyText;
-        else if (titleEl === bodyEl) titleEl.innerHTML = `<strong>${titleText}</strong><br>${bodyText}`;
-
+        if (titleEl) titleEl.textContent = titleText;
+        if (bodyEl) bodyEl.textContent = bodyText;
 
         if (buttonEl) {
             buttonEl.textContent = buttonText;
-            // Clone and replace to remove old listeners, then add new one
+            // Clone and replace to ensure old event listeners are removed before adding new one
             const newButton = buttonEl.cloneNode(true);
             buttonEl.parentNode.replaceChild(newButton, buttonEl);
             newButton.addEventListener('click', () => {
-                if (buttonAction) {
+                if (buttonAction && typeof buttonAction === 'function') {
                     buttonAction();
                 }
-                this.hideMessageOverlay();
+                this.hideMessageOverlay(); // Always hide after action or by default
             });
         }
-        this.messageOverlayElement.style.display = 'flex'; // Or 'block' depending on CSS for modal
+        this.messageOverlayElement.style.display = 'flex'; // Or 'block' or your preferred display style for modal
     }
 
-    /**
-     * Hides the message overlay.
-     */
     hideMessageOverlay() {
         if (this.messageOverlayElement) {
             this.messageOverlayElement.style.display = 'none';
         }
     }
-
-    // The Game class currently draws its own messages (Ready, Paused, Game Over) on the canvas.
-    // If we switch to using this UIManager for those, the Game class would call:
-    // e.g., this.uiManager.showMessageOverlay("Game Over!", `Your Score: ${finalScore}`, "Play Again", () => this.game.start());
 }
