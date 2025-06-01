@@ -1,13 +1,11 @@
 /* assets/css/style.css */
 
-/* Basic Reset & Root Variables (mostly for structure, colors are in theme files) */
 :root {
-    /* Base font stack for broad compatibility and a modern look */
     --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     --border-radius-small: 4px;
     --border-radius-medium: 8px;
     --border-radius-large: 12px;
-    --transition-speed: 0.25s; /* For theme transitions and hover effects */
+    --transition-speed: 0.25s;
 }
 
 * {
@@ -18,201 +16,181 @@
 
 body {
     font-family: var(--font-main);
-    display: flex;
+    display: flex; /* Changed to flex for page-wrapper centering */
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start; /* Align content to the top */
+    justify-content: center; /* Center page-wrapper vertically if content is short */
     min-height: 100vh;
-    /* Colors are applied from the active theme file */
     background-color: var(--bg-color);
     color: var(--text-color);
     transition: background-color var(--transition-speed) ease-in-out, color var(--transition-speed) ease-in-out;
-    padding: 20px;
+    padding: 10px; /* Reduced body padding for more space */
     text-align: center;
-    line-height: 1.6; /* For better readability */
+    line-height: 1.6;
 }
 
-header h1#page-title-clickable { /* Specific selector for the theme switcher title */
-    font-size: 2.2rem;
-    margin-bottom: 20px;
+.page-wrapper {
+    width: 100%;
+    max-width: 600px; /* Max width for game area and controls */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+header {
+    width: 100%;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column; /* Stack title and controls vertically */
+    align-items: center;
+}
+
+header h1#page-title-clickable {
+    font-size: 2rem; /* Adjusted size */
+    margin-bottom: 10px;
     cursor: pointer;
-    user-select: none; /* Prevent text selection on click */
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
+    user-select: none;
     font-weight: 600;
-    color: var(--header-color); /* Defined in theme files */
+    color: var(--header-color);
     padding: 5px 10px;
     border-radius: var(--border-radius-small);
-    border: 1px solid transparent; /* Base border for theme switcher styling */
+    border: 1px solid transparent;
     transition: background-color var(--transition-speed), color var(--transition-speed), border-color var(--transition-speed);
 }
 
-.game-container {
-    border: 2px solid var(--border-color); /* Defined in theme files */
-    border-radius: var(--border-radius-large);
-    padding: 10px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.1); /* Subtle shadow */
-    background-color: var(--game-bg-color); /* Defined in theme files */
-    display: inline-block; /* To wrap content */
-    margin-top: 20px;
-}
-
-.game-header { /* This is the score box */
+.header-controls {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; /* Title/Difficulty on left, Scores on right */
     align-items: center;
-    padding: 10px 15px;
-    margin-bottom: 10px;
-    font-size: 1.1rem;
-    border-bottom: 1px solid var(--border-color); /* Or a specific score-box-border-color */
-    font-weight: 500;
-    /* Background and text color for score box are defined in theme files */
-    background-color: var(--score-box-bg);
-    color: var(--score-box-text);
-    border-radius: var(--border-radius-medium) var(--border-radius-medium) 0 0; /* Rounded top corners */
+    width: 100%;
+    padding: 5px 0;
+    gap: 10px; /* Gap between items */
+    flex-wrap: wrap; /* Allow wrapping on small screens */
 }
 
-.score-container, .highscore-container {
-    flex: 1; /* Distribute space */
+.difficulty-control {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Gap between label and select */
+    font-size: 0.9rem;
+    color: var(--text-color-muted);
 }
-.score-container {
-    text-align: left;
+
+#difficulty-select {
+    padding: 6px 8px;
+    border-radius: var(--border-radius-small);
+    border: 1px solid var(--border-color);
+    background-color: var(--canvas-bg-color); /* Use a subtle background */
+    color: var(--text-color);
+    font-family: var(--font-main);
+    font-size: 0.9rem;
+    cursor: pointer;
 }
-.highscore-container {
+
+#difficulty-select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px var(--accent-color-translucent, rgba(0, 123, 255, 0.25)); /* Accent color for focus, needs to be defined in themes */
+}
+
+
+.scores-display {
+    display: flex;
+    flex-direction: column; /* Stack score and high score */
+    align-items: flex-end; /* Align text to the right within this box */
+    gap: 5px;
+    padding: 8px 12px;
+    background-color: var(--score-box-bg); /* Defined in theme files */
+    color: var(--score-box-text);       /* Defined in theme files */
+    border-radius: var(--border-radius-medium);
+    font-size: 0.9rem;
+    min-width: 130px; /* Ensure some width */
+}
+
+.score-box { /* Individual score line */
     text-align: right;
 }
 
-.combo-container {
-    flex: 1.5; /* Allow it to take a bit more space if needed */
-    font-size: 0.9rem;
-    font-weight: bold;
-    min-width: 120px; /* Provide some base space for the combo text */
-    padding: 0 10px; /* Add some padding around combo text */
-    text-align: center;
-    opacity: 0.9;
-    color: var(--accent-color); /* Use accent color for combo text, or a specific var */
-    white-space: nowrap; /* Prevent wrapping if text gets long */
+.game-container {
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-large);
+    padding: 10px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    background-color: var(--game-bg-color);
+    display: inline-block;
+    margin-top: 0; /* Reduced margin as header takes space */
+    width: 100%; /* Make game container take full width of page-wrapper */
+    max-width: 100%; /* Ensure it doesn't overflow page-wrapper */
+}
+
+.game-header { /* Contains Combo display now */
+    display: flex;
+    justify-content: center; /* Center combo text */
+    align-items: center;
+    padding: 5px 10px; /* Reduced padding */
+    margin-bottom: 5px;
+    font-size: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 500;
+    color: var(--accent-color); /* Combo text color */
+    min-height: 28px; /* Ensure it has some height even if combo text is hidden */
 }
 
 #combo-display {
     padding: 2px 5px;
     border-radius: var(--border-radius-small);
-    /* Optional background for combo text for better visibility
-    background-color: rgba(255, 255, 255, 0.1); // Example for dark theme
-    background-color: rgba(0, 0, 0, 0.05); // Example for light theme
-    */
 }
-
 
 #gameCanvas {
-    display: block; /* Removes extra space below canvas */
-    border-radius: var(--border-radius-medium); /* Match game container's inner rounding */
-    border: 1px solid var(--border-color); /* Defined in theme files */
-    /* The actual background of the canvas is drawn by board.js using --canvas-bg-color */
+    display: block;
+    width: 100%; /* Make canvas responsive within game-container */
+    height: auto; /* Maintain aspect ratio (JS will set actual pixel dimensions) */
+    /* Actual width/height set by JS based on GRID_SIZE * COLS/ROWS */
+    max-height: calc(90vw - 20px); /* Prevent canvas from being too large on desktop, relative to container */
+    object-fit: contain; /* Ensure aspect ratio is maintained if CSS tries to override JS dimensions */
+    border-radius: var(--border-radius-medium);
+    border: 1px solid var(--border-color);
 }
 
-.game-controls-info {
-    margin-top: 15px;
-    font-size: 0.85rem;
-    color: var(--text-color-muted); /* Defined in theme files */
-}
+/* .game-controls-info is removed */
 
 footer {
-    margin-top: 40px;
-    padding-bottom: 20px; /* Ensure space at the bottom */
+    margin-top: 20px; /* Adjusted margin */
+    padding-bottom: 10px;
     font-size: 0.85rem;
-    color: var(--text-color-muted); /* Defined in theme files */
-}
-
-/* --- Basic Modal Styling (if used for messages) --- */
-.modal {
-    display: none; /* Controlled by JavaScript to be 'flex' or 'block' */
-    position: fixed;
-    z-index: 1000; /* Ensure it's on top */
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto; /* Enable scroll if content is too long */
-    background-color: var(--modal-overlay-bg); /* Defined in theme files */
-}
-
-.modal-content {
-    /* Colors defined in theme files */
-    background-color: var(--modal-content-bg);
-    color: var(--modal-text-color);
-    border: 1px solid var(--border-color);
-    margin: 15% auto;
-    padding: 25px 30px;
-    border-radius: var(--border-radius-medium);
-    text-align: center;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.25);
-    max-width: 90%;
-    width: 320px;
-}
-
-.modal h2#messageTitle {
-    font-size: 1.5rem;
-    margin-bottom: 15px;
-    color: var(--modal-text-color);
-}
-
-.modal p#messageTextBody {
-    font-size: 1rem;
-    line-height: 1.5;
-    margin-bottom: 20px;
-}
-
-.modal button#messageButton {
-    background-color: var(--button-bg);
-    color: var(--button-text);
-    border: none;
-    padding: 12px 25px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 1rem;
-    font-weight: 500;
-    border-radius: var(--border-radius-small);
-    cursor: pointer;
-    transition: background-color var(--transition-speed), opacity var(--transition-speed);
-}
-
-.modal button#messageButton:hover {
-    background-color: var(--button-hover-bg);
-    opacity: 0.9;
+    color: var(--text-color-muted);
 }
 
 /* --- Achievement Notification Popup --- */
-.achievement-popup { /* Class name used in index.html, correct from previous .achievement-popup */
+.achievement-popup {
     position: fixed;
-    bottom: -100%; /* Start off-screen (bottom) */
-    right: 20px;
-    background-color: var(--accent-color); /* Or a specific notification background from theme */
-    color: var(--button-text); /* Or a specific notification text color (often white on accent) */
-    padding: 15px 20px;
+    bottom: -100%; 
+    right: 10px; /* Adjusted for smaller screen padding */
+    background-color: var(--accent-color);
+    color: var(--button-text); 
+    padding: 12px 18px; /* Adjusted padding */
     border-radius: var(--border-radius-medium);
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    z-index: 1001; /* Above game, below modals if any are higher */
+    z-index: 1001;
     display: flex;
     align-items: center;
     opacity: 0;
-    transform: translateY(0); /* Correct initial transform is not needed if starting with bottom: -100% */
-    transition: opacity 0.5s ease-in-out, bottom 0.5s ease-in-out; /* Transition bottom property */
-    max-width: 300px;
-    min-height: 60px; /* Ensure some minimum height */
+    transform: translateY(0);
+    transition: opacity 0.5s ease-in-out, bottom 0.5s ease-in-out;
+    max-width: calc(100% - 20px); /* Max width for smaller screens */
+    width: auto; /* Auto width based on content */
+    min-height: 50px;
 }
 
 .achievement-popup.show {
     opacity: 1;
-    bottom: 20px; /* Slide in from bottom */
+    bottom: 10px; /* Adjusted for smaller screen padding */
 }
 
 .achievement-popup .achievement-icon {
-    font-size: 1.8rem; /* Size of the icon/emoji */
-    margin-right: 15px;
-    line-height: 1; /* Helps align emoji if it has odd spacing */
+    font-size: 1.6rem; /* Adjusted size */
+    margin-right: 12px;
+    line-height: 1;
 }
 
 .achievement-popup .achievement-text {
@@ -223,11 +201,44 @@ footer {
 
 .achievement-popup .achievement-title {
     font-weight: bold;
-    font-size: 1rem;
-    margin-bottom: 3px;
+    font-size: 0.95rem; /* Adjusted size */
+    margin-bottom: 2px;
 }
 
-.achievement-popup .achievement-desc { /* Corrected this class from previous example in ui.js */
-    font-size: 0.85rem;
+.achievement-popup .achievement-desc {
+    font-size: 0.8rem; /* Adjusted size */
     opacity: 0.9;
+}
+
+/* --- Basic Modal Styling (remains as before) --- */
+.modal { /* ... */ }
+.modal-content { /* ... */ }
+.modal h2#messageTitle { /* ... */ }
+.modal p#messageTextBody { /* ... */ }
+.modal button#messageButton { /* ... */ }
+.modal button#messageButton:hover { /* ... */ }
+
+/* Media query for very small screens if needed */
+@media (max-width: 360px) {
+    header h1#page-title-clickable {
+        font-size: 1.8rem;
+    }
+    .header-controls {
+        flex-direction: column; /* Stack difficulty and scores on very small screens */
+        gap: 10px;
+    }
+    .difficulty-control, .scores-display {
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+    }
+    .scores-display {
+        align-items: center; /* Center score text if stacked */
+    }
+     .score-box {
+        text-align: center;
+    }
+    .game-header {
+        font-size: 0.9rem;
+    }
 }
