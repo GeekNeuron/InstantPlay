@@ -1,11 +1,7 @@
 // assets/js/snake.js
 
-import { GRID_SIZE, INITIAL_SNAKE_SPEED } from './constants.js';
+import { GRID_SIZE, INITIAL_SNAKE_SPEED } from './constants.js'; // INITIAL_SNAKE_SPEED is a fallback/default
 import { arePositionsEqual, getCssVariable } from './utils.js';
-
-/**
- * @fileoverview Represents the snake in the game.
- */
 
 export class Snake {
     /**
@@ -23,10 +19,14 @@ export class Snake {
         this.dx = 1; // Initial movement direction: 1 for right
         this.dy = 0; // Initial movement direction: 0 for horizontal
 
-        this.initialSpeed = INITIAL_SNAKE_SPEED; // Store the base speed for reference
-        this.speed = this.initialSpeed;          // Current actual speed of the snake
-        this.speedFactor = 1;                    // Current speed multiplier (1 means normal speed)
-        this.activeSpeedEffectTimeout = null;    // Timeout ID for temporary speed effects
+        // initialSpeed will be set by the Game class based on the current game mode.
+        // It represents the starting speed for the current round/mode.
+        this.initialSpeed = INITIAL_SNAKE_SPEED; // Default, will be overwritten by Game class
+        // speed is the current operational speed, can be affected by survival mode progression and temporary food effects.
+        this.speed = this.initialSpeed;
+
+        this.speedBeforeFoodEffect = null;    // Stores snake's speed just before a food effect is applied
+        this.activeSpeedEffectTimeout = null; // Timeout ID for temporary speed food effects
 
         this.segmentsToGrow = 0; // Number of segments to add on subsequent moves
 
@@ -78,36 +78,49 @@ export class Snake {
     }
 
     /**
-     * Sets a temporary speed for the snake by applying a speed factor.
-     * @param {number} factor - The factor by which to multiply the initial base speed.
+     * Applies a temporary speed change due to a food effect.
+     * The factor is applied to the snake's current speed.
+     * @param {number} factor - The factor by which to multiply the current speed.
      * @param {number} duration - Duration of the speed effect in milliseconds.
      */
     setTemporarySpeed(factor, duration) {
         if (this.activeSpeedEffectTimeout) {
-            clearTimeout(this.activeSpeedEffectTimeout); // Clear any existing speed effect
+            clearTimeout(this.activeSpeedEffectTimeout);
+            // If an old food effect was active, revert to the speed *before* that old food effect was applied.
+            // This ensures the new factor applies to the "base" speed (which might include survival increases).
+            if (this.speedBeforeFoodEffect !== null) {
+                this.speed = this.speedBeforeFoodEffect;
+            }
         }
 
-        this.speedFactor = factor;
-        this.speed = this.initialSpeed * this.speedFactor;
-        if (this.speed <= 0) this.speed = 0.5; // Prevent speed from becoming zero or negative
+        this.speedBeforeFoodEffect = this.speed; // Store current speed (which includes survival mode changes)
+        this.speed *= factor; // Apply new factor to the (potentially survival-increased) speed
 
-        this.game.updateGameSpeed(); // Notify game to adjust loop interval
+        // Clamp speed to a minimum reasonable value
+        if (this.speed < 0.5) this.speed = 0.5;
+        // Optionally, clamp to a maximum speed too if needed
+        // if (this.speed > MAX_POSSIBLE_SPEED) this.speed = MAX_POSSIBLE_SPEED;
+
+        this.game.updateGameSpeed(); // Notify game (mainly for logging or if other systems rely on effectiveGameSpeed)
 
         this.activeSpeedEffectTimeout = setTimeout(() => {
-            this.revertSpeed();
+            this.revertTemporarySpeed();
         }, duration);
-        console.log(`Snake speed changed to: ${this.speed.toFixed(2)} (Factor: ${this.speedFactor}) for ${duration}ms`);
+        // console.log(`Snake temp speed: ${this.speed.toFixed(2)} for ${duration}ms. Base was ${this.speedBeforeFoodEffect.toFixed(2)}`);
     }
 
     /**
-     * Reverts the snake's speed to its normal rate (initialSpeed * 1).
+     * Reverts the snake's speed after a temporary food effect expires.
+     * Restores to the speed it had *before* this specific food effect was applied.
      */
-    revertSpeed() {
-        this.speedFactor = 1; // Reset factor to normal
-        this.speed = this.initialSpeed * this.speedFactor;
+    revertTemporarySpeed() {
+        if (this.speedBeforeFoodEffect !== null) {
+            this.speed = this.speedBeforeFoodEffect; // Revert to the speed before this particular food effect
+        }
+        this.speedBeforeFoodEffect = null; // Clear the stored pre-effect speed
         this.activeSpeedEffectTimeout = null;
         this.game.updateGameSpeed(); // Notify game
-        console.log("Snake speed reverted to normal: " + this.speed);
+        // console.log("Snake speed reverted after food effect to: " + this.speed.toFixed(2));
     }
 
     /**
@@ -188,6 +201,7 @@ export class Snake {
 
     /**
      * Resets the snake to its initial state (position, direction, speed, growth).
+     * `this.initialSpeed` should be set by the Game class based on the mode before calling reset.
      * @param {number} startX - The initial X grid coordinate for the snake's head.
      * @param {number} startY - The initial Y grid coordinate for the snake's head.
      */
@@ -197,12 +211,17 @@ export class Snake {
         this.dy = 0;
         this.segmentsToGrow = 0;
 
-        if (this.activeSpeedEffectTimeout) { // Clear any pending speed effects
+        // initialSpeed is expected to be set by the Game class before reset is called.
+        this.speed = this.initialSpeed; // Reset current speed to the (potentially mode-specific) initial speed.
+
+        if (this.activeSpeedEffectTimeout) { // Clear any pending speed effects from food
             clearTimeout(this.activeSpeedEffectTimeout);
-            this.activeSpeedEffectTimeout = null;
         }
-        this.speedFactor = 1; // Reset speed factor
-        this.speed = this.initialSpeed; // Reset speed to the base initial speed
-        // Game's updateGameSpeed() will be called from game.resetGame()
+        this.speedBeforeFoodEffect = null;
+        this.activeSpeedEffectTimeout = null;
+        
+        if (this.game && typeof this.game.updateGameSpeed === 'function') {
+            this.game.updateGameSpeed(); // Reflect reset speed in game's effective speed tracker
+        }
     }
 }
