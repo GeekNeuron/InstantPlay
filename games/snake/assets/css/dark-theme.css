@@ -1,24 +1,23 @@
 /* assets/css/dark-theme.css */
 :root {
     /* --- General Page & Text --- */
-    --bg-color: #0d1117;                            /* Your --body-bg */
-    --text-color: #c9d1d9;                          /* Your --text-color-primary */
+    --bg-color: #0d1117;
+    --text-color: #c9d1d9;
     --text-color-muted: #8b949e;
-    --header-color: var(--text-color);              /* Title text color */
-    --accent-color: #3282b8;                        /* Your --button-bg (used as general accent) */
-    --accent-color-translucent: rgba(50, 130, 184, 0.3); /* For focus rings etc. */
+    --header-text-color: #c9d1d9;                   /* Color for the main game title (h1) */
+    --accent-color: #3282b8;
+    --accent-color-translucent: rgba(50, 130, 184, 0.3);
 
-
-    /* --- Game Container & Board --- */
-    --game-bg-color: #161b22;                       /* Your --container-bg */
+    /* --- Settings Box & Game Container --- */
+    --settings-box-bg: #161b22;                    /* Background for the entire header/settings box (Your --container-bg) */
+    --game-bg-color: #161b22;                       /* Game container background */
     --canvas-bg-color: #1e2732;                     /* Your --grid-bg */
-    --border-color: #30363d;                        /* Slightly lighter border than bg for visibility */
-    --grid-line-color: rgba(139, 148, 158, 0.2);   /* Adjusted alpha for better visibility */
+    --border-color: #30363d;
+    --grid-line-color: rgba(139, 148, 158, 0.2);
 
-    /* --- Score Box (.scores-display) & Game Header (.game-header with combo) --- */
+    /* --- Score Boxes inside Settings Box --- */
     --score-box-bg: #274c77;                        /* Your --score-box-bg */
     --score-box-text: #e0e6eb;                      /* Your --score-box-text */
-    /* Game Header (combo) will use accent color from style.css directly */
 
     /* --- Game Elements --- */
     --snake-head-color: #66ff66;
@@ -28,18 +27,18 @@
     --food-color-speed: #66ccff;
     --food-color-slow: #ffaa66;
     --food-color-grow: #cc99ff;
-    --obstacle-color: #768390;                      /* Adjusted for visibility */
+    --obstacle-color: #768390;
 
-    /* --- Power-ups (Collectible Items) --- */
+    /* --- Power-ups --- */
     --powerup-color-shield: #3282b8;
     --powerup-color-scoreboost: #4CAF50;
     --powerup-color-score-multiplier: #ffeb3b;
     --text-color-on-accent: #000000;
 
     /* --- Modals & Overlays --- */
-    --modal-overlay-bg: rgba(10, 10, 15, 0.75);     /* Your --modal-bg */
-    --modal-content-bg: #161b22;                    /* Your --modal-content-bg */
-    --modal-text-color: #c9d1d9;                    /* Your --modal-text-color */
+    --modal-overlay-bg: rgba(10, 10, 15, 0.75);
+    --modal-content-bg: #161b22;
+    --modal-text-color: #c9d1d9;
     --text-color-on-overlay: #FFFFFF;
 
     /* --- Buttons --- */
@@ -47,15 +46,20 @@
     --button-text: #ffffff;
     --button-hover-bg: #1d4357;
 
-    /* --- Theme Switcher (appearance when dark theme is active) --- */
-    /* --theme-switcher-bg-dark-active: #e0e0e0; // User's previous request, now handled differently */
+    /* Theme switcher variables from user are no longer applied directly to h1 background */
+    /* --theme-switcher-bg-dark-active: #e0e0e0;  */
     /* --theme-switcher-border-dark-active: #cccccc; */
     /* --theme-switcher-text-dark-active: #0d1117; */
 }
 
-/* Specific styling for the theme switcher (header h1) in dark mode */
-header h1#page-title-clickable {
-    background-color: var(--bg-color); /* Title background matches body background */
-    color: var(--header-color);        /* Text color as defined */
-    border-color: var(--border-color); /* Subtle border matching other elements */
+/* Apply settings box background */
+.settings-box {
+    background-color: var(--settings-box-bg);
+}
+
+/* Title (theme switcher) in dark theme */
+h1.game-title-header {
+    color: var(--header-text-color);
+    background-color: transparent !important; /* Title background is transparent, matching settings-box-bg */
+    border-color: transparent !important; /* No specific border for title unless desired */
 }
