@@ -3,27 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title id="game-title-tag">Snake Game</title> <link rel="stylesheet" href="assets/css/style.css">
+    <title id="game-title-tag">Snake Game</title>
+    <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/light-theme.css" id="theme-link">
 </head>
 <body>
     <div class="page-wrapper">
         <header class="settings-box">
-            <div class="header-left-section">
-                <div class="score-box" id="current-score-box">Score: <span id="score">0</span></div>
-                <div class="score-box" id="high-score-box">High Score: <span id="highscore">0</span></div>
-            </div>
             <h1 id="page-title-clickable" class="game-title-header" title="Click to toggle theme">Snake Game</h1>
-            <div class="header-right-section difficulty-control">
-                <label for="difficulty-select">Difficulty:</label>
-                <select id="difficulty-select" name="difficulty">
-                    </select>
+            <div class="controls-panel">
+                <div class="scores-group-left">
+                    <div class="score-box" id="current-score-box">Score: <span id="score">0</span></div>
+                    <div class="score-box" id="high-score-box">High Score: <span id="highscore">0</span></div>
+                </div>
+                <div class="difficulty-control-right difficulty-control"> <label for="difficulty-select">Difficulty:</label>
+                    <select id="difficulty-select" name="difficulty">
+                        </select>
+                </div>
             </div>
         </header>
 
         <main>
             <div class="game-container">
-                <div class="game-header-combo"> <div class="combo-container">
+                <div class="game-header-combo">
+                    <div class="combo-container">
                         <span id="combo-display" style="visibility: hidden;"></span>
                     </div>
                 </div>
