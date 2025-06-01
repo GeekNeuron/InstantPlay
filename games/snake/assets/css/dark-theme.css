@@ -1,48 +1,62 @@
 /* assets/css/dark-theme.css */
 :root {
-    --bg-color: #121212;
-    --text-color: #E0E0E0;
-    --text-color-muted: #A0A0A0;
-    --accent-color: #BB86FC;
-    --game-bg-color: #333333;
-    --canvas-bg-color: #242424;
-    --snake-head-color: #50fa7b;
-    --snake-body-color: #8be9fd;
-    --border-color: #444444;
-    --header-color: #E0E0E0;
+    /* --- General Page & Text (mapping your provided variables) --- */
+    --bg-color: #0d1117;                            /* From your --body-bg */
+    --text-color: #c9d1d9;                          /* From your --text-color-primary */
+    --text-color-muted: #8b949e;                    /* GitHub's secondary text color, good for dark themes */
+    --header-color: var(--text-color);              /* Main page title (h1) color */
+    --accent-color: #3282b8;                        /* From your --button-bg (for general accent) */
 
-    /* Food Colors */
-    --food-color: #ff5555;          /* Default Red (brighter) */
-    --food-color-golden: #ffeb3b;   /* Gold (brighter) */
-    --food-color-speed: #03a9f4;    /* Cyan (brighter) */
-    --food-color-slow: #ffc107;     /* Orange (brighter amber) */
-    --food-color-grow: #ba68c8;     /* Purple (brighter) */
+    /* --- Game Container & Board --- */
+    --game-bg-color: #161b22;                       /* From your --container-bg */
+    --canvas-bg-color: #1e2732;                     /* From your --grid-bg (main canvas background) */
+                                                    /* Your --grid-cell-bg (#2c3a47) is noted but not directly used as empty cells aren't drawn individually in current Snake. */
+    --border-color: #161b22;                        /* From your --border-color (which was var(--container-bg)) */
+    --grid-line-color: rgba(139, 148, 158, 0.25);   /* Light, semi-transparent gray for grid lines on dark background */
 
-    --obstacle-color: #787878;
-    --grid-line-color: rgba(255, 255, 255, 0.1);
+    /* --- Score Box (.game-header) --- */
+    --score-box-bg: #274c77;                        /* From your --score-box-bg */
+    --score-box-text: #e0e6eb;                      /* From your --score-box-text */
+
+    /* --- Game Elements (colors chosen for visibility on dark theme) --- */
+    --snake-head-color: #66ff66;                    /* Bright green for snake head */
+    --snake-body-color: #33cc33;                    /* Slightly darker bright green for snake body */
+    --food-color: #ff6666;                          /* Bright red for default food */
+    --food-color-golden: #ffd700;                   /* Gold (often works well on dark too) */
+    --food-color-speed: #66ccff;                    /* Sky blue for speed food */
+    --food-color-slow: #ffaa66;                     /* Light orange for slow-down food */
+    --food-color-grow: #cc99ff;                     /* Light purple for extra growth food */
+    --obstacle-color: #556677;                      /* Bluish-gray for obstacles, visible on #1e2732 */
+
+    /* --- Power-ups (Collectible Items) --- */
+    --powerup-color-shield: #3282b8;                /* Blue for shield item (from your button color) */
+    --powerup-color-scoreboost: #4CAF50;            /* Suitable green for score boost item */
+    --text-color-on-accent: #FFFFFF;                /* Text color on top of power-up items */
+
+    /* --- Modals (using your provided variables) --- */
+    --modal-overlay-bg: rgba(10, 10, 15, 0.7);      /* From your --modal-bg */
+    --modal-content-bg: #161b22;                    /* From your --modal-content-bg */
+    --modal-text-color: #c9d1d9;                    /* From your --modal-text-color */
+
+    /* --- Buttons (using your provided variables) --- */
+    --button-bg: #3282b8;
+    --button-text: #ffffff;
+    --button-hover-bg: #1d4357;
+
+    /* --- Theme Switcher (appearance when dark theme is active - using your variables) --- */
+    --theme-switcher-bg-dark-active: #e0e0e0;
+    --theme-switcher-border-dark-active: #cccccc;
+    --theme-switcher-text-dark-active: #0d1117; /* Text for the switcher when it looks "light" */
 }
 
-body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-}
+/*
+   Specific overrides for elements when dark theme is active.
+   Most base styles are in style.css and use the variables defined above.
+*/
 
-header h1 {
-    color: var(--header-color);
-}
-
-.game-container {
-    border-color: var(--border-color);
-    background-color: var(--game-bg-color);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-}
-
-.game-header {
-    color: var(--text-color);
-    border-color: var(--text-color-muted);
-}
-
-#gameCanvas {
-    /* background-color is drawn by board.js */
-    border-color: var(--text-color-muted); /* Using the muted text color for canvas border */
+/* Example: If the theme switcher (header h1) needs specific styling in dark mode */
+header h1#page-title-clickable {
+    background-color: var(--theme-switcher-bg-dark-active);
+    color: var(--theme-switcher-text-dark-active);
+    border-color: var(--theme-switcher-border-dark-active);
 }
