@@ -5,12 +5,14 @@ import { Snake } from './snake.js';
 import { Food } from './food.js';
 import { InputHandler } from './input.js';
 import { UIManager } from './ui.js';
-// import { SoundEffectsManager } from './sfx.js'; // Sound system is disabled
 import { PowerUpManager, POWERUP_COLLECTIBLE_TYPES } from './powerups.js';
+import { Particle } from './particle.js'; // Assuming you have particle.js created
 import {
     ROWS, COLS, GAME_STATE, FOOD_EFFECTS, INITIAL_SNAKE_SPEED, GRID_SIZE,
     COMBO_TIMER_DURATION, COMBO_MIN_FOR_MULTIPLIER, COMBO_SCORE_MULTIPLIER, COMBO_ITEM_BONUS_SCORE,
-    SURVIVAL_START_SPEED, SURVIVAL_SPEED_INCREASE_INTERVAL, SURVIVAL_SPEED_INCREASE_AMOUNT, GAME_MODES
+    SURVIVAL_START_SPEED, SURVIVAL_SPEED_INCREASE_INTERVAL, SURVIVAL_SPEED_INCREASE_AMOUNT, GAME_MODES,
+    PARTICLE_COUNT_FOOD_CONSUMPTION, PARTICLE_LIFESPAN_FOOD, PARTICLE_BASE_SPEED_FOOD, PARTICLE_SIZE_FOOD, PARTICLE_GRAVITY_FOOD,
+    SCREEN_SHAKE_MAGNITUDE_GAME_OVER, SCREEN_SHAKE_DURATION_GAME_OVER
 } from './constants.js';
 import { arePositionsEqual, getCssVariable } from './utils.js';
 
@@ -30,15 +32,8 @@ export class Game {
         this.lastFrameTime = 0;
         this.gameLoopRequestId = null;
 
-        // --- Game Mode Selection ---
-        // To test different modes, change this value:
-        this.currentGameMode = GAME_MODES.SURVIVAL; 
-        // this.currentGameMode = GAME_MODES.CLASSIC;
-        console.log("Game Mode Set To:", this.currentGameMode);
-
-
-        // --- Survival Mode Specific ---
-        this.lastSurvivalSpeedIncreaseTime = 0; // Timestamp of the last speed increase in survival mode
+        this.currentGameMode = GAME_MODES.SURVIVAL;
+        this.lastSurvivalSpeedIncreaseTime = 0;
 
         this.board = new Board(this.canvas, this.context);
         this.snake = new Snake(Math.floor(COLS / 4), Math.floor(ROWS / 2), this.board, this);
@@ -48,16 +43,24 @@ export class Game {
         this.uiManager = new UIManager(scoreElement, highScoreElement, comboDisplayElement, resolvedMessageOverlayElement, this);
 
         this.score = 0;
-        this.scoreMultiplier = 1; // From collectible power-ups
+        this.scoreMultiplier = 1;
         this.isShieldActive = false;
-        this.shieldHitCount = 0; 
-        this.effectiveGameSpeed = this.snake.speed; // For logging or other systems if needed
+        this.shieldHitCount = 0;
+        this.effectiveGameSpeed = this.snake.speed;
 
-        // Combo related properties
         this.comboCount = 0;
         this.lastFoodEatTime = 0;
         this.activeComboMultiplier = 1;
         this.currentComboBonusScore = 0;
+
+        // --- Particle System ---
+        this.particles = [];
+
+        // --- Screen Shake ---
+        this.isShaking = false;
+        this.shakeMagnitude = 0;
+        this.shakeDuration = 0;
+        this.shakeStartTime = 0;
 
         this.init();
     }
@@ -66,28 +69,27 @@ export class Game {
         this.uiManager.resetScore();
         this.uiManager.loadHighScore();
         this.uiManager.updateHighScoreDisplay();
-        this.resetGame(); // This will also call updateComboDisplay to clear it
+        this.resetGame();
         this.gameState = GAME_STATE.READY;
-        this.draw();
+        if (this.uiManager.updateComboDisplay) {
+            this.uiManager.updateComboDisplay(this.comboCount, this.activeComboMultiplier, this.currentComboBonusScore);
+        }
+        this.draw(performance.now()); // Initial draw, pass a timestamp
     }
 
     resetGame() {
         const startX = Math.floor(COLS / 4);
         const startY = Math.floor(ROWS / 2);
 
-        this.board.obstacles = []; // Clear previous obstacles
-        this.board.setupDefaultObstacles(); // Setup new obstacles for this game
+        this.board.obstacles = [];
+        this.board.setupDefaultObstacles();
 
-        // Set snake's initial speed based on the current game mode
         if (this.currentGameMode === GAME_MODES.SURVIVAL) {
             this.snake.initialSpeed = SURVIVAL_START_SPEED;
-            this.lastSurvivalSpeedIncreaseTime = performance.now(); // Set for the first interval check
-            console.log(`Game Reset: Survival Mode. Start speed: ${this.snake.initialSpeed}`);
-        } else { // Classic mode (or any other mode not explicitly survival)
+            this.lastSurvivalSpeedIncreaseTime = performance.now();
+        } else {
             this.snake.initialSpeed = INITIAL_SNAKE_SPEED;
-            console.log(`Game Reset: Classic Mode. Start speed: ${this.snake.initialSpeed}`);
         }
-        // Snake's reset method will use its this.initialSpeed to set its current this.speed
         this.snake.reset(startX, startY); 
 
         this.inputHandler.reset();
@@ -100,26 +102,25 @@ export class Game {
         this.scoreMultiplier = 1; 
         this.isShieldActive = false; 
 
-        // Reset combo state
         this.comboCount = 0;
         this.lastFoodEatTime = 0;
         this.activeComboMultiplier = 1;
         this.currentComboBonusScore = 0;
-        if (this.uiManager && typeof this.uiManager.updateComboDisplay === 'function') { 
+        if (this.uiManager && this.uiManager.updateComboDisplay) {
             this.uiManager.updateComboDisplay(this.comboCount, this.activeComboMultiplier, this.currentComboBonusScore);
         }
+        
+        this.particles = []; // Clear particles on reset
+        this.isShaking = false; // Stop any active shake on reset
 
-        this.updateGameSpeed(); // Reflects the initial speed of the mode in game.effectiveGameSpeed
+        this.updateGameSpeed();
     }
 
     start() {
-        // this.sfx.resumeContext(); // Sound system disabled
-
         if (this.gameState === GAME_STATE.READY || this.gameState === GAME_STATE.GAME_OVER) {
             this.resetGame(); 
             this.gameState = GAME_STATE.PLAYING;
             this.lastFrameTime = performance.now();
-            // Reset survival speed increase timer specifically at game start if in survival mode
             if (this.currentGameMode === GAME_MODES.SURVIVAL) {
                 this.lastSurvivalSpeedIncreaseTime = performance.now();
             }
@@ -137,35 +138,96 @@ export class Game {
         }
         this.gameLoopRequestId = requestAnimationFrame(this.gameLoop.bind(this));
         const deltaTime = timestamp - this.lastFrameTime;
-        // Interval based on the snake's current speed (which can be affected by food effects or survival mode)
         const interval = 1000 / this.snake.speed; 
         if (deltaTime >= interval) {
-            this.lastFrameTime = timestamp - (deltaTime % interval); 
+            this.lastFrameTime = timestamp - (deltaTime % interval);
             this.inputHandler.applyQueuedDirection();
             this.update(timestamp); 
-            this.draw();
+            this.draw(timestamp); // Pass timestamp for shake logic
         }
+    }
+
+    /**
+     * Creates a burst of particles at a given position.
+     * @param {number} x - Center x of the burst (in pixels).
+     * @param {number} y - Center y of the burst (in pixels).
+     * @param {number} count - Number of particles.
+     * @param {string} colorCssVar - CSS variable name for particle color (e.g., 'var(--food-color)').
+     * @param {number} baseSpeed - Base speed of particles.
+     * @param {number} lifeSpan - Lifespan of particles (conceptual, particle manages its own decrement).
+     * @param {number} particleSize - Size of particles.
+     * @param {number} gravity - Gravity affecting particles.
+     */
+    createParticleBurst(x, y, count, colorCssVar, baseSpeed, lifeSpan, particleSize, gravity) {
+        for (let i = 0; i < count; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            // Add more variation to initial speed and angle for a "burst"
+            const speed = baseSpeed * (0.5 + Math.random() * 0.8); // Randomize speed a bit
+            const velocity = {
+                vx: Math.cos(angle) * speed + (Math.random() - 0.5) * 0.5, // Add slight random x offset
+                vy: Math.sin(angle) * speed + (Math.random() - 0.5) * 0.5  // Add slight random y offset
+            };
+            try {
+                this.particles.push(new Particle(x, y, particleSize, colorCssVar, velocity, lifeSpan, gravity));
+            } catch (e) {
+                // This might happen if particle.js is not loaded or Particle class is undefined.
+                // console.error("Failed to create particle. Is particle.js loaded and Particle class defined?", e);
+            }
+        }
+    }
+
+    /**
+     * Triggers a screen shake effect.
+     * @param {number} magnitude - Maximum pixel displacement.
+     * @param {number} duration - Duration of the shake in milliseconds.
+     * @param {number} [startTime] - Optional start time, defaults to performance.now().
+     */
+    triggerScreenShake(magnitude, duration, startTime) {
+        this.isShaking = true;
+        this.shakeMagnitude = magnitude;
+        this.shakeDuration = duration;
+        this.shakeStartTime = startTime || performance.now();
     }
 
     update(currentTime) {
         this.snake.move();
-        this.powerUpManager.update(currentTime); 
+        this.powerUpManager.update(currentTime);
+
+        // Update particles
+        for (let i = this.particles.length - 1; i >= 0; i--) {
+            this.particles[i].update(16); // Pass a conceptual deltaTime or let particle manage its own timing
+            if (!this.particles[i].isAlive()) {
+                this.particles.splice(i, 1);
+            }
+        }
+
+        // Update screen shake state (primarily to turn it off after duration)
+        if (this.isShaking && (currentTime - this.shakeStartTime >= this.shakeDuration)) {
+            this.isShaking = false;
+        }
 
         // Survival Mode: Increase speed over time
         if (this.currentGameMode === GAME_MODES.SURVIVAL && this.gameState === GAME_STATE.PLAYING) {
             if (currentTime - this.lastSurvivalSpeedIncreaseTime > SURVIVAL_SPEED_INCREASE_INTERVAL) {
-                // Increase the snake's current speed directly.
-                // Food effects will apply temporarily on top of this progressively increasing speed.
-                this.snake.speed += SURVIVAL_SPEED_INCREASE_AMOUNT;
+                let baseSpeedToIncrease = (this.snake.speedBeforeFoodEffect !== null) ? 
+                                          this.snake.speedBeforeFoodEffect : 
+                                          this.snake.speed;
                 
-                // If a food speed effect is active, its base (speedBeforeFoodEffect) also needs to conceptually increase,
-                // so when it reverts, it reverts to a higher base.
-                if (this.snake.speedBeforeFoodEffect !== null) {
-                    this.snake.speedBeforeFoodEffect += SURVIVAL_SPEED_INCREASE_AMOUNT;
-                }
+                baseSpeedToIncrease += SURVIVAL_SPEED_INCREASE_AMOUNT;
 
-                // console.log(`Survival Speed Increased to: ${this.snake.speed.toFixed(2)}`);
-                this.updateGameSpeed(); // Update game's tracker/log
+                if (this.snake.speedBeforeFoodEffect !== null) {
+                    // If food effect is active, its factor should now apply to the new base speed
+                    const currentFactor = this.snake.speed / this.snake.speedBeforeFoodEffect; // This factor might be incorrect if speedBeforeFoodEffect was already increased
+                    this.snake.speedBeforeFoodEffect = baseSpeedToIncrease; // This is the new "normal" speed
+                    this.snake.speed = baseSpeedToIncrease * (this.snake.speed / this.snake.speedBeforeFoodEffect); // Re-apply factor (this part is tricky)
+                                                                                                                    // Simpler: just increase the current speed. The food effect will wear off eventually.
+                    this.snake.speed = (this.snake.speed / (this.snake.speedBeforeFoodEffect - SURVIVAL_SPEED_INCREASE_AMOUNT)) * baseSpeedToIncrease; // Try to maintain factor
+                } else {
+                     this.snake.speed = baseSpeedToIncrease;
+                }
+                if (this.snake.speed < 0.5) this.snake.speed = 0.5; // Clamp
+
+                this.updateGameSpeed();
                 this.lastSurvivalSpeedIncreaseTime = currentTime;
             }
         }
@@ -180,7 +242,11 @@ export class Game {
 
         // Food eating and combo logic
         const foodData = this.food.getData();
-        if (foodData && arePositionsEqual(this.snake.getHeadPosition(), this.food.getPosition())) {
+        const headPos = this.snake.getHeadPosition();
+        if (foodData && arePositionsEqual(headPos, this.food.getPosition())) {
+            const eatenFoodPosition = { ...this.food.getPosition() }; 
+            const eatenFoodColorVar = foodData.color; 
+
             if (this.comboCount > 0 && (currentTime - this.lastFoodEatTime) < COMBO_TIMER_DURATION) {
                 this.comboCount++;
             } else {
@@ -218,7 +284,18 @@ export class Game {
                     this.snake.grow(1);
                     break;
             }
-            this.food.spawnNew();
+            this.food.spawnNew(); 
+
+            this.createParticleBurst(
+                eatenFoodPosition.x * GRID_SIZE + GRID_SIZE / 2,
+                eatenFoodPosition.y * GRID_SIZE + GRID_SIZE / 2,
+                PARTICLE_COUNT_FOOD_CONSUMPTION,
+                eatenFoodColorVar, 
+                PARTICLE_BASE_SPEED_FOOD,
+                PARTICLE_LIFESPAN_FOOD,
+                PARTICLE_SIZE_FOOD,
+                PARTICLE_GRAVITY_FOOD
+            );
         }
 
         // Collision check
@@ -230,20 +307,46 @@ export class Game {
                 }
             }
             if (!hitAbsorbedByShield) {
-                this.gameOver();
+                this.gameOver(currentTime); 
             }
         }
     }
 
-    draw() {
+    draw(timestamp) { // Receive timestamp (from gameLoop)
+        this.context.save(); 
+
+        if (this.isShaking) {
+            const elapsedShakeTime = (timestamp || performance.now()) - this.shakeStartTime; // Use passed timestamp or get current
+            if (elapsedShakeTime < this.shakeDuration) {
+                const remainingRatio = 1 - (elapsedShakeTime / this.shakeDuration);
+                const currentMagnitude = this.shakeMagnitude * remainingRatio; // Diminishing shake
+                const shakeX = (Math.random() - 0.5) * 2 * currentMagnitude;
+                const shakeY = (Math.random() - 0.5) * 2 * currentMagnitude;
+                this.context.translate(shakeX, shakeY);
+            } else {
+                this.isShaking = false; 
+            }
+        }
+
         this.board.draw();
         this.food.draw(this.context);
         this.powerUpManager.draw(this.context);
         this.snake.draw(this.context);
+        
+        this.particles.forEach(particle => particle.draw(this.context));
 
-        if (this.gameState === GAME_STATE.GAME_OVER) this.drawGameOverMessage();
-        else if (this.gameState === GAME_STATE.PAUSED) this.drawPausedMessage();
-        else if (this.gameState === GAME_STATE.READY) this.drawReadyMessage();
+        // Draw game state messages (these are drawn on top, potentially affected by shake)
+        if (this.gameState === GAME_STATE.GAME_OVER && !this.isShaking) { // Draw Game Over only if not shaking to prevent weird draw during final shake
+             this.drawGameOverMessage();
+        } else if (this.gameState === GAME_STATE.GAME_OVER && this.isShaking) {
+            // Optionally draw a simpler "CRASH!" message during shake, or nothing
+        } else if (this.gameState === GAME_STATE.PAUSED) {
+             this.drawPausedMessage();
+        } else if (this.gameState === GAME_STATE.READY) {
+             this.drawReadyMessage();
+        }
+        
+        this.context.restore(); 
     }
 
     drawReadyMessage() {
@@ -320,13 +423,18 @@ export class Game {
         this.context.fillText('Press SPACE / ESC / TAP to Resume', this.canvas.width / 2, textY);
     }
 
-    gameOver() {
+    gameOver(currentTime) {
         this.comboCount = 0;
         this.activeComboMultiplier = 1;
         this.currentComboBonusScore = 0;
         if (this.uiManager && this.uiManager.updateComboDisplay) {
              this.uiManager.updateComboDisplay(this.comboCount, this.activeComboMultiplier, this.currentComboBonusScore);
         }
+        
+        if (this.gameState === GAME_STATE.PLAYING) { // Only trigger shake if game was actually playing
+             this.triggerScreenShake(SCREEN_SHAKE_MAGNITUDE_GAME_OVER, SCREEN_SHAKE_DURATION_GAME_OVER, currentTime);
+        }
+        
         this.gameState = GAME_STATE.GAME_OVER;
         if (this.gameLoopRequestId) {
             cancelAnimationFrame(this.gameLoopRequestId);
@@ -335,7 +443,20 @@ export class Game {
         this.snake.revertSpeed(); 
         this.powerUpManager.reset(); 
         this.uiManager.updateHighScore();
-        this.draw();
+        
+        // Draw the game over screen. If shake is active, it will be applied in draw().
+        // No need to call draw() separately if gameLoop was stopped, as the state change will prevent further updates.
+        // However, to ensure the Game Over message appears immediately, especially if shake is short:
+        if (!this.isShaking) { // If shake is not active or just finished, draw immediately.
+            this.draw(performance.now());
+        } else {
+            // If shake is active, the next gameLoop call (which won't run update())
+            // or a direct call to draw() will handle it. For simplicity, we can rely on draw being called by gameLoop
+            // or ensure one final draw.
+            // The game loop will stop, so we need a final draw call.
+            // Let the shake complete by itself if it's running, then it will stop.
+            // The draw method itself will handle drawing the GameOver message after shake.
+        }
     }
 
     togglePause() {
@@ -345,7 +466,7 @@ export class Game {
                 cancelAnimationFrame(this.gameLoopRequestId);
                 this.gameLoopRequestId = null;
             }
-            this.draw(); 
+            this.draw(performance.now()); 
         } else if (this.gameState === GAME_STATE.PAUSED) {
             this.resume();
         } else if (this.gameState === GAME_STATE.READY || this.gameState === GAME_STATE.GAME_OVER) {
@@ -357,7 +478,7 @@ export class Game {
         if (this.gameState === GAME_STATE.PAUSED) {
             this.gameState = GAME_STATE.PLAYING;
             this.lastFrameTime = performance.now();
-            if (this.gameLoopRequestId) cancelAnimationFrame(this.gameLoopRequestId);
+            if (this.gameLoopRequestId) cancelAnimationFrame(this.gameLoopRequestId); // Should already be null
             this.gameLoopRequestId = requestAnimationFrame(this.gameLoop.bind(this));
         }
     }
@@ -368,6 +489,5 @@ export class Game {
 
     updateGameSpeed() {
         this.effectiveGameSpeed = this.snake.speed;
-        // console.log(`Game effective speed synced: ${this.effectiveGameSpeed.toFixed(2)}`);
     }
 }
