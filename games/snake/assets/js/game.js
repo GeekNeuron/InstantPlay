@@ -30,7 +30,6 @@ export class Game {
         this.gameLoopRequestId = null;
 
         this.board = new Board(this.canvas, this.context);
-        // this.sfx = new SoundEffectsManager(); // Sound system disabled
         this.snake = new Snake(Math.floor(COLS / 4), Math.floor(ROWS / 2), this.board, this);
         this.powerUpManager = new PowerUpManager(this.board, this.snake, this);
         this.food = new Food(this.board, this.snake, this.powerUpManager);
@@ -38,16 +37,15 @@ export class Game {
         this.uiManager = new UIManager(scoreElement, highScoreElement, comboDisplayElement, resolvedMessageOverlayElement, this);
 
         this.score = 0;
-        this.scoreMultiplier = 1; // From collectible power-ups
+        this.scoreMultiplier = 1;
         this.isShieldActive = false;
-        this.shieldHitCount = 0; // Not actively used by current shield logic but available
+        this.shieldHitCount = 0;
         this.effectiveGameSpeed = this.snake.speed;
 
-        // Combo related properties
         this.comboCount = 0;
         this.lastFoodEatTime = 0;
-        this.activeComboMultiplier = 1; // Score multiplier derived from combo count
-        this.currentComboBonusScore = 0; // Flat bonus points from combo items
+        this.activeComboMultiplier = 1;
+        this.currentComboBonusScore = 0;
 
         this.init();
     }
@@ -56,8 +54,11 @@ export class Game {
         this.uiManager.resetScore();
         this.uiManager.loadHighScore();
         this.uiManager.updateHighScoreDisplay();
-        this.resetGame(); // This will also call updateComboDisplay
+        this.resetGame();
         this.gameState = GAME_STATE.READY;
+        if (this.uiManager.updateComboDisplay) { // Check if method exists
+            this.uiManager.updateComboDisplay(this.comboCount, this.activeComboMultiplier, this.currentComboBonusScore);
+        }
         this.draw();
     }
 
@@ -71,20 +72,19 @@ export class Game {
         this.snake.reset(startX, startY);
         this.inputHandler.reset();
         this.food.spawnNew();
-        this.powerUpManager.reset(); // Resets collectible power-up effects
+        this.powerUpManager.reset();
         
         this.score = 0;
         this.uiManager.updateScore(this.score);
         
-        this.scoreMultiplier = 1; // Reset collectible power-up multiplier
-        this.isShieldActive = false; // Game's view of shield, reset by PowerUpManager too
+        this.scoreMultiplier = 1; 
+        this.isShieldActive = false; 
 
-        // Reset combo state
         this.comboCount = 0;
         this.lastFoodEatTime = 0;
         this.activeComboMultiplier = 1;
         this.currentComboBonusScore = 0;
-        if (this.uiManager) {
+        if (this.uiManager && this.uiManager.updateComboDisplay) { // Check if method exists
             this.uiManager.updateComboDisplay(this.comboCount, this.activeComboMultiplier, this.currentComboBonusScore);
         }
 
@@ -92,8 +92,6 @@ export class Game {
     }
 
     start() {
-        // this.sfx.resumeContext(); // Sound system disabled
-
         if (this.gameState === GAME_STATE.READY || this.gameState === GAME_STATE.GAME_OVER) {
             this.resetGame();
             this.gameState = GAME_STATE.PLAYING;
@@ -112,39 +110,35 @@ export class Game {
         }
         this.gameLoopRequestId = requestAnimationFrame(this.gameLoop.bind(this));
         const deltaTime = timestamp - this.lastFrameTime;
-        const interval = 1000 / this.snake.speed; // Snake's speed can change due to food effects
+        const interval = 1000 / this.snake.speed; 
         if (deltaTime >= interval) {
             this.lastFrameTime = timestamp - (deltaTime % interval);
             this.inputHandler.applyQueuedDirection();
-            this.update(timestamp); // Pass currentTime for timed effects
+            this.update(timestamp); 
             this.draw();
         }
     }
 
     update(currentTime) {
         this.snake.move();
-        this.powerUpManager.update(currentTime); // Manages collectible power-ups
+        this.powerUpManager.update(currentTime);
 
-        // Check for combo break due to time out, before processing food eating
         if (this.comboCount > 0 && (currentTime - this.lastFoodEatTime > COMBO_TIMER_DURATION)) {
-            // console.log(`Combo broken! Count was ${this.comboCount}. Time diff: ${currentTime - this.lastFoodEatTime}`);
             this.comboCount = 0;
             this.activeComboMultiplier = 1;
             this.currentComboBonusScore = 0;
-            this.uiManager.updateComboDisplay(this.comboCount, this.activeComboMultiplier, this.currentComboBonusScore);
+            if (this.uiManager.updateComboDisplay) this.uiManager.updateComboDisplay(this.comboCount, this.activeComboMultiplier, this.currentComboBonusScore);
         }
 
         const foodData = this.food.getData();
         if (foodData && arePositionsEqual(this.snake.getHeadPosition(), this.food.getPosition())) {
-            // Handle Combo Logic
             if (this.comboCount > 0 && (currentTime - this.lastFoodEatTime) < COMBO_TIMER_DURATION) {
                 this.comboCount++;
             } else {
-                this.comboCount = 1; // Start/restart combo
+                this.comboCount = 1;
             }
             this.lastFoodEatTime = currentTime;
 
-            // Calculate combo multiplier and flat bonus
             if (this.comboCount >= COMBO_MIN_FOR_MULTIPLIER) {
                 this.activeComboMultiplier = COMBO_SCORE_MULTIPLIER;
             } else {
@@ -152,51 +146,41 @@ export class Game {
             }
             this.currentComboBonusScore = (this.comboCount > 1) ? (this.comboCount - 1) * COMBO_ITEM_BONUS_SCORE : 0;
             
-            // Calculate score for this food
             let baseFoodScore = foodData.score;
-            // scoreMultiplier is from collectible items, activeComboMultiplier is from combo eating streak
-            let finalScoreForFood = (baseFoodScore * this.activeComboMultiplier) + this.currentComboBonusScore;
-            finalScoreForFood *= this.scoreMultiplier; // Apply collectible score multiplier last
+            let finalScoreForFood = (baseFoodScore + this.currentComboBonusScore) * this.activeComboMultiplier;
+            finalScoreForFood *= this.scoreMultiplier; 
 
-            this.score += Math.round(finalScoreForFood); // Add to total score
+            this.score += Math.round(finalScoreForFood);
             
             this.uiManager.updateScore(this.score);
-            this.uiManager.updateComboDisplay(this.comboCount, this.activeComboMultiplier, this.currentComboBonusScore);
-            // this.sfx.play('eat'); // Sound disabled
-
-            // Apply food's direct effect (e.g., speed change, extra growth)
+            if (this.uiManager.updateComboDisplay) this.uiManager.updateComboDisplay(this.comboCount, this.activeComboMultiplier, this.currentComboBonusScore);
+            
             switch (foodData.effect) {
                 case FOOD_EFFECTS.SPEED_BOOST:
                     this.snake.setTemporarySpeed(foodData.speedFactor, foodData.duration);
-                    // this.sfx.play('foodEffect'); // Sound disabled
                     break;
                 case FOOD_EFFECTS.SLOW_DOWN:
                     this.snake.setTemporarySpeed(foodData.speedFactor, foodData.duration);
-                    // this.sfx.play('foodEffect'); // Sound disabled
                     break;
                 case FOOD_EFFECTS.EXTRA_GROWTH:
                     this.snake.grow(foodData.growAmount);
                     break;
                 case FOOD_EFFECTS.NONE:
                 default:
-                    this.snake.grow(1); // Default growth
+                    this.snake.grow(1);
                     break;
             }
-            this.food.spawnNew(); // Spawn new food after current one is eaten
+            this.food.spawnNew();
         }
 
-        // Check for game over conditions
         if (this.snake.checkCollision()) {
             let hitAbsorbedByShield = false;
-            if (this.isShieldActive) { // game.isShieldActive is set by Shield power-up's effect
+            if (this.isShieldActive) { 
                 if (this.powerUpManager.handleHitWithEffect(POWERUP_COLLECTIBLE_TYPES.SHIELD)) {
-                    // this.sfx.play('shieldHit'); // Sound disabled
-                    console.log("Game: Shield absorbed hit via PowerUpManager.");
+                    // console.log("Game: Shield absorbed hit via PowerUpManager."); // Log in PowerUpManager
                     hitAbsorbedByShield = true;
-                    // isShieldActive flag should be managed by the PowerUpManager's deactivate logic for the shield
                 }
             }
-
             if (!hitAbsorbedByShield) {
                 this.gameOver();
             }
@@ -210,7 +194,7 @@ export class Game {
         this.snake.draw(this.context);
 
         if (this.gameState === GAME_STATE.GAME_OVER) this.drawGameOverMessage();
-        else if (this.gameState === GAME_STATE.PAUSED) this.drawPausedMessage();
+        else if (this.gameState === GAME_STATE.PAUSED) this.drawPausedMessage(); // This will call the updated method
         else if (this.gameState === GAME_STATE.READY) this.drawReadyMessage();
     }
 
@@ -221,7 +205,7 @@ export class Game {
         const titleFontSize = Math.min(24, GRID_SIZE * 1.5);
         const instructionFontSize = Math.min(16, GRID_SIZE);
         this.context.font = `bold ${titleFontSize}px ${mainFont}`;
-        this.context.fillStyle = 'white';
+        this.context.fillStyle = getCssVariable('--text-color-on-overlay', '#FFFFFF'); // Use consistent variable
         this.context.textAlign = 'center';
         this.context.fillText('Snake Game 🌌', this.canvas.width / 2, this.canvas.height / 2 - 10);
         this.context.font = `${instructionFontSize}px ${mainFont}`;
@@ -237,12 +221,12 @@ export class Game {
         const instructionFontSize = Math.min(16, GRID_SIZE);
         let yPos = this.canvas.height / 2 - 40;
         this.context.font = `bold ${titleFontSize}px ${mainFont}`;
-        this.context.fillStyle = '#FF5252';
+        this.context.fillStyle = getCssVariable('--food-color', '#FF5252'); // Using a distinct color for "Game Over!"
         this.context.textAlign = 'center';
         this.context.fillText('Game Over!', this.canvas.width / 2, yPos);
         yPos += titleFontSize * 1.2;
         this.context.font = `${scoreFontSize}px ${mainFont}`;
-        this.context.fillStyle = 'white';
+        this.context.fillStyle = getCssVariable('--text-color-on-overlay', '#FFFFFF');
         this.context.fillText(`Score: ${this.score}`, this.canvas.width / 2, yPos);
         yPos += scoreFontSize * 1.2;
         this.context.fillText(`High Score: ${this.uiManager.highScore}`, this.canvas.width / 2, yPos);
@@ -252,47 +236,73 @@ export class Game {
     }
 
     drawPausedMessage() {
-        this.context.fillStyle = 'rgba(0, 0, 0, 0.6)';
-        this.context.fillRect(0, this.canvas.height / 2 - 30, this.canvas.width, 60);
+        // Background overlay for the pause message box
+        const overlayBgColor = getCssVariable('--modal-overlay-bg', 'rgba(0, 0, 0, 0.75)'); // Use modal overlay for consistency
+        this.context.fillStyle = overlayBgColor;
+        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height); // Full screen overlay
+
+        // Message Box
+        const boxWidth = Math.min(this.canvas.width * 0.7, 300); // Max width for the box
+        const boxHeight = GRID_SIZE * 10;    // Height of the message box
+        const boxX = (this.canvas.width - boxWidth) / 2;
+        const boxY = (this.canvas.height - boxHeight) / 2;
+        
+        const boxBgColor = getCssVariable('--modal-content-bg', '#333333'); // Use modal content bg
+        this.context.fillStyle = boxBgColor;
+        // Simple rect for now, can add rounded corners later if desired
+        this.context.fillRect(boxX, boxY, boxWidth, boxHeight);
+
+        const boxBorderColor = getCssVariable('--border-color', '#444444');
+        this.context.strokeStyle = boxBorderColor;
+        this.context.lineWidth = 2;
+        this.context.strokeRect(boxX, boxY, boxWidth, boxHeight);
+
         const mainFont = getCssVariable('--font-main', 'Arial');
-        const pausedFontSize = Math.min(24, GRID_SIZE * 1.6);
-        this.context.font = `bold ${pausedFontSize}px ${mainFont}`;
-        this.context.fillStyle = '#FFEB3B';
+        const titleColor = getCssVariable('--accent-color', '#FFEB3B');
+        const instructionColor = getCssVariable('--modal-text-color', '#FFFFFF'); // Use modal text color
+
+        // "GAME PAUSED" title
+        const titleFontSize = Math.min(28, GRID_SIZE * 1.7); // Adjusted size
+        this.context.font = `bold ${titleFontSize}px ${mainFont}`;
+        this.context.fillStyle = titleColor;
         this.context.textAlign = 'center';
-        this.context.fillText('Paused', this.canvas.width / 2, this.canvas.height / 2 + (pausedFontSize / 3) - 2);
+        let textY = boxY + boxHeight * 0.35; // Position title higher in the box
+        this.context.fillText('GAME PAUSED', this.canvas.width / 2, textY);
+
+        // "Press ... to Resume" instruction
+        const instructionFontSize = Math.min(15, GRID_SIZE * 0.9); // Adjusted size
+        this.context.font = `${instructionFontSize}px ${mainFont}`;
+        this.context.fillStyle = instructionColor;
+        textY += titleFontSize * 0.8 + instructionFontSize * 0.5; // Position instruction lower
+        this.context.fillText('Press SPACE / ESC / TAP to Resume', this.canvas.width / 2, textY);
     }
 
     gameOver() {
-        // Reset combo state on game over
         this.comboCount = 0;
         this.activeComboMultiplier = 1;
         this.currentComboBonusScore = 0;
-        if (this.uiManager) {
+        if (this.uiManager && this.uiManager.updateComboDisplay) {
              this.uiManager.updateComboDisplay(this.comboCount, this.activeComboMultiplier, this.currentComboBonusScore);
         }
-
         this.gameState = GAME_STATE.GAME_OVER;
         if (this.gameLoopRequestId) {
             cancelAnimationFrame(this.gameLoopRequestId);
             this.gameLoopRequestId = null;
         }
-        this.snake.revertSpeed(); // Ensure speed effects from food are off
-        this.powerUpManager.reset(); // Ensure collectible power-up effects (like score multiplier) are off
+        this.snake.revertSpeed();
+        this.powerUpManager.reset();
         this.uiManager.updateHighScore();
-        // this.sfx.play('gameOver'); // Sound disabled
-        this.draw(); // Draw the game over message
+        this.draw();
     }
 
     togglePause() {
-        // this.sfx.resumeContext(); // Sound system disabled
         if (this.gameState === GAME_STATE.PLAYING) {
             this.gameState = GAME_STATE.PAUSED;
             if (this.gameLoopRequestId) {
                 cancelAnimationFrame(this.gameLoopRequestId);
                 this.gameLoopRequestId = null;
             }
-            // this.sfx.play('click'); // Sound disabled
-            this.draw();
+            this.draw(); 
         } else if (this.gameState === GAME_STATE.PAUSED) {
             this.resume();
         } else if (this.gameState === GAME_STATE.READY || this.gameState === GAME_STATE.GAME_OVER) {
@@ -303,8 +313,7 @@ export class Game {
     resume() {
         if (this.gameState === GAME_STATE.PAUSED) {
             this.gameState = GAME_STATE.PLAYING;
-            // this.sfx.play('click'); // Sound disabled
-            this.lastFrameTime = performance.now(); // Reset time to avoid jump
+            this.lastFrameTime = performance.now();
             if (this.gameLoopRequestId) cancelAnimationFrame(this.gameLoopRequestId);
             this.gameLoopRequestId = requestAnimationFrame(this.gameLoop.bind(this));
         }
@@ -316,6 +325,5 @@ export class Game {
 
     updateGameSpeed() {
         this.effectiveGameSpeed = this.snake.speed;
-        // console.log(`Game effective speed synced to snake.speed: ${this.effectiveGameSpeed.toFixed(2)}`);
     }
 }
