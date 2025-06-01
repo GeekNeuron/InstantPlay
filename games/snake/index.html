@@ -6,7 +6,7 @@
     <title id="game-title">Snake Game 🐍</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/light-theme.css" id="theme-link">
-    </head>
+</head>
 <body>
     <header>
         <h1 id="page-title-clickable" title="Click to toggle theme">Snake Game 🌌</h1>
@@ -16,18 +16,21 @@
         <div class="game-container">
             <div class="game-header">
                 <div class="score-container">Score: <span id="score">0</span></div>
+                <div class="combo-container">
+                    <span id="combo-display" style="visibility: hidden;"></span>
+                </div>
                 <div class="highscore-container">High Score: <span id="highscore">0</span></div>
             </div>
             <canvas id="gameCanvas"></canvas>
             <div class="game-controls-info">
                 <p>Use Arrow Keys or Swipe to move.</p>
-                <p>Space/Escape to Pause/Resume.</p>
+                <p>Space/Escape to Pause/Resume/Start.</p>
             </div>
-             </div>
+        </div>
     </main>
 
     <footer>
-        <p>Created by GeekNeuron.</p>
+        <p>Project by GeekNeuron &amp; AI</p>
     </footer>
 
     <script src="assets/js/main.js" type="module"></script>
