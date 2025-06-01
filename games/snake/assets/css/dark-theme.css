@@ -10,7 +10,6 @@
     /* --- Game Container & Board --- */
     --game-bg-color: #161b22;                       /* Your --container-bg */
     --canvas-bg-color: #1e2732;                     /* Your --grid-bg (main canvas background) */
-                                                    /* Your --grid-cell-bg (#2c3a47) is noted but not directly used */
     --border-color: #161b22;                        /* Your --border-color (was var(--container-bg)) */
     --grid-line-color: rgba(139, 148, 158, 0.25);   /* Light, semi-transparent gray for grid lines */
 
@@ -35,10 +34,12 @@
     --text-color-on-accent: #000000;                /* Text color on power-up items (e.g., if background is light yellow) */
                                                     /* Consider #FFFFFF if power-up colors are dark */
 
-    /* --- Modals (using your provided variables) --- */
-    --modal-overlay-bg: rgba(10, 10, 15, 0.7);      /* Your --modal-bg */
+    /* --- Modals & Overlays --- */
+    --modal-overlay-bg: rgba(10, 10, 15, 0.75);     /* Your --modal-bg, slightly more opaque for pause */
     --modal-content-bg: #161b22;                    /* Your --modal-content-bg */
     --modal-text-color: #c9d1d9;                    /* Your --modal-text-color */
+    --text-color-on-overlay: #FFFFFF;               /* Text color for messages on dark overlays (like Ready, Game Over, Pause messages drawn on canvas) */
+
 
     /* --- Buttons (using your provided variables) --- */
     --button-bg: #3282b8;
@@ -54,7 +55,6 @@
 /*
    Specific overrides for elements when dark theme is active.
    The `style.css` file will use the general variables defined above.
-   The theme switcher h1 is styled directly here as an example of using the specific theme switcher vars.
 */
 
 header h1#page-title-clickable { /* Example of using theme-specific switcher styles */
