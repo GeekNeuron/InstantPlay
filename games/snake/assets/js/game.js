@@ -5,7 +5,7 @@ import { Snake } from './snake.js';
 import { Food } from './food.js';
 import { InputHandler } from './input.js';
 import { UIManager } from './ui.js';
-// import { SoundEffectsManager } from './sfx.js'; // Sound removed
+// import { SoundEffectsManager } from './sfx.js'; // Sound system is disabled
 import { PowerUpManager, POWERUP_COLLECTIBLE_TYPES } from './powerups.js';
 import { ROWS, COLS, GAME_STATE, FOOD_EFFECTS, INITIAL_SNAKE_SPEED, GRID_SIZE } from './constants.js';
 import { arePositionsEqual, getCssVariable } from './utils.js';
@@ -26,7 +26,7 @@ export class Game {
         this.gameLoopRequestId = null;
 
         this.board = new Board(this.canvas, this.context);
-        // this.sfx = new SoundEffectsManager(); // Sound removed
+        // this.sfx = new SoundEffectsManager(); // Sound system disabled
         this.snake = new Snake(Math.floor(COLS / 4), Math.floor(ROWS / 2), this.board, this);
         this.powerUpManager = new PowerUpManager(this.board, this.snake, this);
         this.food = new Food(this.board, this.snake, this.powerUpManager);
@@ -34,61 +34,64 @@ export class Game {
         this.uiManager = new UIManager(scoreElement, highScoreElement, resolvedMessageOverlayElement, this);
 
         this.score = 0;
-        this.scoreMultiplier = 1; // Initialize score multiplier
-        this.isShieldActive = false; // Game's view of shield state, controlled by PowerUpManager
-        this.shieldHitCount = 0; // (Maintained by shield power-up logic via game object if needed)
+        this.scoreMultiplier = 1;
+        this.isShieldActive = false;
+        this.shieldHitCount = 0;
         this.effectiveGameSpeed = this.snake.speed;
 
         this.init();
     }
 
     init() {
-        // console.log("Game.init(): Initializing game state..."); // Log was here
+        // console.log("Game.init(): Initializing game state...");
         this.uiManager.resetScore();
         this.uiManager.loadHighScore();
         this.uiManager.updateHighScoreDisplay();
         this.resetGame();
         this.gameState = GAME_STATE.READY;
-        // console.log("Game.init(): Game state set to READY..."); // Log was here
+        // console.log("Game.init(): Game state set to READY...");
         this.draw();
     }
 
     resetGame() {
-        // console.log("Game.resetGame(): Resetting game elements."); // Log was here
+        // console.log("Game.resetGame(): Resetting game elements.");
         const startX = Math.floor(COLS / 4);
         const startY = Math.floor(ROWS / 2);
+
+        // --- اضافه شده: پاک کردن و تنظیم مجدد موانع ---
+        this.board.obstacles = []; // Clear previous obstacles
+        this.board.setupDefaultObstacles(); // Setup new obstacles for this game
+
         this.snake.reset(startX, startY);
         this.inputHandler.reset();
-        this.food.spawnNew();
-        this.powerUpManager.reset(); // This should also reset effects like scoreMultiplier and shield flag
+        this.food.spawnNew(); // This will now also avoid new obstacles
+        this.powerUpManager.reset(); // This will also avoid new obstacles for spawning
         this.score = 0;
         this.uiManager.updateScore(this.score);
-        // scoreMultiplier and isShieldActive should be reset by powerUpManager.reset()
-        // by calling their respective deactivate functions if they were active.
-        // For safety, ensure they are reset here too, or that PowerUpManager handles it robustly.
         this.scoreMultiplier = 1;
         this.isShieldActive = false;
+        this.shieldHitCount = 0;
         this.updateGameSpeed();
     }
 
     start() {
-        // console.log("Game.start() called. Current state before action:", this.gameState); // Log was here
-        // this.sfx.resumeContext(); // Sound removed
+        // console.log("Game.start() called. Current state before action:", this.gameState);
+        // this.sfx.resumeContext(); // Sound system disabled
 
         if (this.gameState === GAME_STATE.READY || this.gameState === GAME_STATE.GAME_OVER) {
-            // console.log("Game.start(): Conditions met..."); // Log was here
-            this.resetGame();
+            // console.log("Game.start(): Conditions met...");
+            this.resetGame(); // resetGame now also sets up obstacles
             this.gameState = GAME_STATE.PLAYING;
-            // console.log("Game.start(): Game state changed to:", this.gameState); // Log was here
+            // console.log("Game.start(): Game state changed to:", this.gameState);
             this.lastFrameTime = performance.now();
             if (this.gameLoopRequestId) cancelAnimationFrame(this.gameLoopRequestId);
             this.gameLoopRequestId = requestAnimationFrame(this.gameLoop.bind(this));
-            // console.log("Game.start(): Game loop initiated with ID:", this.gameLoopRequestId); // Log was here
+            // console.log("Game.start(): Game loop initiated with ID:", this.gameLoopRequestId);
         } else if (this.gameState === GAME_STATE.PAUSED) {
-            // console.log("Game.start(): Game was PAUSED. Calling this.resume()."); // Log was here
+            // console.log("Game.start(): Game was PAUSED. Calling this.resume().");
             this.resume();
         } else {
-            // console.warn("Game.start(): Conditions not met to start/resume..."); // Log was here
+            // console.warn("Game.start(): Conditions not met to start/resume...");
         }
     }
 
@@ -110,23 +113,20 @@ export class Game {
 
     update(currentTime) {
         this.snake.move();
-        this.powerUpManager.update(currentTime); // Manages activation/deactivation of timed power-ups
-
+        this.powerUpManager.update(currentTime);
         const foodData = this.food.getData();
         if (foodData && arePositionsEqual(this.snake.getHeadPosition(), this.food.getPosition())) {
-            // Use the game's current scoreMultiplier
             this.score += (foodData.score * this.scoreMultiplier);
             this.uiManager.updateScore(this.score);
-            // this.sfx.play('eat'); // Sound removed
-
+            // this.sfx.play('eat'); // Sound disabled
             switch (foodData.effect) {
                 case FOOD_EFFECTS.SPEED_BOOST:
                     this.snake.setTemporarySpeed(foodData.speedFactor, foodData.duration);
-                    // this.sfx.play('foodEffect'); // Sound removed
+                    // this.sfx.play('foodEffect'); // Sound disabled
                     break;
                 case FOOD_EFFECTS.SLOW_DOWN:
                     this.snake.setTemporarySpeed(foodData.speedFactor, foodData.duration);
-                    // this.sfx.play('foodEffect'); // Sound removed
+                    // this.sfx.play('foodEffect'); // Sound disabled
                     break;
                 case FOOD_EFFECTS.EXTRA_GROWTH:
                     this.snake.grow(foodData.growAmount);
@@ -138,21 +138,15 @@ export class Game {
             }
             this.food.spawnNew();
         }
-
-        if (this.snake.checkCollision()) {
+        if (this.snake.checkCollision()) { // This check now includes obstacles via board.isObstacle()
             let hitAbsorbedByShield = false;
-            // game.isShieldActive is set true by the Shield power-up's 'effect' function
             if (this.isShieldActive) {
-                // Let PowerUpManager handle the consequence of a hit while shield is active
-                // This will call the shield's 'onHitWhileActive' and 'deactivate' logic
                 if (this.powerUpManager.handleHitWithEffect(POWERUP_COLLECTIBLE_TYPES.SHIELD)) {
-                    // this.sfx.play('shieldHit'); // Sound removed
+                    // this.sfx.play('shieldHit'); // Sound disabled
                     console.log("Game: Shield absorbed hit via PowerUpManager.");
                     hitAbsorbedByShield = true;
-                    // game.isShieldActive should now be false due to shield's deactivate function
                 }
             }
-
             if (!hitAbsorbedByShield) {
                 this.gameOver();
             }
@@ -160,7 +154,7 @@ export class Game {
     }
 
     draw() {
-        this.board.draw();
+        this.board.draw(); // This now also draws obstacles
         this.food.draw(this.context);
         this.powerUpManager.draw(this.context);
         this.snake.draw(this.context);
@@ -218,36 +212,36 @@ export class Game {
     }
 
     gameOver() {
-        // console.log("Game.gameOver() called. Final score:", this.score); // Log was here
+        // console.log("Game.gameOver() called. Final score:", this.score);
         this.gameState = GAME_STATE.GAME_OVER;
         if (this.gameLoopRequestId) {
             cancelAnimationFrame(this.gameLoopRequestId);
             this.gameLoopRequestId = null;
         }
-        this.snake.revertSpeed(); // Ensure speed effects are off
-        this.powerUpManager.reset(); // Ensure power-up effects like multiplier are off
+        this.snake.revertSpeed();
+        this.powerUpManager.reset();
         this.uiManager.updateHighScore();
-        // this.sfx.play('gameOver'); // Sound removed
+        // this.sfx.play('gameOver'); // Sound disabled
         this.draw();
     }
 
     togglePause() {
-        // console.log("Game.togglePause() called. Current state:", this.gameState); // Log was here
-        // this.sfx.resumeContext(); // Sound removed
+        // console.log("Game.togglePause() called. Current state:", this.gameState);
+        // this.sfx.resumeContext(); // Sound disabled
         if (this.gameState === GAME_STATE.PLAYING) {
             this.gameState = GAME_STATE.PAUSED;
             if (this.gameLoopRequestId) {
                 cancelAnimationFrame(this.gameLoopRequestId);
                 this.gameLoopRequestId = null;
             }
-            // this.sfx.play('click'); // Sound removed
-            // console.log("Game.togglePause(): Game PAUSED."); // Log was here
+            // this.sfx.play('click'); // Sound disabled
+            // console.log("Game.togglePause(): Game PAUSED.");
             this.draw();
         } else if (this.gameState === GAME_STATE.PAUSED) {
-            // console.log("Game.togglePause(): Game was PAUSED. Calling resume()."); // Log was here
+            // console.log("Game.togglePause(): Game was PAUSED. Calling resume().");
             this.resume();
         } else if (this.gameState === GAME_STATE.READY || this.gameState === GAME_STATE.GAME_OVER) {
-            // console.log("Game.togglePause(): State is READY or GAME_OVER. Calling this.start()."); // Log was here
+            // console.log("Game.togglePause(): State is READY or GAME_OVER. Calling this.start().");
             this.start();
         }
     }
@@ -255,16 +249,16 @@ export class Game {
     resume() {
         if (this.gameState === GAME_STATE.PAUSED) {
             this.gameState = GAME_STATE.PLAYING;
-            // this.sfx.play('click'); // Sound removed
+            // this.sfx.play('click'); // Sound disabled
             this.lastFrameTime = performance.now();
             if (this.gameLoopRequestId) cancelAnimationFrame(this.gameLoopRequestId);
             this.gameLoopRequestId = requestAnimationFrame(this.gameLoop.bind(this));
-            // console.log("Game.resume(): Game RESUMED. Loop ID:", this.gameLoopRequestId); // Log was here
+            // console.log("Game.resume(): Game RESUMED. Loop ID:", this.gameLoopRequestId);
         }
     }
 
     handleEscape() {
-        // console.log("Game.handleEscape() called. Current state:", this.gameState); // Log was here
+        // console.log("Game.handleEscape() called. Current state:", this.gameState);
         this.togglePause();
     }
 
