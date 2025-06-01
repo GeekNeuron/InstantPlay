@@ -12,13 +12,37 @@
     --header-color: #776E65;
 
     /* Food Colors */
-    --food-color: #f76c6c; /* Default Red */
-    --food-color-golden: #ffd700; /* Gold */
-    --food-color-speed: #00bcd4;  /* Cyan */
-    --food-color-slow: #ff9800;   /* Orange */
-    --food-color-grow: #9c27b0;   /* Purple */
-    --obstacle-color: #776E65; /* Using a theme color for obstacles */
-    --grid-line-color: rgba(0, 0, 0, 0.08); /* For board.js if used directly */
+    --food-color: #f76c6c;          /* Default Red */
+    --food-color-golden: #ffd700;   /* Gold */
+    --food-color-speed: #00bcd4;    /* Cyan */
+    --food-color-slow: #ff9800;     /* Orange */
+    --food-color-grow: #9c27b0;     /* Purple */
+
+    --obstacle-color: #776E65;
+    --grid-line-color: rgba(0, 0, 0, 0.08);
 }
 
-/* ... بقیه فایل ... */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+header h1 {
+    color: var(--header-color);
+}
+
+.game-container {
+    border-color: var(--border-color);
+    background-color: var(--game-bg-color);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.game-header {
+    color: var(--text-color);
+    border-color: var(--text-color-muted);
+}
+
+#gameCanvas {
+    /* background-color is drawn by board.js */
+    border-color: var(--text-color-muted); /* Using the muted text color for canvas border */
+}
