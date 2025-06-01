@@ -1,11 +1,13 @@
-/* Basic Reset & Body Styles */
+/* assets/css/style.css */
+
+/* Basic Reset & Root Variables (mostly for structure, colors are in theme files) */
 :root {
-    /* Using system fonts for broad compatibility and performance */
+    /* Base font stack for broad compatibility and a modern look */
     --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     --border-radius-small: 4px;
     --border-radius-medium: 8px;
     --border-radius-large: 12px;
-    --transition-speed: 0.25s; /* Adjusted for smoother theme transition */
+    --transition-speed: 0.25s; /* For theme transitions and hover effects */
 }
 
 * {
@@ -19,123 +21,138 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start; /* Align to top to see content better if page is short */
+    justify-content: flex-start; /* Align content to the top */
     min-height: 100vh;
+    /* Colors are applied from the active theme file */
+    background-color: var(--bg-color);
+    color: var(--text-color);
     transition: background-color var(--transition-speed) ease-in-out, color var(--transition-speed) ease-in-out;
     padding: 20px;
     text-align: center;
-    line-height: 1.6; /* Improved readability */
+    line-height: 1.6; /* For better readability */
 }
 
-header h1 {
-    font-size: 2.2rem; /* Slightly adjusted */
+header h1#page-title-clickable { /* Specific selector for the theme switcher title */
+    font-size: 2.2rem;
     margin-bottom: 20px;
     cursor: pointer;
-    user-select: none;
+    user-select: none; /* Prevent text selection on click */
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
-    font-weight: 600; /* Slightly bolder */
+    font-weight: 600;
+    color: var(--header-color); /* Defined in theme files */
+    padding: 5px 10px;
+    border-radius: var(--border-radius-small);
+    border: 1px solid transparent; /* Base border for theme switcher styling */
+    transition: background-color var(--transition-speed), color var(--transition-speed), border-color var(--transition-speed);
 }
 
 .game-container {
-    border: 2px solid; /* Color from theme */
+    border: 2px solid var(--border-color); /* Defined in theme files */
     border-radius: var(--border-radius-large);
-    padding: 10px; /* Adjusted padding */
-    box-shadow: 0 6px 18px rgba(0,0,0,0.1); /* Slightly adjusted shadow */
-    background-color: var(--game-bg-color); /* Theme dependent */
-    display: inline-block;
-    margin-top: 20px; /* Added margin */
+    padding: 10px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1); /* Subtle shadow */
+    background-color: var(--game-bg-color); /* Defined in theme files */
+    display: inline-block; /* To wrap content */
+    margin-top: 20px;
 }
 
-.game-header {
+.game-header { /* This is the score box */
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 15px; /* Adjusted padding */
-    margin-bottom: 10px; /* Adjusted margin */
-    font-size: 1.1rem; /* Slightly adjusted */
-    border-bottom: 1px solid; /* Color from theme */
-    border-color: var(--text-color-muted);
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    border-bottom: 1px solid var(--border-color); /* Or a specific score-box-border-color */
     font-weight: 500;
+    /* Background and text color for score box are defined in theme files */
+    background-color: var(--score-box-bg);
+    color: var(--score-box-text);
+    border-radius: var(--border-radius-medium) var(--border-radius-medium) 0 0; /* Rounded top corners */
 }
 
 #gameCanvas {
-    display: block;
-    border-radius: var(--border-radius-medium);
-    /* background-color will be handled by board.draw() */
-    border: 1px solid var(--text-color-muted); /* Optional: subtle border for canvas itself */
+    display: block; /* Removes extra space below canvas */
+    border-radius: var(--border-radius-medium); /* Match game container's inner rounding */
+    border: 1px solid var(--border-color); /* Defined in theme files */
+    /* The actual background of the canvas is drawn by board.js using --canvas-bg-color */
 }
 
 .game-controls-info {
     margin-top: 15px;
-    font-size: 0.85rem; /* Slightly adjusted */
-    color: var(--text-color-muted);
+    font-size: 0.85rem;
+    color: var(--text-color-muted); /* Defined in theme files */
 }
 
 footer {
-    margin-top: 40px; /* Increased margin */
-    padding-bottom: 20px; /* Ensure space at bottom */
+    margin-top: 40px;
+    padding-bottom: 20px; /* Ensure space at the bottom */
     font-size: 0.85rem;
-    color: var(--text-color-muted);
+    color: var(--text-color-muted); /* Defined in theme files */
 }
 
-/* Tile placeholder - Snake and Food will use canvas drawing */
-.tile {
-    /* This class might not be directly used if all drawing is on canvas */
-    /* but good for conceptual reference or future UI elements */
-    width: var(--grid-size-css, 15px); /* Can sync with JS via CSS var if needed */
-    height: var(--grid-size-css, 15px);
-    border-radius: var(--border-radius-small);
-    background-color: #333; /* Placeholder */
-    margin: 1px;
-}
-
-/* Basic modal styling for game over / pause messages (add to HTML if used by UI Manager) */
+/* --- Basic Modal Styling (if used for messages) --- */
 .modal {
-    display: none; /* Hidden by default, JS will control display:flex or display:block */
+    display: none; /* Controlled by JavaScript to be 'flex' or 'block' */
     position: fixed;
-    z-index: 1000;
+    z-index: 1000; /* Ensure it's on top */
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.6);
-    /* For flex centering: */
+    overflow: auto; /* Enable scroll if content is too long */
+    background-color: var(--modal-overlay-bg); /* Defined in theme files */
+    /* For centering content if using flex: */
     /* display: flex; */
     /* justify-content: center; */
     /* align-items: center; */
 }
 
 .modal-content {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    margin: 15% auto; /* Default for block display */
-    padding: 20px 30px;
-    border: 1px solid var(--border-color);
+    /* Colors defined in theme files */
+    background-color: var(--modal-content-bg);
+    color: var(--modal-text-color);
+    border: 1px solid var(--border-color); /* Or a specific modal-border-color */
+    margin: 15% auto; /* Default for block display; adjust if using flex for .modal */
+    padding: 25px 30px;
     border-radius: var(--border-radius-medium);
     text-align: center;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    max-width: 80%;
-    width: 300px; /* Example fixed width */
+    box-shadow: 0 5px 20px rgba(0,0,0,0.25); /* Slightly more pronounced shadow for modals */
+    max-width: 90%; /* Ensure responsiveness on small screens */
+    width: 320px; /* A base width, can be adjusted */
 }
 
-.modal button {
-    background-color: var(--accent-color);
-    color: var(--bg-color); /* Or a contrasting text color if accent is light */
+.modal h2#messageTitle { /* Assumes an h2 with id="messageTitle" inside modal-content */
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: var(--modal-text-color); /* Or a specific modal-title-color */
+}
+
+.modal p#messageTextBody { /* Assumes a p with id="messageTextBody" */
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+.modal button#messageButton { /* Assumes a button with id="messageButton" */
+    /* Colors defined in theme files */
+    background-color: var(--button-bg);
+    color: var(--button-text);
     border: none;
-    padding: 10px 20px;
+    padding: 12px 25px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
     font-size: 1rem;
-    margin-top: 15px;
+    font-weight: 500;
     border-radius: var(--border-radius-small);
     cursor: pointer;
-    transition: opacity 0.2s;
+    transition: background-color var(--transition-speed), opacity var(--transition-speed);
 }
 
-.modal button:hover {
-    opacity: 0.85;
+.modal button#messageButton:hover {
+    background-color: var(--button-hover-bg); /* Defined in theme files */
+    opacity: 0.9; /* Slight opacity change on hover */
 }
