@@ -1,4 +1,4 @@
-# Snake
+# Snake by GeekNeuron
 
 A modern, feature-rich Snake game built with pure JavaScript, HTML, and CSS, designed for GitHub Pages.
 
