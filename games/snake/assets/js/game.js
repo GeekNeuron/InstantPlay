@@ -7,14 +7,15 @@ import { InputHandler } from './input.js';
 import { UIManager } from './ui.js';
 import { PowerUpManager, POWERUP_COLLECTIBLE_TYPES } from './powerups.js';
 import { Particle } from './particle.js';
-import { AchievementManager } from './achievementManager.js'; // Import AchievementManager
+import { AchievementManager } from './achievementManager.js';
 import {
     ROWS, COLS, GAME_STATE, FOOD_EFFECTS, INITIAL_SNAKE_SPEED, GRID_SIZE,
     COMBO_TIMER_DURATION, COMBO_MIN_FOR_MULTIPLIER, COMBO_SCORE_MULTIPLIER, COMBO_ITEM_BONUS_SCORE,
     SURVIVAL_START_SPEED, SURVIVAL_SPEED_INCREASE_INTERVAL, SURVIVAL_SPEED_INCREASE_AMOUNT, GAME_MODES,
     PARTICLE_COUNT_FOOD_CONSUMPTION, PARTICLE_LIFESPAN_FOOD, PARTICLE_BASE_SPEED_FOOD, PARTICLE_SIZE_FOOD, PARTICLE_GRAVITY_FOOD,
     SCREEN_SHAKE_MAGNITUDE_GAME_OVER, SCREEN_SHAKE_DURATION_GAME_OVER,
-    OBSTACLE_TYPES, ACHIEVEMENTS // Import ACHIEVEMENTS (not directly used here but good for context)
+    OBSTACLE_TYPES, ACHIEVEMENTS,
+    DIFFICULTY_LEVELS, DIFFICULTY_SETTINGS // Import Difficulty constants
 } from './constants.js';
 import { arePositionsEqual, getCssVariable } from './utils.js';
 
@@ -34,16 +35,31 @@ export class Game {
         this.lastFrameTime = 0;
         this.gameLoopRequestId = null;
 
-        this.currentGameMode = GAME_MODES.SURVIVAL;
+        // --- Game Mode & Difficulty ---
+        this.currentGameMode = GAME_MODES.SURVIVAL; // Default to Survival for testing
+        // this.currentGameMode = GAME_MODES.CLASSIC;
+        this.currentDifficultyLevel = DIFFICULTY_LEVELS.MEDIUM; // Default difficulty
+        // To test other difficulties, change the line above, e.g.:
+        // this.currentDifficultyLevel = DIFFICULTY_LEVELS.EXTREME;
+        this.difficultySettings = DIFFICULTY_SETTINGS[this.currentDifficultyLevel];
+        console.log(`Game Mode: ${this.currentGameMode}, Difficulty: ${this.difficultySettings.name}`);
+
+
+        // --- Survival Mode Specific ---
         this.lastSurvivalSpeedIncreaseTime = 0;
+        this.currentSurvivalSpeedIncreaseAmount = SURVIVAL_SPEED_INCREASE_AMOUNT * (this.difficultySettings.survivalSpeedFactor || 1);
+
 
         this.board = new Board(this.canvas, this.context);
+        // Pass difficultySettings to board if obstacles depend on it.
+        // For now, board.setupDefaultObstacles doesn't use difficulty, but it could.
+        // this.board.setDifficulty(this.difficultySettings.obstacleFactor); 
         this.snake = new Snake(Math.floor(COLS / 4), Math.floor(ROWS / 2), this.board, this);
         this.powerUpManager = new PowerUpManager(this.board, this.snake, this);
         this.food = new Food(this.board, this.snake, this.powerUpManager);
         this.inputHandler = new InputHandler(this);
         this.uiManager = new UIManager(scoreElement, highScoreElement, comboDisplayElement, resolvedMessageOverlayElement, this);
-        this.achievementManager = new AchievementManager(this.uiManager); // Instantiate AchievementManager
+        this.achievementManager = new AchievementManager(this.uiManager);
 
         this.score = 0;
         this.scoreMultiplier = 1;
@@ -61,13 +77,34 @@ export class Game {
         this.shakeDuration = 0;
         this.shakeStartTime = 0;
 
-        // Properties for tracking achievement criteria per game
         this.foodEatenThisGame = 0;
         this.maxComboThisGame = 0;
-        this.gameStartTime = 0; // Timestamp when the current game (playing state) started
+        this.gameStartTime = 0;
 
         this.init();
     }
+
+    /**
+     * Call this method if the user selects a new difficulty level from a UI.
+     * @param {string} difficultyLevelKey - e.g., DIFFICULTY_LEVELS.EASY
+     */
+    setDifficulty(difficultyLevelKey) {
+        if (DIFFICULTY_SETTINGS[difficultyLevelKey]) {
+            this.currentDifficultyLevel = difficultyLevelKey;
+            this.difficultySettings = DIFFICULTY_SETTINGS[this.currentDifficultyLevel];
+            this.currentSurvivalSpeedIncreaseAmount = SURVIVAL_SPEED_INCREASE_AMOUNT * (this.difficultySettings.survivalSpeedFactor || 1);
+            console.log(`Difficulty changed to: ${this.difficultySettings.name}`);
+            // Reset the game for the new difficulty to take effect
+            if (this.gameState === GAME_STATE.PLAYING || this.gameState === GAME_STATE.PAUSED || this.gameState === GAME_STATE.GAME_OVER) {
+                this.resetGame();
+                this.gameState = GAME_STATE.READY; // Go to ready screen to start with new difficulty
+                this.draw(performance.now());
+            }
+        } else {
+            console.warn("Attempted to set invalid difficulty level:", difficultyLevelKey);
+        }
+    }
+
 
     init() {
         this.uiManager.resetScore();
@@ -86,13 +123,16 @@ export class Game {
         const startY = Math.floor(ROWS / 2);
 
         this.board.obstacles = [];
-        this.board.setupDefaultObstacles();
+        // Pass difficulty factor to obstacle setup if it's designed to use it
+        // this.board.setupDefaultObstacles(this.difficultySettings.obstacleFactor); 
+        this.board.setupDefaultObstacles(); // Current setupDefaultObstacles is not difficulty-aware
 
+        // Set snake's initial speed based on selected difficulty
+        this.snake.initialSpeed = this.difficultySettings.initialSpeed;
         if (this.currentGameMode === GAME_MODES.SURVIVAL) {
-            this.snake.initialSpeed = SURVIVAL_START_SPEED;
             this.lastSurvivalSpeedIncreaseTime = performance.now();
-        } else {
-            this.snake.initialSpeed = INITIAL_SNAKE_SPEED;
+            // Ensure the survival specific increase amount is also set based on difficulty
+            this.currentSurvivalSpeedIncreaseAmount = SURVIVAL_SPEED_INCREASE_AMOUNT * (this.difficultySettings.survivalSpeedFactor || 1);
         }
         this.snake.reset(startX, startY); 
 
@@ -117,10 +157,9 @@ export class Game {
         this.particles = []; 
         this.isShaking = false;
 
-        // Reset per-game achievement counters
         this.foodEatenThisGame = 0;
         this.maxComboThisGame = 0;
-        this.gameStartTime = 0; // Will be set properly when game state transitions to PLAYING
+        this.gameStartTime = 0;
 
         this.updateGameSpeed();
     }
@@ -130,7 +169,7 @@ export class Game {
             this.resetGame(); 
             this.gameState = GAME_STATE.PLAYING;
             this.lastFrameTime = performance.now();
-            this.gameStartTime = this.lastFrameTime; // Set game start time for duration tracking
+            this.gameStartTime = this.lastFrameTime; 
 
             if (this.currentGameMode === GAME_MODES.SURVIVAL) {
                 this.lastSurvivalSpeedIncreaseTime = this.lastFrameTime;
@@ -168,9 +207,7 @@ export class Game {
             };
             try {
                 this.particles.push(new Particle(x, y, particleSize, colorCssVar, velocity, lifeSpan, gravity));
-            } catch (e) {
-                // console.error("Failed to create particle. Is particle.js loaded and Particle class defined?", e);
-            }
+            } catch (e) { /* console.error("Failed to create particle", e); */ }
         }
     }
 
@@ -197,25 +234,28 @@ export class Game {
             this.isShaking = false;
         }
 
+        // Survival Mode: Increase speed over time using difficulty-adjusted amount
         if (this.currentGameMode === GAME_MODES.SURVIVAL && this.gameState === GAME_STATE.PLAYING) {
             if (currentTime - this.lastSurvivalSpeedIncreaseTime > SURVIVAL_SPEED_INCREASE_INTERVAL) {
-                let baseSpeedToIncrease = (this.snake.speedBeforeFoodEffect !== null) ? 
-                                          this.snake.speedBeforeFoodEffect : 
-                                          this.snake.speed;
-                baseSpeedToIncrease += SURVIVAL_SPEED_INCREASE_AMOUNT;
+                let speedIncreaseAmount = this.currentSurvivalSpeedIncreaseAmount;
+
                 if (this.snake.speedBeforeFoodEffect !== null) {
-                    const factor = this.snake.speed / this.snake.speedBeforeFoodEffect; 
-                    this.snake.speedBeforeFoodEffect = baseSpeedToIncrease;
-                    this.snake.speed = baseSpeedToIncrease * factor;
+                    // If a food speed effect is active, adjust the base speed it will revert to
+                    this.snake.speedBeforeFoodEffect += speedIncreaseAmount;
+                    // And re-apply the food effect's factor to this new, higher base
+                    const factor = this.snake.speed / (this.snake.speedBeforeFoodEffect - speedIncreaseAmount); // Previous factor
+                    this.snake.speed = this.snake.speedBeforeFoodEffect * factor;
                 } else {
-                     this.snake.speed = baseSpeedToIncrease;
+                     this.snake.speed += speedIncreaseAmount;
                 }
-                if (this.snake.speed < 0.5) this.snake.speed = 0.5;
+                if (this.snake.speed < 0.5) this.snake.speed = 0.5; // Clamp min speed
+
                 this.updateGameSpeed();
                 this.lastSurvivalSpeedIncreaseTime = currentTime;
             }
         }
 
+        // Combo break check
         if (this.comboCount > 0 && (currentTime - this.lastFoodEatTime > COMBO_TIMER_DURATION)) {
             this.maxComboThisGame = Math.max(this.maxComboThisGame, this.comboCount);
             this.comboCount = 0;
@@ -224,22 +264,23 @@ export class Game {
             if (this.uiManager.updateComboDisplay) this.uiManager.updateComboDisplay(this.comboCount, this.activeComboMultiplier, this.currentComboBonusScore);
         }
 
+        // Food eating and combo logic
         const foodData = this.food.getData();
         const headPos = this.snake.getHeadPosition();
         if (foodData && arePositionsEqual(headPos, this.food.getPosition())) {
             const eatenFoodPosition = { ...this.food.getPosition() }; 
             const eatenFoodColorVar = foodData.color; 
 
-            this.foodEatenThisGame++; // Increment food eaten for achievements
+            this.foodEatenThisGame++;
 
             if (this.comboCount > 0 && (currentTime - this.lastFoodEatTime) < COMBO_TIMER_DURATION) {
                 this.comboCount++;
             } else {
-                this.maxComboThisGame = Math.max(this.maxComboThisGame, this.comboCount); // Check before resetting for new combo
+                this.maxComboThisGame = Math.max(this.maxComboThisGame, this.comboCount);
                 this.comboCount = 1;
             }
             this.lastFoodEatTime = currentTime;
-            this.maxComboThisGame = Math.max(this.maxComboThisGame, this.comboCount); // Update max combo
+            this.maxComboThisGame = Math.max(this.maxComboThisGame, this.comboCount);
 
             if (this.comboCount >= COMBO_MIN_FOR_MULTIPLIER) this.activeComboMultiplier = COMBO_SCORE_MULTIPLIER;
             else this.activeComboMultiplier = 1;
@@ -250,7 +291,6 @@ export class Game {
             finalScoreForFood *= this.scoreMultiplier; 
             this.score += Math.round(finalScoreForFood);
             
-            // Check achievements related to score, food, and combo right after updating them
             this.achievementManager.checkAllGameAchievements({
                 score: this.score,
                 foodEatenThisGame: this.foodEatenThisGame,
@@ -260,7 +300,7 @@ export class Game {
             this.uiManager.updateScore(this.score);
             if (this.uiManager.updateComboDisplay) this.uiManager.updateComboDisplay(this.comboCount, this.activeComboMultiplier, this.currentComboBonusScore);
             
-            switch (foodData.effect) { /* ... (food effects) ... */ 
+            switch (foodData.effect) {
                 case FOOD_EFFECTS.SPEED_BOOST: this.snake.setTemporarySpeed(foodData.speedFactor, foodData.duration); break;
                 case FOOD_EFFECTS.SLOW_DOWN: this.snake.setTemporarySpeed(foodData.speedFactor, foodData.duration); break;
                 case FOOD_EFFECTS.EXTRA_GROWTH: this.snake.grow(foodData.growAmount); break;
@@ -270,6 +310,7 @@ export class Game {
             this.createParticleBurst( /* ... */ );
         }
 
+        // Collision check
         if (this.snake.checkCollision()) {
             let hitAbsorbedByShield = false;
             if (this.isShieldActive) { 
@@ -316,7 +357,7 @@ export class Game {
         this.context.restore(); 
     }
 
-    drawReadyMessage() { /* ... (as before, ensure English text if any was user-facing) ... */
+    drawReadyMessage() {
         this.context.fillStyle = 'rgba(0, 0, 0, 0.6)';
         this.context.fillRect(0, this.canvas.height / 2 - 40, this.canvas.width, 80);
         const mainFont = getCssVariable('--font-main', 'Arial');
@@ -327,10 +368,11 @@ export class Game {
         this.context.textAlign = 'center';
         this.context.fillText('Snake Game 🌌', this.canvas.width / 2, this.canvas.height / 2 - 10);
         this.context.font = `${instructionFontSize}px ${mainFont}`;
-        this.context.fillText('Press Space or Swipe/Tap to Start', this.canvas.width / 2, this.canvas.height / 2 + 20);
+        this.context.fillText(`Mode: ${this.currentGameMode} | Difficulty: ${this.difficultySettings.name}`, this.canvas.width / 2, this.canvas.height / 2 + 20); // Show current mode/difficulty
+        this.context.fillText('Press Space or Swipe/Tap to Start', this.canvas.width / 2, this.canvas.height / 2 + 40); // Adjust Y
     }
 
-    drawGameOverMessage() { /* ... (as before, ensure English text) ... */
+    drawGameOverMessage() {
         this.context.fillStyle = 'rgba(0, 0, 0, 0.75)';
         this.context.fillRect(0, this.canvas.height / 3, this.canvas.width, this.canvas.height / 2.5);
         const mainFont = getCssVariable('--font-main', 'Arial');
@@ -353,7 +395,7 @@ export class Game {
         this.context.fillText('Press Space or Tap to Restart', this.canvas.width / 2, yPos);
     }
 
-    drawPausedMessage() { /* ... (as before, ensure English text) ... */
+    drawPausedMessage() {
         const overlayBgColor = getCssVariable('--modal-overlay-bg', 'rgba(0, 0, 0, 0.75)');
         this.context.fillStyle = overlayBgColor;
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -406,20 +448,18 @@ export class Game {
         }
         
         this.gameState = GAME_STATE.GAME_OVER;
-        if (this.gameLoopRequestId) cancelAnimationFrame(this.gameLoopRequestId); this.gameLoopRequestId = null;
+        if (this.gameLoopRequestId) { cancelAnimationFrame(this.gameLoopRequestId); this.gameLoopRequestId = null; }
         this.snake.revertSpeed(); 
         this.powerUpManager.reset(); 
         this.uiManager.updateHighScore();
         
-        if (!this.isShaking) { 
-            this.draw(performance.now());
-        }
+        if (!this.isShaking) { this.draw(performance.now()); }
     }
 
-    togglePause() { /* ... (as before) ... */ 
+    togglePause() {
         if (this.gameState === GAME_STATE.PLAYING) {
             this.gameState = GAME_STATE.PAUSED;
-            if (this.gameLoopRequestId) {cancelAnimationFrame(this.gameLoopRequestId); this.gameLoopRequestId = null;}
+            if (this.gameLoopRequestId) { cancelAnimationFrame(this.gameLoopRequestId); this.gameLoopRequestId = null; }
             this.draw(performance.now()); 
         } else if (this.gameState === GAME_STATE.PAUSED) {
             this.resume();
@@ -427,7 +467,7 @@ export class Game {
             this.start();
         }
     }
-    resume() { /* ... (as before) ... */ 
+    resume() {
         if (this.gameState === GAME_STATE.PAUSED) {
             this.gameState = GAME_STATE.PLAYING;
             this.lastFrameTime = performance.now();
