@@ -8,19 +8,19 @@
  * Size of each grid cell in pixels.
  * @type {number}
  */
-export const GRID_SIZE = 15; // For smaller cells
+export const GRID_SIZE = 15;
 
 /**
  * Number of rows on the game board.
  * @type {number}
  */
-export const ROWS = 26; // Adjusted for new GRID_SIZE (26 * 15 = 390px height)
+export const ROWS = 26;
 
 /**
  * Number of columns on the game board.
  * @type {number}
  */
-export const COLS = 26; // Adjusted for new GRID_SIZE (26 * 15 = 390px width)
+export const COLS = 26;
 
 /**
  * Initial base speed of the snake (game updates per second).
@@ -49,57 +49,73 @@ export const FOOD_EFFECTS = {
 
 /**
  * Defines the properties of different food types.
- * - id: Unique identifier for the food type.
- * - color: Display color (should be a CSS variable name like 'var(--food-color-example)').
- * - score: Points awarded for eating this food.
- * - effect: The type of effect this food has (from FOOD_EFFECTS).
- * - probability: Chance of this food type spawning. Sum of probabilities should ideally be 1.
- * - duration: (Optional) Duration of the effect in milliseconds.
- * - speedFactor: (Optional) Multiplier for snake speed changes.
- * - growAmount: (Optional) Number of segments the snake grows by.
  */
 export const FOOD_TYPES = {
     DEFAULT: {
         id: 'DEFAULT',
-        color: 'var(--food-color)',         // Reference to CSS variable
+        color: 'var(--food-color)',
         score: 10,
         effect: FOOD_EFFECTS.NONE,
         probability: 0.60
     },
     GOLDEN_APPLE: {
         id: 'GOLDEN_APPLE',
-        color: 'var(--food-color-golden)',  // Reference to CSS variable
+        color: 'var(--food-color-golden)',
         score: 50,
         effect: FOOD_EFFECTS.NONE,
         probability: 0.10
     },
     SPEED_BERRY: {
         id: 'SPEED_BERRY',
-        color: 'var(--food-color-speed)',   // Reference to CSS variable
+        color: 'var(--food-color-speed)',
         score: 5,
         effect: FOOD_EFFECTS.SPEED_BOOST,
-        duration: 5000, // 5 seconds
-        speedFactor: 1.5, // 50% faster
+        duration: 5000,
+        speedFactor: 1.5,
         probability: 0.10
     },
     SLOW_SLUG: {
         id: 'SLOW_SLUG',
-        color: 'var(--food-color-slow)',    // Reference to CSS variable
+        color: 'var(--food-color-slow)',
         score: 5,
         effect: FOOD_EFFECTS.SLOW_DOWN,
-        duration: 5000, // 5 seconds
-        speedFactor: 0.66, // ~33% slower
+        duration: 5000,
+        speedFactor: 0.66,
         probability: 0.10
     },
     GROW_PEAR: {
         id: 'GROW_PEAR',
-        color: 'var(--food-color-grow)',    // Reference to CSS variable
+        color: 'var(--food-color-grow)',
         score: 15,
         effect: FOOD_EFFECTS.EXTRA_GROWTH,
-        growAmount: 3, // Grows by 3 segments
+        growAmount: 3,
         probability: 0.10
     }
 };
+
+/**
+ * Time in milliseconds allowed between food consumptions to maintain a combo.
+ * @type {number}
+ */
+export const COMBO_TIMER_DURATION = 3000; // 3 seconds
+
+/**
+ * Minimum number of food items eaten in a combo to activate a score multiplier.
+ * @type {number}
+ */
+export const COMBO_MIN_FOR_MULTIPLIER = 3;
+
+/**
+ * The score multiplier applied when a combo is active and meets the minimum count.
+ * @type {number}
+ */
+export const COMBO_SCORE_MULTIPLIER = 1.5; // 1.5x score for food base score
+
+/**
+ * Optional: Flat bonus score per item in a combo streak (after the first item).
+ * @type {number}
+ */
+export const COMBO_ITEM_BONUS_SCORE = 2;
 
 
 /**
@@ -111,12 +127,12 @@ export const KEYS = {
     ARROW_DOWN: 'ArrowDown',
     ARROW_LEFT: 'ArrowLeft',
     ARROW_RIGHT: 'ArrowRight',
-    W: 'w', // Alternative for Up
-    A: 'a', // Alternative for Left
-    S: 's', // Alternative for Down
-    D: 'd', // Alternative for Right
-    SPACE: ' ', // For pause/resume or start
-    ESCAPE: 'Escape' // For pause or menu
+    W: 'w',
+    A: 'a',
+    S: 's',
+    D: 'd',
+    SPACE: ' ',
+    ESCAPE: 'Escape'
 };
 
 /**
@@ -124,11 +140,11 @@ export const KEYS = {
  * @enum {string}
  */
 export const GAME_STATE = {
-    LOADING: 'loading',     // Initial load, assets, etc.
-    READY: 'ready',         // Game is ready to start (e.g., title screen, instructions)
-    PLAYING: 'playing',     // Game is active
-    PAUSED: 'paused',       // Game is paused
-    GAME_OVER: 'gameOver'   // Game has ended
+    LOADING: 'loading',
+    READY: 'ready',
+    PLAYING: 'playing',
+    PAUSED: 'paused',
+    GAME_OVER: 'gameOver'
 };
 
 /**
