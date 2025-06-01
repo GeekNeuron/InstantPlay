@@ -1,48 +1,66 @@
 /* assets/css/light-theme.css */
 :root {
-    --bg-color: #FAF8EF;
-    --text-color: #776E65;
-    --text-color-muted: #9e948a;
-    --accent-color: #8f7a66;
-    --game-bg-color: #BBADA0;
-    --canvas-bg-color: #CDC1B4;
-    --snake-head-color: #62c462;
-    --snake-body-color: #86e586;
-    --border-color: #BBADA0;
-    --header-color: #776E65;
+    /* --- General Page & Text --- */
+    --bg-color: #FFFFFF;                            /* Main page background: completely white */
+    --text-color: #212529;                          /* Primary text color: near black for high contrast */
+    --text-color-muted: #6c757d;                    /* Muted text color: medium gray */
+    --header-color: #212529;                        /* Main page title (h1) color */
+    --accent-color: #007bff;                        /* Accent color (e.g., for buttons): standard blue */
 
-    /* Food Colors */
-    --food-color: #f76c6c;          /* Default Red */
-    --food-color-golden: #ffd700;   /* Gold */
-    --food-color-speed: #00bcd4;    /* Cyan */
-    --food-color-slow: #ff9800;     /* Orange */
-    --food-color-grow: #9c27b0;     /* Purple */
+    /* --- Game Container & Board --- */
+    --game-bg-color: #f8f9fa;                       /* Game container background: very light gray */
+    --canvas-bg-color: #e9ecef;                     /* Game canvas (grid) background: light gray */
+    --border-color: #dee2e6;                        /* Border color for container and canvas */
+    --grid-line-color: rgba(0, 0, 0, 0.1);          /* Grid line color: semi-transparent black */
 
-    --obstacle-color: #776E65;
-    --grid-line-color: rgba(0, 0, 0, 0.08);
+    /* --- Score Box (.game-header) --- */
+    --score-box-bg: var(--accent-color);            /* Score box background: accent color */
+    --score-box-text: #FFFFFF;                      /* Score box text color: white */
+
+    /* --- Game Elements --- */
+    --snake-head-color: #28a745;                    /* Green for snake head */
+    --snake-body-color: #228C22;                    /* Darker green for snake body */
+    --food-color: #dc3545;                          /* Red for default food */
+    --food-color-golden: #ffc107;                   /* Gold for golden apple */
+    --food-color-speed: #17a2b8;                    /* Cyan-blue for speed food */
+    --food-color-slow: #fd7e14;                     /* Orange for slow-down food */
+    --food-color-grow: #6f42c1;                     /* Purple for extra growth food */
+    --obstacle-color: #495057;                      /* Dark gray for obstacles */
+
+    /* --- Power-ups (Collectible Items) --- */
+    --powerup-color-shield: #007bff;                /* Blue for shield item */
+    --powerup-color-scoreboost: #28a745;            /* Green for score boost item */
+    --text-color-on-accent: #FFFFFF;                /* Text color on top of power-up items (if their background is colored) */
+
+    /* --- Modals (if used) --- */
+    --modal-overlay-bg: rgba(33, 37, 41, 0.5);      /* Semi-transparent dark overlay for modal */
+    --modal-content-bg: #FFFFFF;                    /* Modal content background: white */
+    --modal-text-color: var(--text-color);          /* Modal text color */
+
+    /* --- Buttons (inside modals or other UI parts) --- */
+    --button-bg: var(--accent-color);
+    --button-text: #FFFFFF;
+    --button-hover-bg: #0056b3;                     /* Darker blue for button hover */
+
+    /* --- Theme Switcher (appearance of the switcher when light theme is active) --- */
+    /* These variables can be used if specific styling for the theme switcher is needed in this theme */
+    /* Example:
+    --theme-switcher-bg-light-active: #343a40;  // Dark background for switcher
+    --theme-switcher-text-light-active: #FFFFFF; // Light text for switcher
+    --theme-switcher-border-light-active: #495057;
+    */
 }
 
-body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-}
+/*
+   Specific overrides for elements when light theme is active.
+   Most base styles are in style.css and use the variables defined above.
+*/
 
-header h1 {
-    color: var(--header-color);
+/* Example: If the theme switcher (header h1) needs specific styling in light mode */
+/*
+header h1#page-title-clickable {
+    background-color: var(--theme-switcher-bg-light-active, transparent);
+    color: var(--theme-switcher-text-light-active, var(--header-color));
+    border-color: var(--theme-switcher-border-light-active, transparent);
 }
-
-.game-container {
-    border-color: var(--border-color);
-    background-color: var(--game-bg-color);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
-
-.game-header {
-    color: var(--text-color);
-    border-color: var(--text-color-muted);
-}
-
-#gameCanvas {
-    /* background-color is drawn by board.js */
-    border-color: var(--text-color-muted); /* Using the muted text color for canvas border */
-}
+*/
