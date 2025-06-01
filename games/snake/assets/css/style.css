@@ -64,7 +64,7 @@ header h1#page-title-clickable { /* Specific selector for the theme switcher tit
     align-items: center;
     padding: 10px 15px;
     margin-bottom: 10px;
-    font-size: 1.1rem;
+    font-size: 1.1rem; /* Slightly adjusted */
     border-bottom: 1px solid var(--border-color); /* Or a specific score-box-border-color */
     font-weight: 500;
     /* Background and text color for score box are defined in theme files */
@@ -72,6 +72,32 @@ header h1#page-title-clickable { /* Specific selector for the theme switcher tit
     color: var(--score-box-text);
     border-radius: var(--border-radius-medium) var(--border-radius-medium) 0 0; /* Rounded top corners */
 }
+
+.score-container, .highscore-container {
+    flex: 1;
+}
+.highscore-container {
+    text-align: right;
+}
+
+.combo-container {
+    flex: 1; /* Allow it to take space */
+    font-size: 0.9rem;
+    font-weight: bold;
+    min-width: 120px; /* Provide some space for the combo text */
+    text-align: center;
+    opacity: 0.9;
+    color: var(--accent-color); /* Use accent color for combo text, or a specific var */
+}
+
+#combo-display {
+    padding: 2px 5px;
+    border-radius: var(--border-radius-small);
+    /* Optional background for combo text for better visibility
+    background-color: rgba(255, 255, 255, 0.1);
+    */
+}
+
 
 #gameCanvas {
     display: block; /* Removes extra space below canvas */
