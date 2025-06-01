@@ -1,4 +1,4 @@
-# Snake Game 🌌
+# Snake
 
 A modern, feature-rich Snake game built with pure JavaScript, HTML, and CSS, designed for GitHub Pages.
 
