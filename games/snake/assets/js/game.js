@@ -6,9 +6,9 @@ import { Food } from './food.js';
 import { InputHandler } from './input.js';
 import { UIManager } from './ui.js';
 import { SoundEffectsManager } from './sfx.js';
-import { PowerUpManager, POWERUP_COLLECTIBLE_TYPES } from './powerups.js'; // Import POWERUP_COLLECTIBLE_TYPES
-import { ROWS, COLS, GAME_STATE, FOOD_EFFECTS, INITIAL_SNAKE_SPEED } from './constants.js';
-import { arePositionsEqual } from './utils.js';
+import { PowerUpManager, POWERUP_COLLECTIBLE_TYPES } from './powerups.js'; // Import specific collectible types if needed for logic here
+import { ROWS, COLS, GAME_STATE, FOOD_EFFECTS, INITIAL_SNAKE_SPEED, GRID_SIZE } from './constants.js'; // Ensure GRID_SIZE is imported
+import { arePositionsEqual, getCssVariable } from './utils.js';
 
 /**
  * @fileoverview Main game logic and orchestration class.
@@ -24,12 +24,18 @@ export class Game {
      */
     constructor(canvasId, scoreId, highScoreId, messageOverlayId = null) {
         this.canvas = document.getElementById(canvasId);
-        if (!this.canvas) throw new Error(`Game.constructor: Canvas with id "${canvasId}" not found.`);
+        if (!this.canvas) {
+            throw new Error(`Game.constructor: Canvas with id "${canvasId}" not found.`);
+        }
         this.context = this.canvas.getContext('2d');
+        if (!this.context) {
+            throw new Error(`Game.constructor: Could not get 2D context from canvas "${canvasId}".`);
+        }
+
 
         const scoreElement = document.getElementById(scoreId);
         const highScoreElement = document.getElementById(highScoreId);
-        const messageOverlayElement = messageOverlayId ? document.getElementById(messageOverlayId) : null;
+        // const messageOverlayElement = messageOverlayId ? document.getElementById(messageOverlayId) : null;
 
         this.gameState = GAME_STATE.LOADING;
         this.lastFrameTime = 0;
@@ -37,24 +43,20 @@ export class Game {
 
         // Initialize game components
         this.board = new Board(this.canvas, this.context);
-        this.sfx = new SoundEffectsManager(); // Init SFX early
-        // Snake needs 'this' (game instance) for callbacks like updateGameSpeed
+        this.sfx = new SoundEffectsManager();
         this.snake = new Snake(Math.floor(COLS / 4), Math.floor(ROWS / 2), this.board, this);
-        // PowerUpManager needs snake and game (for sfx, applying effects)
         this.powerUpManager = new PowerUpManager(this.board, this.snake, this);
-        // Food needs board, snake, and powerUpManager (to avoid spawning on items)
         this.food = new Food(this.board, this.snake, this.powerUpManager);
-        this.inputHandler = new InputHandler(this); // InputHandler needs game for actions
-        this.uiManager = new UIManager(scoreElement, highScoreElement, messageOverlayElement, this);
+        this.inputHandler = new InputHandler(this);
+        this.uiManager = new UIManager(scoreElement, highScoreElement, /* messageOverlayElement, */ this);
 
         this.score = 0;
-        this.scoreMultiplier = 1; // For score-modifying effects (currently unused, example for power-up)
+        this.scoreMultiplier = 1;
 
-        // Shield specific state (managed by PowerUpManager effects, but game needs to know)
-        this.isShieldActive = false;
-        this.shieldHitCount = 0; // If shield can take multiple hits
+        this.isShieldActive = false; // Game's view of whether a shield (from powerup) is active
+        this.shieldHitCount = 0; // Example if shield could take multiple hits
 
-        this.effectiveGameSpeed = this.snake.speed; // Game loop interval is based on snake's speed
+        this.effectiveGameSpeed = this.snake.speed;
 
         this.init();
     }
@@ -68,7 +70,7 @@ export class Game {
         this.uiManager.loadHighScore();
         this.uiManager.updateHighScoreDisplay();
 
-        this.resetGame(); // Resets snake, food, score, power-ups
+        this.resetGame();
         this.gameState = GAME_STATE.READY;
         console.log("Game Ready. Press Space, Escape, or Swipe/Tap to Start.");
         this.draw(); // Initial draw of the ready screen
@@ -78,32 +80,32 @@ export class Game {
      * Resets the game to its starting state for a new round.
      */
     resetGame() {
-        const startX = Math.floor(COLS / 4); // Start snake on the left, middle-ish
+        const startX = Math.floor(COLS / 4);
         const startY = Math.floor(ROWS / 2);
-        this.snake.reset(startX, startY); // Resets snake's position, speed, growth, etc.
-        this.inputHandler.reset();          // Clears queued input
-        this.food.spawnNew();               // Spawns the first piece of food
-        this.powerUpManager.reset();        // Clears active power-ups and effects
+        this.snake.reset(startX, startY);
+        this.inputHandler.reset();
+        this.food.spawnNew();
+        this.powerUpManager.reset();
         this.score = 0;
         this.uiManager.updateScore(this.score);
-        this.scoreMultiplier = 1;           // Reset score multiplier
-        this.isShieldActive = false;        // Deactivate shield
+        this.scoreMultiplier = 1;
+        this.isShieldActive = false; // Shield is off by default
         this.shieldHitCount = 0;
-        this.updateGameSpeed();             // Sync effectiveGameSpeed with snake's current speed
+        this.updateGameSpeed(); // Sync effectiveGameSpeed with snake's current (initial) speed
     }
 
     /**
      * Starts the game if it's ready or game over. Resumes if paused.
+     * This is a key point for user interaction to resume AudioContext.
      */
     start() {
-        // Attempt to resume audio context on first user interaction to start game
-        this.sfx.resumeContext();
+        this.sfx.resumeContext(); // Attempt to resume audio context on user gesture
 
         if (this.gameState === GAME_STATE.READY || this.gameState === GAME_STATE.GAME_OVER) {
             this.resetGame();
             this.gameState = GAME_STATE.PLAYING;
-            this.lastFrameTime = performance.now(); // Set time for the first frame
-            if(this.gameLoopRequestId) cancelAnimationFrame(this.gameLoopRequestId); // Ensure no old loops running
+            this.lastFrameTime = performance.now();
+            if (this.gameLoopRequestId) cancelAnimationFrame(this.gameLoopRequestId);
             this.gameLoopRequestId = requestAnimationFrame(this.gameLoop.bind(this));
             console.log("Game Started/Restarted.");
         } else if (this.gameState === GAME_STATE.PAUSED) {
@@ -117,82 +119,75 @@ export class Game {
      */
     gameLoop(timestamp) {
         if (this.gameState !== GAME_STATE.PLAYING) {
-            // If game state changed (e.g. to PAUSED or GAME_OVER), stop requesting new frames.
-            if(this.gameLoopRequestId) cancelAnimationFrame(this.gameLoopRequestId);
+            if (this.gameLoopRequestId) cancelAnimationFrame(this.gameLoopRequestId);
             return;
         }
 
-        // Request the next frame. Store the ID to cancel if needed.
         this.gameLoopRequestId = requestAnimationFrame(this.gameLoop.bind(this));
 
         const deltaTime = timestamp - this.lastFrameTime;
-        // Interval based on the snake's current speed (which can be affected by food/power-ups)
-        const interval = 1000 / this.snake.speed;
+        const interval = 1000 / this.snake.speed; // Interval based on snake's current speed
 
         if (deltaTime >= interval) {
-            this.lastFrameTime = timestamp - (deltaTime % interval); // Adjust for consistent timing
+            this.lastFrameTime = timestamp - (deltaTime % interval);
 
-            // 1. Process Input
             this.inputHandler.applyQueuedDirection();
-
-            // 2. Update Game State
-            this.update(timestamp); // Pass current time for time-based logic (e.g., power-up durations)
-
-            // 3. Render
+            this.update(timestamp); // Pass current time for timed effects
             this.draw();
         }
     }
 
     /**
      * Updates all game logic for the current frame.
-     * @param {number} currentTime - Current timestamp from performance.now(), for timed effects.
+     * @param {number} currentTime - Current timestamp from performance.now().
      */
     update(currentTime) {
         this.snake.move();
-        this.powerUpManager.update(currentTime); // Update collectible power-ups (spawn, check collection, effects)
+        this.powerUpManager.update(currentTime);
 
-        // Check for collision with food
         const foodData = this.food.getData();
         if (foodData && arePositionsEqual(this.snake.getHeadPosition(), this.food.getPosition())) {
             this.score += (foodData.score * this.scoreMultiplier);
             this.uiManager.updateScore(this.score);
             this.sfx.play('eat');
 
-            // Apply food effect
+            let effectSoundPlayed = false;
             switch (foodData.effect) {
                 case FOOD_EFFECTS.SPEED_BOOST:
                     this.snake.setTemporarySpeed(foodData.speedFactor, foodData.duration);
-                    this.sfx.play('foodEffect'); // Sound for effect activation
+                    this.sfx.play('foodEffect');
+                    effectSoundPlayed = true;
                     break;
                 case FOOD_EFFECTS.SLOW_DOWN:
                     this.snake.setTemporarySpeed(foodData.speedFactor, foodData.duration);
                     this.sfx.play('foodEffect');
+                    effectSoundPlayed = true;
                     break;
                 case FOOD_EFFECTS.EXTRA_GROWTH:
                     this.snake.grow(foodData.growAmount);
+                    // No specific sound for extra growth beyond 'eat', unless desired
                     break;
                 case FOOD_EFFECTS.NONE:
                 default:
-                    this.snake.grow(1); // Default growth for standard food
+                    this.snake.grow(1);
                     break;
             }
-            this.food.spawnNew(); // Spawn new food after current one is eaten
+            this.food.spawnNew();
         }
 
-        // Check for game over conditions (wall/obstacle/self collision)
         if (this.snake.checkCollision()) {
-            let hitAbsorbed = false;
-            if (this.isShieldActive) { // Check if shield from PowerUpManager is active
-                // The PowerUpManager's handleHitWithEffect will manage shield state
+            let hitAbsorbedByShield = false;
+            // Check if a shield from PowerUpManager is active and can absorb the hit
+            if (this.isShieldActive && this.powerUpManager.isEffectActive(POWERUP_COLLECTIBLE_TYPES.SHIELD)) {
                 if (this.powerUpManager.handleHitWithEffect(POWERUP_COLLECTIBLE_TYPES.SHIELD)) {
                     this.sfx.play('shieldHit');
                     console.log("Shield absorbed a hit!");
-                    hitAbsorbed = true;
-                     // If shield breaks, isShieldActive will be set to false by PowerUpManager's deactivate logic
+                    hitAbsorbedByShield = true;
+                    // isShieldActive flag might be turned off by the deactivate logic in PowerUpManager
                 }
             }
 
-            if (!hitAbsorbed) {
+            if (!hitAbsorbedByShield) {
                 this.gameOver();
             }
         }
@@ -202,12 +197,11 @@ export class Game {
      * Draws all game elements onto the canvas.
      */
     draw() {
-        this.board.draw(); // Clears and draws board background, grid, obstacles
+        this.board.draw();
         this.food.draw(this.context);
-        this.powerUpManager.draw(this.context); // Draw collectible power-up items
+        this.powerUpManager.draw(this.context);
         this.snake.draw(this.context);
 
-        // Draw game state messages (Ready, Paused, Game Over)
         if (this.gameState === GAME_STATE.GAME_OVER) this.drawGameOverMessage();
         else if (this.gameState === GAME_STATE.PAUSED) this.drawPausedMessage();
         else if (this.gameState === GAME_STATE.READY) this.drawReadyMessage();
@@ -216,36 +210,60 @@ export class Game {
     drawReadyMessage() {
         this.context.fillStyle = 'rgba(0, 0, 0, 0.6)';
         this.context.fillRect(0, this.canvas.height / 2 - 40, this.canvas.width, 80);
-        this.context.font = `bold ${Math.min(24, GRID_SIZE * 1.5)}px ${getCssVariable('--font-main')}`;
+
+        const mainFont = getCssVariable('--font-main', 'Arial'); // Fallback font
+        const titleFontSize = Math.min(24, GRID_SIZE * 1.5); // GRID_SIZE is imported
+        const instructionFontSize = Math.min(16, GRID_SIZE); // GRID_SIZE is imported
+
+        this.context.font = `bold ${titleFontSize}px ${mainFont}`;
         this.context.fillStyle = 'white';
         this.context.textAlign = 'center';
         this.context.fillText('Snake Game 🌌', this.canvas.width / 2, this.canvas.height / 2 - 10);
-        this.context.font = `${Math.min(16, GRID_SIZE)}px ${getCssVariable('--font-main')}`;
+
+        this.context.font = `${instructionFontSize}px ${mainFont}`;
         this.context.fillText('Press Space or Swipe/Tap to Start', this.canvas.width / 2, this.canvas.height / 2 + 20);
     }
 
     drawGameOverMessage() {
         this.context.fillStyle = 'rgba(0, 0, 0, 0.75)';
-        this.context.fillRect(0, this.canvas.height / 3, this.canvas.width, this.canvas.height / 3);
-        this.context.font = `bold ${Math.min(28, GRID_SIZE * 1.8)}px ${getCssVariable('--font-main')}`;
+        this.context.fillRect(0, this.canvas.height / 3, this.canvas.width, this.canvas.height / 2.5); // Adjusted height
+
+        const mainFont = getCssVariable('--font-main', 'Arial');
+        const titleFontSize = Math.min(28, GRID_SIZE * 1.8);
+        const scoreFontSize = Math.min(18, GRID_SIZE * 1.2);
+        const instructionFontSize = Math.min(16, GRID_SIZE);
+
+        let yPos = this.canvas.height / 2 - 40; // Start Y position for text
+
+        this.context.font = `bold ${titleFontSize}px ${mainFont}`;
         this.context.fillStyle = '#FF5252'; // Reddish for Game Over
         this.context.textAlign = 'center';
-        this.context.fillText('Game Over!', this.canvas.width / 2, this.canvas.height / 2 - 20);
-        this.context.font = `${Math.min(18, GRID_SIZE * 1.2)}px ${getCssVariable('--font-main')}`;
+        this.context.fillText('Game Over!', this.canvas.width / 2, yPos);
+        yPos += titleFontSize * 1.2;
+
+        this.context.font = `${scoreFontSize}px ${mainFont}`;
         this.context.fillStyle = 'white';
-        this.context.fillText(`Score: ${this.score}`, this.canvas.width / 2, this.canvas.height / 2 + 10);
-        this.context.fillText(`High Score: ${this.uiManager.highScore}`, this.canvas.width / 2, this.canvas.height / 2 + 35);
-        this.context.font = `${Math.min(16, GRID_SIZE)}px ${getCssVariable('--font-main')}`;
-        this.context.fillText('Press Space or Tap to Restart', this.canvas.width / 2, this.canvas.height / 2 + 60);
+        this.context.fillText(`Score: ${this.score}`, this.canvas.width / 2, yPos);
+        yPos += scoreFontSize * 1.2;
+
+        this.context.fillText(`High Score: ${this.uiManager.highScore}`, this.canvas.width / 2, yPos);
+        yPos += scoreFontSize * 1.5; // More space before instruction
+
+        this.context.font = `${instructionFontSize}px ${mainFont}`;
+        this.context.fillText('Press Space or Tap to Restart', this.canvas.width / 2, yPos);
     }
 
     drawPausedMessage() {
         this.context.fillStyle = 'rgba(0, 0, 0, 0.6)';
         this.context.fillRect(0, this.canvas.height / 2 - 30, this.canvas.width, 60);
-        this.context.font = `bold ${Math.min(24, GRID_SIZE * 1.6)}px ${getCssVariable('--font-main')}`;
+
+        const mainFont = getCssVariable('--font-main', 'Arial');
+        const pausedFontSize = Math.min(24, GRID_SIZE * 1.6);
+
+        this.context.font = `bold ${pausedFontSize}px ${mainFont}`;
         this.context.fillStyle = '#FFEB3B'; // Yellowish for Paused
         this.context.textAlign = 'center';
-        this.context.fillText('Paused', this.canvas.width / 2, this.canvas.height / 2 + 5); // Adjusted Y for better centering
+        this.context.fillText('Paused', this.canvas.width / 2, this.canvas.height / 2 + (pausedFontSize / 3) - 2); // Adjust for better vertical center
     }
 
 
@@ -258,19 +276,19 @@ export class Game {
             cancelAnimationFrame(this.gameLoopRequestId);
             this.gameLoopRequestId = null;
         }
-        this.snake.revertSpeed(); // Ensure speed is normal for game over screen logic if any
-        this.uiManager.updateHighScore(); // Check and save high score
+        this.snake.revertSpeed(); // Ensure speed is normal on game over
+        this.uiManager.updateHighScore();
         this.sfx.play('gameOver');
         console.log(`Game Over. Final Score: ${this.score}. High Score: ${this.uiManager.highScore}`);
-        this.draw(); // Draw one last time to show game over message
+        this.draw(); // Draw game over message
     }
 
     /**
      * Toggles the game pause state if playing or paused.
-     * If ready or game over, pressing space (handled here via togglePause) will start the game.
+     * If ready or game over, pressing space/escape (handled here) will start the game.
      */
     togglePause() {
-        this.sfx.resumeContext(); // Ensure audio context is active for pause/resume sounds
+        this.sfx.resumeContext(); // Good place to ensure context is active
 
         if (this.gameState === GAME_STATE.PLAYING) {
             this.gameState = GAME_STATE.PAUSED;
@@ -280,11 +298,11 @@ export class Game {
             }
             this.sfx.play('click');
             console.log("Game Paused.");
-            this.draw(); // Draw pause message
+            this.draw();
         } else if (this.gameState === GAME_STATE.PAUSED) {
             this.resume();
         } else if (this.gameState === GAME_STATE.READY || this.gameState === GAME_STATE.GAME_OVER) {
-            this.start(); // Allow space/escape to start/restart the game
+            this.start();
         }
     }
 
@@ -295,8 +313,8 @@ export class Game {
         if (this.gameState === GAME_STATE.PAUSED) {
             this.gameState = GAME_STATE.PLAYING;
             this.sfx.play('click');
-            this.lastFrameTime = performance.now(); // Reset lastFrameTime to avoid large jump in deltaTime
-            if(this.gameLoopRequestId) cancelAnimationFrame(this.gameLoopRequestId);
+            this.lastFrameTime = performance.now(); // Reset to avoid large jump
+            if (this.gameLoopRequestId) cancelAnimationFrame(this.gameLoopRequestId);
             this.gameLoopRequestId = requestAnimationFrame(this.gameLoop.bind(this));
             console.log("Game Resumed.");
         }
@@ -306,17 +324,15 @@ export class Game {
      * Handles the Escape key press, typically to toggle pause.
      */
     handleEscape() {
-        this.togglePause(); // For now, Escape does the same as Space (pause/resume/start)
+        this.togglePause();
     }
 
     /**
      * Called by Snake or other components when the snake's speed property changes.
-     * The game loop now directly uses `this.snake.speed` for its interval calculation.
-     * This method can be used for logging or if other systems need to react to speed changes.
+     * The game loop directly uses `this.snake.speed`. This method is for logging or future use.
      */
     updateGameSpeed() {
-        this.effectiveGameSpeed = this.snake.speed; // Sync local tracker if needed
-        // console.log(`Game's tracked effective speed updated. Snake speed: ${this.snake.speed.toFixed(2)}`);
-        // No need to restart the loop here; the loop's interval calculation will use the new snake.speed.
+        this.effectiveGameSpeed = this.snake.speed;
+        // console.log(`Game's effective speed synced to snake.speed: ${this.effectiveGameSpeed.toFixed(2)}`);
     }
 }
