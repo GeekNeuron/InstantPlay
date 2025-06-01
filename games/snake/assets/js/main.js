@@ -1,14 +1,13 @@
-// Import game modules (will be created later)
-// import Game from './game.js';
-// import { THEME_FILES } from './constants.js'; // Example
+// assets/js/main.js
+
+import { Game } from './game.js';
 
 // DOM Elements
 const themeToggleElement = document.getElementById('page-title-clickable');
 const themeLink = document.getElementById('theme-link');
-const scoreDisplay = document.getElementById('score');
-const highScoreDisplay = document.getElementById('highscore');
+// Score elements are accessed by UIManager, passed to Game constructor
 
-// Theme paths (assuming they are in assets/css/)
+// Theme paths
 const THEME_FILES = {
     light: 'assets/css/light-theme.css',
     dark: 'assets/css/dark-theme.css'
@@ -22,8 +21,10 @@ let currentTheme = 'light'; // Default theme
 function toggleTheme() {
     currentTheme = (currentTheme === 'light') ? 'dark' : 'light';
     themeLink.setAttribute('href', THEME_FILES[currentTheme]);
-    localStorage.setItem('snakeGameTheme', currentTheme); // Save theme preference
+    localStorage.setItem('snakeGameTheme', currentTheme);
     console.log(`Theme changed to ${currentTheme}`);
+    // Potentially notify the game to redraw with new theme colors if canvas elements don't use CSS vars directly
+    // For now, snake/food colors are fetched on their draw calls.
 }
 
 /**
@@ -39,16 +40,15 @@ function loadTheme() {
 
 /**
  * Initializes the game.
- * This function will be expanded significantly.
  */
 function initGame() {
     console.log("Initializing Snake Game...");
     loadTheme(); // Load theme preference on init
 
-    // Event Listeners
+    // Event Listeners for theme toggle
     if (themeToggleElement) {
         themeToggleElement.addEventListener('click', toggleTheme);
-        themeToggleElement.addEventListener('touchend', (e) => { // For touch devices
+        themeToggleElement.addEventListener('touchend', (e) => {
             e.preventDefault(); // Prevent click event from firing immediately after
             toggleTheme();
         });
@@ -56,24 +56,21 @@ function initGame() {
         console.error("Theme toggle element not found!");
     }
 
-    // Placeholder for actual game setup
-    // const game = new Game(canvasElement, scoreDisplay, highScoreDisplay);
-    // game.start();
-
-    console.log("Game setup complete (placeholder). Canvas and UI elements are ready.");
-    // Example: Get canvas (will be passed to Board or Game module)
-    const canvas = document.getElementById('gameCanvas');
-    if (canvas) {
-        // Set initial canvas size (will be dynamic later)
-        canvas.width = 400;
-        canvas.height = 400;
-        // const ctx = canvas.getContext('2d');
-        // ctx.fillStyle = 'grey'; // Test fill
-        // ctx.fillRect(0, 0, canvas.width, canvas.height);
-        console.log("Canvas ready.");
-    } else {
-        console.error("Canvas element not found!");
+    // --- Initialize the Game ---
+    try {
+        // Pass IDs of HTML elements for score display
+        const gameInstance = new Game('gameCanvas', 'score', 'highscore');
+        console.log("Game instance created.");
+        // If using a dedicated message overlay in HTML:
+        // const gameInstance = new Game('gameCanvas', 'score', 'highscore', 'gameMessageOverlay');
+    } catch (error) {
+        console.error("Failed to initialize game:", error);
+        const gameContainer = document.querySelector('.game-container');
+        if (gameContainer) {
+            gameContainer.innerHTML = `<p style="color: red; text-align: center;">Error initializing game. Please check console. <br>Make sure canvas and score elements exist in HTML.</p>`;
+        }
     }
+    // --- End Game Initialization ---
 }
 
 // Start the game initialization when the DOM is fully loaded
