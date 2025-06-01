@@ -1,83 +1,77 @@
 // assets/js/constants.js
 
-/**
- * @fileoverview Defines constants used throughout the Snake game.
- */
+// ... (GRID_SIZE, ROWS, COLS, INITIAL_SNAKE_SPEED, FOOD_SCORE - FOOD_SCORE can be removed or kept as default)
 
 /**
- * Size of each grid cell in pixels.
+ * Score awarded for eating a standard piece of food (can be overridden by FOOD_TYPES).
  * @type {number}
  */
-export const GRID_SIZE = 15; // Changed from 20 for smaller cells
+export const DEFAULT_FOOD_SCORE = 10; // Kept for reference or if FOOD_TYPES fails
 
 /**
- * Number of rows on the game board.
- * @type {number}
- */
-export const ROWS = 26; // Adjusted for new GRID_SIZE (26 * 15 = 390px height)
-
-/**
- * Number of columns on the game board.
- * @type {number}
- */
-export const COLS = 26; // Adjusted for new GRID_SIZE (26 * 15 = 390px width)
-
-/**
- * Initial speed of the snake (game updates per second).
- * Higher value means faster game.
- * @type {number}
- */
-export const INITIAL_SNAKE_SPEED = 5;
-
-/**
- * Score awarded for eating a standard piece of food.
- * @type {number}
- */
-export const FOOD_SCORE = 10;
-
-/**
- * Key codes for input handling.
+ * Identifiers for different food effects.
  * @enum {string}
  */
-export const KEYS = {
-    ARROW_UP: 'ArrowUp',
-    ARROW_DOWN: 'ArrowDown',
-    ARROW_LEFT: 'ArrowLeft',
-    ARROW_RIGHT: 'ArrowRight',
-    W: 'w',
-    A: 'a',
-    S: 's',
-    D: 'd',
-    SPACE: ' ',
-    ESCAPE: 'Escape'
+export const FOOD_EFFECTS = {
+    NONE: 'none',
+    SPEED_BOOST: 'speedBoost',
+    SLOW_DOWN: 'slowDown',
+    EXTRA_GROWTH: 'extraGrowth',
+    // Future: SCORE_MULTIPLIER, SHIELD, etc. might be better as collectible PowerUps
 };
 
 /**
- * Game states.
- * @enum {string}
+ * Defines the properties of different food types.
+ * - id: Unique identifier for the food type.
+ * - color: Display color (can be a CSS variable).
+ * - score: Points awarded for eating this food.
+ * - effect: The type of effect this food has (from FOOD_EFFECTS).
+ * - probability: Chance of this food type spawning (adds up to 1 with other types).
+ * - duration: (Optional) Duration of the effect in milliseconds.
+ * - speedFactor: (Optional) Multiplier for snake speed changes.
+ * - growAmount: (Optional) Number of segments the snake grows by.
  */
-export const GAME_STATE = {
-    LOADING: 'loading',
-    READY: 'ready',
-    PLAYING: 'playing',
-    PAUSED: 'paused',
-    GAME_OVER: 'gameOver'
+export const FOOD_TYPES = {
+    DEFAULT: {
+        id: 'DEFAULT',
+        color: 'var(--food-color)', // Default red
+        score: 10,
+        effect: FOOD_EFFECTS.NONE,
+        probability: 0.60 // 60% chance
+    },
+    GOLDEN_APPLE: {
+        id: 'GOLDEN_APPLE',
+        color: 'var(--food-color-golden)', // Gold
+        score: 50,
+        effect: FOOD_EFFECTS.NONE,
+        probability: 0.10 // 10% chance
+    },
+    SPEED_BERRY: {
+        id: 'SPEED_BERRY',
+        color: 'var(--food-color-speed)', // e.g., Cyan or a bright blue
+        score: 5,
+        effect: FOOD_EFFECTS.SPEED_BOOST,
+        duration: 5000, // 5 seconds
+        speedFactor: 1.5, // 50% faster
+        probability: 0.10 // 10% chance
+    },
+    SLOW_SLUG: {
+        id: 'SLOW_SLUG',
+        color: 'var(--food-color-slow)', // e.g., Orange or a muted color
+        score: 5,
+        effect: FOOD_EFFECTS.SLOW_DOWN,
+        duration: 5000, // 5 seconds
+        speedFactor: 0.66, // 33% slower
+        probability: 0.10 // 10% chance
+    },
+    GROW_PEAR: {
+        id: 'GROW_PEAR',
+        color: 'var(--food-color-grow)', // e.g., Green or purple
+        score: 15,
+        effect: FOOD_EFFECTS.EXTRA_GROWTH,
+        growAmount: 3, // Grows by 3 segments
+        probability: 0.10 // 10% chance
+    }
 };
 
-/**
- * URLs for theme CSS files.
- */
-export const THEME_FILES = {
-    light: 'assets/css/light-theme.css',
-    dark: 'assets/css/dark-theme.css'
-};
-
-// Example for direct color usage if needed, though CSS variables are preferred for theming.
-// export const COLORS = {
-//     SNAKE_HEAD: 'var(--snake-head-color)',
-//     SNAKE_BODY: 'var(--snake-body-color)',
-//     FOOD_DEFAULT: 'var(--food-color)',
-//     BOARD_BACKGROUND: 'var(--canvas-bg-color)',
-//     OBSTACLE: '#555555',
-//     GRID_LINE_COLOR: 'rgba(0, 0, 0, 0.1)' // Example grid line color
-// };
+// ... (KEYS, GAME_STATE, THEME_FILES remain the same)
