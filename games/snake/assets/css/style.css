@@ -1,10 +1,11 @@
 /* Basic Reset & Body Styles */
 :root {
-    --font-main: 'Arial', sans-serif; /* Placeholder, can be changed */
+    /* Using system fonts for broad compatibility and performance */
+    --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     --border-radius-small: 4px;
     --border-radius-medium: 8px;
     --border-radius-large: 12px;
-    --transition-speed: 0.3s;
+    --transition-speed: 0.25s; /* Adjusted for smoother theme transition */
 }
 
 * {
@@ -18,66 +19,124 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start; /* Align to top to see content better if page is short */
     min-height: 100vh;
-    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+    transition: background-color var(--transition-speed) ease-in-out, color var(--transition-speed) ease-in-out;
     padding: 20px;
     text-align: center;
+    line-height: 1.6; /* Improved readability */
 }
 
 header h1 {
-    font-size: 2.5rem;
+    font-size: 2.2rem; /* Slightly adjusted */
     margin-bottom: 20px;
-    cursor: pointer; /* For theme toggle */
-    user-select: none; /* Prevent text selection on click */
-    -webkit-user-select: none; /* Safari */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* IE10+ */
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    font-weight: 600; /* Slightly bolder */
 }
 
 .game-container {
-    border: 2px solid; /* Color will come from theme */
+    border: 2px solid; /* Color from theme */
     border-radius: var(--border-radius-large);
-    padding: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1); /* Softer shadow */
+    padding: 10px; /* Adjusted padding */
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1); /* Slightly adjusted shadow */
     background-color: var(--game-bg-color); /* Theme dependent */
-    display: inline-block; /* Shrink to content */
+    display: inline-block;
+    margin-top: 20px; /* Added margin */
 }
 
 .game-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
-    margin-bottom: 15px;
-    font-size: 1.2rem;
+    padding: 10px 15px; /* Adjusted padding */
+    margin-bottom: 10px; /* Adjusted margin */
+    font-size: 1.1rem; /* Slightly adjusted */
     border-bottom: 1px solid; /* Color from theme */
     border-color: var(--text-color-muted);
+    font-weight: 500;
 }
 
 #gameCanvas {
-    display: block; /* Remove extra space below canvas */
+    display: block;
     border-radius: var(--border-radius-medium);
-    /* Background color will be handled by theme or canvas drawing itself */
+    /* background-color will be handled by board.draw() */
+    border: 1px solid var(--text-color-muted); /* Optional: subtle border for canvas itself */
 }
 
 .game-controls-info {
     margin-top: 15px;
-    font-size: 0.9rem;
+    font-size: 0.85rem; /* Slightly adjusted */
     color: var(--text-color-muted);
 }
 
 footer {
-    margin-top: 30px;
-    font-size: 0.9rem;
+    margin-top: 40px; /* Increased margin */
+    padding-bottom: 20px; /* Ensure space at bottom */
+    font-size: 0.85rem;
     color: var(--text-color-muted);
 }
 
-/* Tile-like elements (placeholder for snake, food, board cells) */
+/* Tile placeholder - Snake and Food will use canvas drawing */
 .tile {
-    width: 20px; /* Example size */
-    height: 20px; /* Example size */
+    /* This class might not be directly used if all drawing is on canvas */
+    /* but good for conceptual reference or future UI elements */
+    width: var(--grid-size-css, 15px); /* Can sync with JS via CSS var if needed */
+    height: var(--grid-size-css, 15px);
     border-radius: var(--border-radius-small);
     background-color: #333; /* Placeholder */
-    margin: 1px; /* Example spacing */
+    margin: 1px;
+}
+
+/* Basic modal styling for game over / pause messages (add to HTML if used by UI Manager) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: auto;
+    padding: 20px 30px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-medium);
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.modal button {
+    background-color: var(--accent-color);
+    color: var(--bg-color); /* Or a contrasting text color if accent is light */
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1rem;
+    margin-top: 15px;
+    border-radius: var(--border-radius-small);
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.modal button:hover {
+    opacity: 0.85;
+}
+
+/* Styles for messages directly on canvas (if not using modals) */
+.canvas-message-overlay { /* A conceptual class for messages drawn by game.js */
+    /* Position and styling would be handled by canvas drawing commands */
 }
