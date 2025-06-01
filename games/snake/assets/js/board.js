@@ -1,10 +1,10 @@
 // assets/js/board.js
 
-import { GRID_SIZE, ROWS, COLS } from './constants.js';
-import { getCssVariable } from './utils.js'; // For theme-aware colors
+import { GRID_SIZE, ROWS, COLS } from './constants.js'; // ROWS, COLS needed for obstacle setup
+import { getCssVariable, arePositionsEqual } from './utils.js';
 
 /**
- * @fileoverview Manages the game board rendering and state.
+ * @fileoverview Manages the game board rendering, state, and obstacles.
  */
 
 export class Board {
@@ -20,25 +20,48 @@ export class Board {
         this.cols = COLS;
         this.gridSize = GRID_SIZE;
 
-        // Set canvas dimensions based on grid
         this.canvas.width = this.cols * this.gridSize;
         this.canvas.height = this.rows * this.gridSize;
 
-        // Store obstacle positions if any
-        this.obstacles = []; // Example: [{x: 5, y: 5}, {x: 5, y: 6}]
-        // Example: this.addObstacle({x: Math.floor(COLS/2), y: Math.floor(ROWS/2)});
+        this.obstacles = []; // Initialize an empty array for obstacles
     }
 
     /**
-     * Clears the canvas and draws the game board.
+     * Sets up a predefined layout of default obstacles.
+     * This method is called typically at the start of a new game.
+     */
+    setupDefaultObstacles() {
+        this.obstacles = []; // Clear any existing obstacles first
+
+        // Example Obstacle Layout:
+        // A short horizontal line in the middle
+        const midY = Math.floor(ROWS / 2);
+        for (let i = 0; i < 6; i++) {
+            this.addObstacle({ x: Math.floor(COLS / 2) - 3 + i, y: midY });
+        }
+
+        // Two small vertical lines
+        const midX = Math.floor(COLS / 2);
+        if (ROWS > 15 && COLS > 10) { // Ensure board is large enough
+            for (let i = 0; i < 4; i++) {
+                this.addObstacle({ x: midX - 5, y: Math.floor(ROWS / 4) + i });
+                this.addObstacle({ x: midX + 5, y: Math.floor(3 * ROWS / 4) - i });
+            }
+        }
+        console.log("Board: Default obstacles set up.", this.obstacles.length, "obstacles added.");
+    }
+
+
+    /**
+     * Clears the canvas and draws the game board, grid lines, and obstacles.
      */
     draw() {
         const canvasBgColor = getCssVariable('var(--canvas-bg-color)', '#CDC1B4');
         this.context.fillStyle = canvasBgColor;
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        this.drawGridLines(); // Enabled grid lines
-        this.drawObstacles();
+        this.drawGridLines();
+        this.drawObstacles(); // Call to draw the obstacles
     }
 
     /**
@@ -47,10 +70,9 @@ export class Board {
     drawGridLines() {
         const gridLineColor = getCssVariable('var(--grid-line-color)', 'rgba(0,0,0,0.08)');
         this.context.strokeStyle = gridLineColor;
-        this.context.lineWidth = 1; // Keep lines thin
+        this.context.lineWidth = 1;
+        const offset = 0.5; // For sharper lines
 
-        // Offset by 0.5 for sharper lines on canvas
-        const offset = 0.5;
         for (let x = 0; x <= this.cols; x++) {
             this.context.beginPath();
             this.context.moveTo(x * this.gridSize + offset, 0);
@@ -67,35 +89,40 @@ export class Board {
     }
 
     /**
-     * Adds an obstacle to the board.
+     * Adds an obstacle to the board if the position is valid and not already an obstacle.
      * @param {{x: number, y: number}} position - The position of the obstacle.
      */
     addObstacle(position) {
-        if (!this.isObstacle(position) && !this.isOutOfBounds(position)) {
+        if (!this.isObstacle(position) &&
+            position.x >= 0 && position.x < this.cols &&
+            position.y >= 0 && position.y < this.rows) {
             this.obstacles.push(position);
+        } else {
+            // console.warn("Board: Attempted to add invalid or duplicate obstacle at", position);
         }
     }
 
     /**
-     * Draws all obstacles on the board.
+     * Draws all defined obstacles on the board.
      */
     drawObstacles() {
-        const obstacleColor = getCssVariable('var(--obstacle-color)', '#555555');
+        const obstacleColor = getCssVariable('var(--obstacle-color)', '#555555'); // Fetch color from CSS
         this.context.fillStyle = obstacleColor;
         this.obstacles.forEach(obstacle => {
+            // Simple filled rectangle for obstacles
             this.context.fillRect(
                 obstacle.x * this.gridSize,
                 obstacle.y * this.gridSize,
                 this.gridSize,
                 this.gridSize
             );
-            // For rounded obstacles:
+            // Optional: Add rounded corners or different style for obstacles
             // const x = obstacle.x * this.gridSize;
             // const y = obstacle.y * this.gridSize;
             // const cornerRadius = this.gridSize / 5;
             // this.context.beginPath();
             // this.context.moveTo(x + cornerRadius, y);
-            // ... (draw rounded rect like snake segments)
+            // ... (draw rounded rect path) ...
             // this.context.fill();
         });
     }
