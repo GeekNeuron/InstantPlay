@@ -3,24 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title id="game-title-tag">Snake by GeekNeuron</title> <link rel="stylesheet" href="assets/css/style.css">
+    <title id="game-title-tag">Snake by GeekNeuron</title>
+    <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/light-theme.css" id="theme-link">
 </head>
 <body>
     <div class="page-wrapper">
         <header class="settings-box">
             <h1 id="page-title-clickable" class="game-title-header" title="Click to toggle theme">Snake Game</h1>
+            
             <div class="controls-panel">
                 <div class="scores-group-left">
                     <div class="score-box" id="current-score-box">Score: <span id="score">0</span></div>
                     <div class="score-box" id="high-score-box">High Score: <span id="highscore">0</span></div>
                 </div>
-                <div class.difficulty-control-right difficulty-control">
+                <div class="difficulty-control-right difficulty-control">
                     <label for="difficulty-select">Difficulty:</label>
                     <select id="difficulty-select" name="difficulty">
                         </select>
                 </div>
             </div>
+
             <div class="game-container">
                 <div class="game-header-combo">
                     <div class="combo-container">
@@ -29,23 +32,23 @@
                 </div>
                 <canvas id="gameCanvas"></canvas>
             </div>
+
+            <div id="game-legend" class="game-legend">
+                <div class="legend-items-container">
+                    </div>
+            </div>
         </header>
 
-        <div id="game-legend" class="game-legend">
-            <h3 class="legend-title">Game Items Guide</h3>
-            <div class="legend-items-container">
-                </div>
-        </div>
-
         <footer>
-            <p>Created by GeekNeuron</p> </footer>
+            <p>Created by GeekNeuron</p>
+        </footer>
     </div>
 
-    <div id="achievement-notification" class="achievement-popup">
-        </div>
+    <div id="achievement-notification" class="achievement-popup"></div>
 
     <div id="legend-info-bubble" class="legend-info-bubble" style="display: none; position: absolute;">
-        <div class="bubble-arrow"></div> <strong id="bubble-title" class="bubble-title">Item Name</strong>
+        <div class="bubble-arrow"></div>
+        <strong id="bubble-title" class="bubble-title">Item Name</strong>
         <p id="bubble-description" class="bubble-description">Item description here.</p>
     </div>
 
