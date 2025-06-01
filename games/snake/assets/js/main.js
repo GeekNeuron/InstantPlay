@@ -2,34 +2,22 @@
 
 import { Game } from './game.js';
 
-// DOM Elements
 const themeToggleElement = document.getElementById('page-title-clickable');
 const themeLink = document.getElementById('theme-link');
-// Score elements are accessed by UIManager, passed to Game constructor
 
-// Theme paths
 const THEME_FILES = {
     light: 'assets/css/light-theme.css',
     dark: 'assets/css/dark-theme.css'
 };
+let currentTheme = 'light';
 
-let currentTheme = 'light'; // Default theme
-
-/**
- * Toggles the theme between light and dark.
- */
 function toggleTheme() {
     currentTheme = (currentTheme === 'light') ? 'dark' : 'light';
     themeLink.setAttribute('href', THEME_FILES[currentTheme]);
     localStorage.setItem('snakeGameTheme', currentTheme);
     console.log(`Theme changed to ${currentTheme}`);
-    // Potentially notify the game to redraw with new theme colors if canvas elements don't use CSS vars directly
-    // For now, snake/food colors are fetched on their draw calls.
 }
 
-/**
- * Loads the saved theme from localStorage or defaults to light.
- */
 function loadTheme() {
     const savedTheme = localStorage.getItem('snakeGameTheme');
     if (savedTheme && THEME_FILES[savedTheme]) {
@@ -38,31 +26,29 @@ function loadTheme() {
     themeLink.setAttribute('href', THEME_FILES[currentTheme]);
 }
 
-/**
- * Initializes the game.
- */
 function initGame() {
     console.log("Initializing Snake Game...");
-    loadTheme(); // Load theme preference on init
+    loadTheme();
 
-    // Event Listeners for theme toggle
     if (themeToggleElement) {
         themeToggleElement.addEventListener('click', toggleTheme);
         themeToggleElement.addEventListener('touchend', (e) => {
-            e.preventDefault(); // Prevent click event from firing immediately after
+            e.preventDefault();
             toggleTheme();
         });
     } else {
         console.error("Theme toggle element not found!");
     }
 
-    // --- Initialize the Game ---
     try {
-        // Pass IDs of HTML elements for score display
+        // Saat ini messageOverlayId ارسال نمی‌شود، بنابراین UIManager از آن استفاده نخواهد کرد
+        // مگر اینکه یک div با id مربوطه در HTML و شناسه آن در اینجا پاس داده شود.
         const gameInstance = new Game('gameCanvas', 'score', 'highscore');
-        console.log("Game instance created.");
-        // If using a dedicated message overlay in HTML:
+        // مثال برای استفاده از overlay:
+        // 1. در index.html بخش gameMessageOverlay را از کامنت خارج کنید.
+        // 2. در اینجا شناسه را پاس دهید:
         // const gameInstance = new Game('gameCanvas', 'score', 'highscore', 'gameMessageOverlay');
+        console.log("Game instance should be created now.");
     } catch (error) {
         console.error("Failed to initialize game:", error);
         const gameContainer = document.querySelector('.game-container');
@@ -70,8 +56,6 @@ function initGame() {
             gameContainer.innerHTML = `<p style="color: red; text-align: center;">Error initializing game. Please check console. <br>Make sure canvas and score elements exist in HTML.</p>`;
         }
     }
-    // --- End Game Initialization ---
 }
 
-// Start the game initialization when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', initGame);
