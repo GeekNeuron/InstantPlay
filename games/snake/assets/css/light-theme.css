@@ -4,20 +4,20 @@
     --bg-color: #FFFFFF;
     --text-color: #212529;
     --text-color-muted: #6c757d;
-    --header-color: #212529;
+    --header-text-color: #212529;                   /* Color for the main game title (h1) */
     --accent-color: #007bff;
-    --accent-color-translucent: rgba(0, 123, 255, 0.25); /* For focus rings etc. */
+    --accent-color-translucent: rgba(0, 123, 255, 0.25);
 
-    /* --- Game Container & Board --- */
-    --game-bg-color: #f8f9fa;
+    /* --- Settings Box & Game Container --- */
+    --settings-box-bg: #f8f9fa;                    /* Background for the entire header/settings box */
+    --game-bg-color: #f8f9fa;                       /* Game container background (can be same as settings box or different) */
     --canvas-bg-color: #e9ecef;
     --border-color: #dee2e6;
     --grid-line-color: rgba(0, 0, 0, 0.1);
 
-    /* --- Score Box (.scores-display) & Game Header (.game-header with combo) --- */
-    --score-box-bg: #e9ecef; /* Light grey for score box background */
-    --score-box-text: var(--text-color);
-    /* Game Header (combo) will use accent color from style.css directly */
+    /* --- Score Boxes inside Settings Box --- */
+    --score-box-bg: #0069d9;                        /* Darker blue for score boxes */
+    --score-box-text: #FFFFFF;
 
     /* --- Game Elements --- */
     --snake-head-color: #28a745;
@@ -29,7 +29,7 @@
     --food-color-grow: #6f42c1;
     --obstacle-color: #495057;
 
-    /* --- Power-ups (Collectible Items) --- */
+    /* --- Power-ups --- */
     --powerup-color-shield: #007bff;
     --powerup-color-scoreboost: #28a745;
     --powerup-color-score-multiplier: #ffc107;
@@ -41,18 +41,20 @@
     --modal-text-color: var(--text-color);
     --text-color-on-overlay: #FFFFFF;
 
-    /* --- Buttons (inside modals or other UI parts) --- */
+    /* --- Buttons --- */
     --button-bg: var(--accent-color);
     --button-text: #FFFFFF;
     --button-hover-bg: #0056b3;
-
-    /* --- Theme Switcher (appearance of the switcher when light theme is active) --- */
-    /* No specific overrides here, will use header default unless styled in style.css */
 }
 
-/* Override for header h1 (theme switcher) in light theme if needed */
-header h1#page-title-clickable {
-    background-color: transparent; /* No special background for title in light theme */
-    color: var(--header-color);
-    border-color: transparent;
+/* Apply settings box background */
+.settings-box {
+    background-color: var(--settings-box-bg);
+}
+
+/* Title (theme switcher) in light theme - should have transparent background by default from style.css */
+h1.game-title-header {
+    color: var(--header-text-color);
+    background-color: transparent !important; /* Ensure no override from dark theme switcher style */
+    border-color: transparent !important;
 }
