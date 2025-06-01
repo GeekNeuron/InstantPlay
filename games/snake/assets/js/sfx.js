@@ -13,9 +13,14 @@ export class SoundEffectsManager {
         // Attempt to initialize AudioContext.
         try {
             this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            this.isSuspended = this.audioContext.state === 'suspended';
+            if (this.audioContext) { // Check if context was successfully created
+                this.isSuspended = this.audioContext.state === 'suspended';
+            } else {
+                this.soundsEnabled = false; // Disable sounds if context creation failed
+                console.warn("AudioContext could not be created. Sounds will be disabled.");
+            }
         } catch (e) {
-            console.warn("Web Audio API is not supported in this browser. Sounds will be disabled.");
+            console.warn("Web Audio API is not supported in this browser. Sounds will be disabled.", e);
             this.soundsEnabled = false;
         }
     }
@@ -28,69 +33,73 @@ export class SoundEffectsManager {
         if (this.audioContext && this.audioContext.state === 'suspended') {
             this.audioContext.resume().then(() => {
                 this.isSuspended = false;
-                console.log("AudioContext resumed.");
+                console.log("AudioContext resumed successfully.");
             }).catch(e => console.error("Error resuming AudioContext:", e));
-        } else if (this.audioContext) {
-            this.isSuspended = false; // Already running
+        } else if (this.audioContext && this.audioContext.state !== 'closed') {
+            this.isSuspended = false; // Already running or not suspended
         }
     }
 
     /**
      * Plays a sound effect based on its type.
-     * @param {string} type - Type of sound ('eat', 'gameOver', 'powerUp', 'click', 'shieldHit').
+     * @param {string} type - Type of sound ('eat', 'gameOver', 'powerUp', 'foodEffect', 'shieldHit', 'click').
      */
     play(type) {
-        if (!this.soundsEnabled || !this.audioContext) return;
+        if (!this.soundsEnabled || !this.audioContext || this.audioContext.state === 'closed') return;
 
         // Attempt to resume context on first play if still suspended
+        // This is crucial for sounds to work after initial user gesture.
         if (this.isSuspended) {
             this.resumeContext();
-            // Sound might not play on this very first call if resume is async, but will for subsequent calls.
-            if (this.audioContext.state === 'suspended') { // Check again after trying to resume
-                 console.warn("AudioContext still suspended, sound may not play yet.");
-                 // return; // Optionally skip playing this first sound if context isn't ready
+            // If still suspended after attempt (e.g., called before any gesture), log it.
+            if (this.audioContext.state === 'suspended') {
+                 console.warn("AudioContext is still suspended. Sound might not play until a user gesture on the page allows it to resume.");
+                 // return; // Optionally, don't try to play if we know it will fail.
             }
         }
 
-
-        let frequency = 440; // A4 note
-        let duration = 0.1;  // seconds
-        let waveType = 'sine'; // 'sine', 'square', 'sawtooth', 'triangle'
-        let volume = 0.1;    // Default volume
+        let frequency = 440;
+        let duration = 0.1;
+        let waveType = 'sine';
+        let volume = 0.1;
 
         switch (type) {
             case 'eat':
                 this._playSequence([
-                    { freq: 660, dur: 0.04, wav: 'square', vol: 0.08 },
-                    { freq: 770, dur: 0.05, wav: 'square', vol: 0.08, delay: 0.03 }
+                    { freq: 700, dur: 0.04, wav: 'square', vol: 0.08 },
+                    { freq: 880, dur: 0.05, wav: 'square', vol: 0.08, delay: 0.03 }
                 ]);
                 return;
             case 'gameOver':
                 this._playSequence([
-                    { freq: 200, dur: 0.15, wav: 'sawtooth', vol: 0.1 },
-                    { freq: 150, dur: 0.20, wav: 'sawtooth', vol: 0.1, delay: 0.1 },
-                    { freq: 100, dur: 0.25, wav: 'sawtooth', vol: 0.1, delay: 0.15 }
+                    { freq: 200, dur: 0.15, wav: 'sawtooth', vol: 0.12 },
+                    { freq: 150, dur: 0.20, wav: 'sawtooth', vol: 0.12, delay: 0.1 },
+                    { freq: 100, dur: 0.25, wav: 'sawtooth', vol: 0.12, delay: 0.15 }
                 ]);
                 return;
-            case 'powerUp': // For collecting a power-up item (distinct from food effects)
+            case 'powerUp': // For collecting a distinct power-up item
                  this._playSequence([
-                    { freq: 880, dur: 0.05, wav: 'triangle', vol: 0.1 },
-                    { freq: 1046, dur: 0.05, wav: 'triangle', vol: 0.1, delay: 0.05 },
-                    { freq: 1318, dur: 0.08, wav: 'triangle', vol: 0.1, delay: 0.05 }
+                    { freq: 880, dur: 0.06, wav: 'triangle', vol: 0.1 },
+                    { freq: 1046, dur: 0.06, wav: 'triangle', vol: 0.1, delay: 0.05 },
+                    { freq: 1318, dur: 0.09, wav: 'triangle', vol: 0.1, delay: 0.05 }
                 ]);
                 return;
-            case 'foodEffect': // Generic sound for when a food *effect* activates
-                frequency = 700; duration = 0.1; waveType = 'triangle'; volume = 0.08;
-                break;
-            case 'shieldHit':
-                frequency = 300; duration = 0.2; waveType = 'noise'; volume = 0.15; // 'noise' type needs specific handling
-                 if (waveType === 'noise') this._playNoise(duration, volume); else this._createAndPlayOscillator(frequency, duration, waveType, volume);
+            case 'foodEffect': // Generic sound for when a food *effect* (like speed boost) activates
+                this._playSequence([
+                    { freq: 600, dur: 0.05, wav: 'sine', vol: 0.07 },
+                    { freq: 900, dur: 0.08, wav: 'sine', vol: 0.07, delay: 0.04 }
+                ]);
                 return;
-            case 'click': // For UI interaction
-                frequency = 1200; duration = 0.05; waveType = 'sine'; volume = 0.05;
+            case 'shieldHit': // Sound when a shield absorbs a hit
+                 this._playNoise(0.15, 0.15); // Short, sharp noise
+                // Or a metallic ping:
+                // this._createAndPlayOscillator(1200, 0.15, 'triangle', 0.1);
+                return;
+            case 'click': // For UI interaction, pause/resume
+                frequency = 1200; duration = 0.05; waveType = 'sine'; volume = 0.06;
                 break;
             default:
-                // console.warn(`Unknown sound type: ${type}`);
+                // console.warn(`SFX: Unknown sound type requested: ${type}`);
                 return;
         }
 
@@ -98,7 +107,8 @@ export class SoundEffectsManager {
     }
 
     _createAndPlayOscillator(frequency, duration, waveType, volume = 0.1, delay = 0) {
-        if (!this.audioContext) return;
+        if (!this.audioContext || this.audioContext.state === 'closed' || this.audioContext.state === 'suspended') return;
+
         const oscillator = this.audioContext.createOscillator();
         const gainNode = this.audioContext.createGain();
         const startTime = this.audioContext.currentTime + delay;
@@ -107,9 +117,10 @@ export class SoundEffectsManager {
         oscillator.frequency.setValueAtTime(frequency, startTime);
 
         gainNode.gain.setValueAtTime(0, startTime); // Start silent
-        gainNode.gain.linearRampToValueAtTime(volume, startTime + duration * 0.1); // Quick attack
-        gainNode.gain.setValueAtTime(volume, startTime + duration * 0.1);
-        gainNode.gain.exponentialRampToValueAtTime(0.00001, startTime + duration); // Decay
+        gainNode.gain.linearRampToValueAtTime(volume, startTime + 0.01); // Quick attack
+        gainNode.gain.setValueAtTime(volume, startTime + 0.01); // Hold volume
+        // Exponential decay for a more natural sound fade
+        gainNode.gain.exponentialRampToValueAtTime(0.00001, startTime + duration);
 
         oscillator.connect(gainNode);
         gainNode.connect(this.audioContext.destination);
@@ -119,13 +130,16 @@ export class SoundEffectsManager {
     }
 
     _playNoise(duration, volume = 0.1, delay = 0) {
-        if (!this.audioContext) return;
-        const bufferSize = this.audioContext.sampleRate * duration;
+        if (!this.audioContext || this.audioContext.state === 'closed' || this.audioContext.state === 'suspended') return;
+
+        const bufferSize = Math.floor(this.audioContext.sampleRate * duration);
+        if (bufferSize <=0) return; // Invalid duration for buffer
+
         const buffer = this.audioContext.createBuffer(1, bufferSize, this.audioContext.sampleRate);
         const output = buffer.getChannelData(0);
 
         for (let i = 0; i < bufferSize; i++) {
-            output[i] = Math.random() * 2 - 1; // White noise
+            output[i] = Math.random() * 2 - 1; // Generate white noise
         }
 
         const noiseSource = this.audioContext.createBufferSource();
@@ -135,28 +149,30 @@ export class SoundEffectsManager {
         const startTime = this.audioContext.currentTime + delay;
 
         gainNode.gain.setValueAtTime(0, startTime);
-        gainNode.gain.linearRampToValueAtTime(volume, startTime + duration * 0.1);
-        gainNode.gain.setValueAtTime(volume, startTime + duration * 0.1);
+        gainNode.gain.linearRampToValueAtTime(volume, startTime + 0.01);
+        gainNode.gain.setValueAtTime(volume, startTime + 0.01);
         gainNode.gain.exponentialRampToValueAtTime(0.00001, startTime + duration);
 
         noiseSource.connect(gainNode);
         gainNode.connect(this.audioContext.destination);
+
         noiseSource.start(startTime);
-        noiseSource.stop(startTime + duration);
+        noiseSource.stop(startTime + duration); // Ensure noise stops
     }
 
 
     _playSequence(notes) {
-        if (!this.audioContext) return;
-        let accumulatedDelay = 0;
+        if (!this.audioContext || this.audioContext.state === 'closed' || this.audioContext.state === 'suspended') return;
+
+        let timeOffset = 0; // Use a local offset for scheduling within the sequence
         notes.forEach(note => {
-            accumulatedDelay += (note.delay || 0);
+            const currentDelay = timeOffset + (note.delay || 0);
             if (note.wav === 'noise') {
-                this._playNoise(note.dur, note.vol, accumulatedDelay);
+                this._playNoise(note.dur, note.vol, currentDelay);
             } else {
-                this._createAndPlayOscillator(note.freq, note.dur, note.wav, note.vol, accumulatedDelay);
+                this._createAndPlayOscillator(note.freq, note.dur, note.wav, note.vol, currentDelay);
             }
-            accumulatedDelay += note.dur;
+            timeOffset = currentDelay + note.dur; // Next note starts after this one finishes
         });
     }
 
@@ -167,7 +183,7 @@ export class SoundEffectsManager {
         this.soundsEnabled = !this.soundsEnabled;
         console.log(`Sounds ${this.soundsEnabled ? 'enabled' : 'disabled'}`);
         if (this.soundsEnabled) {
-            this.resumeContext(); // Attempt to resume if enabling sounds
+            this.resumeContext(); // Attempt to resume if enabling sounds and context was suspended
         }
     }
 }
