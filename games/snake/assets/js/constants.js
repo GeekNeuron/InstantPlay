@@ -8,26 +8,26 @@
  * Size of each grid cell in pixels.
  * @type {number}
  */
-export const GRID_SIZE = 20; // e.g., each square is 20x20 pixels
+export const GRID_SIZE = 15; // Changed from 20 for smaller cells
 
 /**
  * Number of rows on the game board.
  * @type {number}
  */
-export const ROWS = 20; // Results in a 20x20 grid
+export const ROWS = 26; // Adjusted for new GRID_SIZE (26 * 15 = 390px height)
 
 /**
  * Number of columns on the game board.
  * @type {number}
  */
-export const COLS = 20; // Results in a 20x20 grid
+export const COLS = 26; // Adjusted for new GRID_SIZE (26 * 15 = 390px width)
 
 /**
  * Initial speed of the snake (game updates per second).
  * Higher value means faster game.
  * @type {number}
  */
-export const INITIAL_SNAKE_SPEED = 5; // e.g., 5 updates per second
+export const INITIAL_SNAKE_SPEED = 5;
 
 /**
  * Score awarded for eating a standard piece of food.
@@ -48,8 +48,8 @@ export const KEYS = {
     A: 'a',
     S: 's',
     D: 'd',
-    SPACE: ' ', // For pause or start
-    ESCAPE: 'Escape' // For pause or menu
+    SPACE: ' ',
+    ESCAPE: 'Escape'
 };
 
 /**
@@ -58,7 +58,7 @@ export const KEYS = {
  */
 export const GAME_STATE = {
     LOADING: 'loading',
-    READY: 'ready', // Ready to start (e.g., on main screen)
+    READY: 'ready',
     PLAYING: 'playing',
     PAUSED: 'paused',
     GAME_OVER: 'gameOver'
@@ -66,19 +66,18 @@ export const GAME_STATE = {
 
 /**
  * URLs for theme CSS files.
- * Defined here for potential use in other modules if needed, though primarily used in main.js.
  */
 export const THEME_FILES = {
     light: 'assets/css/light-theme.css',
     dark: 'assets/css/dark-theme.css'
 };
 
-// Add more constants as needed (e.g., colors, power-up types, messages)
-// Example:
+// Example for direct color usage if needed, though CSS variables are preferred for theming.
 // export const COLORS = {
-//     SNAKE_HEAD: 'var(--snake-head-color)', // Using CSS variables
+//     SNAKE_HEAD: 'var(--snake-head-color)',
 //     SNAKE_BODY: 'var(--snake-body-color)',
 //     FOOD_DEFAULT: 'var(--food-color)',
 //     BOARD_BACKGROUND: 'var(--canvas-bg-color)',
-//     OBSTACLE: '#555555'
+//     OBSTACLE: '#555555',
+//     GRID_LINE_COLOR: 'rgba(0, 0, 0, 0.1)' // Example grid line color
 // };
