@@ -9,15 +9,21 @@ const THEME_FILES = {
     light: 'assets/css/light-theme.css',
     dark: 'assets/css/dark-theme.css'
 };
-let currentTheme = 'light';
+let currentTheme = 'light'; // Default theme
 
+/**
+ * Toggles the theme between light and dark.
+ */
 function toggleTheme() {
     currentTheme = (currentTheme === 'light') ? 'dark' : 'light';
     themeLink.setAttribute('href', THEME_FILES[currentTheme]);
     localStorage.setItem('snakeGameTheme', currentTheme);
-    console.log(`Theme changed to ${currentTheme}`);
+    // console.log(`Theme changed to ${currentTheme}`);
 }
 
+/**
+ * Loads the saved theme from localStorage or defaults to light.
+ */
 function loadTheme() {
     const savedTheme = localStorage.getItem('snakeGameTheme');
     if (savedTheme && THEME_FILES[savedTheme]) {
@@ -26,27 +32,35 @@ function loadTheme() {
     themeLink.setAttribute('href', THEME_FILES[currentTheme]);
 }
 
+/**
+ * Initializes the game.
+ */
 function initGame() {
-    console.log("Initializing Snake Game..."); // این باید اولین لاگ مربوط به بازی باشد
-    loadTheme();
+    // console.log("Initializing Snake Game..."); // Log was here
+    loadTheme(); // Load theme preference on init
 
+    // Event Listeners for theme toggle
     if (themeToggleElement) {
         themeToggleElement.addEventListener('click', toggleTheme);
         themeToggleElement.addEventListener('touchend', (e) => {
-            e.preventDefault();
+            e.preventDefault(); // Prevent click event from firing immediately after
             toggleTheme();
         });
     } else {
         console.error("Theme toggle element not found!");
     }
 
+    // --- Initialize the Game ---
     try {
-        // در اینجا، هیچ شناسه‌ای برای messageOverlayId پاس داده نمی‌شود.
-        // بنابراین، در سازنده Game، مقدار messageOverlayId برابر null خواهد بود.
-        // و در نتیجه، resolvedMessageOverlayElement هم null شده و به UIManager پاس داده می‌شود.
-        const gameInstance = new Game('gameCanvas', 'score', 'highscore');
-        
-        console.log("Game instance created successfully."); // این لاگ باید بعد از اجرای سازنده Game نمایش داده شود
+        // Pass IDs of HTML elements for score, high score, and combo display
+        const gameInstance = new Game(
+            'gameCanvas',
+            'score',
+            'highscore',
+            'combo-display', // ID for the combo display span
+            null             // Pass null for messageOverlayId if not using the modal overlay yet
+        );
+        // console.log("Game instance created successfully."); // Log was here
     } catch (error) {
         console.error("Failed to initialize game:", error);
         const gameContainer = document.querySelector('.game-container');
@@ -56,4 +70,5 @@ function initGame() {
     }
 }
 
+// Start the game initialization when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', initGame);
