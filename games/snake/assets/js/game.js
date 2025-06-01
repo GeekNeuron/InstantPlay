@@ -6,14 +6,15 @@ import { Food } from './food.js';
 import { InputHandler } from './input.js';
 import { UIManager } from './ui.js';
 import { PowerUpManager, POWERUP_COLLECTIBLE_TYPES } from './powerups.js';
-import { Particle } from './particle.js'; // Assuming particle.js is present
+import { Particle } from './particle.js';
+import { AchievementManager } from './achievementManager.js'; // Import AchievementManager
 import {
     ROWS, COLS, GAME_STATE, FOOD_EFFECTS, INITIAL_SNAKE_SPEED, GRID_SIZE,
     COMBO_TIMER_DURATION, COMBO_MIN_FOR_MULTIPLIER, COMBO_SCORE_MULTIPLIER, COMBO_ITEM_BONUS_SCORE,
     SURVIVAL_START_SPEED, SURVIVAL_SPEED_INCREASE_INTERVAL, SURVIVAL_SPEED_INCREASE_AMOUNT, GAME_MODES,
     PARTICLE_COUNT_FOOD_CONSUMPTION, PARTICLE_LIFESPAN_FOOD, PARTICLE_BASE_SPEED_FOOD, PARTICLE_SIZE_FOOD, PARTICLE_GRAVITY_FOOD,
     SCREEN_SHAKE_MAGNITUDE_GAME_OVER, SCREEN_SHAKE_DURATION_GAME_OVER,
-    OBSTACLE_TYPES // OBSTACLE_TYPES might not be directly used in game.js but good to have for context
+    OBSTACLE_TYPES, ACHIEVEMENTS // Import ACHIEVEMENTS (not directly used here but good for context)
 } from './constants.js';
 import { arePositionsEqual, getCssVariable } from './utils.js';
 
@@ -42,11 +43,11 @@ export class Game {
         this.food = new Food(this.board, this.snake, this.powerUpManager);
         this.inputHandler = new InputHandler(this);
         this.uiManager = new UIManager(scoreElement, highScoreElement, comboDisplayElement, resolvedMessageOverlayElement, this);
+        this.achievementManager = new AchievementManager(this.uiManager); // Instantiate AchievementManager
 
         this.score = 0;
         this.scoreMultiplier = 1;
         this.isShieldActive = false;
-        this.shieldHitCount = 0;
         this.effectiveGameSpeed = this.snake.speed;
 
         this.comboCount = 0;
@@ -59,6 +60,11 @@ export class Game {
         this.shakeMagnitude = 0;
         this.shakeDuration = 0;
         this.shakeStartTime = 0;
+
+        // Properties for tracking achievement criteria per game
+        this.foodEatenThisGame = 0;
+        this.maxComboThisGame = 0;
+        this.gameStartTime = 0; // Timestamp when the current game (playing state) started
 
         this.init();
     }
@@ -79,8 +85,8 @@ export class Game {
         const startX = Math.floor(COLS / 4);
         const startY = Math.floor(ROWS / 2);
 
-        this.board.obstacles = []; // Clear previous obstacles
-        this.board.setupDefaultObstacles(); // Setup new obstacles for this game
+        this.board.obstacles = [];
+        this.board.setupDefaultObstacles();
 
         if (this.currentGameMode === GAME_MODES.SURVIVAL) {
             this.snake.initialSpeed = SURVIVAL_START_SPEED;
@@ -111,6 +117,11 @@ export class Game {
         this.particles = []; 
         this.isShaking = false;
 
+        // Reset per-game achievement counters
+        this.foodEatenThisGame = 0;
+        this.maxComboThisGame = 0;
+        this.gameStartTime = 0; // Will be set properly when game state transitions to PLAYING
+
         this.updateGameSpeed();
     }
 
@@ -119,8 +130,10 @@ export class Game {
             this.resetGame(); 
             this.gameState = GAME_STATE.PLAYING;
             this.lastFrameTime = performance.now();
+            this.gameStartTime = this.lastFrameTime; // Set game start time for duration tracking
+
             if (this.currentGameMode === GAME_MODES.SURVIVAL) {
-                this.lastSurvivalSpeedIncreaseTime = performance.now();
+                this.lastSurvivalSpeedIncreaseTime = this.lastFrameTime;
             }
             if (this.gameLoopRequestId) cancelAnimationFrame(this.gameLoopRequestId);
             this.gameLoopRequestId = requestAnimationFrame(this.gameLoop.bind(this));
@@ -169,9 +182,7 @@ export class Game {
     }
 
     update(currentTime) {
-        // --- Update obstacle states (e.g., for blinking) first ---
         this.board.updateObstacles(currentTime);
-
         this.snake.move();
         this.powerUpManager.update(currentTime);
 
@@ -193,7 +204,7 @@ export class Game {
                                           this.snake.speed;
                 baseSpeedToIncrease += SURVIVAL_SPEED_INCREASE_AMOUNT;
                 if (this.snake.speedBeforeFoodEffect !== null) {
-                    const factor = this.snake.speed / this.snake.speedBeforeFoodEffect; // Preserve the factor
+                    const factor = this.snake.speed / this.snake.speedBeforeFoodEffect; 
                     this.snake.speedBeforeFoodEffect = baseSpeedToIncrease;
                     this.snake.speed = baseSpeedToIncrease * factor;
                 } else {
@@ -206,6 +217,7 @@ export class Game {
         }
 
         if (this.comboCount > 0 && (currentTime - this.lastFoodEatTime > COMBO_TIMER_DURATION)) {
+            this.maxComboThisGame = Math.max(this.maxComboThisGame, this.comboCount);
             this.comboCount = 0;
             this.activeComboMultiplier = 1;
             this.currentComboBonusScore = 0;
@@ -218,58 +230,47 @@ export class Game {
             const eatenFoodPosition = { ...this.food.getPosition() }; 
             const eatenFoodColorVar = foodData.color; 
 
+            this.foodEatenThisGame++; // Increment food eaten for achievements
+
             if (this.comboCount > 0 && (currentTime - this.lastFoodEatTime) < COMBO_TIMER_DURATION) {
                 this.comboCount++;
             } else {
+                this.maxComboThisGame = Math.max(this.maxComboThisGame, this.comboCount); // Check before resetting for new combo
                 this.comboCount = 1;
             }
             this.lastFoodEatTime = currentTime;
+            this.maxComboThisGame = Math.max(this.maxComboThisGame, this.comboCount); // Update max combo
 
-            if (this.comboCount >= COMBO_MIN_FOR_MULTIPLIER) {
-                this.activeComboMultiplier = COMBO_SCORE_MULTIPLIER;
-            } else {
-                this.activeComboMultiplier = 1;
-            }
+            if (this.comboCount >= COMBO_MIN_FOR_MULTIPLIER) this.activeComboMultiplier = COMBO_SCORE_MULTIPLIER;
+            else this.activeComboMultiplier = 1;
             this.currentComboBonusScore = (this.comboCount > 1) ? (this.comboCount - 1) * COMBO_ITEM_BONUS_SCORE : 0;
             
             let baseFoodScore = foodData.score;
             let finalScoreForFood = (baseFoodScore + this.currentComboBonusScore) * this.activeComboMultiplier;
             finalScoreForFood *= this.scoreMultiplier; 
-
             this.score += Math.round(finalScoreForFood);
+            
+            // Check achievements related to score, food, and combo right after updating them
+            this.achievementManager.checkAllGameAchievements({
+                score: this.score,
+                foodEatenThisGame: this.foodEatenThisGame,
+                maxComboThisGame: this.maxComboThisGame
+            });
             
             this.uiManager.updateScore(this.score);
             if (this.uiManager.updateComboDisplay) this.uiManager.updateComboDisplay(this.comboCount, this.activeComboMultiplier, this.currentComboBonusScore);
             
-            switch (foodData.effect) {
-                case FOOD_EFFECTS.SPEED_BOOST:
-                    this.snake.setTemporarySpeed(foodData.speedFactor, foodData.duration);
-                    break;
-                case FOOD_EFFECTS.SLOW_DOWN:
-                    this.snake.setTemporarySpeed(foodData.speedFactor, foodData.duration);
-                    break;
-                case FOOD_EFFECTS.EXTRA_GROWTH:
-                    this.snake.grow(foodData.growAmount);
-                    break;
-                default:
-                    this.snake.grow(1);
-                    break;
+            switch (foodData.effect) { /* ... (food effects) ... */ 
+                case FOOD_EFFECTS.SPEED_BOOST: this.snake.setTemporarySpeed(foodData.speedFactor, foodData.duration); break;
+                case FOOD_EFFECTS.SLOW_DOWN: this.snake.setTemporarySpeed(foodData.speedFactor, foodData.duration); break;
+                case FOOD_EFFECTS.EXTRA_GROWTH: this.snake.grow(foodData.growAmount); break;
+                default: this.snake.grow(1); break;
             }
             this.food.spawnNew(); 
-
-            this.createParticleBurst(
-                eatenFoodPosition.x * GRID_SIZE + GRID_SIZE / 2,
-                eatenFoodPosition.y * GRID_SIZE + GRID_SIZE / 2,
-                PARTICLE_COUNT_FOOD_CONSUMPTION,
-                eatenFoodColorVar, 
-                PARTICLE_BASE_SPEED_FOOD,
-                PARTICLE_LIFESPAN_FOOD,
-                PARTICLE_SIZE_FOOD,
-                PARTICLE_GRAVITY_FOOD
-            );
+            this.createParticleBurst( /* ... */ );
         }
 
-        if (this.snake.checkCollision()) { // This now considers blinking obstacles correctly due to updated board.isObstacle()
+        if (this.snake.checkCollision()) {
             let hitAbsorbedByShield = false;
             if (this.isShieldActive) { 
                 if (this.powerUpManager.handleHitWithEffect(POWERUP_COLLECTIBLE_TYPES.SHIELD)) {
@@ -305,7 +306,7 @@ export class Game {
         if (this.gameState === GAME_STATE.GAME_OVER && !this.isShaking) {
              this.drawGameOverMessage();
         } else if (this.gameState === GAME_STATE.GAME_OVER && this.isShaking) {
-            // Optionally draw a simpler "CRASH!" or nothing during the final shake
+            // Optionally draw nothing or simpler message during shake
         } else if (this.gameState === GAME_STATE.PAUSED) {
              this.drawPausedMessage();
         } else if (this.gameState === GAME_STATE.READY) {
@@ -315,7 +316,7 @@ export class Game {
         this.context.restore(); 
     }
 
-    drawReadyMessage() {
+    drawReadyMessage() { /* ... (as before, ensure English text if any was user-facing) ... */
         this.context.fillStyle = 'rgba(0, 0, 0, 0.6)';
         this.context.fillRect(0, this.canvas.height / 2 - 40, this.canvas.width, 80);
         const mainFont = getCssVariable('--font-main', 'Arial');
@@ -329,7 +330,7 @@ export class Game {
         this.context.fillText('Press Space or Swipe/Tap to Start', this.canvas.width / 2, this.canvas.height / 2 + 20);
     }
 
-    drawGameOverMessage() {
+    drawGameOverMessage() { /* ... (as before, ensure English text) ... */
         this.context.fillStyle = 'rgba(0, 0, 0, 0.75)';
         this.context.fillRect(0, this.canvas.height / 3, this.canvas.width, this.canvas.height / 2.5);
         const mainFont = getCssVariable('--font-main', 'Arial');
@@ -352,36 +353,30 @@ export class Game {
         this.context.fillText('Press Space or Tap to Restart', this.canvas.width / 2, yPos);
     }
 
-    drawPausedMessage() {
+    drawPausedMessage() { /* ... (as before, ensure English text) ... */
         const overlayBgColor = getCssVariable('--modal-overlay-bg', 'rgba(0, 0, 0, 0.75)');
         this.context.fillStyle = overlayBgColor;
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
         const boxWidth = Math.min(this.canvas.width * 0.7, 300);
         const boxHeight = GRID_SIZE * 10;
         const boxX = (this.canvas.width - boxWidth) / 2;
         const boxY = (this.canvas.height - boxHeight) / 2;
-        
         const boxBgColor = getCssVariable('--modal-content-bg', '#333333');
         this.context.fillStyle = boxBgColor;
         this.context.fillRect(boxX, boxY, boxWidth, boxHeight);
-
         const boxBorderColor = getCssVariable('--border-color', '#444444');
         this.context.strokeStyle = boxBorderColor;
         this.context.lineWidth = 2;
         this.context.strokeRect(boxX, boxY, boxWidth, boxHeight);
-
         const mainFont = getCssVariable('--font-main', 'Arial');
         const titleColor = getCssVariable('--accent-color', '#FFEB3B');
         const instructionColor = getCssVariable('--modal-text-color', '#FFFFFF');
-
         const titleFontSize = Math.min(28, GRID_SIZE * 1.7);
         this.context.font = `bold ${titleFontSize}px ${mainFont}`;
         this.context.fillStyle = titleColor;
         this.context.textAlign = 'center';
         let textY = boxY + boxHeight * 0.35;
         this.context.fillText('GAME PAUSED', this.canvas.width / 2, textY);
-
         const instructionFontSize = Math.min(15, GRID_SIZE * 0.9);
         this.context.font = `${instructionFontSize}px ${mainFont}`;
         this.context.fillStyle = instructionColor;
@@ -390,9 +385,18 @@ export class Game {
     }
 
     gameOver(currentTime) {
-        this.comboCount = 0;
-        this.activeComboMultiplier = 1;
-        this.currentComboBonusScore = 0;
+        const gameDurationSeconds = (this.gameStartTime > 0) ? (currentTime - this.gameStartTime) / 1000 : 0;
+        this.maxComboThisGame = Math.max(this.maxComboThisGame, this.comboCount);
+        
+        this.achievementManager.checkAllGameAchievements({
+            score: this.score,
+            foodEatenThisGame: this.foodEatenThisGame,
+            maxComboThisGame: this.maxComboThisGame,
+            gameDurationSeconds: gameDurationSeconds,
+            obstaclesWerePresent: this.board.obstacles.length > 0
+        });
+        
+        this.comboCount = 0; this.activeComboMultiplier = 1; this.currentComboBonusScore = 0;
         if (this.uiManager && this.uiManager.updateComboDisplay) {
              this.uiManager.updateComboDisplay(this.comboCount, this.activeComboMultiplier, this.currentComboBonusScore);
         }
@@ -402,10 +406,7 @@ export class Game {
         }
         
         this.gameState = GAME_STATE.GAME_OVER;
-        if (this.gameLoopRequestId) {
-            cancelAnimationFrame(this.gameLoopRequestId);
-            this.gameLoopRequestId = null;
-        }
+        if (this.gameLoopRequestId) cancelAnimationFrame(this.gameLoopRequestId); this.gameLoopRequestId = null;
         this.snake.revertSpeed(); 
         this.powerUpManager.reset(); 
         this.uiManager.updateHighScore();
@@ -415,13 +416,10 @@ export class Game {
         }
     }
 
-    togglePause() {
+    togglePause() { /* ... (as before) ... */ 
         if (this.gameState === GAME_STATE.PLAYING) {
             this.gameState = GAME_STATE.PAUSED;
-            if (this.gameLoopRequestId) {
-                cancelAnimationFrame(this.gameLoopRequestId);
-                this.gameLoopRequestId = null;
-            }
+            if (this.gameLoopRequestId) {cancelAnimationFrame(this.gameLoopRequestId); this.gameLoopRequestId = null;}
             this.draw(performance.now()); 
         } else if (this.gameState === GAME_STATE.PAUSED) {
             this.resume();
@@ -429,21 +427,14 @@ export class Game {
             this.start();
         }
     }
-
-    resume() {
+    resume() { /* ... (as before) ... */ 
         if (this.gameState === GAME_STATE.PAUSED) {
             this.gameState = GAME_STATE.PLAYING;
             this.lastFrameTime = performance.now();
-            if (this.gameLoopRequestId) cancelAnimationFrame(this.gameLoopRequestId); 
+            if (this.gameLoopRequestId) cancelAnimationFrame(this.gameLoopRequestId);
             this.gameLoopRequestId = requestAnimationFrame(this.gameLoop.bind(this));
         }
     }
-
-    handleEscape() {
-        this.togglePause();
-    }
-
-    updateGameSpeed() {
-        this.effectiveGameSpeed = this.snake.speed;
-    }
+    handleEscape() { this.togglePause(); }
+    updateGameSpeed() { this.effectiveGameSpeed = this.snake.speed; }
 }
