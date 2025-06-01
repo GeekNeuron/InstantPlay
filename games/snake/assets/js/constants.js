@@ -39,51 +39,32 @@ export const GAME_MODES = {
     SURVIVAL: 'survival'
 };
 
-// --- Constants for Particle Effects ---
-/**
- * Number of particles to spawn when food is consumed.
- * @type {number}
- */
 export const PARTICLE_COUNT_FOOD_CONSUMPTION = 12;
-
-/**
- * Lifespan of particles spawned from food consumption.
- * (particle.js uses a frame-based decrement, this is for reference or if tied to actual ms)
- * @type {number}
- */
 export const PARTICLE_LIFESPAN_FOOD = 600; // Conceptual milliseconds
-
-/**
- * Base speed factor for particles from food. Actual speed will vary.
- * @type {number}
- */
 export const PARTICLE_BASE_SPEED_FOOD = 1.2;
-
-/**
- * Size of particles from food, in pixels.
- * @type {number}
- */
 export const PARTICLE_SIZE_FOOD = 2.5;
-
-/**
- * Gravity effect on particles.
- * @type {number}
- */
 export const PARTICLE_GRAVITY_FOOD = 0.03;
 
-
-// --- Constants for Screen Shake ---
-/**
- * Default magnitude (in pixels) for screen shake on game over.
- * @type {number}
- */
 export const SCREEN_SHAKE_MAGNITUDE_GAME_OVER = 4;
+export const SCREEN_SHAKE_DURATION_GAME_OVER = 150;
+
+// --- Constants for Obstacle Types and Blinking Behavior ---
+export const OBSTACLE_TYPES = {
+    STATIC: 'static',
+    BLINKING: 'blinking'
+};
 
 /**
- * Default duration (in milliseconds) for screen shake on game over.
+ * Default duration (in milliseconds) an obstacle is visible when blinking.
  * @type {number}
  */
-export const SCREEN_SHAKE_DURATION_GAME_OVER = 150;
+export const BLINKING_OBSTACLE_ON_DURATION = 3000; // Visible for 3 seconds
+
+/**
+ * Default duration (in milliseconds) an obstacle is invisible when blinking.
+ * @type {number}
+ */
+export const BLINKING_OBSTACLE_OFF_DURATION = 2000; // Invisible for 2 seconds
 
 
 export const KEYS = {
@@ -91,20 +72,20 @@ export const KEYS = {
     ARROW_DOWN: 'ArrowDown',
     ARROW_LEFT: 'ArrowLeft',
     ARROW_RIGHT: 'ArrowRight',
-    W: 'w', // Alternative for Up
-    A: 'a', // Alternative for Left
-    S: 's', // Alternative for Down
-    D: 'd', // Alternative for Right
-    SPACE: ' ', // For pause/resume or start
-    ESCAPE: 'Escape' // For pause or menu
+    W: 'w',
+    A: 'a',
+    S: 's',
+    D: 'd',
+    SPACE: ' ',
+    ESCAPE: 'Escape'
 };
 
 export const GAME_STATE = {
-    LOADING: 'loading',     // Initial load, assets, etc.
-    READY: 'ready',         // Game is ready to start (e.g., title screen, instructions)
-    PLAYING: 'playing',     // Game is active
-    PAUSED: 'paused',       // Game is paused
-    GAME_OVER: 'gameOver'   // Game has ended
+    LOADING: 'loading',
+    READY: 'ready',
+    PLAYING: 'playing',
+    PAUSED: 'paused',
+    GAME_OVER: 'gameOver'
 };
 
 export const THEME_FILES = {
