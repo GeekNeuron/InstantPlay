@@ -5,53 +5,59 @@ import { GRID_SIZE, ROWS, COLS } from './constants.js'; // Ensure ROWS and COLS 
 
 export const POWERUP_COLLECTIBLE_TYPES = {
     SHIELD: 'shield',
-    SCORE_BOOST_ITEM: 'scoreBoostItem', // This is an instant score addition
-    SCORE_MULTIPLIER: 'scoreMultiplier' // New: Timed score multiplier
+    SCORE_BOOST_ITEM: 'scoreBoostItem',
+    SCORE_MULTIPLIER: 'scoreMultiplier'
 };
 
-const POWERUP_PROPERTIES = {
+// Export POWERUP_PROPERTIES for use in the legend
+export const POWERUP_PROPERTIES = {
     [POWERUP_COLLECTIBLE_TYPES.SHIELD]: {
         id: POWERUP_COLLECTIBLE_TYPES.SHIELD,
-        color: 'var(--powerup-color-shield)', // e.g., a blue
+        displayName: 'Shield',
+        description: 'Protects from one collision. Lasts for 15 seconds or until hit.',
+        color: 'var(--powerup-color-shield)',
         symbol: '🛡️',
         duration: 15000, // Shield lasts for 15 seconds OR one hit
         effect: (game) => {
             game.isShieldActive = true;
-            game.shieldHitCount = 0; // Reset hit count for this shield instance
-            console.log("Shield Activated! Lasts for " + POWERUP_PROPERTIES[POWERUP_COLLECTIBLE_TYPES.SHIELD].duration / 1000 + "s or 1 hit.");
+            // game.shieldHitCount = 0; // Hit count is managed implicitly by deactivation
+            console.log("Shield Activated! Lasts for " + (POWERUP_PROPERTIES[POWERUP_COLLECTIBLE_TYPES.SHIELD].duration / 1000) + "s or 1 hit.");
         },
         deactivate: (game) => {
             game.isShieldActive = false;
             console.log("Shield Deactivated.");
         },
-        // onHitWhileActive is called by game.js logic via powerUpManager.handleHitWithEffect
+        // onHitWhileActive is called by PowerUpManager.handleHitWithEffect
         // It determines if the shield should break after a hit.
         onHitWhileActive: (game) => {
-            // For this shield, it breaks after 1 hit. The duration is a backup.
             console.log("Shield took a hit!");
             return true; // true means shield should break/deactivate
         }
     },
     [POWERUP_COLLECTIBLE_TYPES.SCORE_BOOST_ITEM]: {
         id: POWERUP_COLLECTIBLE_TYPES.SCORE_BOOST_ITEM,
-        color: 'var(--powerup-color-scoreboost)', // e.g., a green or gold
+        displayName: 'Score Bonus',
+        description: 'Instantly adds +100 points to your score.',
+        color: 'var(--powerup-color-scoreboost)',
         symbol: '💰',
-        scoreAmount: 100, // Instant score boost
+        scoreAmount: 100,
         effect: (game, powerUpData) => {
             game.score += powerUpData.scoreAmount;
             game.uiManager.updateScore(game.score);
-            console.log(`PowerUp: +${powerUpData.scoreAmount} points!`);
+            // console.log(`PowerUp: +${powerUpData.scoreAmount} points!`);
         },
-        duration: null, // Instantaneous, no deactivation needed via timer
+        duration: null, // Instantaneous
     },
     [POWERUP_COLLECTIBLE_TYPES.SCORE_MULTIPLIER]: {
         id: POWERUP_COLLECTIBLE_TYPES.SCORE_MULTIPLIER,
-        color: 'var(--powerup-color-score-multiplier)', // e.g., a purple or vibrant yellow
-        symbol: '2x', // Or could be dynamic e.g. based on multiplierFactor
+        displayName: 'Score Multiplier (2x)',
+        description: 'Doubles all scores earned for 10 seconds.',
+        color: 'var(--powerup-color-score-multiplier)',
+        symbol: '2x',
         duration: 10000, // Multiplier lasts for 10 seconds
         multiplierFactor: 2,
         effect: (game, powerUpData) => {
-            game.scoreMultiplier = powerUpData.multiplierFactor;
+            game.scoreMultiplier = powerUpData.multiplierFactor; // This is the game-wide multiplier from collectibles
             console.log(`Score Multiplier (x${game.scoreMultiplier}) Activated! Lasts for ${powerUpData.duration / 1000}s.`);
         },
         deactivate: (game) => {
@@ -66,8 +72,9 @@ export class PowerUpManager {
         this.board = board;
         this.snake = snake;
         this.game = game;
-        this.activePowerUpItems = [];
-        this.activeEffects = [];
+        this.activePowerUpItems = []; // Power-ups currently visible on the board
+        this.activeEffects = [];      // Effects currently applied to the snake/game from collectibles
+
         this.spawnInterval = 12000; // Average spawn interval
         this.lastSpawnTime = 0;
         this.maxOnScreen = 1; // Max 1 collectible power-up on screen at a time
@@ -75,14 +82,14 @@ export class PowerUpManager {
     }
 
     update(currentTime) {
-        // Spawn new power-up items
+        // Try to spawn new power-up items
         if (this.activePowerUpItems.length < this.maxOnScreen &&
             (currentTime - this.lastSpawnTime > this.spawnInterval + (Math.random() * 6000 - 3000)) ) { // Add some randomness to spawn
             this.spawnRandomPowerUpItem();
             this.lastSpawnTime = currentTime;
         }
 
-        // Check for collected power-up items
+        // Check for collected power-up items by snake's head
         const headPos = this.snake.getHeadPosition();
         this.activePowerUpItems = this.activePowerUpItems.filter(item => {
             if (arePositionsEqual(headPos, item.position)) {
@@ -90,8 +97,6 @@ export class PowerUpManager {
                 // Sound was here: this.game.sfx.play('powerUp');
                 return false; // Remove item from board
             }
-            // Optional: Remove power-ups if they expire on the board (not implemented yet)
-            // if (item.properties.lifeSpanOnBoard && currentTime > item.spawnTime + item.properties.lifeSpanOnBoard) return false;
             return true;
         });
 
@@ -108,12 +113,12 @@ export class PowerUpManager {
     }
 
     spawnRandomPowerUpItem() {
-        const availableTypes = Object.keys(POWERUP_COLLECTIBLE_TYPES);
-        if (availableTypes.length === 0) return;
+        const availableTypeKeys = Object.keys(POWERUP_COLLECTIBLE_TYPES);
+        if (availableTypeKeys.length === 0) return;
 
-        const randomTypeKey = availableTypes[Math.floor(Math.random() * availableTypes.length)];
-        const typeID = POWERUP_COLLECTIBLE_TYPES[randomTypeKey]; // This gets the string value like 'shield'
-        const properties = POWERUP_PROPERTIES[typeID]; // Use the ID to get properties
+        const randomTypeKey = availableTypeKeys[Math.floor(Math.random() * availableTypeKeys.length)];
+        const typeID = POWERUP_COLLECTIBLE_TYPES[randomTypeKey];
+        const properties = POWERUP_PROPERTIES[typeID];
 
         if (!properties) {
             console.warn(`PowerUpManager: Properties for power-up type ID ${typeID} not found.`);
@@ -122,27 +127,27 @@ export class PowerUpManager {
 
         let position;
         let attempts = 0;
-        const maxAttempts = ROWS * COLS;
+        const maxAttempts = ROWS * COLS; // ROWS and COLS are imported
         do {
             position = getRandomGridPosition(this.board.cols, this.board.rows);
             attempts++;
             if (attempts > maxAttempts) {
-                console.warn("PowerUpManager: Could not find a free spot for power-up item.");
-                return;
+                // console.warn("PowerUpManager: Could not find a free spot for power-up item.");
+                return; // Don't spawn if no spot found
             }
         } while (
             this.board.isObstacle(position) ||
             this.snake.isSnakeSegment(position) ||
-            this.isPowerUpAt(position) ||
-            (this.game.food && arePositionsEqual(this.game.food.getPosition(), position))
+            this.isPowerUpAt(position) || // Check against other collectible items
+            (this.game.food && arePositionsEqual(this.game.food.getPosition(), position)) // Avoid food
         );
 
         this.activePowerUpItems.push({
-            id: properties.id, // Store the ID
+            id: properties.id,
             position: position,
             symbol: properties.symbol,
             color: properties.color,
-            properties: properties, // Full properties object
+            properties: properties,
             spawnTime: performance.now(),
         });
         // console.log(`Spawned power-up item: ${properties.id} at ${position.x},${position.y}`);
@@ -153,21 +158,21 @@ export class PowerUpManager {
         const properties = item.properties;
 
         // Deactivate any existing effect of the same type before applying a new one
-        // (e.g., picking up a new shield while an old one is active)
         const existingEffectIndex = this.activeEffects.findIndex(eff => eff.id === item.id && eff.properties.deactivate);
         if (existingEffectIndex > -1) {
             const oldEffect = this.activeEffects[existingEffectIndex];
-            oldEffect.properties.deactivate(this.game);
+            if (oldEffect.properties.deactivate) { // Check if deactivate exists
+                 oldEffect.properties.deactivate(this.game);
+            }
             this.activeEffects.splice(existingEffectIndex, 1);
-             console.log(`Deactivated existing effect of type ${item.id} before applying new one.`);
+            // console.log(`Deactivated existing effect of type ${item.id} before applying new one.`);
         }
-
 
         if (properties.effect) {
-            properties.effect(this.game, properties); // Pass game and specific power-up data
+            properties.effect(this.game, properties);
         }
 
-        if (properties.duration) { // Only add to activeEffects if it has a duration
+        if (properties.duration) {
             this.activeEffects.push({
                 id: item.id,
                 endTime: currentTime + properties.duration,
@@ -177,11 +182,9 @@ export class PowerUpManager {
     }
 
     isEffectActive(effectTypeID) {
-        // Check against game flags primarily for shield, as its deactivation is also collision-based
         if (effectTypeID === POWERUP_COLLECTIBLE_TYPES.SHIELD) {
             return this.game.isShieldActive;
         }
-        // For other timed effects, check the activeEffects array
         return this.activeEffects.some(effect => effect.id === effectTypeID);
     }
 
@@ -198,28 +201,26 @@ export class PowerUpManager {
                     this.activeEffects.splice(effectIndex, 1);
                     return true; // Hit was absorbed, effect ended
                 }
-                return true; // Hit was absorbed, effect might remain (e.g. multi-hit shield not implemented yet)
+                return true; // Hit was absorbed, effect might remain
             }
-        }
-        // If no specific onHitWhileActive, but a shield is active, it should still absorb and deactivate
-         else if (effectTypeID === POWERUP_COLLECTIBLE_TYPES.SHIELD && this.game.isShieldActive) {
-            // This case handles if the shield wasn't in activeEffects (e.g. duration ran out but flag still true somehow)
-            // or if it doesn't have onHitWhileActive but should still deactivate on hit.
+        } else if (effectTypeID === POWERUP_COLLECTIBLE_TYPES.SHIELD && this.game.isShieldActive) {
+            // This handles the case where the shield might be active on game state (isShieldActive = true)
+            // but its timed effect in activeEffects might have just expired, or it's a shield that breaks on hit regardless of timer.
             const shieldProps = POWERUP_PROPERTIES[POWERUP_COLLECTIBLE_TYPES.SHIELD];
-            if (shieldProps.deactivate) {
+            if (shieldProps.deactivate) { // Deactivate the shield via its defined function
                 shieldProps.deactivate(this.game);
             }
-            // Ensure it's removed from activeEffects if it was there
-            const shieldEffectIndex = this.activeEffects.findIndex(eff => eff.id === POWERUP_COLLECTIBLE_TYPES.SHIELD);
-            if (shieldEffectIndex > -1) this.activeEffects.splice(shieldEffectIndex, 1);
-            return true; // Hit absorbed
+            // Also ensure it's removed from activeEffects if it happened to be there by timer
+            const shieldEffectIndexInArray = this.activeEffects.findIndex(eff => eff.id === POWERUP_COLLECTIBLE_TYPES.SHIELD);
+            if (shieldEffectIndexInArray > -1) this.activeEffects.splice(shieldEffectIndexInArray, 1);
+            return true; // Hit was absorbed
         }
         return false;
     }
 
     draw(context) {
         this.activePowerUpItems.forEach(item => {
-            const itemColorValue = getCssVariable(item.color, 'purple');
+            const itemColorValue = getCssVariable(item.color, 'purple'); // Fallback color
             context.fillStyle = itemColorValue;
             const x = item.position.x * this.gridSize;
             const y = item.position.y * this.gridSize;
@@ -227,15 +228,17 @@ export class PowerUpManager {
             context.arc(
                 x + this.gridSize / 2,
                 y + this.gridSize / 2,
-                this.gridSize / 2.1,
+                this.gridSize / 2.1, // Slightly smaller than cell for distinct look
                 0, 2 * Math.PI
             );
             context.fill();
+
+            // Draw symbol
             context.fillStyle = getCssVariable('var(--text-color-on-accent)', '#FFFFFF');
-            context.font = `bold ${this.gridSize / 1.8}px Arial`;
+            context.font = `bold ${this.gridSize / 1.8}px Arial`; // Adjust size as needed
             context.textAlign = 'center';
             context.textBaseline = 'middle';
-            context.fillText(item.symbol, x + this.gridSize / 2, y + this.gridSize / 2 + 1);
+            context.fillText(item.symbol, x + this.gridSize / 2, y + this.gridSize / 2 + 1); // Small offset for better centering of emojis
         });
     }
 
@@ -244,15 +247,14 @@ export class PowerUpManager {
     }
 
     reset() {
+        // Deactivate any ongoing effects from collectibles
         this.activeEffects.forEach(effect => {
             if (effect.properties.deactivate) {
-                // Ensure deactivation logic doesn't rely on state that's already reset in game
-                // Pass a fresh game state view if necessary, or make deactivations idempotent
                 effect.properties.deactivate(this.game);
             }
         });
         this.activeEffects = [];
         this.activePowerUpItems = [];
-        this.lastSpawnTime = performance.now();
+        this.lastSpawnTime = performance.now(); // Reset spawn timer for fairness on new game
     }
 }
