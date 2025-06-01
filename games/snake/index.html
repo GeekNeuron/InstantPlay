@@ -2,39 +2,39 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="game-title">Snake Game 🐍</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title id="game-title">Snake Game</title> <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/light-theme.css" id="theme-link">
-    </head>
+</head>
 <body>
-    <header>
-        <h1 id="page-title-clickable" title="Click to toggle theme">Snake Game 🌌</h1>
-    </header>
-
-    <main>
-        <div class="game-container">
-            <div class="game-header">
-                <div class="score-container">Score: <span id="score">0</span></div>
-                <div class="combo-container">
-                    <span id="combo-display" style="visibility: hidden;"></span>
+    <div class="page-wrapper"> <header>
+            <h1 id="page-title-clickable" title="Click to toggle theme">Snake Game</h1> <div class="header-controls">
+                <div class="difficulty-control">
+                    <label for="difficulty-select">Difficulty:</label>
+                    <select id="difficulty-select" name="difficulty">
+                        </select>
                 </div>
-                <div class="highscore-container">High Score: <span id="highscore">0</span></div>
+                <div class="scores-display">
+                    <div class="score-box">Score: <span id="score">0</span></div>
+                    <div class="score-box">High Score: <span id="highscore">0</span></div>
+                </div>
             </div>
-            <canvas id="gameCanvas"></canvas>
-            <div class="game-controls-info">
-                <p>Use Arrow Keys or Swipe to move.</p>
-                <p>Space/Escape to Pause/Resume/Start.</p>
-            </div>
-             </div>
-    </main>
+        </header>
 
-    <footer>
-        <p>Created by GeekNeuron</p>
-    </footer>
+        <main>
+            <div class="game-container">
+                <div class="game-header"> <div class="combo-container" style="flex-grow: 1; text-align: center;"> <span id="combo-display" style="visibility: hidden;"></span>
+                    </div>
+                </div>
+                <canvas id="gameCanvas"></canvas>
+                </div>
+        </main>
 
-    <div id="achievement-notification" class.achievement-popup">
-        </div>
+        <footer>
+            <p>Created by GeekNeuron</p>
+        </footer>
+    </div> <div id="achievement-notification" class="achievement-popup">
+    </div>
 
     <script src="assets/js/main.js" type="module"></script>
 </body>
