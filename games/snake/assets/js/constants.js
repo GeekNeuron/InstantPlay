@@ -30,39 +30,62 @@ export const COMBO_MIN_FOR_MULTIPLIER = 3; // Min items for combo score multipli
 export const COMBO_SCORE_MULTIPLIER = 1.5; // Multiplier for food's base score in a combo
 export const COMBO_ITEM_BONUS_SCORE = 2; // Flat bonus per combo item (after first)
 
-// --- Constants for Survival Mode ---
-/**
- * Starting speed for the snake in Survival mode.
- * @type {number}
- */
 export const SURVIVAL_START_SPEED = 4;
-
-/**
- * Interval in milliseconds at which the snake's speed increases in Survival mode.
- * @type {number}
- */
 export const SURVIVAL_SPEED_INCREASE_INTERVAL = 10000; // Increase speed every 10 seconds
-
-/**
- * Amount by which the snake's speed (updates per second) increases at each interval in Survival mode.
- * @type {number}
- */
 export const SURVIVAL_SPEED_INCREASE_AMOUNT = 0.5; // Increase speed by 0.5 units
 
-/**
- * Game Modes identifiers
- * @enum {string}
- */
 export const GAME_MODES = {
     CLASSIC: 'classic',
     SURVIVAL: 'survival'
-    // Future modes: TIME_ATTACK, CAMPAIGN etc.
 };
 
+// --- Constants for Particle Effects ---
 /**
- * Key codes for input handling.
- * @enum {string}
+ * Number of particles to spawn when food is consumed.
+ * @type {number}
  */
+export const PARTICLE_COUNT_FOOD_CONSUMPTION = 12;
+
+/**
+ * Lifespan of particles spawned from food consumption.
+ * (particle.js uses a frame-based decrement, this is for reference or if tied to actual ms)
+ * @type {number}
+ */
+export const PARTICLE_LIFESPAN_FOOD = 600; // Conceptual milliseconds
+
+/**
+ * Base speed factor for particles from food. Actual speed will vary.
+ * @type {number}
+ */
+export const PARTICLE_BASE_SPEED_FOOD = 1.2;
+
+/**
+ * Size of particles from food, in pixels.
+ * @type {number}
+ */
+export const PARTICLE_SIZE_FOOD = 2.5;
+
+/**
+ * Gravity effect on particles.
+ * @type {number}
+ */
+export const PARTICLE_GRAVITY_FOOD = 0.03;
+
+
+// --- Constants for Screen Shake ---
+/**
+ * Default magnitude (in pixels) for screen shake on game over.
+ * @type {number}
+ */
+export const SCREEN_SHAKE_MAGNITUDE_GAME_OVER = 4;
+
+/**
+ * Default duration (in milliseconds) for screen shake on game over.
+ * @type {number}
+ */
+export const SCREEN_SHAKE_DURATION_GAME_OVER = 150;
+
+
 export const KEYS = {
     ARROW_UP: 'ArrowUp',
     ARROW_DOWN: 'ArrowDown',
@@ -76,10 +99,6 @@ export const KEYS = {
     ESCAPE: 'Escape' // For pause or menu
 };
 
-/**
- * Game states.
- * @enum {string}
- */
 export const GAME_STATE = {
     LOADING: 'loading',     // Initial load, assets, etc.
     READY: 'ready',         // Game is ready to start (e.g., title screen, instructions)
@@ -88,9 +107,6 @@ export const GAME_STATE = {
     GAME_OVER: 'gameOver'   // Game has ended
 };
 
-/**
- * URLs for theme CSS files (used in main.js).
- */
 export const THEME_FILES = {
     light: 'assets/css/light-theme.css',
     dark: 'assets/css/dark-theme.css'
