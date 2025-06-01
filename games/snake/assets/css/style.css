@@ -93,7 +93,7 @@ footer {
 
 /* Basic modal styling for game over / pause messages (add to HTML if used by UI Manager) */
 .modal {
-    display: none; /* Hidden by default */
+    display: none; /* Hidden by default, JS will control display:flex or display:block */
     position: fixed;
     z-index: 1000;
     left: 0;
@@ -102,19 +102,23 @@ footer {
     height: 100%;
     overflow: auto;
     background-color: rgba(0,0,0,0.6);
-    justify-content: center;
-    align-items: center;
+    /* For flex centering: */
+    /* display: flex; */
+    /* justify-content: center; */
+    /* align-items: center; */
 }
 
 .modal-content {
     background-color: var(--bg-color);
     color: var(--text-color);
-    margin: auto;
+    margin: 15% auto; /* Default for block display */
     padding: 20px 30px;
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-medium);
     text-align: center;
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    max-width: 80%;
+    width: 300px; /* Example fixed width */
 }
 
 .modal button {
@@ -134,9 +138,4 @@ footer {
 
 .modal button:hover {
     opacity: 0.85;
-}
-
-/* Styles for messages directly on canvas (if not using modals) */
-.canvas-message-overlay { /* A conceptual class for messages drawn by game.js */
-    /* Position and styling would be handled by canvas drawing commands */
 }
