@@ -23,7 +23,6 @@ export class Game {
 
         const scoreElement = document.getElementById(scoreId);
         const highScoreElement = document.getElementById(highScoreId);
-        // --- این خط برای تبدیل ID به عنصر DOM یا null بسیار مهم است ---
         const resolvedMessageOverlayElement = messageOverlayId ? document.getElementById(messageOverlayId) : null;
 
         this.gameState = GAME_STATE.LOADING;
@@ -36,7 +35,6 @@ export class Game {
         this.powerUpManager = new PowerUpManager(this.board, this.snake, this);
         this.food = new Food(this.board, this.snake, this.powerUpManager);
         this.inputHandler = new InputHandler(this);
-        // --- resolvedMessageOverlayElement (که یا عنصر است یا null) به UIManager پاس داده می‌شود ---
         this.uiManager = new UIManager(scoreElement, highScoreElement, resolvedMessageOverlayElement, this);
 
         this.score = 0;
@@ -49,17 +47,18 @@ export class Game {
     }
 
     init() {
-        console.log("Game Initializing...");
+        console.log("Game.init(): Initializing game state..."); // LOG ADDED
         this.uiManager.resetScore();
         this.uiManager.loadHighScore();
         this.uiManager.updateHighScoreDisplay();
         this.resetGame();
         this.gameState = GAME_STATE.READY;
-        console.log("Game Ready. Press Space, Escape, or Swipe/Tap to Start.");
+        console.log("Game.init(): Game state set to READY. Message: Press Space, Escape, or Swipe/Tap to Start."); // LOG ADDED
         this.draw();
     }
 
     resetGame() {
+        console.log("Game.resetGame(): Resetting game elements."); // LOG ADDED
         const startX = Math.floor(COLS / 4);
         const startY = Math.floor(ROWS / 2);
         this.snake.reset(startX, startY);
@@ -75,21 +74,29 @@ export class Game {
     }
 
     start() {
+        console.log("Game.start() called. Current state before action:", this.gameState); // LOG ADDED
         this.sfx.resumeContext();
+
         if (this.gameState === GAME_STATE.READY || this.gameState === GAME_STATE.GAME_OVER) {
+            console.log("Game.start(): Conditions met (READY or GAME_OVER). Resetting and starting game."); // LOG ADDED
             this.resetGame();
             this.gameState = GAME_STATE.PLAYING;
+            console.log("Game.start(): Game state changed to:", this.gameState); // LOG ADDED
             this.lastFrameTime = performance.now();
             if (this.gameLoopRequestId) cancelAnimationFrame(this.gameLoopRequestId);
             this.gameLoopRequestId = requestAnimationFrame(this.gameLoop.bind(this));
-            console.log("Game Started/Restarted.");
+            console.log("Game.start(): Game loop initiated with ID:", this.gameLoopRequestId); // LOG ADDED
         } else if (this.gameState === GAME_STATE.PAUSED) {
+            console.log("Game.start(): Game was PAUSED. Calling this.resume()."); // LOG ADDED
             this.resume();
+        } else {
+            console.warn("Game.start(): Conditions not met to start/resume. Current state:", this.gameState); // LOG ADDED (Warn)
         }
     }
 
     gameLoop(timestamp) {
         if (this.gameState !== GAME_STATE.PLAYING) {
+            // console.log("Game.gameLoop(): Not playing, stopping loop. State:", this.gameState); // Optional log
             if (this.gameLoopRequestId) cancelAnimationFrame(this.gameLoopRequestId);
             return;
         }
@@ -118,7 +125,7 @@ export class Game {
                     this.sfx.play('foodEffect');
                     break;
                 case FOOD_EFFECTS.SLOW_DOWN:
-                    this.snake.setTemporarySpeed(foodData.speedFactor, foodData.duration);
+                    this.snake.setTemporarySpeed(foodData.speedFactor, foodA.duration);
                     this.sfx.play('foodEffect');
                     break;
                 case FOOD_EFFECTS.EXTRA_GROWTH:
@@ -205,6 +212,7 @@ export class Game {
     }
 
     gameOver() {
+        console.log("Game.gameOver() called. Final score:", this.score); // LOG ADDED
         this.gameState = GAME_STATE.GAME_OVER;
         if (this.gameLoopRequestId) {
             cancelAnimationFrame(this.gameLoopRequestId);
@@ -213,11 +221,11 @@ export class Game {
         this.snake.revertSpeed();
         this.uiManager.updateHighScore();
         this.sfx.play('gameOver');
-        console.log(`Game Over. Final Score: ${this.score}. High Score: ${this.uiManager.highScore}`);
         this.draw();
     }
 
     togglePause() {
+        console.log("Game.togglePause() called. Current state:", this.gameState); // LOG ADDED
         this.sfx.resumeContext();
         if (this.gameState === GAME_STATE.PLAYING) {
             this.gameState = GAME_STATE.PAUSED;
@@ -226,11 +234,13 @@ export class Game {
                 this.gameLoopRequestId = null;
             }
             this.sfx.play('click');
-            console.log("Game Paused.");
+            console.log("Game.togglePause(): Game PAUSED."); // LOG ADDED
             this.draw();
         } else if (this.gameState === GAME_STATE.PAUSED) {
+            console.log("Game.togglePause(): Game was PAUSED. Calling resume()."); // LOG ADDED
             this.resume();
         } else if (this.gameState === GAME_STATE.READY || this.gameState === GAME_STATE.GAME_OVER) {
+            console.log("Game.togglePause(): State is READY or GAME_OVER. Calling this.start()."); // LOG ADDED
             this.start();
         }
     }
@@ -242,15 +252,17 @@ export class Game {
             this.lastFrameTime = performance.now();
             if (this.gameLoopRequestId) cancelAnimationFrame(this.gameLoopRequestId);
             this.gameLoopRequestId = requestAnimationFrame(this.gameLoop.bind(this));
-            console.log("Game Resumed.");
+            console.log("Game.resume(): Game RESUMED. Loop ID:", this.gameLoopRequestId); // LOG ADDED
         }
     }
 
     handleEscape() {
+        console.log("Game.handleEscape() called. Current state:", this.gameState); // LOG ADDED
         this.togglePause();
     }
 
     updateGameSpeed() {
         this.effectiveGameSpeed = this.snake.speed;
+        // console.log(`Game effective speed synced: ${this.effectiveGameSpeed}`); // Optional log
     }
 }
