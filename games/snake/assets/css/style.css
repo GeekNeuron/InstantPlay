@@ -16,62 +16,77 @@
 
 body {
     font-family: var(--font-main);
-    display: flex; /* Changed to flex for page-wrapper centering */
+    display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center; /* Center page-wrapper vertically if content is short */
+    justify-content: center;
     min-height: 100vh;
     background-color: var(--bg-color);
     color: var(--text-color);
     transition: background-color var(--transition-speed) ease-in-out, color var(--transition-speed) ease-in-out;
-    padding: 10px; /* Reduced body padding for more space */
+    padding: 10px;
     text-align: center;
     line-height: 1.6;
 }
 
 .page-wrapper {
     width: 100%;
-    max-width: 600px; /* Max width for game area and controls */
+    max-width: 700px; /* Increased max-width for settings box and game area */
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-header {
+/* Settings Box (Header) Styling */
+.settings-box {
     width: 100%;
+    padding: 10px 15px;
     margin-bottom: 15px;
     display: flex;
-    flex-direction: column; /* Stack title and controls vertically */
+    justify-content: space-between;
     align-items: center;
+    background-color: var(--game-bg-color); /* Settings box uses game-bg-color */
+    border-radius: var(--border-radius-medium);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    gap: 15px; /* Gap between sections */
 }
 
-header h1#page-title-clickable {
-    font-size: 2rem; /* Adjusted size */
-    margin-bottom: 10px;
-    cursor: pointer;
-    user-select: none;
-    font-weight: 600;
-    color: var(--header-color);
-    padding: 5px 10px;
+.header-left-section {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Gap between score and high score boxes */
+}
+
+.score-box {
+    background-color: var(--score-box-bg);
+    color: var(--score-box-text);
+    padding: 8px 12px;
     border-radius: var(--border-radius-small);
-    border: 1px solid transparent;
-    transition: background-color var(--transition-speed), color var(--transition-speed), border-color var(--transition-speed);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-align: center; /* Center text within each score box */
+    min-width: 110px; /* Minimum width for score boxes */
 }
 
-.header-controls {
-    display: flex;
-    justify-content: space-between; /* Title/Difficulty on left, Scores on right */
-    align-items: center;
-    width: 100%;
-    padding: 5px 0;
-    gap: 10px; /* Gap between items */
-    flex-wrap: wrap; /* Allow wrapping on small screens */
+h1.game-title-header { /* Title specific styling */
+    font-size: 1.8rem; /* Adjusted for new layout */
+    font-weight: 600;
+    color: var(--header-text-color); /* New variable for title text for better control */
+    margin: 0; /* Remove default margins */
+    padding: 5px; /* Minimal padding */
+    background-color: transparent; /* Make title background transparent */
+    border: none; /* Remove any border from theme switcher state */
+    cursor: pointer; /* Still acts as theme switcher */
+    user-select: none;
+    text-align: center;
+    flex-grow: 1; /* Allow title to take available space if needed */
 }
 
-.difficulty-control {
+.header-right-section.difficulty-control {
     display: flex;
     align-items: center;
-    gap: 8px; /* Gap between label and select */
+    gap: 8px;
     font-size: 0.9rem;
     color: var(--text-color-muted);
 }
@@ -80,7 +95,7 @@ header h1#page-title-clickable {
     padding: 6px 8px;
     border-radius: var(--border-radius-small);
     border: 1px solid var(--border-color);
-    background-color: var(--canvas-bg-color); /* Use a subtle background */
+    background-color: var(--canvas-bg-color);
     color: var(--text-color);
     font-family: var(--font-main);
     font-size: 0.9rem;
@@ -90,50 +105,32 @@ header h1#page-title-clickable {
 #difficulty-select:focus {
     outline: none;
     border-color: var(--accent-color);
-    box-shadow: 0 0 0 2px var(--accent-color-translucent, rgba(0, 123, 255, 0.25)); /* Accent color for focus, needs to be defined in themes */
+    box-shadow: 0 0 0 2px var(--accent-color-translucent, rgba(0, 123, 255, 0.25));
 }
 
-
-.scores-display {
-    display: flex;
-    flex-direction: column; /* Stack score and high score */
-    align-items: flex-end; /* Align text to the right within this box */
-    gap: 5px;
-    padding: 8px 12px;
-    background-color: var(--score-box-bg); /* Defined in theme files */
-    color: var(--score-box-text);       /* Defined in theme files */
-    border-radius: var(--border-radius-medium);
-    font-size: 0.9rem;
-    min-width: 130px; /* Ensure some width */
-}
-
-.score-box { /* Individual score line */
-    text-align: right;
-}
-
+/* Game Container and Canvas */
 .game-container {
     border: 2px solid var(--border-color);
     border-radius: var(--border-radius-large);
     padding: 10px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
-    background-color: var(--game-bg-color);
-    display: inline-block;
-    margin-top: 0; /* Reduced margin as header takes space */
-    width: 100%; /* Make game container take full width of page-wrapper */
-    max-width: 100%; /* Ensure it doesn't overflow page-wrapper */
+    box-shadow: 0 6px 18px rgba(0,0,0,0.05); /* Softened shadow */
+    background-color: var(--game-bg-color); /* Kept same as settings-box for visual consistency */
+    display: flex; /* Use flex to manage inner elements like game-header-combo and canvas */
+    flex-direction: column;
+    width: 100%; /* Take full width of page-wrapper */
+    max-width: 100%;
 }
 
-.game-header { /* Contains Combo display now */
+.game-header-combo { /* Header for combo, inside game-container */
     display: flex;
-    justify-content: center; /* Center combo text */
+    justify-content: center;
     align-items: center;
-    padding: 5px 10px; /* Reduced padding */
+    padding: 5px 10px;
     margin-bottom: 5px;
     font-size: 1rem;
     border-bottom: 1px solid var(--border-color);
-    font-weight: 500;
-    color: var(--accent-color); /* Combo text color */
-    min-height: 28px; /* Ensure it has some height even if combo text is hidden */
+    color: var(--accent-color);
+    min-height: 28px;
 }
 
 #combo-display {
@@ -143,32 +140,30 @@ header h1#page-title-clickable {
 
 #gameCanvas {
     display: block;
-    width: 100%; /* Make canvas responsive within game-container */
-    height: auto; /* Maintain aspect ratio (JS will set actual pixel dimensions) */
-    /* Actual width/height set by JS based on GRID_SIZE * COLS/ROWS */
-    max-height: calc(90vw - 20px); /* Prevent canvas from being too large on desktop, relative to container */
-    object-fit: contain; /* Ensure aspect ratio is maintained if CSS tries to override JS dimensions */
+    width: 100%;
+    height: auto; /* JS sets pixel dimensions, CSS handles responsive scaling */
+    /* Calculate max-height based on viewport height minus some space for header/footer */
+    max-height: calc(80vh - 100px); /* Example: 80% of viewport height minus approx header/footer space */
+    object-fit: contain;
     border-radius: var(--border-radius-medium);
-    border: 1px solid var(--border-color);
+    /* border: 1px solid var(--border-color); // Border is on game-container now */
 }
 
-/* .game-controls-info is removed */
-
 footer {
-    margin-top: 20px; /* Adjusted margin */
+    margin-top: 20px;
     padding-bottom: 10px;
     font-size: 0.85rem;
     color: var(--text-color-muted);
 }
 
-/* --- Achievement Notification Popup --- */
+/* Achievement Notification Popup (remains the same) */
 .achievement-popup {
     position: fixed;
     bottom: -100%; 
-    right: 10px; /* Adjusted for smaller screen padding */
+    right: 10px;
     background-color: var(--accent-color);
     color: var(--button-text); 
-    padding: 12px 18px; /* Adjusted padding */
+    padding: 12px 18px;
     border-radius: var(--border-radius-medium);
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     z-index: 1001;
@@ -177,40 +172,17 @@ footer {
     opacity: 0;
     transform: translateY(0);
     transition: opacity 0.5s ease-in-out, bottom 0.5s ease-in-out;
-    max-width: calc(100% - 20px); /* Max width for smaller screens */
-    width: auto; /* Auto width based on content */
+    max-width: calc(100% - 20px);
+    width: auto;
     min-height: 50px;
 }
+.achievement-popup.show { opacity: 1; bottom: 10px; }
+.achievement-popup .achievement-icon { font-size: 1.6rem; margin-right: 12px; line-height: 1; }
+.achievement-popup .achievement-text { display: flex; flex-direction: column; text-align: left; }
+.achievement-popup .achievement-title { font-weight: bold; font-size: 0.95rem; margin-bottom: 2px; }
+.achievement-popup .achievement-desc { font-size: 0.8rem; opacity: 0.9; }
 
-.achievement-popup.show {
-    opacity: 1;
-    bottom: 10px; /* Adjusted for smaller screen padding */
-}
-
-.achievement-popup .achievement-icon {
-    font-size: 1.6rem; /* Adjusted size */
-    margin-right: 12px;
-    line-height: 1;
-}
-
-.achievement-popup .achievement-text {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-}
-
-.achievement-popup .achievement-title {
-    font-weight: bold;
-    font-size: 0.95rem; /* Adjusted size */
-    margin-bottom: 2px;
-}
-
-.achievement-popup .achievement-desc {
-    font-size: 0.8rem; /* Adjusted size */
-    opacity: 0.9;
-}
-
-/* --- Basic Modal Styling (remains as before) --- */
+/* Basic Modal Styling (remains the same) */
 .modal { /* ... */ }
 .modal-content { /* ... */ }
 .modal h2#messageTitle { /* ... */ }
@@ -218,27 +190,46 @@ footer {
 .modal button#messageButton { /* ... */ }
 .modal button#messageButton:hover { /* ... */ }
 
-/* Media query for very small screens if needed */
-@media (max-width: 360px) {
-    header h1#page-title-clickable {
-        font-size: 1.8rem;
-    }
-    .header-controls {
-        flex-direction: column; /* Stack difficulty and scores on very small screens */
+
+/* Media query for responsiveness */
+@media (max-width: 620px) { /* Adjust breakpoint as needed */
+    .settings-box {
+        flex-direction: column; /* Stack sections in settings box */
+        align-items: stretch; /* Make sections take full width */
         gap: 10px;
     }
-    .difficulty-control, .scores-display {
+    .header-left-section {
+        justify-content: space-around; /* Space out score boxes */
         width: 100%;
-        justify-content: center;
-        align-items: center;
     }
-    .scores-display {
-        align-items: center; /* Center score text if stacked */
+    h1.game-title-header {
+        order: -1; /* Move title to the top when stacked */
+        margin-bottom: 10px;
+        font-size: 1.7rem;
     }
-     .score-box {
-        text-align: center;
+    .header-right-section.difficulty-control {
+        justify-content: center; /* Center difficulty control */
+        width: 100%;
     }
-    .game-header {
-        font-size: 0.9rem;
+}
+
+@media (max-width: 400px) {
+    h1.game-title-header {
+        font-size: 1.5rem;
+    }
+    .score-box {
+        font-size: 0.8rem;
+        padding: 6px 10px;
+        min-width: 90px;
+    }
+    #difficulty-select, .difficulty-control label {
+        font-size: 0.8rem;
+    }
+    .game-header-combo {
+        font-size: 0.85rem;
+        min-height: 24px;
+    }
+    #gameCanvas {
+         max-height: calc(75vh - 90px); /* Further adjust canvas max height */
     }
 }
