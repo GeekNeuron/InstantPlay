@@ -1,141 +1,91 @@
 // assets/js/snake.js
 
-import { GRID_SIZE, INITIAL_SNAKE_SPEED } from './constants.js'; // INITIAL_SNAKE_SPEED is a fallback/default
+import { GRID_SIZE } from './constants.js'; // INITIAL_SNAKE_SPEED is no longer imported
 import { arePositionsEqual, getCssVariable } from './utils.js';
 
 export class Snake {
-    /**
-     * Creates a new Snake.
-     * @param {number} startX - Initial X position of the snake's head on the grid.
-     * @param {number} startY - Initial Y position of the snake's head on the grid.
-     * @param {Board} board - Reference to the game board for boundary checks.
-     * @param {Game} game - Reference to the main game instance for callbacks like updateGameSpeed.
-     */
     constructor(startX, startY, board, game) {
         this.board = board;
-        this.game = game; // Store game reference for callbacks
+        this.game = game;
         this.gridSize = GRID_SIZE;
-        this.body = [{ x: startX, y: startY }]; // Head is the first element
-        this.dx = 1; // Initial movement direction: 1 for right
-        this.dy = 0; // Initial movement direction: 0 for horizontal
+        this.body = [{ x: startX, y: startY }];
+        this.dx = 1;
+        this.dy = 0;
 
-        // initialSpeed will be set by the Game class based on the current game mode.
-        // It represents the starting speed for the current round/mode.
-        this.initialSpeed = INITIAL_SNAKE_SPEED; // Default, will be overwritten by Game class
-        // speed is the current operational speed, can be affected by survival mode progression and temporary food effects.
+        // This 'initialSpeed' property will be set by the Game class based on current difficulty and mode.
+        // Setting a default here is a fallback, but Game class should always override it before game starts.
+        this.initialSpeed = 5; // Default fallback
         this.speed = this.initialSpeed;
 
-        this.speedBeforeFoodEffect = null;    // Stores snake's speed just before a food effect is applied
-        this.activeSpeedEffectTimeout = null; // Timeout ID for temporary speed food effects
+        this.speedBeforeFoodEffect = null;
+        this.activeSpeedEffectTimeout = null;
 
-        this.segmentsToGrow = 0; // Number of segments to add on subsequent moves
+        this.segmentsToGrow = 0;
 
-        // Colors will be fetched on each draw to reflect theme changes
         this.colorHead = '';
         this.colorBody = '';
     }
 
-    /**
-     * Updates the snake's position based on its current direction.
-     * Handles growth by not removing the tail if segmentsToGrow > 0.
-     */
     move() {
         const head = { x: this.body[0].x + this.dx, y: this.body[0].y + this.dy };
-        this.body.unshift(head); // Add new head
-
+        this.body.unshift(head);
         if (this.segmentsToGrow > 0) {
-            this.segmentsToGrow--; // Decrement growth counter
+            this.segmentsToGrow--;
         } else {
-            this.body.pop(); // Remove tail unless growing
+            this.body.pop();
         }
     }
 
-    /**
-     * Changes the snake's direction. Prevents reversing directly onto itself
-     * and ensures movement is strictly horizontal or vertical.
-     * @param {number} newDx - The new X direction (-1, 0, or 1).
-     * @param {number} newDy - The new Y direction (-1, 0, or 1).
-     */
     changeDirection(newDx, newDy) {
-        // Prevent moving in the opposite direction immediately if snake has more than one segment
         if (this.body.length > 1 && this.dx === -newDx && this.dy === -newDy) {
             return;
         }
-        // Ensure only one direction is non-zero (no diagonal movement)
-        // And that the new direction is different from the current one to avoid redundant changes
         if (Math.abs(newDx) + Math.abs(newDy) === 1 && (this.dx !== newDx || this.dy !== newDy)) {
             this.dx = newDx;
             this.dy = newDy;
         }
     }
 
-    /**
-     * Queues a specific number of segments for the snake to grow by on its next moves.
-     * @param {number} [segments=1] - Number of segments to grow by.
-     */
     grow(segments = 1) {
         this.segmentsToGrow += segments;
     }
 
-    /**
-     * Applies a temporary speed change due to a food effect.
-     * The factor is applied to the snake's current speed.
-     * @param {number} factor - The factor by which to multiply the current speed.
-     * @param {number} duration - Duration of the speed effect in milliseconds.
-     */
     setTemporarySpeed(factor, duration) {
         if (this.activeSpeedEffectTimeout) {
             clearTimeout(this.activeSpeedEffectTimeout);
-            // If an old food effect was active, revert to the speed *before* that old food effect was applied.
-            // This ensures the new factor applies to the "base" speed (which might include survival increases).
             if (this.speedBeforeFoodEffect !== null) {
                 this.speed = this.speedBeforeFoodEffect;
             }
         }
+        this.speedBeforeFoodEffect = this.speed;
+        this.speed *= factor;
+        if (this.speed < 0.5) this.speed = 0.5; // Min speed clamp
 
-        this.speedBeforeFoodEffect = this.speed; // Store current speed (which includes survival mode changes)
-        this.speed *= factor; // Apply new factor to the (potentially survival-increased) speed
-
-        // Clamp speed to a minimum reasonable value
-        if (this.speed < 0.5) this.speed = 0.5;
-        // Optionally, clamp to a maximum speed too if needed
-        // if (this.speed > MAX_POSSIBLE_SPEED) this.speed = MAX_POSSIBLE_SPEED;
-
-        this.game.updateGameSpeed(); // Notify game (mainly for logging or if other systems rely on effectiveGameSpeed)
+        if (this.game && typeof this.game.updateGameSpeed === 'function') {
+            this.game.updateGameSpeed();
+        }
 
         this.activeSpeedEffectTimeout = setTimeout(() => {
             this.revertTemporarySpeed();
         }, duration);
-        // console.log(`Snake temp speed: ${this.speed.toFixed(2)} for ${duration}ms. Base was ${this.speedBeforeFoodEffect.toFixed(2)}`);
     }
 
-    /**
-     * Reverts the snake's speed after a temporary food effect expires.
-     * Restores to the speed it had *before* this specific food effect was applied.
-     */
     revertTemporarySpeed() {
         if (this.speedBeforeFoodEffect !== null) {
-            this.speed = this.speedBeforeFoodEffect; // Revert to the speed before this particular food effect
+            this.speed = this.speedBeforeFoodEffect;
         }
-        this.speedBeforeFoodEffect = null; // Clear the stored pre-effect speed
+        this.speedBeforeFoodEffect = null;
         this.activeSpeedEffectTimeout = null;
-        this.game.updateGameSpeed(); // Notify game
-        // console.log("Snake speed reverted after food effect to: " + this.speed.toFixed(2));
+        if (this.game && typeof this.game.updateGameSpeed === 'function') {
+            this.game.updateGameSpeed();
+        }
     }
 
-    /**
-     * Checks for collisions with walls, obstacles, or itself.
-     * @returns {boolean} True if a collision occurred.
-     */
     checkCollision() {
         const head = this.body[0];
-
-        // Wall or Obstacle collision
         if (this.board.isOutOfBounds(head) || this.board.isObstacle(head)) {
             return true;
         }
-
-        // Self-collision
         for (let i = 1; i < this.body.length; i++) {
             if (arePositionsEqual(head, this.body[i])) {
                 return true;
@@ -144,20 +94,10 @@ export class Snake {
         return false;
     }
 
-    /**
-     * Gets the position of the snake's head.
-     * @returns {{x: number, y: number}} The head position.
-     */
     getHeadPosition() {
         return this.body[0];
     }
 
-    /**
-     * Checks if a given grid position is occupied by any part of the snake's body.
-     * @param {{x: number, y: number}} position - The position to check.
-     * @param {boolean} [includeHead=true] - Whether to include the head in the check.
-     * @returns {boolean} True if the position is part of the snake.
-     */
     isSnakeSegment(position, includeHead = true) {
         const startIndex = includeHead ? 0 : 1;
         for (let i = startIndex; i < this.body.length; i++) {
@@ -168,22 +108,14 @@ export class Snake {
         return false;
     }
 
-    /**
-     * Draws the snake on the canvas with rounded segments.
-     * Head is drawn with a distinct color.
-     * @param {CanvasRenderingContext2D} context - The canvas rendering context.
-     */
     draw(context) {
-        // Update colors from CSS variables to reflect theme changes dynamically
         this.colorHead = getCssVariable('var(--snake-head-color)', '#62c462');
         this.colorBody = getCssVariable('var(--snake-body-color)', '#86e586');
-
         this.body.forEach((segment, index) => {
             context.fillStyle = (index === 0) ? this.colorHead : this.colorBody;
             const x = segment.x * this.gridSize;
             const y = segment.y * this.gridSize;
-            const cornerRadius = this.gridSize / 4; // Adjust for desired roundness
-
+            const cornerRadius = this.gridSize / 4;
             context.beginPath();
             context.moveTo(x + cornerRadius, y);
             context.lineTo(x + this.gridSize - cornerRadius, y);
@@ -200,8 +132,9 @@ export class Snake {
     }
 
     /**
-     * Resets the snake to its initial state (position, direction, speed, growth).
-     * `this.initialSpeed` should be set by the Game class based on the mode before calling reset.
+     * Resets the snake to its initial state.
+     * `this.initialSpeed` is expected to be set by the Game class based on the current
+     * game mode and difficulty before this reset method is called.
      * @param {number} startX - The initial X grid coordinate for the snake's head.
      * @param {number} startY - The initial Y grid coordinate for the snake's head.
      */
@@ -211,10 +144,10 @@ export class Snake {
         this.dy = 0;
         this.segmentsToGrow = 0;
 
-        // initialSpeed is expected to be set by the Game class before reset is called.
-        this.speed = this.initialSpeed; // Reset current speed to the (potentially mode-specific) initial speed.
+        // this.initialSpeed should have been set by Game.resetGame() before calling snake.reset()
+        this.speed = this.initialSpeed; // Reset current speed to the mode/difficulty-specific initial speed.
 
-        if (this.activeSpeedEffectTimeout) { // Clear any pending speed effects from food
+        if (this.activeSpeedEffectTimeout) {
             clearTimeout(this.activeSpeedEffectTimeout);
         }
         this.speedBeforeFoodEffect = null;
