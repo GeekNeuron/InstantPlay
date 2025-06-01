@@ -8,18 +8,18 @@
     --accent-color: #007bff;
     --accent-color-translucent: rgba(0, 123, 255, 0.25);
 
-    /* --- Settings Box & Game Container --- */
-    --settings-box-bg: #f8f9fa;                    /* Background for the entire header/settings box */
-    --game-bg-color: #f8f9fa;                       /* Game container background (can be same as settings box or different) */
+    /* --- Settings Box, Game Container & Board --- */
+    --settings-box-bg: #f0f0f0;                    /* Light background for the settings box */
+    --game-bg-color: #f8f9fa;
     --canvas-bg-color: #e9ecef;
     --border-color: #dee2e6;
     --grid-line-color: rgba(0, 0, 0, 0.1);
 
     /* --- Score Boxes inside Settings Box --- */
-    --score-box-bg: #0069d9;                        /* Darker blue for score boxes */
-    --score-box-text: #FFFFFF;
+    --score-box-bg: #e9ecef;                        /* Background for individual score boxes */
+    --score-box-text: var(--text-color);
 
-    /* --- Game Elements --- */
+    /* ... (Game Elements, Power-ups, Modals, Buttons as before) ... */
     --snake-head-color: #28a745;
     --snake-body-color: #228C22;
     --food-color: #dc3545;
@@ -28,33 +28,21 @@
     --food-color-slow: #fd7e14;
     --food-color-grow: #6f42c1;
     --obstacle-color: #495057;
-
-    /* --- Power-ups --- */
     --powerup-color-shield: #007bff;
     --powerup-color-scoreboost: #28a745;
     --powerup-color-score-multiplier: #ffc107;
     --text-color-on-accent: #FFFFFF;
-
-    /* --- Modals & Overlays --- */
     --modal-overlay-bg: rgba(33, 37, 41, 0.65);
     --modal-content-bg: #FFFFFF;
     --modal-text-color: var(--text-color);
     --text-color-on-overlay: #FFFFFF;
-
-    /* --- Buttons --- */
     --button-bg: var(--accent-color);
     --button-text: #FFFFFF;
     --button-hover-bg: #0056b3;
 }
 
-/* Apply settings box background */
-.settings-box {
-    background-color: var(--settings-box-bg);
-}
-
-/* Title (theme switcher) in light theme - should have transparent background by default from style.css */
+/* Title (theme switcher) in light theme - should have transparent background from style.css */
 h1.game-title-header {
-    color: var(--header-text-color);
-    background-color: transparent !important; /* Ensure no override from dark theme switcher style */
-    border-color: transparent !important;
+    /* style.css already makes background transparent and border none */
+    color: var(--header-text-color); /* Ensure it uses the correct text color */
 }
