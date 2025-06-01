@@ -1,37 +1,24 @@
+/* assets/css/light-theme.css */
 :root {
-    --bg-color: #FAF8EF; /* Inspired by 2048 light */
+    --bg-color: #FAF8EF;
     --text-color: #776E65;
     --text-color-muted: #9e948a;
     --accent-color: #8f7a66;
-    --game-bg-color: #BBADA0; /* Board background from 2048 */
-    --canvas-bg-color: #CDC1B4; /* Canvas background / empty cells */
+    --game-bg-color: #BBADA0;
+    --canvas-bg-color: #CDC1B4;
     --snake-head-color: #62c462;
     --snake-body-color: #86e586;
-    --food-color: #f76c6c;
     --border-color: #BBADA0;
     --header-color: #776E65;
+
+    /* Food Colors */
+    --food-color: #f76c6c; /* Default Red */
+    --food-color-golden: #ffd700; /* Gold */
+    --food-color-speed: #00bcd4;  /* Cyan */
+    --food-color-slow: #ff9800;   /* Orange */
+    --food-color-grow: #9c27b0;   /* Purple */
+    --obstacle-color: #776E65; /* Using a theme color for obstacles */
+    --grid-line-color: rgba(0, 0, 0, 0.08); /* For board.js if used directly */
 }
 
-body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-}
-
-header h1 {
-    color: var(--header-color);
-}
-
-.game-container {
-    border-color: var(--border-color);
-    background-color: var(--game-bg-color);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
-
-.game-header {
-    color: var(--text-color);
-    border-color: var(--text-color-muted);
-}
-
-#gameCanvas {
-    background-color: var(--canvas-bg-color);
-}
+/* ... بقیه فایل ... */
