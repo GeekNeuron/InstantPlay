@@ -1,0 +1,83 @@
+/* Basic Reset & Body Styles */
+:root {
+    --font-main: 'Arial', sans-serif; /* Placeholder, can be changed */
+    --border-radius-small: 4px;
+    --border-radius-medium: 8px;
+    --border-radius-large: 12px;
+    --transition-speed: 0.3s;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-main);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+    padding: 20px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    cursor: pointer; /* For theme toggle */
+    user-select: none; /* Prevent text selection on click */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+ */
+}
+
+.game-container {
+    border: 2px solid; /* Color will come from theme */
+    border-radius: var(--border-radius-large);
+    padding: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); /* Softer shadow */
+    background-color: var(--game-bg-color); /* Theme dependent */
+    display: inline-block; /* Shrink to content */
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    border-bottom: 1px solid; /* Color from theme */
+    border-color: var(--text-color-muted);
+}
+
+#gameCanvas {
+    display: block; /* Remove extra space below canvas */
+    border-radius: var(--border-radius-medium);
+    /* Background color will be handled by theme or canvas drawing itself */
+}
+
+.game-controls-info {
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: var(--text-color-muted);
+}
+
+footer {
+    margin-top: 30px;
+    font-size: 0.9rem;
+    color: var(--text-color-muted);
+}
+
+/* Tile-like elements (placeholder for snake, food, board cells) */
+.tile {
+    width: 20px; /* Example size */
+    height: 20px; /* Example size */
+    border-radius: var(--border-radius-small);
+    background-color: #333; /* Placeholder */
+    margin: 1px; /* Example spacing */
+}
