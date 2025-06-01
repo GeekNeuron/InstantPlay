@@ -7,7 +7,7 @@
 export const GRID_SIZE = 15;
 export const ROWS = 26;
 export const COLS = 26;
-export const INITIAL_SNAKE_SPEED = 5; // Base speed for Classic mode, if not using difficulty settings
+export const INITIAL_SNAKE_SPEED = 5; // Base speed for Classic mode
 export const DEFAULT_FOOD_SCORE = 10;
 
 export const FOOD_EFFECTS = {
@@ -18,11 +18,56 @@ export const FOOD_EFFECTS = {
 };
 
 export const FOOD_TYPES = {
-    DEFAULT: { id: 'DEFAULT', color: 'var(--food-color)', score: 10, effect: FOOD_EFFECTS.NONE, probability: 0.60 },
-    GOLDEN_APPLE: { id: 'GOLDEN_APPLE', color: 'var(--food-color-golden)', score: 50, effect: FOOD_EFFECTS.NONE, probability: 0.10 },
-    SPEED_BERRY: { id: 'SPEED_BERRY', color: 'var(--food-color-speed)', score: 5, effect: FOOD_EFFECTS.SPEED_BOOST, duration: 5000, speedFactor: 1.5, probability: 0.10 },
-    SLOW_SLUG: { id: 'SLOW_SLUG', color: 'var(--food-color-slow)', score: 5, effect: FOOD_EFFECTS.SLOW_DOWN, duration: 5000, speedFactor: 0.66, probability: 0.10 },
-    GROW_PEAR: { id: 'GROW_PEAR', color: 'var(--food-color-grow)', score: 15, effect: FOOD_EFFECTS.EXTRA_GROWTH, growAmount: 3, probability: 0.10 }
+    DEFAULT: {
+        id: 'DEFAULT',
+        displayName: 'Apple',
+        description: 'Standard food. Adds +10 to score and basic growth.',
+        color: 'var(--food-color)',
+        score: 10,
+        effect: FOOD_EFFECTS.NONE,
+        probability: 0.60
+    },
+    GOLDEN_APPLE: {
+        id: 'GOLDEN_APPLE',
+        displayName: 'Golden Apple',
+        description: 'Rare fruit! Adds +50 to score.',
+        color: 'var(--food-color-golden)',
+        score: 50,
+        effect: FOOD_EFFECTS.NONE,
+        probability: 0.10
+    },
+    SPEED_BERRY: {
+        id: 'SPEED_BERRY',
+        displayName: 'Speed Berry',
+        description: 'Temporarily increases snake speed by 50%.',
+        color: 'var(--food-color-speed)',
+        score: 5,
+        effect: FOOD_EFFECTS.SPEED_BOOST,
+        duration: 5000,
+        speedFactor: 1.5,
+        probability: 0.10
+    },
+    SLOW_SLUG: {
+        id: 'SLOW_SLUG',
+        displayName: 'Slow Fungus', // Changed from "Slug" for thematic variety
+        description: 'Temporarily decreases snake speed by 33%.',
+        color: 'var(--food-color-slow)',
+        score: 5,
+        effect: FOOD_EFFECTS.SLOW_DOWN,
+        duration: 5000,
+        speedFactor: 0.66,
+        probability: 0.10
+    },
+    GROW_PEAR: {
+        id: 'GROW_PEAR',
+        displayName: 'Grow Pear',
+        description: 'Snake grows by 3 segments instead of 1.',
+        color: 'var(--food-color-grow)',
+        score: 15,
+        effect: FOOD_EFFECTS.EXTRA_GROWTH,
+        growAmount: 3,
+        probability: 0.10
+    }
 };
 
 export const COMBO_TIMER_DURATION = 3000;
@@ -30,9 +75,9 @@ export const COMBO_MIN_FOR_MULTIPLIER = 3;
 export const COMBO_SCORE_MULTIPLIER = 1.5;
 export const COMBO_ITEM_BONUS_SCORE = 2;
 
-export const SURVIVAL_START_SPEED = 4; // Default start speed for survival if not overridden by difficulty
+export const SURVIVAL_START_SPEED = 4;
 export const SURVIVAL_SPEED_INCREASE_INTERVAL = 10000;
-export const SURVIVAL_SPEED_INCREASE_AMOUNT = 0.5; // Base increase amount
+export const SURVIVAL_SPEED_INCREASE_AMOUNT = 0.5;
 
 export const GAME_MODES = {
     CLASSIC: 'classic',
@@ -64,38 +109,26 @@ export const ACHIEVEMENTS = {
     OBSTACLE_NAVIGATOR: { id: 'OBSTACLE_NAVIGATOR', name: 'Obstacle Navigator', description: 'Score over 200 points in a game with obstacles.', icon: '🚧', criteria: { scoreWithObstacles: 200 }, unlocked: false }
 };
 
-// --- Difficulty Settings ---
 export const DIFFICULTY_LEVELS = {
-    BEGINNER: 'BEGINNER',
-    EASY: 'EASY',
-    MEDIUM: 'MEDIUM',
-    HARD: 'HARD',
-    HUGE: 'HUGE',       // For now, "Huge" will primarily mean higher speed and faster survival scaling
-    EXTREME: 'EXTREME'  // "Extreme" will be even more so
+    BEGINNER: 'BEGINNER', EASY: 'EASY', MEDIUM: 'MEDIUM', HARD: 'HARD', HUGE: 'HUGE', EXTREME: 'EXTREME'
 };
-
 export const DIFFICULTY_SETTINGS = {
     [DIFFICULTY_LEVELS.BEGINNER]: { name: "Beginner", initialSpeed: 3, survivalSpeedFactor: 0.6, obstacleFactor: 0.3 },
     [DIFFICULTY_LEVELS.EASY]:     { name: "Easy",     initialSpeed: 4, survivalSpeedFactor: 0.8, obstacleFactor: 0.6 },
-    [DIFFICULTY_LEVELS.MEDIUM]:   { name: "Medium",   initialSpeed: 5, survivalSpeedFactor: 1.0, obstacleFactor: 1.0 }, // Baseline
+    [DIFFICULTY_LEVELS.MEDIUM]:   { name: "Medium",   initialSpeed: 5, survivalSpeedFactor: 1.0, obstacleFactor: 1.0 },
     [DIFFICULTY_LEVELS.HARD]:     { name: "Hard",     initialSpeed: 7, survivalSpeedFactor: 1.2, obstacleFactor: 1.25 },
-    [DIFFICULTY_LEVELS.HUGE]:     { name: "Huge",     initialSpeed: 8, survivalSpeedFactor: 1.5, obstacleFactor: 1.5 }, // Faster scaling, more obstacles
-    [DIFFICULTY_LEVELS.EXTREME]:  { name: "Extreme",  initialSpeed: 10, survivalSpeedFactor: 1.8, obstacleFactor: 2.0 } // Very fast, many obstacles
-    // obstacleFactor can be used in board.js to determine number/density of obstacles in setupDefaultObstacles
-    // For now, we will only use initialSpeed and survivalSpeedFactor.
+    [DIFFICULTY_LEVELS.HUGE]:     { name: "Huge",     initialSpeed: 8, survivalSpeedFactor: 1.5, obstacleFactor: 1.5 },
+    [DIFFICULTY_LEVELS.EXTREME]:  { name: "Extreme",  initialSpeed: 10, survivalSpeedFactor: 1.8, obstacleFactor: 2.0 }
 };
-
 
 export const KEYS = {
     ARROW_UP: 'ArrowUp', ARROW_DOWN: 'ArrowDown', ARROW_LEFT: 'ArrowLeft', ARROW_RIGHT: 'ArrowRight',
     W: 'w', A: 'a', S: 's', D: 'd',
     SPACE: ' ', ESCAPE: 'Escape'
 };
-
 export const GAME_STATE = {
     LOADING: 'loading', READY: 'ready', PLAYING: 'playing', PAUSED: 'paused', GAME_OVER: 'gameOver'
 };
-
 export const THEME_FILES = {
     light: 'assets/css/light-theme.css', dark: 'assets/css/dark-theme.css'
 };
