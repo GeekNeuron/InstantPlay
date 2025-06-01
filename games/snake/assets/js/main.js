@@ -36,7 +36,7 @@ function loadTheme() {
  * Initializes the game.
  */
 function initGame() {
-    // console.log("Initializing Snake Game..."); // Log was here
+    // console.log("Initializing Snake Game...");
     loadTheme(); // Load theme preference on init
 
     // Event Listeners for theme toggle
@@ -47,7 +47,7 @@ function initGame() {
             toggleTheme();
         });
     } else {
-        console.error("Theme toggle element not found!");
+        console.error("Theme toggle element ('page-title-clickable') not found!");
     }
 
     // --- Initialize the Game ---
@@ -58,9 +58,9 @@ function initGame() {
             'score',
             'highscore',
             'combo-display', // ID for the combo display span
-            null             // Pass null for messageOverlayId if not using the modal overlay from HTML
+            null             // Pass null for messageOverlayId if not using the modal overlay from HTML for game messages
         );
-        // console.log("Game instance created successfully."); // Log was here
+        // console.log("Game instance created successfully.");
     } catch (error) {
         console.error("Failed to initialize game:", error);
         const gameContainer = document.querySelector('.game-container');
