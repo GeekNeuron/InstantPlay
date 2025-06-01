@@ -5,7 +5,7 @@ import { Snake } from './snake.js';
 import { Food } from './food.js';
 import { InputHandler } from './input.js';
 import { UIManager } from './ui.js';
-import { SoundEffectsManager } from './sfx.js';
+// import { SoundEffectsManager } from './sfx.js'; // --- حذف وارد کردن SoundEffectsManager ---
 import { PowerUpManager, POWERUP_COLLECTIBLE_TYPES } from './powerups.js';
 import { ROWS, COLS, GAME_STATE, FOOD_EFFECTS, INITIAL_SNAKE_SPEED, GRID_SIZE } from './constants.js';
 import { arePositionsEqual, getCssVariable } from './utils.js';
@@ -30,7 +30,7 @@ export class Game {
         this.gameLoopRequestId = null;
 
         this.board = new Board(this.canvas, this.context);
-        this.sfx = new SoundEffectsManager();
+        // this.sfx = new SoundEffectsManager(); // --- حذف ایجاد نمونه SoundEffectsManager ---
         this.snake = new Snake(Math.floor(COLS / 4), Math.floor(ROWS / 2), this.board, this);
         this.powerUpManager = new PowerUpManager(this.board, this.snake, this);
         this.food = new Food(this.board, this.snake, this.powerUpManager);
@@ -47,18 +47,18 @@ export class Game {
     }
 
     init() {
-        console.log("Game.init(): Initializing game state..."); // LOG ADDED
+        console.log("Game.init(): Initializing game state...");
         this.uiManager.resetScore();
         this.uiManager.loadHighScore();
         this.uiManager.updateHighScoreDisplay();
         this.resetGame();
         this.gameState = GAME_STATE.READY;
-        console.log("Game.init(): Game state set to READY. Message: Press Space, Escape, or Swipe/Tap to Start."); // LOG ADDED
+        console.log("Game.init(): Game state set to READY. Message: Press Space, Escape, or Swipe/Tap to Start.");
         this.draw();
     }
 
     resetGame() {
-        console.log("Game.resetGame(): Resetting game elements."); // LOG ADDED
+        console.log("Game.resetGame(): Resetting game elements.");
         const startX = Math.floor(COLS / 4);
         const startY = Math.floor(ROWS / 2);
         this.snake.reset(startX, startY);
@@ -74,29 +74,28 @@ export class Game {
     }
 
     start() {
-        console.log("Game.start() called. Current state before action:", this.gameState); // LOG ADDED
-        this.sfx.resumeContext();
+        console.log("Game.start() called. Current state before action:", this.gameState);
+        // this.sfx.resumeContext(); // --- حذف فراخوانی صدا ---
 
         if (this.gameState === GAME_STATE.READY || this.gameState === GAME_STATE.GAME_OVER) {
-            console.log("Game.start(): Conditions met (READY or GAME_OVER). Resetting and starting game."); // LOG ADDED
+            console.log("Game.start(): Conditions met (READY or GAME_OVER). Resetting and starting game.");
             this.resetGame();
             this.gameState = GAME_STATE.PLAYING;
-            console.log("Game.start(): Game state changed to:", this.gameState); // LOG ADDED
+            console.log("Game.start(): Game state changed to:", this.gameState);
             this.lastFrameTime = performance.now();
             if (this.gameLoopRequestId) cancelAnimationFrame(this.gameLoopRequestId);
             this.gameLoopRequestId = requestAnimationFrame(this.gameLoop.bind(this));
-            console.log("Game.start(): Game loop initiated with ID:", this.gameLoopRequestId); // LOG ADDED
+            console.log("Game.start(): Game loop initiated with ID:", this.gameLoopRequestId);
         } else if (this.gameState === GAME_STATE.PAUSED) {
-            console.log("Game.start(): Game was PAUSED. Calling this.resume()."); // LOG ADDED
+            console.log("Game.start(): Game was PAUSED. Calling this.resume().");
             this.resume();
         } else {
-            console.warn("Game.start(): Conditions not met to start/resume. Current state:", this.gameState); // LOG ADDED (Warn)
+            console.warn("Game.start(): Conditions not met to start/resume. Current state:", this.gameState);
         }
     }
 
     gameLoop(timestamp) {
         if (this.gameState !== GAME_STATE.PLAYING) {
-            // console.log("Game.gameLoop(): Not playing, stopping loop. State:", this.gameState); // Optional log
             if (this.gameLoopRequestId) cancelAnimationFrame(this.gameLoopRequestId);
             return;
         }
@@ -118,15 +117,15 @@ export class Game {
         if (foodData && arePositionsEqual(this.snake.getHeadPosition(), this.food.getPosition())) {
             this.score += (foodData.score * this.scoreMultiplier);
             this.uiManager.updateScore(this.score);
-            this.sfx.play('eat');
+            // this.sfx.play('eat'); // --- حذف فراخوانی صدا ---
             switch (foodData.effect) {
                 case FOOD_EFFECTS.SPEED_BOOST:
                     this.snake.setTemporarySpeed(foodData.speedFactor, foodData.duration);
-                    this.sfx.play('foodEffect');
+                    // this.sfx.play('foodEffect'); // --- حذف فراخوانی صدا ---
                     break;
                 case FOOD_EFFECTS.SLOW_DOWN:
-                    this.snake.setTemporarySpeed(foodData.speedFactor, foodA.duration);
-                    this.sfx.play('foodEffect');
+                    this.snake.setTemporarySpeed(foodData.speedFactor, foodData.duration);
+                    // this.sfx.play('foodEffect'); // --- حذف فراخوانی صدا ---
                     break;
                 case FOOD_EFFECTS.EXTRA_GROWTH:
                     this.snake.grow(foodData.growAmount);
@@ -142,7 +141,7 @@ export class Game {
             let hitAbsorbedByShield = false;
             if (this.isShieldActive && this.powerUpManager.isEffectActive(POWERUP_COLLECTIBLE_TYPES.SHIELD)) {
                 if (this.powerUpManager.handleHitWithEffect(POWERUP_COLLECTIBLE_TYPES.SHIELD)) {
-                    this.sfx.play('shieldHit');
+                    // this.sfx.play('shieldHit'); // --- حذف فراخوانی صدا ---
                     console.log("Shield absorbed a hit!");
                     hitAbsorbedByShield = true;
                 }
@@ -212,7 +211,7 @@ export class Game {
     }
 
     gameOver() {
-        console.log("Game.gameOver() called. Final score:", this.score); // LOG ADDED
+        console.log("Game.gameOver() called. Final score:", this.score);
         this.gameState = GAME_STATE.GAME_OVER;
         if (this.gameLoopRequestId) {
             cancelAnimationFrame(this.gameLoopRequestId);
@@ -220,27 +219,27 @@ export class Game {
         }
         this.snake.revertSpeed();
         this.uiManager.updateHighScore();
-        this.sfx.play('gameOver');
+        // this.sfx.play('gameOver'); // --- حذف فراخوانی صدا ---
         this.draw();
     }
 
     togglePause() {
-        console.log("Game.togglePause() called. Current state:", this.gameState); // LOG ADDED
-        this.sfx.resumeContext();
+        console.log("Game.togglePause() called. Current state:", this.gameState);
+        // this.sfx.resumeContext(); // --- حذف فراخوانی صدا ---
         if (this.gameState === GAME_STATE.PLAYING) {
             this.gameState = GAME_STATE.PAUSED;
             if (this.gameLoopRequestId) {
                 cancelAnimationFrame(this.gameLoopRequestId);
                 this.gameLoopRequestId = null;
             }
-            this.sfx.play('click');
-            console.log("Game.togglePause(): Game PAUSED."); // LOG ADDED
+            // this.sfx.play('click'); // --- حذف فراخوانی صدا ---
+            console.log("Game.togglePause(): Game PAUSED.");
             this.draw();
         } else if (this.gameState === GAME_STATE.PAUSED) {
-            console.log("Game.togglePause(): Game was PAUSED. Calling resume()."); // LOG ADDED
+            console.log("Game.togglePause(): Game was PAUSED. Calling resume().");
             this.resume();
         } else if (this.gameState === GAME_STATE.READY || this.gameState === GAME_STATE.GAME_OVER) {
-            console.log("Game.togglePause(): State is READY or GAME_OVER. Calling this.start()."); // LOG ADDED
+            console.log("Game.togglePause(): State is READY or GAME_OVER. Calling this.start().");
             this.start();
         }
     }
@@ -248,21 +247,20 @@ export class Game {
     resume() {
         if (this.gameState === GAME_STATE.PAUSED) {
             this.gameState = GAME_STATE.PLAYING;
-            this.sfx.play('click');
+            // this.sfx.play('click'); // --- حذف فراخوانی صدا ---
             this.lastFrameTime = performance.now();
             if (this.gameLoopRequestId) cancelAnimationFrame(this.gameLoopRequestId);
             this.gameLoopRequestId = requestAnimationFrame(this.gameLoop.bind(this));
-            console.log("Game.resume(): Game RESUMED. Loop ID:", this.gameLoopRequestId); // LOG ADDED
+            console.log("Game.resume(): Game RESUMED. Loop ID:", this.gameLoopRequestId);
         }
     }
 
     handleEscape() {
-        console.log("Game.handleEscape() called. Current state:", this.gameState); // LOG ADDED
+        console.log("Game.handleEscape() called. Current state:", this.gameState);
         this.togglePause();
     }
 
     updateGameSpeed() {
         this.effectiveGameSpeed = this.snake.speed;
-        // console.log(`Game effective speed synced: ${this.effectiveGameSpeed}`); // Optional log
     }
 }
