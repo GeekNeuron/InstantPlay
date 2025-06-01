@@ -1,15 +1,25 @@
+/* assets/css/dark-theme.css */
 :root {
-    --bg-color: #121212; /* Common dark theme background */
+    --bg-color: #121212;
     --text-color: #E0E0E0;
     --text-color-muted: #A0A0A0;
-    --accent-color: #BB86FC; /* A common dark theme accent */
-    --game-bg-color: #333333; /* Darker board container */
-    --canvas-bg-color: #242424; /* Darker canvas */
-    --snake-head-color: #50fa7b; /* Brighter green for dark bg */
-    --snake-body-color: #8be9fd; /* Different color for contrast or preference */
-    --food-color: #ff5555; /* Brighter red */
+    --accent-color: #BB86FC;
+    --game-bg-color: #333333;
+    --canvas-bg-color: #242424;
+    --snake-head-color: #50fa7b;
+    --snake-body-color: #8be9fd;
     --border-color: #444444;
     --header-color: #E0E0E0;
+
+    /* Food Colors */
+    --food-color: #ff5555;          /* Default Red (brighter) */
+    --food-color-golden: #ffeb3b;   /* Gold (brighter) */
+    --food-color-speed: #03a9f4;    /* Cyan (brighter) */
+    --food-color-slow: #ffc107;     /* Orange (brighter amber) */
+    --food-color-grow: #ba68c8;     /* Purple (brighter) */
+
+    --obstacle-color: #787878;
+    --grid-line-color: rgba(255, 255, 255, 0.1);
 }
 
 body {
@@ -24,7 +34,7 @@ header h1 {
 .game-container {
     border-color: var(--border-color);
     background-color: var(--game-bg-color);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3); /* Slightly more pronounced shadow for dark */
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
 
 .game-header {
@@ -33,5 +43,6 @@ header h1 {
 }
 
 #gameCanvas {
-    background-color: var(--canvas-bg-color);
+    /* background-color is drawn by board.js */
+    border-color: var(--text-color-muted); /* Using the muted text color for canvas border */
 }
