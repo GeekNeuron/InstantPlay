@@ -1,84 +1,57 @@
-// assets/js/constants.js
+// assets/js/utils.js
 
 /**
- * @fileoverview Defines constants used throughout the Snake game.
+ * @fileoverview Utility functions for the Snake game.
  */
 
 /**
- * Size of each grid cell in pixels.
- * @type {number}
+ * Generates a random integer between min (inclusive) and max (inclusive).
+ * @param {number} min - The minimum value.
+ * @param {number} max - The maximum value.
+ * @returns {number} A random integer.
  */
-export const GRID_SIZE = 20; // e.g., each square is 20x20 pixels
+export function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
 /**
- * Number of rows on the game board.
- * @type {number}
+ * Generates a random position on the grid.
+ * @param {number} maxCols - Maximum number of columns (exclusive, so 0 to maxCols-1).
+ * @param {number} maxRows - Maximum number of rows (exclusive, so 0 to maxRows-1).
+ * @returns {{x: number, y: number}} An object with x and y grid coordinates.
  */
-export const ROWS = 20; // Results in a 20x20 grid
+export function getRandomGridPosition(maxCols, maxRows) {
+    return {
+        x: getRandomInt(0, maxCols - 1),
+        y: getRandomInt(0, maxRows - 1)
+    };
+}
 
 /**
- * Number of columns on the game board.
- * @type {number}
+ * Checks if two positions are the same.
+ * Positions are objects like {x: number, y: number}.
+ * @param {{x: number, y: number}} pos1
+ * @param {{x: number, y: number}} pos2
+ * @returns {boolean} True if positions are identical. Returns false if either pos is null/undefined.
  */
-export const COLS = 20; // Results in a 20x20 grid
+export function arePositionsEqual(pos1, pos2) {
+    if (!pos1 || !pos2) {
+        return false;
+    }
+    return pos1.x === pos2.x && pos1.y === pos2.y;
+}
 
 /**
- * Initial speed of the snake (game updates per second).
- * Higher value means faster game.
- * @type {number}
+ * Helper function to get a CSS variable value.
+ * @param {string} variableName - The name of the CSS variable (e.g., '--food-color').
+ * @param {string} [fallbackColor='black'] - A fallback color if the variable is not found.
+ * @returns {string} The color value.
  */
-export const INITIAL_SNAKE_SPEED = 5; // e.g., 5 updates per second
-
-/**
- * Score awarded for eating a standard piece of food.
- * @type {number}
- */
-export const FOOD_SCORE = 10;
-
-/**
- * Key codes for input handling.
- * @enum {string}
- */
-export const KEYS = {
-    ARROW_UP: 'ArrowUp',
-    ARROW_DOWN: 'ArrowDown',
-    ARROW_LEFT: 'ArrowLeft',
-    ARROW_RIGHT: 'ArrowRight',
-    W: 'w',
-    A: 'a',
-    S: 's',
-    D: 'd',
-    SPACE: ' ', // For pause or start
-    ESCAPE: 'Escape' // For pause or menu
-};
-
-/**
- * Game states.
- * @enum {string}
- */
-export const GAME_STATE = {
-    LOADING: 'loading',
-    READY: 'ready', // Ready to start (e.g., on main screen)
-    PLAYING: 'playing',
-    PAUSED: 'paused',
-    GAME_OVER: 'gameOver'
-};
-
-/**
- * URLs for theme CSS files.
- * Defined here for potential use in other modules if needed, though primarily used in main.js.
- */
-export const THEME_FILES = {
-    light: 'assets/css/light-theme.css',
-    dark: 'assets/css/dark-theme.css'
-};
-
-// Add more constants as needed (e.g., colors, power-up types, messages)
-// Example:
-// export const COLORS = {
-//     SNAKE_HEAD: 'var(--snake-head-color)', // Using CSS variables
-//     SNAKE_BODY: 'var(--snake-body-color)',
-//     FOOD_DEFAULT: 'var(--food-color)',
-//     BOARD_BACKGROUND: 'var(--canvas-bg-color)',
-//     OBSTACLE: '#555555'
-// };
+export function getCssVariable(variableName, fallbackColor = 'black') {
+    const varNameWithoutVar = variableName.startsWith('var(')
+        ? variableName.match(/var\(([^)]+)\)/)[1]
+        : variableName;
+    return getComputedStyle(document.documentElement).getPropertyValue(varNameWithoutVar).trim() || fallbackColor;
+}
