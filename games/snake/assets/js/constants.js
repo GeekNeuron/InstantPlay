@@ -40,7 +40,7 @@ export const GAME_MODES = {
 };
 
 export const PARTICLE_COUNT_FOOD_CONSUMPTION = 12;
-export const PARTICLE_LIFESPAN_FOOD = 600; // Conceptual milliseconds
+export const PARTICLE_LIFESPAN_FOOD = 600; 
 export const PARTICLE_BASE_SPEED_FOOD = 1.2;
 export const PARTICLE_SIZE_FOOD = 2.5;
 export const PARTICLE_GRAVITY_FOOD = 0.03;
@@ -48,23 +48,61 @@ export const PARTICLE_GRAVITY_FOOD = 0.03;
 export const SCREEN_SHAKE_MAGNITUDE_GAME_OVER = 4;
 export const SCREEN_SHAKE_DURATION_GAME_OVER = 150;
 
-// --- Constants for Obstacle Types and Blinking Behavior ---
 export const OBSTACLE_TYPES = {
     STATIC: 'static',
     BLINKING: 'blinking'
 };
+export const BLINKING_OBSTACLE_ON_DURATION = 3000;
+export const BLINKING_OBSTACLE_OFF_DURATION = 2000;
 
-/**
- * Default duration (in milliseconds) an obstacle is visible when blinking.
- * @type {number}
- */
-export const BLINKING_OBSTACLE_ON_DURATION = 3000; // Visible for 3 seconds
+// --- Constants for Achievements ---
+export const ACHIEVEMENT_STORAGE_KEY = 'snakeGameAchievements';
 
-/**
- * Default duration (in milliseconds) an obstacle is invisible when blinking.
- * @type {number}
- */
-export const BLINKING_OBSTACLE_OFF_DURATION = 2000; // Invisible for 2 seconds
+export const ACHIEVEMENTS = {
+    NOVICE_EATER: {
+        id: 'NOVICE_EATER',
+        name: 'Novice Eater',
+        description: 'Eat 10 pieces of food in a single game.',
+        icon: '🍎',
+        criteria: { foodEatenInGame: 10 }, // Condition: game.foodEatenThisGame >= 10
+        unlocked: false // Default state, will be loaded from localStorage
+    },
+    SCORE_MILESTONE_1: {
+        id: 'SCORE_MILESTONE_1',
+        name: 'Score Cadet',
+        description: 'Reach 500 points in a single game.',
+        icon: '⭐',
+        criteria: { scoreInGame: 500 }, // Condition: game.score >= 500
+        unlocked: false
+    },
+    COMBO_MASTER_BEGINNER: {
+        id: 'COMBO_MASTER_BEGINNER',
+        name: 'Combo Starter',
+        description: 'Achieve a x3 combo count in a single game.',
+        icon: '💥',
+        criteria: { maxComboCountInGame: 3 }, // Condition: game.maxComboThisGame >= 3
+        unlocked: false
+    },
+    SURVIVOR_30_SECONDS: {
+        id: 'SURVIVOR_30_SECONDS',
+        name: 'Quick Survivor',
+        description: 'Survive for 30 seconds in a single game.',
+        icon: '⏳',
+        criteria: { survivalTimeInSeconds: 30 }, // Condition: gameDurationSeconds >= 30
+        unlocked: false
+    },
+    OBSTACLE_NAVIGATOR: {
+        id: 'OBSTACLE_NAVIGATOR',
+        name: 'Obstacle Navigator',
+        description: 'Score over 200 points in a game with obstacles.',
+        icon: '🚧',
+        criteria: { scoreWithObstacles: 200 }, // Condition: game.score >= 200 && obstaclesWerePresent
+        unlocked: false
+    }
+    // Add more achievements here later:
+    // Example: LONG_SNAKE: { id: 'LONG_SNAKE', name: 'Great Serpent', description: 'Grow your snake to 30 segments.', icon: '🐍', criteria: { snakeLength: 30 }, unlocked: false },
+    // Example: GOLD_HOARDER: { id: 'GOLD_HOARDER', name: 'Gold Hoarder', description: 'Collect 5 golden apples in one game.', icon: '💰', criteria: { goldenApplesCollected: 5 }, unlocked: false },
+};
 
 
 export const KEYS = {
