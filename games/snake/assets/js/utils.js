@@ -32,26 +32,40 @@ export function getRandomGridPosition(maxCols, maxRows) {
 /**
  * Checks if two positions are the same.
  * Positions are objects like {x: number, y: number}.
- * @param {{x: number, y: number}} pos1
- * @param {{x: number, y: number}} pos2
+ * @param {{x: number, y: number} | null} pos1
+ * @param {{x: number, y: number} | null} pos2
  * @returns {boolean} True if positions are identical. Returns false if either pos is null/undefined.
  */
 export function arePositionsEqual(pos1, pos2) {
     if (!pos1 || !pos2) {
+        console.log(`arePositionsEqual: One or both positions are null/undefined. pos1:`, pos1, "pos2:", pos2);
         return false;
     }
-    return pos1.x === pos2.x && pos1.y === pos2.y;
+    const result = pos1.x === pos2.x && pos1.y === pos2.y;
+    // console.log(`arePositionsEqual: Comparing (${pos1.x},${pos1.y}) and (${pos2.x},${pos2.y}). Result: ${result}`); // This log can be very noisy
+    return result;
 }
 
 /**
  * Helper function to get a CSS variable value.
- * @param {string} variableName - The name of the CSS variable (e.g., '--food-color').
- * @param {string} [fallbackColor='black'] - A fallback color if the variable is not found.
+ * @param {string} variableNameWithVar - The name of the CSS variable including "var(...)" wrapper (e.g., 'var(--food-color)').
+ * @param {string} [fallbackColor='black'] - A fallback color if the variable is not found or cannot be resolved.
  * @returns {string} The color value.
  */
-export function getCssVariable(variableName, fallbackColor = 'black') {
-    const varNameWithoutVar = variableName.startsWith('var(')
-        ? variableName.match(/var\(([^)]+)\)/)[1]
-        : variableName;
-    return getComputedStyle(document.documentElement).getPropertyValue(varNameWithoutVar).trim() || fallbackColor;
+export function getCssVariable(variableNameWithVar, fallbackColor = 'black') {
+    if (typeof variableNameWithVar !== 'string') return fallbackColor;
+
+    let actualVariableName = variableNameWithVar;
+    if (variableNameWithVar.startsWith('var(') && variableNameWithVar.endsWith(')')) {
+        actualVariableName = variableNameWithVar.substring(4, variableNameWithVar.length - 1);
+    }
+
+    try {
+        const value = getComputedStyle(document.documentElement).getPropertyValue(actualVariableName).trim();
+        // console.log(`getCssVariable: Fetched '${actualVariableName}' = '${value}' (fallback: '${fallbackColor}')`);
+        return value || fallbackColor;
+    } catch (e) {
+        console.warn(`getCssVariable: Could not get CSS variable ${actualVariableName}. Falling back to ${fallbackColor}. Error:`, e);
+        return fallbackColor;
+    }
 }
