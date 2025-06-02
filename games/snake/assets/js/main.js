@@ -1,12 +1,13 @@
 // assets/js/main.js
 
 import { Game } from './game.js';
-import { DIFFICULTY_LEVELS, DIFFICULTY_SETTINGS } from './constants.js';
+import { DIFFICULTY_LEVELS, DIFFICULTY_SETTINGS, GAME_MODES } from './constants.js';
 import { populateLegend } from './legend.js';
 
 const themeToggleElement = document.getElementById('page-title-clickable');
 const themeLink = document.getElementById('theme-link');
 const difficultySelectElement = document.getElementById('difficulty-select');
+const modeSelectElement = document.getElementById('mode-select');
 
 let gameInstance = null;
 
@@ -14,14 +15,14 @@ const THEME_FILES = {
     light: 'assets/css/light-theme.css',
     dark: 'assets/css/dark-theme.css'
 };
-let currentTheme = 'light'; // Default theme
+let currentTheme = 'light';
 
 function toggleTheme() {
-    console.log('toggleTheme function called. Current theme before change:', currentTheme); // LOG
+    // console.log('toggleTheme function called. Current theme before change:', currentTheme);
     currentTheme = (currentTheme === 'light') ? 'dark' : 'light';
     themeLink.setAttribute('href', THEME_FILES[currentTheme]);
     localStorage.setItem('snakeGameTheme', currentTheme);
-    console.log(`Theme changed to ${currentTheme}. Link href: ${themeLink.getAttribute('href')}`); // LOG
+    // console.log(`Theme changed to ${currentTheme}. Link href: ${themeLink.getAttribute('href')}`);
 }
 
 function loadTheme() {
@@ -30,30 +31,52 @@ function loadTheme() {
         currentTheme = savedTheme;
     }
     themeLink.setAttribute('href', THEME_FILES[currentTheme]);
-    // console.log(`Theme loaded: ${currentTheme}`); // Optional log
 }
 
 function populateDifficultyOptions() {
     if (difficultySelectElement) {
         difficultySelectElement.innerHTML = '';
-        // Only Easy, Medium, Hard as per last request
+        // Order based on the simplified 3 levels
         const difficultyOrder = [DIFFICULTY_LEVELS.EASY, DIFFICULTY_LEVELS.MEDIUM, DIFFICULTY_LEVELS.HARD];
         
         difficultyOrder.forEach(levelKey => {
-            const levelValue = levelKey; // DIFFICULTY_LEVELS already provides the key as string
-            const levelDisplayName = DIFFICULTY_SETTINGS[levelValue]?.name || levelValue;
+            const levelDisplayName = DIFFICULTY_SETTINGS[levelKey]?.name || levelKey;
             const option = document.createElement('option');
-            option.value = levelValue;
-            option.textContent = levelDisplayName;
+            option.value = levelKey; // e.g., "EASY"
+            option.textContent = levelDisplayName; // e.g., "Easy"
             difficultySelectElement.appendChild(option);
         });
 
         const savedDifficulty = localStorage.getItem('snakeGameDifficulty');
-        if (savedDifficulty && DIFFICULTY_SETTINGS[savedDifficulty]) {
+        if (savedDifficulty && DIFFICULTY_LEVELS[savedDifficulty]) { // Check if saved key is valid
             difficultySelectElement.value = savedDifficulty;
         } else {
-            difficultySelectElement.value = DIFFICULTY_LEVELS.MEDIUM;
+            difficultySelectElement.value = DIFFICULTY_LEVELS.MEDIUM; // Default
             localStorage.setItem('snakeGameDifficulty', DIFFICULTY_LEVELS.MEDIUM);
+        }
+    }
+}
+
+function populateModeOptions() {
+    if (modeSelectElement) {
+        modeSelectElement.innerHTML = '';
+        // Order of game modes for display
+        const modeOrder = [GAME_MODES.CLASSIC, GAME_MODES.SURVIVAL]; 
+
+        modeOrder.forEach(modeValue => { // modeValue is 'classic' or 'survival'
+            const modeDisplayName = modeValue.charAt(0).toUpperCase() + modeValue.slice(1);
+            const option = document.createElement('option');
+            option.value = modeValue;
+            option.textContent = modeDisplayName;
+            modeSelectElement.appendChild(option);
+        });
+
+        const savedMode = localStorage.getItem('snakeGameMode');
+        if (savedMode && Object.values(GAME_MODES).includes(savedMode)) {
+            modeSelectElement.value = savedMode;
+        } else {
+            modeSelectElement.value = GAME_MODES.CLASSIC; // Default to Classic
+            localStorage.setItem('snakeGameMode', GAME_MODES.CLASSIC);
         }
     }
 }
@@ -66,23 +89,30 @@ function handleDifficultyChange(event) {
     }
 }
 
+function handleModeChange(event) {
+    const selectedMode = event.target.value;
+    if (gameInstance && typeof gameInstance.setGameMode === 'function') {
+        gameInstance.setGameMode(selectedMode);
+        localStorage.setItem('snakeGameMode', selectedMode);
+    }
+}
+
 function initGame() {
     loadTheme();
     populateDifficultyOptions();
+    populateModeOptions();
     populateLegend();
 
     if (themeToggleElement) {
-        console.log("Attaching listeners to theme toggle element:", themeToggleElement); // LOG
+        // console.log("Attaching listeners to theme toggle element:", themeToggleElement);
         themeToggleElement.addEventListener('click', () => {
-            console.log("Title CLICKED"); // LOG
+            // console.log("Title CLICKED");
             toggleTheme();
         });
         themeToggleElement.addEventListener('touchend', (e) => {
-            console.log("Title TOUCHED (touchend)"); // LOG
-            e.preventDefault();
+            // console.log("Title TOUCHED (touchend)");
+            e.preventDefault(); // Important to prevent potential double toggle or page zoom
             toggleTheme();
-            // It's possible both touchend and click fire.
-            // Consider a flag or more sophisticated handling if double toggling occurs.
         });
     } else {
         console.error("Theme toggle element ('page-title-clickable') not found!");
@@ -94,15 +124,24 @@ function initGame() {
         console.error("Difficulty select element ('difficulty-select') not found!");
     }
 
+    if (modeSelectElement) {
+        modeSelectElement.addEventListener('change', handleModeChange);
+    } else {
+        console.error("Mode select element ('mode-select') not found!");
+    }
+
     try {
         const initialDifficultyKey = difficultySelectElement ? difficultySelectElement.value : DIFFICULTY_LEVELS.MEDIUM;
+        const initialGameMode = modeSelectElement ? modeSelectElement.value : GAME_MODES.CLASSIC;
+
         gameInstance = new Game(
             'gameCanvas',
             'score',
             'highscore',
             'combo-display',
             null, 
-            initialDifficultyKey
+            initialDifficultyKey,
+            initialGameMode
         );
     } catch (error) {
         console.error("Failed to initialize game:", error);
