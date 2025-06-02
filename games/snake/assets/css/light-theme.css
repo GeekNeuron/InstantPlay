@@ -1,59 +1,53 @@
 /* assets/css/light-theme.css */
 :root {
     /* --- General Page & Text --- */
-    --bg-color: #FFFFFF;                            /* Main page background: completely white */
-    --text-color: #212529;                          /* Primary text color: near black for high contrast */
-    --text-color-muted: #6c757d;                    /* Muted text color: medium gray */
+    --bg-color: #FFFFFF;
+    --text-color: #212529;
+    --text-color-muted: #6c757d;
     --header-text-color: #212529;                   /* Color for the main game title (h1) */
-    --accent-color: #007bff;                        /* Accent color (e.g., for buttons): standard blue */
-    --accent-color-translucent: rgba(0, 123, 255, 0.25); /* For focus rings etc. */
+    --accent-color: #007bff;
+    --accent-color-translucent: rgba(0, 123, 255, 0.25);
 
-    /* --- Settings Box (main container for title, controls, game) & Game Container --- */
+    /* --- Settings Box, Game Container & Board --- */
     --settings-box-bg: #f0f0f0;                    /* Background for the entire header/settings box */
     --game-bg-color: transparent;                   /* Game container itself is transparent, settings-box provides bg */
-    --canvas-bg-color: #e9ecef;                     /* Game canvas (grid) background: light gray */
-    --border-color: #dee2e6;                        /* Border color for settings-box and canvas */
-    --grid-line-color: rgba(0, 0, 0, 0.1);          /* Grid line color: semi-transparent black */
+    --canvas-bg-color: #e9ecef;
+    --border-color: #dee2e6;
+    --grid-line-color: #ced4da;                     /* Changed to a more visible light gray */
 
     /* --- Score Boxes inside Settings Box --- */
-    --score-box-bg: #e0e0e0;                        /* Background for individual score boxes, slightly different from settings-box-bg */
+    --score-box-bg: #e0e0e0;                        /* Background for individual score boxes */
     --score-box-text: var(--text-color);
 
     /* --- Game Elements --- */
-    --snake-head-color: #28a745;                    /* Green for snake head */
-    --snake-body-color: #228C22;                    /* Darker green for snake body */
-    --food-color: #dc3545;                          /* Red for default food */
-    --food-color-golden: #ffc107;                   /* Gold for golden apple */
-    --food-color-speed: #17a2b8;                    /* Cyan-blue for speed food */
-    --food-color-slow: #fd7e14;                     /* Orange for slow-down food */
-    --food-color-grow: #6f42c1;                     /* Purple for extra growth food */
-    --obstacle-color: #495057;                      /* Dark gray for obstacles */
+    --snake-head-color: #28a745;
+    --snake-body-color: #228C22;
+    --food-color: #dc3545;
+    --food-color-golden: #ffc107;
+    --food-color-speed: #17a2b8;
+    --food-color-slow: #fd7e14;
+    --food-color-grow: #6f42c1;
+    --obstacle-color: #495057;
 
     /* --- Power-ups (Collectible Items) --- */
-    --powerup-color-shield: #007bff;                /* Blue for shield item */
-    --powerup-color-scoreboost: #28a745;            /* Green for score boost item (instant score) */
-    --powerup-color-score-multiplier: #ffc107;      /* Gold/Yellow for score multiplier item */
-    --text-color-on-accent: #FFFFFF;                /* Text color on top of power-up items / accent backgrounds */
+    --powerup-color-shield: #007bff;
+    --powerup-color-scoreboost: #28a745;
+    --powerup-color-score-multiplier: #ffc107;
+    --text-color-on-accent: #FFFFFF;
 
     /* --- Modals & Overlays --- */
-    --modal-overlay-bg: rgba(33, 37, 41, 0.65);     /* Semi-transparent dark overlay for modal/pause */
-    --modal-content-bg: #FFFFFF;                    /* Modal content background: white */
-    --modal-text-color: var(--text-color);          /* Modal text color */
-    --text-color-on-overlay: #FFFFFF;               /* Text color for messages on dark overlays (like Ready, Game Over messages drawn on canvas) */
+    --modal-overlay-bg: rgba(33, 37, 41, 0.65);
+    --modal-content-bg: #FFFFFF;
+    --modal-text-color: var(--text-color);
+    --text-color-on-overlay: #FFFFFF;
 
     /* --- Buttons (inside modals or other UI parts) --- */
     --button-bg: var(--accent-color);
     --button-text: #FFFFFF;
-    --button-hover-bg: #0056b3;                     /* Darker blue for button hover */
+    --button-hover-bg: #0056b3;
 }
 
-/*
-   Specific overrides for elements when light theme is active.
-   The .settings-box background is set by a variable.
-   The h1.game-title-header inside .settings-box gets its text color from --header-text-color
-   and its background should be transparent (handled by style.css or explicitly here if needed).
-*/
+/* Title (theme switcher) in light theme - style.css handles transparency */
 h1.game-title-header {
-    /* style.css aims for transparent background by default for this element */
-    color: var(--header-text-color); 
+    color: var(--header-text-color);
 }
