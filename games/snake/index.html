@@ -17,10 +17,15 @@
                     <div class="score-box" id="current-score-box">Score: <span id="score">0</span></div>
                     <div class="score-box" id="high-score-box">High Score: <span id="highscore">0</span></div>
                 </div>
-                <div class="difficulty-control-right difficulty-control">
-                    <label for="difficulty-select">Difficulty:</label>
-                    <select id="difficulty-select" name="difficulty">
-                        </select>
+                <div class="settings-selectors-right">
+                    <div class="control-group">
+                        <select id="difficulty-select" name="difficulty" aria-label="Select Difficulty">
+                            </select>
+                    </div>
+                    <div class="control-group">
+                        <select id="mode-select" name="mode" aria-label="Select Game Mode">
+                            </select>
+                    </div>
                 </div>
             </div>
 
@@ -44,8 +49,8 @@
         </footer>
     </div>
 
-    <div id="achievement-notification" class="achievement-popup"></div>
-
+    <div id="achievement-notification" class="achievement-popup">
+        </div>
     <div id="legend-info-bubble" class="legend-info-bubble" style="display: none; position: absolute;">
         <div class="bubble-arrow"></div>
         <strong id="bubble-title" class="bubble-title">Item Name</strong>
