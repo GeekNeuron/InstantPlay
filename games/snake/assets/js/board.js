@@ -14,41 +14,36 @@ export class Board {
         this.cols = COLS;
         this.gridSize = GRID_SIZE;
 
-        // --- LOG: Check canvas and calculated dimensions ---
         if (!this.canvas) {
-            console.error("Board Constructor: Canvas element is NULL!");
-        } else {
-            console.log(`Board Constructor: Canvas found. GRID_SIZE=${GRID_SIZE}, COLS=${COLS}, ROWS=${ROWS}`);
+            console.error("Board Constructor: CRITICAL - Canvas element is NULL!");
+            return; 
         }
+        console.log(`Board Constructor: Canvas element found. GRID_SIZE=${GRID_SIZE}, COLS=${COLS}, ROWS=${ROWS}`);
         
         this.canvas.width = this.cols * this.gridSize;
         this.canvas.height = this.rows * this.gridSize;
         
         if (this.canvas.width === 0 || this.canvas.height === 0) {
-            console.error("Board Constructor: Canvas dimensions calculated to zero!", this.canvas.width, this.canvas.height);
+            console.error("Board Constructor: CRITICAL - Canvas dimensions calculated to zero!", this.canvas.width, this.canvas.height);
         } else {
-            console.log("Board Constructor: Canvas dimensions ATTRIBUTES set to:", this.canvas.width, "x", this.canvas.height);
+            console.log("Board Constructor: Canvas ATTRIBUTES set to:", this.canvas.width, "x", this.canvas.height);
         }
-
         this.obstacles = [];
     }
 
-    /**
-     * Sets up obstacles based on the provided configuration key.
-     * @param {string} configKey - A key from OBSTACLE_CONFIG (e.g., OBSTACLE_CONFIG.NONE).
-     */
     setupObstacles(configKey = OBSTACLE_CONFIG.STANDARD) {
-        this.obstacles = []; // Clear existing obstacles
+        this.obstacles = []; 
+        console.log("Board.setupObstacles: Called with configKey:", configKey);
 
         switch (configKey) {
             case OBSTACLE_CONFIG.NONE:
                 console.log("Board: No obstacles generated (Config: NONE).");
                 break;
-            case OBSTACLE_CONFIG.STANDARD: // Medium difficulty
+            case OBSTACLE_CONFIG.STANDARD:
+                console.log("Board: Setting up STANDARD obstacles.");
                 this.addObstacle({ x: Math.floor(COLS / 2) - 2, y: Math.floor(ROWS / 3), type: OBSTACLE_TYPES.STATIC });
                 this.addObstacle({ x: Math.floor(COLS / 2) - 1, y: Math.floor(ROWS / 3), type: OBSTACLE_TYPES.STATIC });
                 this.addObstacle({ x: Math.floor(COLS / 2),     y: Math.floor(ROWS / 3), type: OBSTACLE_TYPES.STATIC });
-                
                 if (COLS > 10) {
                     this.addObstacle({
                         x: Math.floor(COLS / 4), y: Math.floor(2 * ROWS / 3),
@@ -56,38 +51,34 @@ export class Board {
                         onDuration: BLINKING_OBSTACLE_ON_DURATION, offDuration: BLINKING_OBSTACLE_OFF_DURATION
                     });
                 }
-                console.log("Board: Standard obstacles set up.");
                 break;
-            case OBSTACLE_CONFIG.CHALLENGING: // Hard difficulty
-                for (let i = 0; i < 5; i++) {
-                    this.addObstacle({ x: Math.floor(COLS / 2) - 2 + i, y: Math.floor(ROWS / 4), type: OBSTACLE_TYPES.STATIC });
-                    this.addObstacle({ x: Math.floor(COLS / 2) - 2 + i, y: Math.floor(3 * ROWS / 4), type: OBSTACLE_TYPES.STATIC });
+            case OBSTACLE_CONFIG.CHALLENGING:
+                console.log("Board: Setting up CHALLENGING obstacles.");
+                for (let i = 0; i < 7; i++) {
+                    this.addObstacle({ x: Math.floor(COLS / 2) - 3 + i, y: Math.floor(ROWS / 4) -1, type: OBSTACLE_TYPES.STATIC });
+                    this.addObstacle({ x: Math.floor(COLS / 2) - 3 + i, y: Math.floor(3 * ROWS / 4) +1, type: OBSTACLE_TYPES.STATIC });
                 }
                 if (COLS > 15) {
                     this.addObstacle({
-                        x: 5, y: Math.floor(ROWS / 2),
+                        x: 3, y: Math.floor(ROWS / 2),
                         type: OBSTACLE_TYPES.BLINKING, isVisible: true, lastToggleTime: performance.now(),
-                        onDuration: BLINKING_OBSTACLE_ON_DURATION * 0.7, offDuration: BLINKING_OBSTACLE_OFF_DURATION * 0.7
+                        onDuration: BLINKING_OBSTACLE_ON_DURATION * 0.6, offDuration: BLINKING_OBSTACLE_OFF_DURATION * 0.6
                     });
                     this.addObstacle({
-                        x: COLS - 6, y: Math.floor(ROWS / 2),
+                        x: COLS - 4, y: Math.floor(ROWS / 2),
                         type: OBSTACLE_TYPES.BLINKING, isVisible: false, lastToggleTime: performance.now(),
-                        onDuration: BLINKING_OBSTACLE_ON_DURATION * 0.7, offDuration: BLINKING_OBSTACLE_OFF_DURATION * 0.7
+                        onDuration: BLINKING_OBSTACLE_ON_DURATION * 0.6, offDuration: BLINKING_OBSTACLE_OFF_DURATION * 0.6
                     });
                 }
-                console.log("Board: Challenging obstacles set up.");
                 break;
             default:
-                console.warn("Board: Unknown obstacle configuration key:", configKey);
+                console.warn("Board: Unknown obstacle configuration key in setupObstacles:", configKey);
                 break;
         }
         console.log("Board: Total obstacles after setup:", this.obstacles.length);
+        if (this.obstacles.length > 0) console.log("Board: First obstacle details:", JSON.stringify(this.obstacles[0]));
     }
 
-    /**
-     * Updates the state of dynamic obstacles (e.g., blinking obstacles).
-     * @param {number} currentTime - The current game time from performance.now().
-     */
     updateObstacles(currentTime) {
         this.obstacles.forEach(obs => {
             if (obs.type === OBSTACLE_TYPES.BLINKING) {
@@ -100,15 +91,16 @@ export class Board {
         });
     }
 
-    /**
-     * Clears the canvas and draws the game board, grid lines, and all visible obstacles.
-     */
     draw() {
-        const canvasBgColor = getCssVariable('var(--canvas-bg-color)', '#CDC1B4'); 
-        console.log("Board.draw(): Filling canvas with color:", canvasBgColor, ". Canvas WxH:", this.canvas.width, this.canvas.height);
+        const canvasBgColor = getCssVariable('var(--canvas-bg-color)', '#DDDDDD'); // Fallback slightly darker gray
+        console.log("Board.draw(): Filling canvas. Color:", canvasBgColor, ". Canvas attribute WxH:", this.canvas.width, "x", this.canvas.height);
         // Log actual displayed size (influenced by CSS) vs internal bitmap size
-        // console.log("Board.draw(): Canvas client WxH:", this.canvas.clientWidth, "x", this.canvas.clientHeight);
+        console.log("Board.draw(): Canvas client CSS WxH:", this.canvas.clientWidth, "x", this.canvas.clientHeight);
 
+        if (this.canvas.width === 0 || this.canvas.height === 0) {
+            console.error("Board.draw(): CRITICAL - Canvas has zero width or height. Not drawing board fill.");
+            return;
+        }
         this.context.fillStyle = canvasBgColor;
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
         
@@ -117,33 +109,37 @@ export class Board {
     }
 
     drawGridLines() {
-        const gridLineColor = getCssVariable('var(--grid-line-color)', 'rgba(0,0,0,0.08)');
+        const gridLineColor = getCssVariable('var(--grid-line-color)', '#AAAAAA'); // Fallback noticeable gray
         this.context.lineWidth = 1; 
-        // console.log("Board.drawGridLines(): Drawing with color:", gridLineColor, "and lineWidth:", this.context.lineWidth);
-
         this.context.strokeStyle = gridLineColor;
+        console.log("Board.drawGridLines(): Attempting to draw. Color:", gridLineColor, "LineWidth:", this.context.lineWidth);
+
         const offset = 0.5;
-        if (this.context.lineWidth > 0 && gridLineColor && gridLineColor !== 'transparent' && !gridLineColor.endsWith('0)')) { // Check for fully transparent
+        // Check if color is valid and not fully transparent
+        const GCO = this.context.globalAlpha; // Store current globalAlpha
+        this.context.globalAlpha = 1; // Ensure lines are not transparent due to globalAlpha
+
+        if (this.context.lineWidth > 0 && gridLineColor && gridLineColor !== 'transparent' && !gridLineColor.startsWith('rgba') || (gridLineColor.startsWith('rgba') && parseFloat(gridLineColor.split(',')[3]) > 0) ) {
+            let linesDrawn = 0;
             for (let x = 0; x <= this.cols; x++) {
-                this.context.beginPath();
-                this.context.moveTo(x * this.gridSize + offset, 0);
-                this.context.lineTo(x * this.gridSize + offset, this.canvas.height);
-                this.context.stroke();
+                this.context.beginPath(); this.context.moveTo(x * this.gridSize + offset, 0);
+                this.context.lineTo(x * this.gridSize + offset, this.canvas.height); this.context.stroke();
+                linesDrawn++;
             }
             for (let y = 0; y <= this.rows; y++) {
-                this.context.beginPath();
-                this.context.moveTo(0, y * this.gridSize + offset);
-                this.context.lineTo(this.canvas.width, y * this.gridSize + offset);
-                this.context.stroke();
+                this.context.beginPath(); this.context.moveTo(0, y * this.gridSize + offset);
+                this.context.lineTo(this.canvas.width, y * this.gridSize + offset); this.context.stroke();
+                linesDrawn++;
             }
+            console.log(`Board.drawGridLines(): ${linesDrawn} line draw operations performed.`);
         } else {
-            console.warn("Board.drawGridLines(): Grid lines not drawn. Color:", gridLineColor, "LineWidth:", this.context.lineWidth);
+            console.warn("Board.drawGridLines(): Skipped drawing grid lines due to invalid color or lineWidth. Color:", gridLineColor, "LineWidth:", this.context.lineWidth);
         }
+        this.context.globalAlpha = GCO; // Restore globalAlpha
     }
     
     addObstacle(obstacleData) {
         if (!obstacleData || typeof obstacleData.x !== 'number' || typeof obstacleData.y !== 'number') {
-            // console.error("Board: Invalid obstacle data to addObstacle.", obstacleData);
             return;
         }
         const existingObstacleAtPos = this.obstacles.some(obs => obs.x === obstacleData.x && obs.y === obstacleData.y);
@@ -166,22 +162,20 @@ export class Board {
     }
 
     drawObstacles() {
-        const obstacleColor = getCssVariable('var(--obstacle-color)', '#555555');
+        const obstacleColor = getCssVariable('var(--obstacle-color)', '#333333'); // Fallback dark gray
         this.context.fillStyle = obstacleColor;
-        let drawnObstacles = 0;
+        let drawnCount = 0;
         this.obstacles.forEach(obstacle => {
             if (obstacle.isVisible) {
                 this.context.fillRect(
-                    obstacle.x * this.gridSize,
-                    obstacle.y * this.gridSize,
-                    this.gridSize,
-                    this.gridSize
+                    obstacle.x * this.gridSize, obstacle.y * this.gridSize,
+                    this.gridSize, this.gridSize
                 );
-                drawnObstacles++;
+                drawnCount++;
             }
         });
-        if(this.obstacles.length > 0) {
-            // console.log("Board.drawObstacles(): Attempted to draw. Visible obstacles:", drawnObstacles, "Total obstacles:", this.obstacles.length);
+        if (this.obstacles.length > 0 || drawnCount > 0) {
+            console.log(`Board.drawObstacles(): Drawn ${drawnCount} / ${this.obstacles.length} obstacles. Color: ${obstacleColor}`);
         }
     }
 
