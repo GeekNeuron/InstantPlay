@@ -1,16 +1,32 @@
 /* assets/css/style.css */
 
+/* Updated root variables from your example */
 :root {
-    --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    --border-radius-small: 4px;
-    --border-radius-medium: 8px;
-    --border-radius-large: 12px;
-    --transition-speed: 0.25s;
+    --font-main: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif; /* From your example */
+    --border-radius-small: 6px; /* Adjusted based on your --border-radius / 1.5 or similar */
+    --border-radius-medium: 10px; /* Your --border-radius */
+    --border-radius-large: 15px; /* Adjusted */
+    --transition-speed: 0.25s; /* Kept our transition speed */
+    --gap-size: 10px; /* From your example, can be used for flex gaps */
+
+    /* Page wrapper max-width, kept from our design */
     --page-wrapper-max-width: 550px;
     --grid-size-js: 15px; 
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html { 
+    box-sizing: border-box; 
+    -webkit-tap-highlight-color: transparent; 
+}
+*, *:before, *:after { 
+    box-sizing: inherit; 
+}
 
 body {
     font-family: var(--font-main);
@@ -19,12 +35,14 @@ body {
     align-items: center;
     justify-content: flex-start;
     min-height: 100vh;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    transition: background-color var(--transition-speed) ease-in-out, color var(--transition-speed) ease-in-out;
-    padding: 10px;
+    background-color: var(--bg-color); /* General name, defined in theme files */
+    color: var(--text-color-primary);  /* General name, defined in theme files */
+    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+    padding: 15px; /* From your example body style */
+    /* padding-top: 60px; // This was in your example, but our header is part of flow */
     text-align: center;
     line-height: 1.6;
+    overflow: hidden; /* From your example body style */
 }
 
 .page-wrapper {
@@ -36,68 +54,69 @@ body {
     padding-bottom: 20px;
 }
 
-/* Main encompassing box for all game UI */
+/* Settings Box (Header) - Main container for controls and game */
 .settings-box {
     width: 100%;
-    padding: 15px;
+    padding: 20px; /* From your .container style */
     margin-bottom: 15px;
     display: flex;
-    flex-direction: column; /* Children stack vertically: Title, Controls, Game, Legend, Footer */
-    align-items: center;    /* Center children like Title if they don't take full width */
-    background-color: var(--game-bg-color);
-    border-radius: var(--border-radius-large);
-    border: 1px solid var(--border-color);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--container-bg); /* From theme */
+    border-radius: var(--border-radius-medium); /* Updated border-radius */
+    border: 1px solid var(--border-color);    /* From theme */
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08); /* From your .container style */
+    transition: background-color var(--transition-speed) ease;
 }
 
-/* Row 1: Title */
 h1.game-title-header {
-    font-size: 2.6rem; /* Made title larger */
-    font-weight: 700;
-    color: var(--header-text-color);
-    margin: 0 0 18px 0; /* Increased margin below title */
+    font-size: 2.8em; /* Adjusted from your h1, can be tuned */
+    font-weight: bold;
+    color: var(--header-text-color); /* From theme */
+    margin: 0 0 20px 0; /* Adjusted margin */
     padding: 5px;
-    background-color: transparent !important; /* Ensure transparent background, override theme attempts */
-    border: none !important; /* Ensure no border from theme specific styles */
+    background-color: transparent !important;
+    border: none !important;
     cursor: pointer;
     user-select: none;
     text-align: center;
-    width: 100%; /* Title takes full width */
+    width: 100%;
 }
 
-/* Row 2: Controls Panel (Scores and Selectors) */
 .controls-panel {
     display: flex;
-    justify-content: space-between; /* Pushes scores to left, selectors to right */
+    justify-content: space-between;
     align-items: center;
     width: 100%;
-    gap: 10px;
-    margin-bottom: 18px; /* Space between controls and game-container */
-    flex-wrap: wrap; /* Allow wrapping for responsiveness */
+    gap: var(--gap-size); /* Use gap-size from theme */
+    margin-bottom: 20px; /* From your header style */
+    flex-wrap: wrap;
 }
 
 .scores-group-left {
     display: flex;
     align-items: center;
-    gap: 10px; /* Gap between individual score boxes */
-    flex-shrink: 0; /* Prevent score boxes from shrinking excessively */
+    gap: var(--gap-size); /* Use gap-size */
+    flex-shrink: 0; 
 }
 
-.score-box {
+.score-box { /* Adopted from your .score-box */
     background-color: var(--score-box-bg);
     color: var(--score-box-text);
-    padding: 8px 12px; /* Slightly more padding */
-    border-radius: var(--border-radius-small);
-    font-size: 0.9rem; /* Slightly larger font */
-    font-weight: 500;
+    padding: 8px 15px; /* Adjusted padding */
+    border-radius: calc(var(--border-radius-medium) - 4px); /* From your example */
+    font-size: 1em; /* From your example */
+    font-weight: bold;
     text-align: center;
-    min-width: 100px; /* Min width for each score box */
+    min-width: 90px; /* Adjusted based on content */
+    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
 }
 
 .settings-selectors-right {
     display: flex;
     align-items: center;
-    gap: 12px; /* Gap between difficulty and mode selectors */
+    gap: var(--gap-size);
+    flex-wrap: nowrap;
 }
 
 .control-group {
@@ -105,136 +124,157 @@ h1.game-title-header {
     align-items: center;
 }
 
-.control-group select {
-    padding: 7px 10px;
-    border-radius: var(--border-radius-small);
+.control-group select { /* Style for difficulty and mode selects */
+    padding: 8px 10px; /* Similar to score-box padding */
+    border-radius: calc(var(--border-radius-medium) - 4px);
     border: 1px solid var(--border-color);
-    background-color: var(--canvas-bg-color);
-    color: var(--text-color);
+    background-color: var(--grid-cell-bg); /* Using grid-cell-bg for select background */
+    color: var(--text-color-primary);
     font-family: var(--font-main);
-    font-size: 0.85rem;
+    font-size: 0.9em; /* Slightly smaller than score-box text */
     cursor: pointer;
     min-width: 100px;
     text-align: center;
     text-align-last: center;
     -moz-text-align-last: center;
+    transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
 }
 
 .control-group select:focus {
     outline: none;
-    border-color: var(--accent-color);
+    border-color: var(--accent-color); /* Use accent color defined in themes */
     box-shadow: 0 0 0 2px var(--accent-color-translucent, rgba(0, 123, 255, 0.25));
 }
 
-/* Row 3: Game Container */
 .game-container {
     padding: 0;
     border: none;
     box-shadow: none;
-    background-color: transparent; /* Canvas itself will have background */
+    background-color: transparent;
     display: flex;
     flex-direction: column;
     width: 100%;
     max-width: 100%;
-    /* margin-top: 10px; // Removed as it's stacked by parent flex */
 }
 
-.game-header-combo {
+.game-header-combo { /* Header for combo, above canvas */
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 8px 10px;
-    margin-bottom: 8px;
+    margin-bottom: var(--gap-size); /* Use gap-size */
     font-size: 1rem;
-    color: var(--accent-color);
-    min-height: 28px;
-    background-color: var(--canvas-bg-color);
-    border-radius: var(--border-radius-medium) var(--border-radius-medium) 0 0;
+    color: var(--accent-color); /* Accent color for combo */
+    min-height: 30px; /* Ensure some height */
+    background-color: var(--grid-cell-bg); /* Use grid-cell-bg for a distinct but integrated look */
+    border-radius: var(--border-radius-small) var(--border-radius-small) 0 0; /* Match canvas rounding */
 }
 
-#combo-display { /* ... as before ... */ }
+#combo-display { /* ... */ }
 
 #gameCanvas {
     display: block;
-    width: 100%; /* Canvas scales to its container's width */
-    /* height: auto; // Let aspect ratio defined by JS attributes control height */
-    /* For a square canvas (if ROWS === COLS), this helps maintain aspect ratio with width: 100% */
-    aspect-ratio: 1 / 1; 
-    max-height: 75vh; /* Overall max height constraint for the canvas */
-    object-fit: contain; /* This is more for <img> or <video>, might not be ideal for canvas scaling */
-    border-radius: 0 0 var(--border-radius-medium) var(--border-radius-medium);
-    background-color: var(--canvas-bg-color); /* Critical for visibility if drawing fails */
-    border: 1px solid var(--border-color); /* Make canvas boundary visible */
+    width: 100%; 
+    aspect-ratio: 1 / 1; /* Assuming square canvas based on ROWS/COLS being equal */
+    /* max-height: calc(var(--grid-side-length-desktop) * 0.9); From your 2048 example, adjusted */
+    max-height: 400px; /* Or a fixed max for better control, aligns with your 2048 canvas size */
+    background-color: var(--grid-bg); /* From your example (grid-bg for canvas background) */
+    border-radius: 0 0 var(--border-radius-small) var(--border-radius-small); /* Match combo header rounding */
+    border: 2px solid var(--border-color); /* Subtle border */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Softer shadow */
+    transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
 }
 
-/* Row 4: Game Legend */
+/* Game Legend Styling */
 .game-legend {
     width: 100%;
-    margin-top: 15px;
-    padding: 10px;
-    /* border-top: 1px solid var(--border-color); // Optional separator */
-    /* background-color: var(--canvas-bg-color); // Optional distinct background */
-    border-radius: var(--border-radius-medium); /* Can have its own rounding */
+    margin-top: var(--gap-size);
+    padding: var(--gap-size);
+    /* background-color: var(--container-bg); // Or transparent to use settings-box bg */
+    border-top: 1px solid var(--border-color);
+    border-radius: 0 0 var(--border-radius-medium) var(--border-radius-medium); /* If it's the last visual element */
     text-align: center;
 }
+.legend-title { /* ... (as before, or remove if not used) ... */ }
+.legend-items-container { /* ... (as before) ... */ }
+.legend-item { /* ... (as before) ... */ }
+.legend-item:hover, .legend-item:focus { background-color: var(--grid-cell-bg); outline: none; } /* Use grid-cell-bg for hover */
+.legend-item-icon { /* ... (as before, uses --grid-size-js and --border-color) ... */ }
+.legend-item-name { /* ... (as before, uses --text-color-muted) ... */ }
 
-.legend-items-container { /* ... as before ... */ }
-.legend-item { /* ... as before ... */ }
-.legend-item:hover, .legend-item:focus { /* ... as before ... */ }
-.legend-item-icon { /* ... as before ... */ }
-.legend-item-name { /* ... as before ... */ }
+/* Legend Info Bubble */
+.legend-info-bubble {
+    background-color: var(--modal-content-bg); /* Use modal content bg for bubble */
+    color: var(--modal-text-color);       /* Use modal text color */
+    border: 1px solid var(--border-color);
+    /* ... (rest of bubble styles as before) ... */
+}
+.legend-info-bubble .bubble-title { color: var(--accent-color); /* ... */ }
+.legend-info-bubble .bubble-arrow { /* ... (Ensure arrow color uses bubble background) ... */ }
 
-/* Row 5: Footer (inside settings-box) */
+
 footer {
     width: 100%;
     margin-top: 20px;
     padding-top: 10px;
     border-top: 1px solid var(--border-color);
-    font-size: 0.85rem;
-    color: var(--text-color-muted);
+    font-size: 0.85em; /* From your footer style */
+    color: var(--text-color-primary); /* From your footer style */
+    opacity: 0.8; /* Adjusted opacity */
     text-align: center;
+    transition: color var(--transition-speed) ease;
 }
 
-/* Achievement Notification & Modal Styling (remain the same as last full version) */
-.achievement-popup { /* ... */ }
-/* ... other achievement styles ... */
-.modal { /* ... */ }
-/* ... other modal styles ... */
+/* Achievement Notification & Modal (styles remain largely the same, will use new theme colors) */
+.achievement-popup { background-color: var(--accent-color); color: var(--button-text); /* ... */ }
+/* ... (other achievement styles) ... */
+.modal { background-color: var(--modal-bg); /* ... */ }
+.modal-content { background-color: var(--modal-content-bg); color: var(--modal-text-color); /* ... */ }
+.modal button { background-color: var(--button-bg); color: var(--button-text); /* ... */ }
+.modal button:hover { background-color: var(--button-hover-bg); /* ... */ }
 
-/* Media query for responsiveness */
-@media (max-width: 540px) {
-    .settings-box { padding: 10px; }
-    h1.game-title-header { font-size: 2rem; margin-bottom: 12px; }
+
+/* Responsive adjustments - adapting from your example where applicable */
+@media (max-width: 520px) { /* General breakpoint from your example */
+    body { padding: 10px; /* padding-top: 50px; // Removed fixed top padding */ }
+    .settings-box { padding: 15px; } /* Adjust padding for settings box */
+    h1.game-title-header { font-size: 2.2em; margin-bottom: 15px; } /* From your h1 */
+    
     .controls-panel {
-        flex-direction: column; /* Stack score group and selectors group */
+        flex-direction: column;
         align-items: stretch;
         gap: 12px;
+        margin-bottom: 15px;
     }
-    .scores-group-left {
-        justify-content: space-between;
+    .scores-group-left, .settings-selectors-right {
+        justify-content: space-around;
         width: 100%;
+        gap: 8px; /* Gap within stacked groups */
     }
-    .settings-selectors-right {
-        justify-content: space-between; /* Space out difficulty and mode selects */
-        width: 100%;
-    }
-    .control-group {
-        flex-grow: 1;
-        display: flex;
-        justify-content: center;
-    }
-    .control-group select {
-        width: 100%;
-        max-width: 160px;
-    }
+    .score-box { font-size: 0.9em; padding: 6px 10px; min-width: 80px; } /* From your score-box */
+    .control-group { flex-grow: 1; display: flex; justify-content: center; }
+    .control-group select { width: 100%; max-width: 180px; font-size: 0.9em; }
+
     #gameCanvas {
-         max-height: calc(70vh - 100px); /* Adjust canvas max height */
+        /* From your .grid-container responsive */
+        width: 90vw; 
+        height: 90vw; /* If using aspect-ratio, this height is not needed */
+        max-width: 360px; /* Cap size on mobile */
+        max-height: 360px;
+        /* padding: calc(var(--gap-size) * 0.8); // Canvas doesn't have padding */
     }
+    .game-legend { margin-top: 15px; }
+    footer { font-size: 0.8em; margin-top: 15px; }
 }
 
-@media (max-width: 400px) {
-    h1.game-title-header { font-size: 1.8rem; }
-    .score-box { font-size: 0.8rem; padding: 5px 8px; min-width: 80px; }
-    .control-group select { font-size: 0.8rem; }
-    .game-header-combo { font-size: 0.85rem; }
+@media (max-width: 380px) {
+    h1.game-title-header { font-size: 1.9em; }
+    .score-box { font-size: 0.8em; padding: 5px 7px; min-width: 70px; }
+    .control-group select { font-size: 0.8em; }
+    #gameCanvas {
+        width: 85vw; 
+        height: 85vw; /* If using aspect-ratio, this height is not needed */
+        max-width: 300px;
+        max-height: 300px;
+    }
 }
