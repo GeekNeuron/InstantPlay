@@ -20,8 +20,11 @@
     --score-box-text: var(--text-color);
 
     /* --- Game Elements --- */
-    --snake-head-color: #28a745;
-    --snake-body-color: #228C22;
+    --snake-head-color: #45b7b8;
+    --snake-body-color: #4ecdc4;
+    --snake-eye-color: #FFFFFF;
+    --snake-body-highlight-rgb: "255, 255, 255";
+    
     --food-color: #dc3545;
     --food-color-golden: #ffc107;
     --food-color-speed: #17a2b8;
