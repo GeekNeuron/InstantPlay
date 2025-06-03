@@ -1,66 +1,66 @@
 /* assets/css/dark-theme.css */
 :root {
-    /* --- General Page & Text (using your previously provided variable values) --- */
-    --bg-color: #0d1117;                            /* Your --body-bg */
-    --text-color: #c9d1d9;                          /* Your --text-color-primary */
-    --text-color-muted: #8b949e;                    /* GitHub's secondary text, good for dark themes */
-    --header-text-color: #c9d1d9;                   /* Color for the main game title (h1) */
-    --accent-color: #3282b8;                        /* Your --button-bg (used as general accent) */
-    --accent-color-translucent: rgba(50, 130, 184, 0.3); /* For focus rings etc. */
+    /* Dark Theme Palette (from your body.dark-theme) */
+    --bg-color: #0d1117;
+    --text-color-primary: #c9d1d9;
+    --text-color-muted: #8b949e; /* Chosen to complement primary text */
+    --header-text-color: var(--text-color-primary);
+    --accent-color: #3282b8; /* From your --button-bg */
+    --accent-color-translucent: rgba(50, 130, 184, 0.3);
 
-    /* --- Settings Box (main container for title, controls, game) & Game Container --- */
-    --settings-box-bg: #161b22;                    /* Background for the entire header/settings box (Your --container-bg) */
-    --game-bg-color: transparent;                   /* Game container itself is transparent, settings-box provides bg */
-    --canvas-bg-color: #1e2732;                     /* Your --grid-bg (main canvas background) */
-    --border-color: #30363d;                        /* Slightly lighter border than bg for visibility */
-    --grid-line-color: rgba(139, 148, 158, 0.2);    /* Adjusted alpha for better visibility */
+    /* Containers and Borders */
+    --settings-box-bg: #161b22;                   /* Was --container-bg */
+    --game-bg-color: transparent;
+    --canvas-bg-color: #1e2732;                     /* Was --grid-bg */
+                                                    /* --grid-cell-bg: #2c3a47; // For legend item hover? */
+    --border-color: #161b22; /* Was --border-color: var(--container-bg) */
 
-    /* --- Score Boxes inside Settings Box --- */
-    --score-box-bg: #274c77;                        /* Your --score-box-bg */
-    --score-box-text: #e0e6eb;                      /* Your --score-box-text */
+    /* Score Boxes */
+    --score-box-bg: #274c77;
+    --score-box-text: #e0e6eb;
 
-    /* --- Game Elements (colors chosen for visibility on dark theme) --- */
-    --snake-head-color: #45b7b8;                    /* رنگ سر مار مشابه GitSnake */
-    --snake-body-color: #4ecdc4;                    /* رنگ بدن مار مشابه GitSnake (پایه برای گرادیانت) */
-    --snake-eye-color: #FFFFFF;                     /* رنگ چشم مار: سفید */
-    --snake-body-highlight-rgb: "255, 255, 255";    /* رنگ هایلایت بدن مار (سفید برای ایجاد شفافیت) */
-
-    --food-color: #ff6666;                      /* Bright red for default food */
-    --food-color-golden: #ffd700;                   /* Gold */
-    --food-color-speed: #66ccff;                    /* Sky blue for speed food */
-    --food-color-slow: #ffaa66;                     /* Light orange for slow-down food */
-    --food-color-grow: #cc99ff;                     /* Light purple for extra growth food */
-    --obstacle-color: #768390;                      /* Adjusted for visibility */
-
-    /* --- Power-ups (Collectible Items) --- */
-    --powerup-color-shield: #3282b8;                /* Blue for shield item (from your button color) */
-    --powerup-color-scoreboost: #4CAF50;            /* Suitable green for score boost item */
-    --powerup-color-score-multiplier: #ffeb3b;      /* Bright Yellow/Gold for score multiplier */
-    --text-color-on-accent: #000000;                /* Text color on power-up items (e.g., if background is light yellow) */
-                                                    /* Consider #FFFFFF if power-up colors are dark */
-
-    /* --- Modals & Overlays --- */
-    --modal-overlay-bg: rgba(10, 10, 15, 0.75);     /* Your --modal-bg */
-    --modal-content-bg: #161b22;                    /* Your --modal-content-bg */
-    --modal-text-color: #c9d1d9;                    /* Your --modal-text-color */
-    --text-color-on-overlay: #FFFFFF;               /* Text color for messages on dark overlays */
-
-    /* --- Buttons (using your provided variables) --- */
+    /* Buttons */
     --button-bg: #3282b8;
     --button-text: #ffffff;
     --button-hover-bg: #1d4357;
 
-    /* Theme switcher title styling variables are no longer used as title bg is transparent */
-    /* --theme-switcher-bg-dark-active: #e0e0e0; */
-    /* --theme-switcher-border-dark-active: #cccccc; */
-    /* --theme-switcher-text-dark-active: #0d1117; */
+    /* Modals & Overlays */
+    --modal-overlay-bg: rgba(10, 10, 15, 0.7);
+    --modal-content-bg: #161b22;
+    --modal-text-color: #c9d1d9;
+    --text-color-on-overlay: #FFFFFF;
+
+    /* Game Specific Elements - Adjusted for new dark palette */
+    --snake-head-color: #50fa7b;                    /* Bright green */
+    --snake-body-color: #8be9fd;                    /* Cyanish for body */
+    --snake-eye-color: #0d1117;                     /* Dark eyes on light head */
+    --snake-body-highlight-rgb: "173, 216, 230";    /* Light blueish highlight (rgb values as string) */
+
+    --food-color: #ff5555;                          /* Bright red */
+    --food-color-golden: #f1c40f;                   /* Your --tile-128-bg */
+    --food-color-speed: #3498db;                    /* Your --tile-32-bg */
+    --food-color-slow: #e67e22;                     /* Your --tile-256-bg */
+    --food-color-grow: #9b59b6;                     /* Your --tile-64-bg */
+    --obstacle-color: #7f8c8d;                      /* A distinct gray for obstacles */
+
+    --powerup-color-shield: var(--accent-color);
+    --powerup-color-scoreboost: #2ecc71;            /* Your --tile-16-bg */
+    --powerup-color-score-multiplier: #f1c40f;      /* Your --tile-128-bg */
+    --text-color-on-accent: #FFFFFF; /* For text on colored powerup icons / accent buttons */
+
+    /* Theme switcher appearance when dark theme is active */
+    --theme-switcher-actual-bg: var(--button-text); /* Light background for switcher button */
+    --theme-switcher-actual-border: #8b949e;       /* Muted border */
+    --theme-switcher-icon-color: var(--bg-color);   /* Dark icon on light button */
 }
 
-/*
-   Specific overrides for elements when dark theme is active.
-   The .settings-box background is set by a variable.
-*/
+/* Apply specific styles for theme switcher (which is h1) when dark theme is active */
+/* This overrides the default transparent background set in style.css for h1 */
 h1.game-title-header {
-    /* style.css aims for transparent background by default for this element */
-    color: var(--header-text-color);
+    color: var(--header-text-color); /* Text color remains as per dark theme */
+    background-color: var(--theme-switcher-actual-bg) !important; /* Use theme switcher specific variables for its background */
+    border: 1px solid var(--theme-switcher-actual-border) !important;
+    /* The icon/text color inside the switcher button itself would be --theme-switcher-icon-color if it were an icon */
+    /* For h1, its text color is already --header-text-color, if that needs to change for the "button" look: */
+    color: var(--theme-switcher-text-dark-active, var(--bg-color)) !important; /* Using your original intent from example file */
 }
