@@ -20,9 +20,12 @@
     --score-box-text: #e0e6eb;                      /* Your --score-box-text */
 
     /* --- Game Elements (colors chosen for visibility on dark theme) --- */
-    --snake-head-color: #66ff66;                    /* Bright green for snake head */
-    --snake-body-color: #33cc33;                    /* Slightly darker bright green for snake body */
-    --food-color: #ff6666;                          /* Bright red for default food */
+    --snake-head-color: #45b7b8;                    /* رنگ سر مار مشابه GitSnake */
+    --snake-body-color: #4ecdc4;                    /* رنگ بدن مار مشابه GitSnake (پایه برای گرادیانت) */
+    --snake-eye-color: #FFFFFF;                     /* رنگ چشم مار: سفید */
+    --snake-body-highlight-rgb: "255, 255, 255";    /* رنگ هایلایت بدن مار (سفید برای ایجاد شفافیت) */
+
+    --food-color: #ff6666;                      /* Bright red for default food */
     --food-color-golden: #ffd700;                   /* Gold */
     --food-color-speed: #66ccff;                    /* Sky blue for speed food */
     --food-color-slow: #ffaa66;                     /* Light orange for slow-down food */
