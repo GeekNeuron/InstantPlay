@@ -84,19 +84,55 @@ class Tile {
     
     // Sets initial position (no animation from here, CSS 'appear' handles it)
     // and triggers number pop for new tiles.
-    setPosition(row, col, gridSize, gridElement, isNewSpawn = false) {
-        this.x = row;
-        this.y = col;
-        this._updateVisuals(row, col, gridSize, gridElement); // Sets size and target transform
+    // در فایل js/tile.js این تغییرات را اعمال کنید
 
-        // The 'appear' animation in CSS handles initial visibility (opacity and scale).
-        // For new tiles, trigger the number pop after a slight delay to sync with 'appear'.
-        if (isNewSpawn) {
-            setTimeout(() => {
-                this.triggerNumberPopAnimation();
-            }, 50); // Small delay, adjust if needed
-        }
+// constructor:
+// خط زیر را به constructor اضافه کنید تا کاشی در ابتدا کاملاً شفاف باشد.
+constructor(gridElement, value = Math.random() < 0.9 ? 2 : 4) {
+    this.tileElement = document.createElement('div');
+    this.tileElement.classList.add('tile');
+    
+    // کاشی را در ابتدا شفاف تنظیم کنید
+    this.tileElement.style.opacity = '0';
+    
+    // ... (بقیه کد constructor)
+    this.id = `tile-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+    this.tileElement.setAttribute('data-id', this.id);
+    this.numberDisplay = document.createElement('span');
+    this.numberDisplay.classList.add('tile-number-display');
+    this.tileElement.appendChild(this.numberDisplay);
+    this.x = -1;
+    this.y = -1;
+    this.value = 0;
+    this.markedForRemoval = false;
+    this.setValue(value, true);
+    gridElement.append(this.tileElement);
+}
+
+// متد setPosition را با این نسخه جایگزین کنید:
+setPosition(row, col, gridSize, gridElement, isNewSpawn = false) {
+    this.x = row;
+    this.y = col;
+    // ابتدا موقعیت کاشی را بدون انیمیشن تنظیم می‌کند
+    this._updateVisuals(row, col, gridSize, gridElement);
+
+    if (isNewSpawn) {
+        // با استفاده از requestAnimationFrame، در فریم بعدی،
+        // کاشی را قابل مشاهده کرده و انیمیشن پرش را فعال می‌کنیم.
+        requestAnimationFrame(() => {
+            // این خط باعث fade-in شدن نرم کاشی می‌شود
+            this.tileElement.style.opacity = '1';
+            
+            // این خط کلاس انیمیشن پرش را اضافه می‌کند
+            this.tileElement.classList.add('is-new');
+            
+            // پس از اتمام انیمیشن، کلاس را حذف می‌کنیم تا دوباره اجرا نشود
+            this.tileElement.addEventListener('animationend', () => {
+                this.tileElement.classList.remove('is-new');
+            }, { once: true });
+        });
     }
+}
 
     remove() { 
         return new Promise(resolve => {
