@@ -42,6 +42,7 @@ class Grid {
         const position = this.getRandomEmptyCellPosition();
         if (position) {
             const newTile = new Tile(this.gridContainerElement); 
+            // Pass true for isNewSpawn to trigger number pop animation in tile.setPosition
             newTile.setPosition(position.r, position.c, this.size, this.gridContainerElement, true); 
             this.tiles.push(newTile);
             return newTile;
