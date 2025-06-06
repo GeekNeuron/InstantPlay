@@ -179,25 +179,24 @@ header h1 {
 
 .tile {
     position: absolute;
-    display: flex; 
+    display: flex;
     justify-content: center;
     align-items: center;
-    font-weight: bold; 
+    font-weight: bold;
     border-radius: calc(var(--border-radius) / 1.5);
-    /* opacity به 0 منتقل می‌شود تا با JS کنترل شود */
-    opacity: 0;
-    /* transition برای حرکت و fade-in */
-    transition: transform 0.1s linear,
-                opacity 0.1s ease-out, /* ترنزیشن برای ظاهر شدن نرم */
+    /* انیمیشن appear حذف شد، فقط transition باقی می‌ماند */
+    transition: transform 0.1s linear, /* برای حرکت */
+                opacity 0.1s ease-out,  /* برای ظاهر/محو شدن */
                 background-color 0.1s ease-in-out, 
                 color 0.1s ease-in-out;
     user-select: none;
-    transform: translate(var(--translateX, 0px), var(--translateY, 0px));
+    /* موقعیت اولیه توسط JS تنظیم می‌شود */
+    opacity: 0; /* در ابتدا نامرئی است */
     line-height: 1;
-    /* خط animation: appear از اینجا حذف می‌شود */
+    /* transform توسط JS تنظیم می‌شود */
 }
 
-/* یک کلاس جدید برای اعمال انیمیشن پرش */
+/* کلاس جدید برای اعمال انیمیشن پرش */
 .tile.is-new {
     animation: tileJumpIn 0.15s ease-out;
 }
