@@ -1,5 +1,3 @@
-// js/tile.js
-
 class Tile {
     constructor(gridElement, value = Math.random() < 0.9 ? 2 : 4) {
         this.tileElement = document.createElement('div');
@@ -111,5 +109,6 @@ class Tile {
         this.x = row; 
         this.y = col;
         this._updateVisuals(row, col, gridSize, gridElement);
+        await this.waitForMovement();
     }
 }
