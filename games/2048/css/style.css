@@ -264,20 +264,3 @@ footer {
     .grid-container { padding: calc(var(--gap-size) * 0.6); gap: calc(var(--gap-size) * 0.7); }
     #theme-switcher { font-size: 0.9em; width: 24px; height: 24px; }
 }
-/* غیرفعال کردن انیمیشن ورود */
-.tile.new-tile {
-    opacity: 1 !important;
-    transform: scale(1) !important;
-    animation: none !important;
-}
-
-/* انیمیشن پرش عدد */
-.number-pop-effect {
-    animation: numberPop 0.15s ease-in-out;
-}
-
-@keyframes numberPop {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1); }
-}
