@@ -78,22 +78,30 @@ class Tile {
     }
     
     setPosition(row, col, gridSize, gridElement, isNewSpawn = false) {
-        this.x = row;
-        this.y = col;
-        this._updateVisuals(row, col, gridSize, gridElement);
+    this.x = row;
+    this.y = col;
 
-        // انیمیشن برای کاشی‌های جدید
-        if (isNewSpawn) {
-            requestAnimationFrame(() => {
-                this.tileElement.style.opacity = '1';
-                this.tileElement.classList.add('is-new');
-                
-                this.tileElement.addEventListener('animationend', () => {
-                    this.tileElement.classList.remove('is-new');
-                }, { once: true });
-            });
-        }
+    // ابتدا موقعیت کاشی را بدون انیمیشن و در حالت نامرئی تنظیم می‌کنیم
+    // Opacity در استایل .tile در CSS روی 0 تنظیم شده است
+    this._updateVisuals(row, col, gridSize, gridElement);
+
+    if (isNewSpawn) {
+        // با استفاده از requestAnimationFrame، در فریم بعدی،
+        // کاشی را قابل مشاهده کرده و انیمیشن پرش را به کل کاشی اعمال می‌کنیم.
+        requestAnimationFrame(() => {
+            // این خط باعث fade-in شدن نرم کاشی می‌شود
+            this.tileElement.style.opacity = '1';
+
+            // این خط کلاس انیمیشن پرش را اضافه می‌کند
+            this.tileElement.classList.add('is-new');
+
+            // پس از اتمام انیمیشن، کلاس را حذف می‌کنیم تا دوباره اجرا نشود
+            this.tileElement.addEventListener('animationend', () => {
+                this.tileElement.classList.remove('is-new');
+            }, { once: true });
+        });
     }
+}
 
     remove() { 
         return new Promise(resolve => {
