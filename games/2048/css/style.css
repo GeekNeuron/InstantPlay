@@ -158,6 +158,27 @@ header h1 {
     transition: background-color 0.3s ease;
 }
 
+/* در فایل css/style.css این تغییرات را اعمال کنید */
+
+/* انیمیشن 'appear' قدیمی را حذف یا کامنت کنید و انیمیشن جدید را اضافه کنید */
+@keyframes tileJumpIn {
+    0% {
+        /* شروع از مقیاس کمی کوچکتر */
+        transform: scale(0.8) translate(var(--translateX, 0px), var(--translateY, 0px));
+        opacity: 0.8;
+    }
+    50% {
+        /* پرش به مقیاسی بزرگتر از اندازه نهایی */
+        transform: scale(1.1) translate(var(--translateX, 0px), var(--translateY, 0px));
+        opacity: 1;
+    }
+    100% {
+        /* بازگشت به اندازه نهایی */
+        transform: scale(1) translate(var(--translateX, 0px), var(--translateY, 0px));
+        opacity: 1;
+    }
+}
+
 .tile {
     position: absolute;
     display: flex; 
@@ -165,41 +186,22 @@ header h1 {
     align-items: center;
     font-weight: bold; 
     border-radius: calc(var(--border-radius) / 1.5);
+    /* opacity به 0 منتقل می‌شود تا با JS کنترل شود */
+    opacity: 0;
+    /* transition برای حرکت و fade-in */
     transition: transform 0.1s linear,
+                opacity 0.1s ease-out, /* ترنزیشن برای ظاهر شدن نرم */
                 background-color 0.1s ease-in-out, 
-                color 0.1s ease-in-out, 
-                opacity 0.1s ease-in-out;
-    animation: appear 0.15s ease-out;
+                color 0.1s ease-in-out;
     user-select: none;
     transform: translate(var(--translateX, 0px), var(--translateY, 0px));
-    line-height: 1; /* Helps with vertical centering of the span */
+    line-height: 1;
+    /* خط animation: appear از اینجا حذف می‌شود */
 }
 
-.tile-number-display { 
-    display: inline-block; 
-    transform-origin: center center; /* *** FIX: Ensure scaling is from the center for number pop *** */
-}
-
-.tile-number-display.number-pop-effect { 
-    animation: numberOnlyPopEffect 0.12s ease-in-out;
-}
-
-@keyframes appear {
-    0% {
-        /* شروع از مقیاس نصف و شفاف */
-        transform: scale(0.5) translate(var(--translateX, 0px), var(--translateY, 0px));
-        opacity: 0;
-    }
-    80% {
-        /* کاشی کمی بزرگتر از اندازه نهایی خود می‌شود تا حس پرش بدهد */
-        transform: scale(1.15) translate(var(--translateX, 0px), var(--translateY, 0px)); /* <<< برای تغییر مقدار پرش، این خط را ویرایش کنید */
-        opacity: 1;
-    }
-    100% {
-        /* کاشی به اندازه نهایی خود برمی‌گردد */
-        transform: scale(1) translate(var(--translateX, 0px), var(--translateY, 0px));
-        opacity: 1;
-    }
+/* یک کلاس جدید برای اعمال انیمیشن پرش */
+.tile.is-new {
+    animation: tileJumpIn 0.15s ease-out;
 }
 
 @keyframes numberOnlyPopEffect {
