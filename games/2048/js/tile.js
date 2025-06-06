@@ -1,4 +1,20 @@
-// js/tile.js
+class Tile {
+    constructor(gridContainerElement) {
+        this.id = Math.random().toString(36).substr(2, 9);
+        this.x = -1;
+        this.y = -1;
+        this.value = 0;
+        this.markedForRemoval = false;
+        this.futureValue = null;
+        
+        this.tileElement = document.createElement("div");
+        this.tileElement.classList.add("tile", "new-tile");
+        gridContainerElement.appendChild(this.tileElement);
+        
+        this.numberDisplay = document.createElement("div");
+        this.numberDisplay.classList.add("tile-inner");
+        this.tileElement.appendChild(this.numberDisplay);
+    }
 
 class Tile {
     constructor(gridElement, value = Math.random() < 0.9 ? 2 : 4) {
@@ -191,5 +207,14 @@ class Tile {
         this.y = col;
         this._updateVisuals(row, col, gridSize, gridElement); // Sets new transform target
         await this.waitForMovement(); // Waits for CSS transition on transform
+    }
+}
+
+    triggerNumberPopAnimation() {
+        if (!this.numberDisplay) return;
+        this.numberDisplay.classList.add('number-pop-effect');
+        this.numberDisplay.addEventListener('animationend', () => {
+            this.numberDisplay.classList.remove('number-pop-effect');
+        }, { once: true });
     }
 }
