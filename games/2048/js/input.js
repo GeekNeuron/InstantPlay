@@ -5,11 +5,10 @@ class InputManager {
         this.game = gameInstance;
         this.eventListeners = {};
         this.isSwiping = false; 
-        this.listen(); // فراخوانی متد listen
+        this.listen(); 
     }
 
     listen() {
-        // شنونده رویداد صفحه کلید (بدون تغییر)
         const keydownHandler = (event) => {
             if (this.game.isMoving) return;
 
@@ -22,11 +21,12 @@ class InputManager {
             }
 
             let direction = null;
+            // Based on user feedback, keyboard direction is inverted
             switch (event.key) {
                 case "ArrowUp": case "w": case "W":
-                    direction = "ArrowDown"; break;
+                    direction = "ArrowDown"; break; 
                 case "ArrowDown": case "s": case "S":
-                    direction = "ArrowUp"; break;
+                    direction = "ArrowUp"; break;   
                 case "ArrowLeft": case "a": case "A":
                     direction = "ArrowLeft"; break;
                 case "ArrowRight": case "d": case "D":
@@ -40,12 +40,9 @@ class InputManager {
         };
         this.eventListeners.keydown = keydownHandler;
         window.addEventListener("keydown", keydownHandler);
-
-        // متغیرهای رویداد لمسی باید در اینجا، در محدوده (scope) تابع 'listen' تعریف شوند،
-        // تا توسط touchstartHandler، touchendHandler و touchcancelHandler قابل دسترسی باشند.
         
         let touchstartX = 0;
-        let touchstartY = 0; // <<< *** اصلاح کلیدی: 'let' اضافه شده تا متغیر به درستی تعریف شود ***
+        let touchstartY = 0; 
         let touchendX = 0;
         let touchendY = 0;
         
@@ -55,8 +52,6 @@ class InputManager {
             if (this.game.isMoving || this.isSwiping) return;
 
             touchstartX = event.changedTouches[0].screenX;
-            // خطای "touchstartY is not defined" در خط بعدی رخ می‌داد.
-            // اکنون باید برطرف شده باشد زیرا 'let touchstartY = 0;' در بالا تعریف شده است.
             touchstartY = event.changedTouches[0].screenY; 
             this.isSwiping = true; 
         };
@@ -76,12 +71,12 @@ class InputManager {
         const touchcancelHandler = () => {
             this.isSwiping = false;
             touchstartX = 0;
-            touchstartY = 0; // بازنشانی متغیر تعریف شده
+            touchstartY = 0; 
         };
 
         const handleSwipe = () => {
             const deltaX = touchendX - touchstartX;
-            const deltaY = touchendY - touchstartY; // از touchstartY که به درستی تعریف شده استفاده می‌کند
+            const deltaY = touchendY - touchstartY; 
             const swipeThreshold = 20; 
             const absDeltaX = Math.abs(deltaX);
             const absDeltaY = Math.abs(deltaY);
@@ -92,13 +87,12 @@ class InputManager {
             
             let direction = null;
             if (absDeltaX > absDeltaY) {
-                // سوایپ افقی
                 if (absDeltaX > swipeThreshold) { 
                     direction = (deltaX > 0) ? "ArrowRight" : "ArrowLeft";
                 }
             } else {
-                // سوایپ عمودی (با منطق اصلی جهت‌گیری)
                 if (absDeltaY > swipeThreshold) { 
+                    // This inversion matches the keyboard inversion to fix the same perceived issue
                     direction = (deltaY > 0) ? "ArrowUp" : "ArrowDown"; 
                 }
             }
@@ -122,7 +116,7 @@ class InputManager {
         } else {
             console.error("Grid container for touch input not found!");
         }
-    } // پایان متد listen
+    }
 
     destroy() {
         window.removeEventListener("keydown", this.eventListeners.keydown);
@@ -133,4 +127,4 @@ class InputManager {
             if(this.eventListeners.touchcancel) gameArea.removeEventListener('touchcancel', this.eventListeners.touchcancel);
         }
     }
-} // پایان کلاس InputManager
+}
