@@ -1,16 +1,14 @@
 // js/tile.js
 
 class Tile {
-    // فقط یک constructor باید در کل این کلاس وجود داشته باشد
     constructor(gridElement, value = Math.random() < 0.9 ? 2 : 4) {
         this.tileElement = document.createElement('div');
         this.tileElement.classList.add('tile');
-        this.tileElement.style.opacity = '0'; // کاشی در ابتدا شفاف است
+        this.tileElement.style.opacity = '0'; // کاشی در ابتدا نامرئی است تا از کشیده شدن جلوگیری شود
         
         this.id = `tile-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
         this.tileElement.setAttribute('data-id', this.id);
 
-        // یک span برای عدد ایجاد می‌کنیم تا بتوانیم آن را جداگانه انیمیت کنیم
         this.numberDisplay = document.createElement('span');
         this.numberDisplay.classList.add('tile-number-display');
         this.tileElement.appendChild(this.numberDisplay);
@@ -20,7 +18,7 @@ class Tile {
         this.value = 0; 
         this.markedForRemoval = false;
 
-        this.setValue(value, true); // مقدار اولیه را تنظیم می‌کند
+        this.setValue(value, true); 
         gridElement.append(this.tileElement);
     }
 
@@ -29,12 +27,11 @@ class Tile {
         this.value = value;
         this.numberDisplay.textContent = value; 
         this.tileElement.dataset.value = value; 
+        
         this.adjustFontSize(); 
 
-        // *** این بخش باید حتما وجود داشته باشد ***
-        // اگر کاشی جدید نباشد و مقدارش تغییر کرده باشد (یعنی ادغام رخ داده)
         if (!isNewTile && oldValue !== value && oldValue !== 0) { 
-            this.triggerNumberPopAnimation(); // انیمیشن پرش عدد فعال می‌شود
+            this.triggerNumberPopAnimation(); 
         }
     }
 
@@ -78,30 +75,26 @@ class Tile {
     }
     
     setPosition(row, col, gridSize, gridElement, isNewSpawn = false) {
-    this.x = row;
-    this.y = col;
+        this.x = row;
+        this.y = col;
+        this._updateVisuals(row, col, gridSize, gridElement);
 
-    // ابتدا موقعیت کاشی را بدون انیمیشن و در حالت نامرئی تنظیم می‌کنیم
-    // Opacity در استایل .tile در CSS روی 0 تنظیم شده است
-    this._updateVisuals(row, col, gridSize, gridElement);
-
-    if (isNewSpawn) {
-        // با استفاده از requestAnimationFrame، در فریم بعدی،
-        // کاشی را قابل مشاهده کرده و انیمیشن پرش را به کل کاشی اعمال می‌کنیم.
-        requestAnimationFrame(() => {
-            // این خط باعث fade-in شدن نرم کاشی می‌شود
-            this.tileElement.style.opacity = '1';
-
-            // این خط کلاس انیمیشن پرش را اضافه می‌کند
-            this.tileElement.classList.add('is-new');
-
-            // پس از اتمام انیمیشن، کلاس را حذف می‌کنیم تا دوباره اجرا نشود
-            this.tileElement.addEventListener('animationend', () => {
-                this.tileElement.classList.remove('is-new');
-            }, { once: true });
-        });
+        if (isNewSpawn) {
+            // در فریم بعدی، کاشی را قابل مشاهده کرده و انیمیشن پرش را فعال می‌کنیم
+            requestAnimationFrame(() => {
+                // این خط باعث fade-in شدن نرم کاشی می‌شود
+                this.tileElement.style.opacity = '1';
+                
+                // این خط کلاس انیمیشن پرش (کل کاشی) را اضافه می‌کند
+                this.tileElement.classList.add('is-new');
+                
+                // پس از اتمام انیمیشن، کلاس را حذف می‌کنیم
+                this.tileElement.addEventListener('animationend', () => {
+                    this.tileElement.classList.remove('is-new');
+                }, { once: true });
+            });
+        }
     }
-}
 
     remove() { 
         return new Promise(resolve => {
