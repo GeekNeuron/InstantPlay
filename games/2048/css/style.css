@@ -184,17 +184,6 @@ header h1 {
     animation: numberOnlyPopEffect 0.12s ease-in-out;
 }
 
-@keyframes appear {
-    from { 
-        transform: scale(0.5) translate(var(--translateX, 0px), var(--translateY, 0px)); 
-        opacity: 0; 
-    }
-    to { 
-        transform: scale(1) translate(var(--translateX, 0px), var(--translateY, 0px)); 
-        opacity: 1; 
-    }
-}
-
 @keyframes numberOnlyPopEffect {
     0% { transform: scale(1); }
     50% { transform: scale(1.15); } 
