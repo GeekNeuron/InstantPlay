@@ -169,7 +169,7 @@ header h1 {
     }
     50% {
         /* پرش به مقیاسی بزرگتر از اندازه نهایی */
-        transform: scale(1.1) translate(var(--translateX, 0px), var(--translateY, 0px));
+        transform: scale(1.15) translate(var(--translateX, 0px), var(--translateY, 0px));
         opacity: 1;
     }
     100% {
