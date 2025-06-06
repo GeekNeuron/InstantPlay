@@ -161,21 +161,19 @@ header h1 {
 /* در فایل css/style.css این تغییرات را اعمال کنید */
 
 /* انیمیشن 'appear' قدیمی را حذف یا کامنت کنید و انیمیشن جدید را اضافه کنید */
+/* انیمیشن پرش درجا برای کاشی جدید */
 @keyframes tileJumpIn {
     0% {
-        /* شروع از مقیاس کمی کوچکتر */
-        transform: scale(0.8) translate(var(--translateX, 0px), var(--translateY, 0px));
-        opacity: 0.8;
+        /* شروع از مقیاس کمی کوچکتر، بدون تغییر موقعیت */
+        transform: scale(0.8);
     }
     50% {
         /* پرش به مقیاسی بزرگتر از اندازه نهایی */
-        transform: scale(1.1) translate(var(--translateX, 0px), var(--translateY, 0px));
-        opacity: 1;
+        transform: scale(1.25);
     }
     100% {
         /* بازگشت به اندازه نهایی */
-        transform: scale(1) translate(var(--translateX, 0px), var(--translateY, 0px));
-        opacity: 1;
+        transform: scale(1);
     }
 }
 
