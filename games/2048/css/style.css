@@ -185,13 +185,20 @@ header h1 {
 }
 
 @keyframes appear {
-    from { 
-        transform: scale(0.5) translate(var(--translateX, 0px), var(--translateY, 0px)); 
-        opacity: 0; 
+    0% {
+        /* شروع از مقیاس نصف و شفاف */
+        transform: scale(0.5) translate(var(--translateX, 0px), var(--translateY, 0px));
+        opacity: 0;
     }
-    to { 
-        transform: scale(1) translate(var(--translateX, 0px), var(--translateY, 0px)); 
-        opacity: 1; 
+    80% {
+        /* کاشی کمی بزرگتر از اندازه نهایی خود می‌شود تا حس پرش بدهد */
+        transform: scale(1.25) translate(var(--translateX, 0px), var(--translateY, 0px)); /* <<< برای تغییر مقدار پرش، این خط را ویرایش کنید */
+        opacity: 1;
+    }
+    100% {
+        /* کاشی به اندازه نهایی خود برمی‌گردد */
+        transform: scale(1) translate(var(--translateX, 0px), var(--translateY, 0px));
+        opacity: 1;
     }
 }
 
