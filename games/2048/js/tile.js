@@ -102,8 +102,28 @@ class Tile {
     }
     
     waitForMovement() { 
-        return Promise.resolve();
-    }
+    return new Promise(resolve => {
+        if (!this.tileElement || !this.tileElement.parentElement) {
+            resolve(); return;
+        }
+        const styles = window.getComputedStyle(this.tileElement);
+        if (styles.display === 'none' || !styles.transitionProperty.includes('transform') || styles.transitionDuration === '0s') {
+            resolve(); return; 
+        }
+
+        let resolved = false;
+        const resolveOnce = (event) => {
+            if (event && event.target !== this.tileElement) return; 
+            if (event && event.propertyName !== 'transform') return; 
+            if (!resolved) {
+                resolved = true;
+                resolve();
+            }
+        };
+
+        this.tileElement.addEventListener("transitionend", resolveOnce);
+    });
+}
 
     async moveTo(row, col, gridSize, gridElement) {
         this.x = row; 
