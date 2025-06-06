@@ -29,12 +29,12 @@ class Tile {
         this.value = value;
         this.numberDisplay.textContent = value; 
         this.tileElement.dataset.value = value; 
-        
         this.adjustFontSize(); 
 
-        // انیمیشن پرش عدد برای کاشی‌های ادغام شده
+        // *** این بخش باید حتما وجود داشته باشد ***
+        // اگر کاشی جدید نباشد و مقدارش تغییر کرده باشد (یعنی ادغام رخ داده)
         if (!isNewTile && oldValue !== value && oldValue !== 0) { 
-            this.triggerNumberPopAnimation(); 
+            this.triggerNumberPopAnimation(); // انیمیشن پرش عدد فعال می‌شود
         }
     }
 
