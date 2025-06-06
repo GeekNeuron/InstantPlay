@@ -4,7 +4,7 @@ class Tile {
     constructor(gridElement, value = Math.random() < 0.9 ? 2 : 4) {
         this.tileElement = document.createElement('div');
         this.tileElement.classList.add('tile');
-        // Opacity is handled by 'appear' animation in CSS
+        this.tileElement.style.opacity = '0'; // Start transparent
         
         this.id = `tile-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
         this.tileElement.setAttribute('data-id', this.id);
@@ -18,7 +18,7 @@ class Tile {
         this.value = 0; 
         this.markedForRemoval = false;
 
-        this.setValue(value, true); // isNewTile = true
+        this.setValue(value, true); 
         gridElement.append(this.tileElement);
     }
 
@@ -27,19 +27,16 @@ class Tile {
         this.value = value;
         this.numberDisplay.textContent = value; 
         this.tileElement.dataset.value = value; 
-        
-        // Adjust font size after value is set.
-        // This might be called again in _updateVisuals after dimensions are known, which is fine.
         this.adjustFontSize(); 
 
-        if (!isNewTile && oldValue !== value && oldValue !== 0) { // Value changed due to merge
+        if (!isNewTile && oldValue !== value && oldValue !== 0) { 
             this.triggerNumberPopAnimation(); 
         }
     }
 
     adjustFontSize() {
         const numStr = this.value.toString();
-        let baseSize = 2.8; // em
+        let baseSize = 2.8; 
         if (numStr.length > 4) { 
             baseSize = 1.3;
         } else if (numStr.length === 4) { 
@@ -47,11 +44,9 @@ class Tile {
         } else if (numStr.length === 3) { 
             baseSize = 2.3;
         }
-        // Apply to the tile element, span will inherit.
         this.tileElement.style.fontSize = `${baseSize}em`;
     }
 
-    // Calculates and sets the CSS style for position and size.
     _updateVisuals(row, col, gridSize, gridElement) {
         const computedStyle = getComputedStyle(gridElement);
         const gridPadding = parseFloat(computedStyle.paddingLeft) || 0;
@@ -71,66 +66,30 @@ class Tile {
         const xPos = col * (cellSize + gap) + gridPadding;
         const yPos = row * (cellSize + gap) + gridPadding;
 
-        // These CSS variables are set for the keyframe animations to use as the 'to' state.
         this.tileElement.style.setProperty('--translateX', `${xPos}px`);
         this.tileElement.style.setProperty('--translateY', `${yPos}px`);
-        
-        // Direct transform for positioning. CSS transition on .tile handles the animation.
         this.tileElement.style.transform = `translate(${xPos}px, ${yPos}px)`;
         
-        // This is a critical place to adjust font size as tile dimensions are now definitively set.
         this.adjustFontSize(); 
     }
     
-// در فایل js/tile.js این تغییرات را اعمال کنید
+    setPosition(row, col, gridSize, gridElement, isNewSpawn = false) {
+        this.x = row;
+        this.y = col;
+        this._updateVisuals(row, col, gridSize, gridElement);
 
-// constructor:
-// خط زیر را به constructor اضافه کنید تا کاشی در ابتدا کاملاً شفاف باشد.
-constructor(gridElement, value = Math.random() < 0.9 ? 2 : 4) {
-    this.tileElement = document.createElement('div');
-    this.tileElement.classList.add('tile');
-    
-    // کاشی را در ابتدا شفاف تنظیم کنید
-    this.tileElement.style.opacity = '0';
-    
-    // ... (بقیه کد constructor)
-    this.id = `tile-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
-    this.tileElement.setAttribute('data-id', this.id);
-    this.numberDisplay = document.createElement('span');
-    this.numberDisplay.classList.add('tile-number-display');
-    this.tileElement.appendChild(this.numberDisplay);
-    this.x = -1;
-    this.y = -1;
-    this.value = 0;
-    this.markedForRemoval = false;
-    this.setValue(value, true);
-    gridElement.append(this.tileElement);
-}
-
-// متد setPosition را با این نسخه جایگزین کنید:
-setPosition(row, col, gridSize, gridElement, isNewSpawn = false) {
-    this.x = row;
-    this.y = col;
-    // ابتدا موقعیت کاشی را بدون انیمیشن تنظیم می‌کند
-    this._updateVisuals(row, col, gridSize, gridElement);
-
-    if (isNewSpawn) {
-        // با استفاده از requestAnimationFrame، در فریم بعدی،
-        // کاشی را قابل مشاهده کرده و انیمیشن پرش را فعال می‌کنیم.
-        requestAnimationFrame(() => {
-            // این خط باعث fade-in شدن نرم کاشی می‌شود
-            this.tileElement.style.opacity = '1';
-            
-            // این خط کلاس انیمیشن پرش را اضافه می‌کند
-            this.tileElement.classList.add('is-new');
-            
-            // پس از اتمام انیمیشن، کلاس را حذف می‌کنیم تا دوباره اجرا نشود
-            this.tileElement.addEventListener('animationend', () => {
-                this.tileElement.classList.remove('is-new');
-            }, { once: true });
-        });
+        // For new tiles, make them appear and trigger the number pop animation
+        if (isNewSpawn) {
+            requestAnimationFrame(() => {
+                this.tileElement.style.opacity = '1';
+                this.tileElement.classList.add('is-new'); // Add class for jump-in animation
+                
+                this.tileElement.addEventListener('animationend', () => {
+                    this.tileElement.classList.remove('is-new'); // Clean up class
+                }, { once: true });
+            });
+        }
     }
-}
 
     remove() { 
         return new Promise(resolve => {
@@ -155,7 +114,6 @@ setPosition(row, col, gridSize, gridElement, isNewSpawn = false) {
             
             let transitionEnded = false;
             const transitionEndListener = (event) => {
-                // Listen for opacity or transform transition to end
                 if (event.propertyName === 'opacity' || event.propertyName === 'transform') {
                     if (!transitionEnded) {
                         transitionEnded = true;
@@ -172,7 +130,7 @@ setPosition(row, col, gridSize, gridElement, isNewSpawn = false) {
                     this.tileElement.removeEventListener('transitionend', transitionEndListener);
                     onRemoveEnd();
                 }
-            }, 160); // Slightly longer than opacity/transform transition (0.1s)
+            }, 160); 
         });
     }
     
@@ -182,13 +140,12 @@ setPosition(row, col, gridSize, gridElement, isNewSpawn = false) {
                 resolve(); return;
             }
             const styles = window.getComputedStyle(this.tileElement);
-            // Check if there's a transform transition to wait for
             if (styles.display === 'none' || !styles.transitionProperty.includes('transform') || styles.transitionDuration === '0s') {
                 resolve(); return; 
             }
 
             const eventName = 'transitionend';
-            const timeoutDuration = 120; // Slightly more than 0.1s transform transition
+            const timeoutDuration = 120; 
             
             let resolved = false;
             const resolveOnce = (event) => {
@@ -223,7 +180,7 @@ setPosition(row, col, gridSize, gridElement, isNewSpawn = false) {
     async moveTo(row, col, gridSize, gridElement) {
         this.x = row; 
         this.y = col;
-        this._updateVisuals(row, col, gridSize, gridElement); // Sets new transform target
-        await this.waitForMovement(); // Waits for CSS transition on transform
+        this._updateVisuals(row, col, gridSize, gridElement); 
+        await this.waitForMovement(); 
     }
 }
