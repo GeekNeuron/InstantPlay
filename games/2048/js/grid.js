@@ -39,22 +39,16 @@ class Grid {
     }
 
     addRandomTile() {
-    const position = this.getRandomEmptyCellPosition();
-    if (position) {
-        const newTile = new Tile(this.gridContainerElement);
-        newTile.setPosition(position.r, position.c, this.size, this.gridContainerElement, false);
-        this.tiles.push(newTile);
-        
-        setTimeout(() => {
-            if (newTile.triggerNumberPopAnimation) {
-                newTile.triggerNumberPopAnimation();
-            }
-        }, 10);
-        
-        return newTile;
+        const position = this.getRandomEmptyCellPosition();
+        if (position) {
+            const newTile = new Tile(this.gridContainerElement); 
+            // Pass true for isNewSpawn to trigger number pop animation in tile.setPosition
+            newTile.setPosition(position.r, position.c, this.size, this.gridContainerElement, true); 
+            this.tiles.push(newTile);
+            return newTile;
+        }
+        return null;
     }
-    return null;
-}
 
     getTileAt(row, col) {
         if (row < 0 || row >= this.size || col < 0 || col >= this.size) {
