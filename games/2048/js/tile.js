@@ -90,12 +90,6 @@ class Tile {
         this._updateVisuals(row, col, gridSize, gridElement); // Sets size and target transform
 
         // The 'appear' animation in CSS handles initial visibility (opacity and scale).
-        // For new tiles, trigger the number pop after a slight delay to sync with 'appear'.
-        if (isNewSpawn) {
-            setTimeout(() => {
-                this.triggerNumberPopAnimation();
-            }, 50); // Small delay, adjust if needed
-        }
     }
 
     remove() { 
