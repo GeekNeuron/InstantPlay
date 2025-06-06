@@ -4,7 +4,7 @@ class Game {
     constructor(gridInstance, scoreElementId, bestScoreElementId, gameOverModalId, finalScoreElementId) {
         this.grid = gridInstance;
         this.score = 0;
-        this.bestScore = parseInt(localStorage.getItem('2048BestScoreProV_Final2')) || 0; // Updated key
+        this.bestScore = parseInt(localStorage.getItem('2048BestScoreProV_Final4')) || 0; // Updated key
         this.gameOver = false;
         this.gridSize = this.grid.size;
         this.isMoving = false;
@@ -31,7 +31,7 @@ class Game {
         this.grid.addRandomTile();
         
         this.updateScoreDisplay();
-        this.updateBestScoreDisplay(); // Update best score display on new game too
+        this.updateBestScoreDisplay();
         this.gameOverModal.classList.remove('show');
     }
 
@@ -41,7 +41,7 @@ class Game {
         if (this.score > this.bestScore) {
             this.bestScore = this.score;
             this.updateBestScoreDisplay();
-            localStorage.setItem('2048BestScoreProV_Final2', this.bestScore.toString());
+            localStorage.setItem('2048BestScoreProV_Final4', this.bestScore.toString());
         }
     }
 
@@ -50,7 +50,7 @@ class Game {
     }
 
     updateBestScoreDisplay() {
-        this.bestScoreElement.textContent = this.bestScore; // Corrected: should display this.bestScore
+        this.bestScoreElement.textContent = this.bestScore;
     }
 
     async move(direction) {
@@ -119,12 +119,11 @@ class Game {
             await Promise.all(animationPromises);
         }
 
-        // Update values for merged tiles (this will trigger number pop via tile.setValue)
         for (let r_idx = 0; r_idx < this.gridSize; r_idx++) {
             for (let c_idx = 0; c_idx < this.gridSize; c_idx++) {
                 let tile = finalLayoutPlan[r_idx][c_idx]; 
                 if (tile && tile.futureValue) { 
-                    tile.setValue(tile.futureValue, false); // isNewTile = false
+                    tile.setValue(tile.futureValue, false);
                     delete tile.futureValue;
                     boardChanged = true; 
                 }
@@ -143,7 +142,11 @@ class Game {
             if (currentMoveScore > 0) {
                 this.updateScore(currentMoveScore);
             }
-            this.grid.addRandomTile(); // New tiles will get number pop via tile.setPosition(..., ..., ..., ..., true)
+            // A short delay before adding a new tile can make animations feel smoother if there were merges
+            if (tilesToRemove.length > 0) {
+                await new Promise(resolve => setTimeout(resolve, 50)); 
+            }
+            this.grid.addRandomTile();
 
             if (this.checkGameOver()) {
                 this.triggerGameOver();
