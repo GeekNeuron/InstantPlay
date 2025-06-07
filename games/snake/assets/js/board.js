@@ -1,5 +1,3 @@
-// assets/js/board.js
-
 import { GRID_SIZE, ROWS, COLS, OBSTACLE_TYPES, BLINKING_OBSTACLE_ON_DURATION, BLINKING_OBSTACLE_OFF_DURATION, OBSTACLE_CONFIG } from './constants.js';
 import { getCssVariable, arePositionsEqual } from './utils.js';
 
