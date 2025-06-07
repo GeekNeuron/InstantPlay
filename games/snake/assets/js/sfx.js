@@ -1,5 +1,3 @@
-// assets/js/sfx.js
-
 /**
  * @fileoverview Manages sound effects for the game.
  * This version has sounds completely disabled.
