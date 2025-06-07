@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galactic Tetris</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Galactic Tetris</h1>
+    <div class="game-container">
+        <canvas id="tetris-canvas"></canvas>
+        <div class="side-panel">
+            <h2>Score</h2>
+            <p id="score">0</p>
+            <h2>Lines</h2>
+            <p id="lines">0</p>
+            <h2>Level</h2>
+            <p id="level">1</p>
+            <div class="next-piece-container">
+                <h2>Next</h2>
+                <canvas id="next-canvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/constants.js"></script>
+    <script src="js/piece.js"></script>
+    <script src="js/board.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
