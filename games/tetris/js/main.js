@@ -93,10 +93,10 @@ function gameOver() {
     ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
     ctx.fillRect(0, ctx.canvas.height / 2 - 30, ctx.canvas.width, 60);
     ctx.fillStyle = '#ff0000';
-    ctx.font = `bold 24px ${getComputedStyle(document.body).fontFamily}`;
+    ctx.font = `bold 32px Orbitron`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('بازی تمام شد', ctx.canvas.width / 2, ctx.canvas.height / 2);
+    ctx.fillText('GAME OVER', ctx.canvas.width / 2, ctx.canvas.height / 2);
 }
 
 // --- Controls ---
@@ -118,7 +118,6 @@ document.addEventListener('keydown', event => {
 
     if (board.isValid(p)) {
         board.piece.move(p);
-        // No need to redraw here, animate() handles it
     }
 
     if (event.keyCode === KEY.DOWN) {
