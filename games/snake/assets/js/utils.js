@@ -1,5 +1,3 @@
-// assets/js/utils.js
-
 /**
  * @fileoverview Utility functions for the Snake game.
  */
