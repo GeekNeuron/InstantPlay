@@ -34,7 +34,7 @@ class Board {
         this.nextCtx.canvas.width = 4 * NEXT_CANVAS_BLOCK_SIZE;
         this.nextCtx.canvas.height = 4 * NEXT_CANVAS_BLOCK_SIZE;
         this.nextPiece.ctx = this.nextCtx; // Use next context
-        this.nextPiece.draw(NEXT_CANVAS_BLOCK_SIZE, true); // Draw smaller and centered
+        this.nextPiece.draw(NEXT_CANVAS_BLOCK_SIZE, true); // Draw smaller and centered.
     }
     
     drawBlock(context, x, y, color, size) {
