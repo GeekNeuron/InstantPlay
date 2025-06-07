@@ -15,7 +15,7 @@ const COLORS = [
 ];
 
 const SHAPES = [
-    [], // Empty shape
+    [], // Empty shape.
     [[1, 1, 1], [0, 1, 0]],                                 // T
     [[2, 2, 2, 2]],                                        // I
     [[0, 3, 3], [3, 3, 0]],                                 // S
