@@ -28,7 +28,7 @@ class Piece {
                 }
             });
         });
-        // Reset shadow for other drawings
+        // Reset shadow for other drawings.
         this.ctx.shadowBlur = 0;
     }
 
