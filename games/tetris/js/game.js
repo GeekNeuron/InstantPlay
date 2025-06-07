@@ -19,7 +19,7 @@ class Game {
         
         this.updateDOM();
     }
-    
+    //none
     updateDOM() {
         this.scoreElement.textContent = this.score;
         this.linesElement.textContent = this.lines;
