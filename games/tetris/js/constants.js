@@ -2,7 +2,7 @@
 // Control the piece's Width (پهنا)
 const SIDE_PANEL_SCALE_X = 2.0; 
 // Control the piece's Height (طول)
-const SIDE_PANEL_SCALE_Y = 1.0;
+const SIDE_PANEL_SCALE_Y = 3.0;
 
 const COLS = 10;
 const ROWS = 20;
