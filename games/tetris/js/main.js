@@ -1,7 +1,7 @@
 const canvas = document.getElementById('tetris-canvas');
 const ctx = canvas.getContext('2d');
 const newGameButton = document.getElementById('new-game-button');
-const header = document.querySelector('header');
+const headerTitle = document.querySelector('header h1'); // MODIFIED: Selects the h1 directly
 const holdBox = document.getElementById('hold-box');
 const timerElement = document.getElementById('timer');
 
@@ -21,7 +21,6 @@ function applyTheme(theme) {
     } else {
         document.body.classList.remove('dark-theme');
     }
-    // Update colors of existing pieces when theme changes
     if (board && board.piece) {
         board.piece.updateColor();
         if(board.nextPiece) board.nextPiece.updateColor();
@@ -34,7 +33,7 @@ function toggleTheme() {
     localStorage.setItem('tetrisTheme', newTheme);
     applyTheme(newTheme);
 }
-header.addEventListener('click', toggleTheme);
+headerTitle.addEventListener('click', toggleTheme); // MODIFIED: Listener attached to h1
 
 document.addEventListener('DOMContentLoaded', () => {
     const savedTheme = localStorage.getItem('tetrisTheme') || 'dark';
