@@ -1,6 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // All code now runs only after the page is fully loaded.
+
     const canvas = document.getElementById('tetris-canvas');
-    if (!canvas) { console.error("Fatal Error: Canvas not found!"); return; }
+    if (!canvas) {
+        console.error("Fatal Error: Could not find canvas element!");
+        return;
+    }
     const ctx = canvas.getContext('2d');
     const newGameButton = document.getElementById('new-game-button');
     const headerTitle = document.querySelector('header h1');
@@ -16,16 +21,35 @@ document.addEventListener('DOMContentLoaded', () => {
     let gameTimer;
     let softDropping = false;
 
-    // Stable theme, timer logic...
-    function applyTheme(theme) { if (theme === 'dark') document.body.classList.add('dark-theme'); else document.body.classList.remove('dark-theme'); if (board) board.draw(); }
-    function toggleTheme() { const newTheme = document.body.classList.contains('dark-theme') ? 'light' : 'dark'; localStorage.setItem('tetrisTheme', newTheme); applyTheme(newTheme); }
+    // --- THEME SWITCHING LOGIC ---
+    function applyTheme(theme) {
+        if (theme === 'dark') {
+            document.body.classList.add('dark-theme');
+        } else {
+            document.body.classList.remove('dark-theme');
+        }
+        if (board) {
+            // --- FIXED: Use the correct function name ---
+            board.updateAndDraw(); 
+        }
+    }
+    function toggleTheme() {
+        const newTheme = document.body.classList.contains('dark-theme') ? 'light' : 'dark';
+        localStorage.setItem('tetrisTheme', newTheme);
+        applyTheme(newTheme);
+    }
     headerTitle.addEventListener('click', toggleTheme);
+    
+    // On page load, apply saved theme, then start the game
     const savedTheme = localStorage.getItem('tetrisTheme') || 'dark';
     applyTheme(savedTheme);
     play();
+
+    // --- TIMER LOGIC ---
     function startTimer() { let startTime = Date.now(); timerElement.textContent = '00:00:00'; gameTimer = setInterval(() => { const elapsedTime = Date.now() - startTime; const seconds = Math.floor((elapsedTime / 1000) % 60); const minutes = Math.floor((elapsedTime / (1000 * 60)) % 60); const hours = Math.floor((elapsedTime / (1000 * 60 * 60)) % 24); timerElement.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`; }, 1000); }
     function stopTimer() { clearInterval(gameTimer); }
 
+    // --- GAME LOGIC ---
     let time = { start: 0, elapsed: 0 };
     function play() {
         if (requestId) cancelAnimationFrame(requestId);
@@ -38,9 +62,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     newGameButton.addEventListener('click', play);
 
-    // --- MODIFIED gameLoop to work with the new animation system ---
     function gameLoop(now = 0) {
-        board.updateAndDraw(); // The board now handles all drawing and animation updates
+        // --- FIXED: Use the correct function name ---
+        board.updateAndDraw(); 
 
         // Normal piece-dropping logic only runs if there is a piece to control
         if (board.piece) {
@@ -77,46 +101,51 @@ document.addEventListener('DOMContentLoaded', () => {
     function gameOver() {
         cancelAnimationFrame(requestId);
         stopTimer();
-        // ... game over drawing logic
+        ctx.fillStyle = 'rgba(0,0,0,0.7)';
+        ctx.fillRect(0, ctx.canvas.height / 2 - 30, ctx.canvas.width, 60);
+        ctx.fillStyle = 'red';
+        ctx.font = 'bold 32px Vazirmatn, Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('Game Over', ctx.canvas.height / 2, ctx.canvas.height / 2);
     }
 
-    // --- MODIFIED: hardDrop now only triggers the animation ---
     function hardDrop() {
+        if (!board.piece || board.animations.some(a => a.type === 'hard-drop')) return;
         const animationStarted = board.triggerHardDrop();
-        // If animation started, a new piece will be spawned automatically when it ends
         if (animationStarted) {
             setTimeout(() => {
                 board.getNewPiece();
                 if (!board.isValid(board.piece)) {
                     gameOver();
                 }
-            }, 150); // This delay must match the animation duration
+            }, 150);
+        } else {
+            drop(); // If it can't drop far, just do a single drop
         }
     }
 
+    // --- CONTROLS (Keyboard & Touch) ---
     document.addEventListener('keydown', event => {
+        if (board.animations.some(a => a.type === 'hard-drop')) return;
         if ([37, 38, 39, 40, 32, 67].includes(event.keyCode)) event.preventDefault();
         if (!board.piece) return;
-        
         if (event.keyCode === 32) { hardDrop(); return; }
-
         let p = { ...board.piece };
         if (event.keyCode === 37) p.x -= 1;
         else if (event.keyCode === 39) p.x += 1;
         else if (event.keyCode === 38) p.shape = p.shape[0].map((_, colIndex) => p.shape.map(row => row[colIndex]).reverse());
-        
         if (board.isValid(p)) board.piece.move(p);
-        
         if (event.keyCode === 40) softDropping = true;
         else if (event.keyCode === 67) board.hold();
     });
     document.addEventListener('keyup', event => { if (event.keyCode === 40) softDropping = false; });
-    
+
     let touchStartX = 0, touchStartY = 0;
     const swipeThreshold = 30;
-    canvas.addEventListener('touchstart', e => { e.preventDefault(); touchStartX = e.changedTouches[0].screenX; touchStartY = e.changedTouches[0].screenY; }, { passive: false });
+    canvas.addEventListener('touchstart', e => { if (board.animations.some(a => a.type === 'hard-drop')) return; e.preventDefault(); touchStartX = e.changedTouches[0].screenX; touchStartY = e.changedTouches[0].screenY; }, { passive: false });
     canvas.addEventListener('touchmove', e => { e.preventDefault(); }, { passive: false });
     canvas.addEventListener('touchend', e => {
+        if (board.animations.some(a => a.type === 'hard-drop')) return;
         e.preventDefault();
         if (!board.piece) return;
         const deltaX = e.changedTouches[0].screenX - touchStartX;
@@ -130,5 +159,5 @@ document.addEventListener('DOMContentLoaded', () => {
             else { p.shape = p.shape[0].map((_, colIndex) => p.shape.map(row => row[colIndex]).reverse()); if (board.isValid(p)) board.piece.move(p); }
         }
     });
-    holdBox.addEventListener('touchstart', e => { e.preventDefault(); board.hold(); });
+    holdBox.addEventListener('touchstart', e => { if (board.animations.some(a => a.type === 'hard-drop')) return; e.preventDefault(); board.hold(); });
 });
