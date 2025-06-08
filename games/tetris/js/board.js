@@ -35,12 +35,42 @@ class Board {
         this.drawGrid();
         this.drawGhostPiece();
         this.grid.forEach((row, y) => { row.forEach((value, x) => { if (value > 0) this.drawBlock(this.ctx, x, y, value, BLOCK_SIZE, BLOCK_SIZE); }); });
-        this.piece.draw();
+        if (this.piece) this.piece.draw(); // Draw falling piece if it exists
         this.drawNextPiece();
         this.drawHeldPiece();
     }
 
-    // --- MODIFIED: drawBlock now accepts width and height ---
+    // --- NEW: Function to draw the hard drop animation frame ---
+    drawHardDropAnimation(startY, endY) {
+        // First, draw the normal board state without the falling piece
+        this.ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--grid-bg');
+        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        this.drawGrid();
+        this.grid.forEach((row, y) => { row.forEach((value, x) => { if (value > 0) this.drawBlock(this.ctx, x, y, value, BLOCK_SIZE, BLOCK_SIZE); }); });
+
+        const trailLength = endY - startY;
+        
+        // Draw the trail of the piece
+        for (let y = startY; y < endY; y++) {
+            const progress = (y - startY) / trailLength;
+            const alpha = 0.3 * (1 - progress); // Fades out along the trail
+            this.ctx.globalAlpha = alpha;
+            
+            this.piece.shape.forEach((row, pieceY) => {
+                row.forEach((value, pieceX) => {
+                    if (value > 0) {
+                        this.drawBlock(this.ctx, this.piece.x + pieceX, y + pieceY, value, BLOCK_SIZE, BLOCK_SIZE);
+                    }
+                });
+            });
+        }
+        
+        // Draw the final solid piece at the bottom
+        this.ctx.globalAlpha = 1.0;
+        this.piece.y = endY;
+        this.piece.draw();
+    }
+
     drawBlock(context, x, y, value, width, height) {
         const color = getComputedStyle(document.documentElement).getPropertyValue(`--piece-color-${value}`).trim();
         const radius = Math.min(width, height) / 6;
@@ -48,8 +78,7 @@ class Board {
         const blockY = y * height;
         context.fillStyle = color;
         context.beginPath();
-        context.moveTo(blockX + radius, blockY);
-        context.lineTo(blockX + width - radius, blockY);
+        context.moveTo(blockX + radius, blockY); context.lineTo(blockX + width - radius, blockY);
         context.arcTo(blockX + width, blockY, blockX + width, blockY + radius, radius);
         context.lineTo(blockX + width, blockY + height - radius);
         context.arcTo(blockX + width, blockY + height, blockX + width - radius, blockY + height, radius);
@@ -61,39 +90,21 @@ class Board {
         context.fill();
     }
     
-    // --- REWRITTEN FROM SCRATCH as requested ---
     drawPieceOnSideCanvas(context, piece) {
         context.clearRect(0, 0, context.canvas.width, context.canvas.height);
         if (!piece) return;
-
         const matrix = piece.shape;
-        const baseBlockSize = 25; // A consistent base size for blocks
-        
-        // Use your custom scales from constants.js
-        const blockWidth = baseBlockSize * SIDE_PANEL_SCALE_X;
-        const blockHeight = baseBlockSize * SIDE_PANEL_SCALE_Y;
-
-        const piecePixelWidth = matrix[0].length * blockWidth;
-        const piecePixelHeight = matrix.length * blockHeight;
+        const maxDimension = Math.max(matrix[0].length, matrix.length);
+        const blockSize = context.canvas.width / (maxDimension + SIDE_PANEL_PADDING);
+        const piecePixelWidth = matrix[0].length * blockSize;
+        const piecePixelHeight = matrix.length * blockSize;
         const offsetX = (context.canvas.width - piecePixelWidth) / 2;
         const offsetY = (context.canvas.height - piecePixelHeight) / 2;
-        
         const typeId = SHAPES.findIndex(shape => JSON.stringify(shape) === JSON.stringify(piece.shape));
-        if (typeId > 0) {
-            matrix.forEach((row, y) => {
-                row.forEach((value, x) => {
-                    if (value > 0) {
-                        // We now pass width and height separately to drawBlock
-                        this.drawBlock(context, (offsetX / blockWidth) + x, (offsetY / blockHeight) + y, value, blockWidth, blockHeight);
-                    }
-                });
-            });
-        }
+        if (typeId > 0) { matrix.forEach((row, y) => { row.forEach((value, x) => { if (value > 0) this.drawBlock(context, (offsetX / blockSize) + x, (offsetY / blockSize) + y, value, blockSize, blockSize); }); }); }
     }
-
     drawHeldPiece() { this.drawPieceOnSideCanvas(this.holdCtx, this.heldPiece); }
     drawNextPiece() { this.drawPieceOnSideCanvas(this.nextCtx, this.nextPiece); }
-    
     calculateGhostPosition() { let ghost = JSON.parse(JSON.stringify(this.piece)); while (this.isValid(ghost)) ghost.y++; ghost.y--; return ghost; }
     drawGhostPiece() { const ghost = this.calculateGhostPosition(); this.ctx.globalAlpha = 0.2; ghost.shape.forEach((row, y) => { row.forEach((value, x) => { if (value > 0) this.drawBlock(this.ctx, ghost.x + x, ghost.y + y, value, BLOCK_SIZE, BLOCK_SIZE); }); }); this.ctx.globalAlpha = 1.0; }
     hold() { if (!this.canHold) return; if (this.heldPiece) { [this.piece, this.heldPiece] = [this.heldPiece, this.piece]; this.piece.ctx = this.ctx; this.piece.setStartingPosition(); } else { this.heldPiece = this.piece; this.getNewPiece(); } this.canHold = false; }
