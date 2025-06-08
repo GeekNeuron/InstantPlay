@@ -1,8 +1,5 @@
-// --- NEW: Independent controls for Width and Height in Hold/Next boxes ---
-// Control the piece's Width (پهنا)
-const SIDE_PANEL_SCALE_X = 2.0; 
-// Control the piece's Height (طول)
-const SIDE_PANEL_SCALE_Y = 4.0;
+// Number of pieces to show in the "Next" queue
+const NEXT_PIECE_COUNT = 3;
 
 const COLS = 10;
 const ROWS = 20;
@@ -21,7 +18,7 @@ const SHAPES = [
 
 const KEY = {
     LEFT: 37, RIGHT: 39, DOWN: 40, UP: 38,
-    SPACE: 32, C: 67
+    SPACE: 32, C: 67, P: 80 // P for Pause
 };
 
 const POINTS = {
