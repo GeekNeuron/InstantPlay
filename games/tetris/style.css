@@ -101,31 +101,7 @@ header h1:hover { opacity: 1; }
 
 footer { margin-top: 25px; font-size: 0.9em; font-weight: 700; opacity: 0.8; }
 
-/* --- Mobile Styles --- */
-@media (max-width: 768px) {
-    body { padding: 10px; min-height: 100vh; }
-    .container { padding: 10px; }
-    header h1 { font-size: 2.5em; }
-    .game-controls-wrapper { flex-direction: column; gap: 10px; }
-    .game-area { flex-direction: column-reverse; align-items: center; }
-    .side-panel {
-        flex-direction: row; flex-wrap: wrap; width: 100%;
-        max-width: 302px; justify-content: space-between;
-    }
-    .side-panel-top {
-        order: 1; /* Show Hold/Next first */
-        width: 100%;
-        flex-direction: row;
-        gap: 15px;
-        justify-content: space-between;
-    }
-    .side-panel-top .side-box {
-        width: calc(50% - 8px);
-    }
-    #timer-box {
-        order: 2; /* Show timer after */
-        width: 100%;
-        margin-top: 15px;
-    }
-    .side-box h3 { font-size: 1em; margin-bottom: 5px; }
-}
+/*
+   NO MOBILE STYLES - The @media block has been removed to ensure
+   the desktop layout is shown on all screen sizes.
+*/
