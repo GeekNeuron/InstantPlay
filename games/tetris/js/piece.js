@@ -9,40 +9,26 @@ class Piece {
         this.y = 0;
     }
 
-    draw(blockSize = BLOCK_SIZE, center = false) {
+    // --- SIMPLIFIED DRAW METHOD ---
+    // This function is now ONLY responsible for drawing the falling piece on the main board.
+    draw() {
         this.ctx.fillStyle = this.color;
-        
-        // Use a smaller, consistent block size for side panels
-        const renderBlockSize = center ? 20 : blockSize;
-        const radius = renderBlockSize / 6;
+        const radius = BLOCK_SIZE / 6;
 
         this.shape.forEach((row, y) => {
             row.forEach((value, x) => {
                 if (value > 0) {
-                    let drawX, drawY;
-
-                    if (center) {
-                        // --- ROBUST CENTERING LOGIC ---
-                        const piecePixelWidth = this.shape[0].length * renderBlockSize;
-                        const piecePixelHeight = this.shape.length * renderBlockSize;
-                        const offsetX = (this.ctx.canvas.width - piecePixelWidth) / 2;
-                        const offsetY = (this.ctx.canvas.height - piecePixelHeight) / 2;
-                        drawX = offsetX + (x * renderBlockSize);
-                        drawY = offsetY + (y * renderBlockSize);
-                    } else {
-                        // Default drawing on the main game board
-                        drawX = (this.x + x) * blockSize;
-                        drawY = (this.y + y) * blockSize;
-                    }
+                    const drawX = (this.x + x) * BLOCK_SIZE;
+                    const drawY = (this.y + y) * BLOCK_SIZE;
                     
                     this.ctx.beginPath();
                     this.ctx.moveTo(drawX + radius, drawY);
-                    this.ctx.lineTo(drawX + renderBlockSize - radius, drawY);
-                    this.ctx.arcTo(drawX + renderBlockSize, drawY, drawX + renderBlockSize, drawY + radius, radius);
-                    this.ctx.lineTo(drawX + renderBlockSize, drawY + renderBlockSize - radius);
-                    this.ctx.arcTo(drawX + renderBlockSize, drawY + renderBlockSize, drawX + renderBlockSize - radius, drawY + renderBlockSize, radius);
-                    this.ctx.lineTo(drawX + radius, drawY + renderBlockSize);
-                    this.ctx.arcTo(drawX, drawY + renderBlockSize, drawX, drawY + renderBlockSize - radius, radius);
+                    this.ctx.lineTo(drawX + BLOCK_SIZE - radius, drawY);
+                    this.ctx.arcTo(drawX + BLOCK_SIZE, drawY, drawX + BLOCK_SIZE, drawY + radius, radius);
+                    this.ctx.lineTo(drawX + BLOCK_SIZE, drawY + BLOCK_SIZE - radius);
+                    this.ctx.arcTo(drawX + BLOCK_SIZE, drawY + BLOCK_SIZE, drawX + BLOCK_SIZE - radius, drawY + BLOCK_SIZE, radius);
+                    this.ctx.lineTo(drawX + radius, drawY + BLOCK_SIZE);
+                    this.ctx.arcTo(drawX, drawY + BLOCK_SIZE, drawX, drawY + BLOCK_SIZE - radius, radius);
                     this.ctx.lineTo(drawX, drawY + radius);
                     this.ctx.arcTo(drawX, drawY, drawX + radius, drawY, radius);
                     this.ctx.closePath();
@@ -56,5 +42,11 @@ class Piece {
     randomizeTetrominoType(noOfTypes) { return Math.floor(Math.random() * noOfTypes + 1); }
     setStartingPosition() { this.x = Math.floor((COLS - this.shape[0].length) / 2); }
     rotate() { const newShape = this.shape[0].map((_, colIndex) => this.shape.map(row => row[colIndex])); newShape.forEach(row => row.reverse()); this.shape = newShape; }
-    updateColor() { const typeId = SHAPES.findIndex(shape => JSON.stringify(shape) === JSON.stringify(this.shape)); if (typeId > 0) this.color = getComputedStyle(document.documentElement).getPropertyValue(`--piece-color-${typeId}`).trim(); }
+    
+    updateColor() {
+        const typeId = SHAPES.findIndex(shape => JSON.stringify(shape) === JSON.stringify(this.shape));
+        if (typeId > 0) {
+            this.color = getComputedStyle(document.documentElement).getPropertyValue(`--piece-color-${typeId}`).trim();
+        }
+    }
 }
