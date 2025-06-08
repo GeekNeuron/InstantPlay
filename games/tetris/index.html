@@ -14,10 +14,12 @@
             <div class="game-controls-wrapper">
                 <div class="scores-container">
                     <div class="score-box">Score: <span id="score">0</span></div>
-                    <div class="score-box">Lines: <span id="lines">0</span></div>
-                    <div class="score-box">Level: <span id="level">1</span></div>
+                    <div class="score-box">High Score: <span id="high-score">0</span></div>
                 </div>
-                <button id="new-game-button" class="btn">New Game</button>
+                <div class="game-buttons">
+                    <button id="pause-button" class="btn">Pause</button>
+                    <button id="new-game-button" class="btn">New Game</button>
+                </div>
             </div>
         </header>
 
@@ -30,17 +32,29 @@
                         <canvas id="hold-canvas"></canvas>
                     </div>
                     <div class="side-box">
-                        <h3>Next</h3>
-                        <canvas id="next-canvas"></canvas>
+                        <h3>Level: <span id="level">1</span></h3>
+                        <p id="lines-display">Lines: 0</p>
                     </div>
                 </div>
-                
-                <div id="timer-box" class="side-box">
+                <div id="next-queue-box" class="side-box">
+                    <h3>Next</h3>
+                    <div id="next-queue">
+                        </div>
+                </div>
+                <div id="timer-box" class.side-box">
                     <h3>Time</h3>
                     <p id="timer">00:00:00</p>
                 </div>
             </div>
         </main>
+    </div>
+    
+    <div id="modal-overlay" class="hidden">
+        <div id="modal-content">
+            <h2 id="modal-title">Game Paused</h2>
+            <p id="modal-text"></p>
+            <button id="modal-button" class="btn">Resume</button>
+        </div>
     </div>
     
     <footer>Created by GeekNeuron</footer>
