@@ -1,3 +1,7 @@
+// --- NEW: Control the size of pieces in Hold/Next boxes here ---
+// Smaller number = BIGGER piece. Bigger number = SMALLER piece.
+const SIDE_PANEL_PADDING = 1.2; 
+
 class Board {
     constructor(ctx) {
         this.ctx = ctx;
@@ -72,27 +76,24 @@ class Board {
         context.fill();
     }
     
-    // --- NEW: DEDICATED FUNCTION FOR SIDE PANELS (REWRITTEN FROM SCRATCH) ---
+    // --- REWRITTEN as requested ---
     drawPieceOnSideCanvas(context, piece) {
-        context.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--grid-bg');
-        context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+        // Clear the canvas to make it transparent
+        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
         
         if (!piece) return;
 
-        // 1. Determine the best block size to fit the piece perfectly
         const matrix = piece.shape;
-        const matrixWidth = matrix[0].length;
-        const matrixHeight = matrix.length;
-        const maxDimension = Math.max(matrixWidth, matrixHeight);
-        const blockSize = context.canvas.width / (maxDimension + 1); // +1 adds padding
+        const maxDimension = Math.max(matrix[0].length, matrix.length);
+        
+        // Calculate block size using the new controllable padding variable
+        const blockSize = context.canvas.width / (maxDimension + SIDE_PANEL_PADDING);
 
-        // 2. Calculate offsets to center the piece
-        const piecePixelWidth = matrixWidth * blockSize;
-        const piecePixelHeight = matrixHeight * blockSize;
+        const piecePixelWidth = matrix[0].length * blockSize;
+        const piecePixelHeight = matrix.length * blockSize;
         const offsetX = (context.canvas.width - piecePixelWidth) / 2;
         const offsetY = (context.canvas.height - piecePixelHeight) / 2;
         
-        // 3. Draw the piece with the calculated size and offset
         const typeId = SHAPES.findIndex(shape => JSON.stringify(shape) === JSON.stringify(piece.shape));
         if (typeId > 0) {
             matrix.forEach((row, y) => {
@@ -105,7 +106,6 @@ class Board {
         }
     }
 
-    // --- SIMPLIFIED Methods using the new function ---
     drawHeldPiece() {
         this.drawPieceOnSideCanvas(this.holdCtx, this.heldPiece);
     }
@@ -114,9 +114,7 @@ class Board {
         this.drawPieceOnSideCanvas(this.nextCtx, this.nextPiece);
     }
     
-    // --- All other methods remain the same ---
     calculateGhostPosition() { let ghost = JSON.parse(JSON.stringify(this.piece)); while (this.isValid(ghost)) ghost.y++; ghost.y--; return ghost; }
-    drawGhostPiece() { const ghost = this.calculateGhostPosition(); this.ctx.globalAlpha = 0.2; ghost.shape.forEach((row, y) => { row.forEach((value, x) => { if (value > 0) this.drawBlock(this.ctx, ghost.x + x, ghost.y + y, value, BLOCK_SIZE); }); }); this.ctx.globalAlpha = 1.0; }
     hold() { if (!this.canHold) return; if (this.heldPiece) { [this.piece, this.heldPiece] = [this.heldPiece, this.piece]; this.piece.ctx = this.ctx; this.piece.setStartingPosition(); } else { this.heldPiece = this.piece; this.getNewPiece(); } this.canHold = false; }
     getNewPiece() { this.piece = this.nextPiece; this.piece.ctx = this.ctx; this.piece.setStartingPosition(); this.nextPiece = new Piece(this.nextCtx); this.canHold = true; }
     isValid(p) { return p.shape.every((row, dy) => { return row.every((value, dx) => { let x = p.x + dx; let y = p.y + dy; return (value === 0 || (this.isInsideWalls(x) && this.isAboveFloor(y) && this.isNotOccupied(x, y))); }); }); }
