@@ -15,7 +15,7 @@ let gameTimer;
 let softDropping = false;
 let isAnimatingHardDrop = false;
 
-// --- THEME SWITCHING LOGIC ---
+// --- THEME SWITCHING LOGIC. ---
 function applyTheme(theme) { /* ... same as before ... */ }
 function toggleTheme() { /* ... same as before ... */ }
 headerTitle.addEventListener('click', toggleTheme);
