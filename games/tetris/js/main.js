@@ -20,6 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let requestId;
     let gameTimer;
     let softDropping = false;
+    
+    // --- MOVED a few lines up to fix the error ---
+    let time = { start: 0, elapsed: 0 };
+
 
     // --- THEME SWITCHING LOGIC ---
     function applyTheme(theme) {
@@ -29,7 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.classList.remove('dark-theme');
         }
         if (board) {
-            // --- FIXED: Use the correct function name ---
             board.updateAndDraw(); 
         }
     }
@@ -50,7 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function stopTimer() { clearInterval(gameTimer); }
 
     // --- GAME LOGIC ---
-    let time = { start: 0, elapsed: 0 };
     function play() {
         if (requestId) cancelAnimationFrame(requestId);
         stopTimer();
@@ -63,10 +65,8 @@ document.addEventListener('DOMContentLoaded', () => {
     newGameButton.addEventListener('click', play);
 
     function gameLoop(now = 0) {
-        // --- FIXED: Use the correct function name ---
         board.updateAndDraw(); 
 
-        // Normal piece-dropping logic only runs if there is a piece to control
         if (board.piece) {
             time.elapsed = now - time.start;
             const currentLevelTime = 1000 / game.level;
@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }, 150);
         } else {
-            drop(); // If it can't drop far, just do a single drop
+            drop();
         }
     }
 
