@@ -43,10 +43,9 @@ class Board {
 
     drawBlock(context, x, y, color, size) {
         context.fillStyle = color;
-        context.shadowColor = color;
-        context.shadowBlur = 15;
+        // --- Glow effect lines are removed ---
         context.fillRect(x * size, y * size, size, size);
-        context.shadowBlur = 0;
+        
         context.strokeStyle = 'rgba(0,0,0,0.5)';
         context.strokeRect(x * size, y * size, size, size);
     }
