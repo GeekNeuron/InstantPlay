@@ -10,36 +10,35 @@ class Piece {
     }
 
     draw(blockSize = BLOCK_SIZE, center = false) {
-        this.updateColor(); // Ensure color is fresh
+        this.updateColor();
         this.ctx.fillStyle = this.color;
         
-        let renderBlockSize = blockSize;
+        let renderBlockWidth = blockSize;
+        let renderBlockHeight = blockSize;
 
         if (center) {
-            // --- NEW & FINAL RENDERING LOGIC ---
-            // This logic makes the piece as large as possible while staying square.
             const matrix = this.shape;
-            const matrixWidth = matrix[0].length;
-            const matrixHeight = matrix.length;
-            const maxDimension = Math.max(matrixWidth, matrixHeight);
+            const maxDimension = Math.max(matrix[0].length, matrix.length);
+            const baseBlockSize = this.ctx.canvas.width / (maxDimension + 1.2); // +1.2 provides padding
             
-            // Calculate the block size based on the container and a bit of padding
-            renderBlockSize = this.ctx.canvas.width / (maxDimension + 1); // +1 provides padding
+            // Apply your independent scales
+            renderBlockWidth = baseBlockSize * SIDE_PANEL_SCALE_X;
+            renderBlockHeight = baseBlockSize * SIDE_PANEL_SCALE_Y;
         }
         
-        const radius = renderBlockSize / 6;
+        const radius = Math.min(renderBlockWidth, renderBlockHeight) / 6;
 
         this.shape.forEach((row, y) => {
             row.forEach((value, x) => {
                 if (value > 0) {
                     let drawX, drawY;
                     if (center) {
-                        const piecePixelWidth = this.shape[0].length * renderBlockSize;
-                        const piecePixelHeight = this.shape.length * renderBlockSize;
+                        const piecePixelWidth = this.shape[0].length * renderBlockWidth;
+                        const piecePixelHeight = this.shape.length * renderBlockHeight;
                         const offsetX = (this.ctx.canvas.width - piecePixelWidth) / 2;
                         const offsetY = (this.ctx.canvas.height - piecePixelHeight) / 2;
-                        drawX = offsetX + (x * renderBlockSize);
-                        drawY = offsetY + (y * renderBlockSize);
+                        drawX = offsetX + (x * renderBlockWidth);
+                        drawY = offsetY + (y * renderBlockHeight);
                     } else {
                         drawX = (this.x + x) * blockSize;
                         drawY = (this.y + y) * blockSize;
@@ -47,12 +46,12 @@ class Piece {
                     
                     this.ctx.beginPath();
                     this.ctx.moveTo(drawX + radius, drawY);
-                    this.ctx.lineTo(drawX + renderBlockSize - radius, drawY);
-                    this.ctx.arcTo(drawX + renderBlockSize, drawY, drawX + renderBlockSize, drawY + radius, radius);
-                    this.ctx.lineTo(drawX + renderBlockSize, drawY + renderBlockSize - radius);
-                    this.ctx.arcTo(drawX + renderBlockSize, drawY + renderBlockSize, drawX + renderBlockSize - radius, drawY + renderBlockSize, radius);
-                    this.ctx.lineTo(drawX + radius, drawY + renderBlockSize);
-                    this.ctx.arcTo(drawX, drawY + renderBlockSize, drawX, drawY + renderBlockSize - radius, radius);
+                    this.ctx.lineTo(drawX + renderBlockWidth - radius, drawY);
+                    this.ctx.arcTo(drawX + renderBlockWidth, drawY, drawX + renderBlockWidth, drawY + radius, radius);
+                    this.ctx.lineTo(drawX + renderBlockWidth, drawY + renderBlockHeight - radius);
+                    this.ctx.arcTo(drawX + renderBlockWidth, drawY + renderBlockHeight, drawX + renderBlockWidth - radius, drawY + renderBlockHeight, radius);
+                    this.ctx.lineTo(drawX + radius, drawY + renderBlockHeight);
+                    this.ctx.arcTo(drawX, drawY + renderBlockHeight, drawX, drawY + renderBlockHeight - radius, radius);
                     this.ctx.lineTo(drawX, drawY + radius);
                     this.ctx.arcTo(drawX, drawY, drawX + radius, drawY, radius);
                     this.ctx.closePath();
