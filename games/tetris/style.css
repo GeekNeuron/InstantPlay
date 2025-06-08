@@ -137,3 +137,53 @@ footer {
         padding: 12px 25px;
     }
 }
+
+/* =================================
+   Touch Controls Styles
+   ================================= */
+.touch-controls {
+    display: none; /* Hidden on desktop by default */
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 400px;
+    z-index: 100;
+    user-select: none; /* Prevents text selection on tapping */
+}
+
+.touch-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.ctrl-btn {
+    background-color: rgba(0, 242, 255, 0.5);
+    color: white;
+    border: 2px solid #00f2ff;
+    border-radius: 10px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    flex-grow: 1;
+    margin: 0 5px;
+    padding: 15px;
+    -webkit-tap-highlight-color: transparent; /* Removes tap highlight on iOS */
+}
+
+.ctrl-btn:active {
+    background-color: rgba(255, 255, 255, 0.7);
+}
+
+/* Show touch controls only on mobile */
+@media (max-width: 680px) {
+    .touch-controls {
+        display: block;
+    }
+    
+    /* Add padding to the bottom of the body to prevent controls from overlapping footer */
+    body {
+        padding-bottom: 200px;
+    }
+}
