@@ -8,10 +8,6 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="top-bar">
-        <button id="theme-switcher" title="Change Theme">🌓</button>
-    </div>
-
     <div class="container">
         <header>
             <h1>Tetris</h1>
@@ -36,11 +32,15 @@
                     <h3>Next</h3>
                     <canvas id="next-canvas"></canvas>
                 </div>
+                <div id="timer-box" class="side-box">
+                    <h3>Time</h3>
+                    <p id="timer">00:00:00</p>
+                </div>
             </div>
         </main>
     </div>
     
-    <footer> Created by GeekNeuron </footer>
+    <footer>Created by GeekNeuron</footer>
 
     <script src="js/constants.js"></script>
     <script src="js/piece.js"></script>
