@@ -3,36 +3,44 @@ class Piece {
         this.ctx = ctx;
         const typeId = this.randomizeTetrominoType(COLORS.length - 1);
         this.shape = SHAPES[typeId];
-        this.color = getComputedStyle(document.documentElement).getPropertyValue(`--piece-color-${typeId}`).trim();
+        this.color = "black"; // Placeholder, will be updated immediately
+        this.updateColor(); // Set initial color based on theme
         this.x = 0;
         this.y = 0;
     }
 
-    // --- MODIFIED & FINAL DRAW METHOD ---
-    draw(blockSize = BLOCK_SIZE, center = false) {
+    // --- FINALIZED DRAW METHOD ---
+    draw(defaultBlockSize = BLOCK_SIZE, center = false) {
         this.ctx.fillStyle = this.color;
+        let blockSize = defaultBlockSize;
+        
+        // This block dynamically calculates the best block size for side panels
+        if (center) {
+            const pieceMatrixWidth = this.shape[0].length;
+            const pieceMatrixHeight = this.shape.length;
+            const maxBlockSizeByWidth = this.ctx.canvas.width / pieceMatrixWidth;
+            const maxBlockSizeByHeight = this.ctx.canvas.height / pieceMatrixHeight;
+            blockSize = Math.min(maxBlockSizeByWidth, maxBlockSizeByHeight) * 0.85; // Use 85% of max size for padding
+        }
+        
         const radius = blockSize / 6;
 
         this.shape.forEach((row, y) => {
             row.forEach((value, x) => {
                 if (value > 0) {
                     let drawX, drawY;
-
                     if (center) {
-                        // New logic for perfect centering in side boxes
-                        const pieceWidth = this.shape[0].length * blockSize;
-                        const pieceHeight = this.shape.length * blockSize;
-                        const offsetX = (this.ctx.canvas.width - pieceWidth) / 2;
-                        const offsetY = (this.ctx.canvas.height - pieceHeight) / 2;
+                        const pieceRenderWidth = this.shape[0].length * blockSize;
+                        const pieceRenderHeight = this.shape.length * blockSize;
+                        const offsetX = (this.ctx.canvas.width - pieceRenderWidth) / 2;
+                        const offsetY = (this.ctx.canvas.height - pieceRenderHeight) / 2;
                         drawX = offsetX + (x * blockSize);
                         drawY = offsetY + (y * blockSize);
                     } else {
-                        // Default drawing on the main game board
                         drawX = (this.x + x) * blockSize;
                         drawY = (this.y + y) * blockSize;
                     }
                     
-                    // Draw the rounded rectangle path
                     this.ctx.beginPath();
                     this.ctx.moveTo(drawX + radius, drawY);
                     this.ctx.lineTo(drawX + blockSize - radius, drawY);
@@ -70,7 +78,6 @@ class Piece {
         this.shape = newShape;
     }
     
-    // Update color when theme changes
     updateColor() {
         const typeId = SHAPES.findIndex(shape => JSON.stringify(shape) === JSON.stringify(this.shape));
         if (typeId !== -1) {
