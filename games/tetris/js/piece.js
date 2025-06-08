@@ -8,28 +8,45 @@ class Piece {
         this.y = 0;
     }
 
+    // --- MODIFIED FUNCTION TO DRAW ROUNDED BLOCKS ---
     draw(blockSize = BLOCK_SIZE, center = false) {
         this.ctx.fillStyle = this.color;
-        this.ctx.shadowColor = this.color;
-        this.ctx.shadowBlur = 15;
-        
+        const radius = blockSize / 6; // Make radius proportional to the block size
+
         this.shape.forEach((row, y) => {
             row.forEach((value, x) => {
                 if (value > 0) {
-                    let drawX = this.x + x;
-                    let drawY = this.y + y;
-                    if(center) {
-                       drawX = x + (4 - this.shape[0].length) / 2;
-                       drawY = y + (4 - this.shape.length) / 2;
+                    let drawX = (this.x + x) * blockSize;
+                    let drawY = (this.y + y) * blockSize;
+                    
+                    if (center) {
+                       const centeredX = x + (4 - this.shape[0].length) / 2;
+                       const centeredY = y + (4 - this.shape.length) / 2;
+                       drawX = centeredX * blockSize;
+                       drawY = centeredY * blockSize;
                     }
-                    this.ctx.fillRect(drawX * blockSize, drawY * blockSize, blockSize, blockSize);
-                    this.ctx.strokeStyle = '#000';
-                    this.ctx.strokeRect(drawX * blockSize, drawY * blockSize, blockSize, blockSize);
+                    
+                    // Draw the rounded rectangle path
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(drawX + radius, drawY);
+                    this.ctx.lineTo(drawX + blockSize - radius, drawY);
+                    this.ctx.arcTo(drawX + blockSize, drawY, drawX + blockSize, drawY + radius, radius);
+                    this.ctx.lineTo(drawX + blockSize, drawY + blockSize - radius);
+                    this.ctx.arcTo(drawX + blockSize, drawY + blockSize, drawX + blockSize - radius, drawY + blockSize, radius);
+                    this.ctx.lineTo(drawX + radius, drawY + blockSize);
+                    this.ctx.arcTo(drawX, drawY + blockSize, drawX, drawY + blockSize - radius, radius);
+                    this.ctx.lineTo(drawX, drawY + radius);
+                    this.ctx.arcTo(drawX, drawY, drawX + radius, drawY, radius);
+                    this.ctx.closePath();
+                    
+                    this.ctx.fill();
+
+                    // Optional border
+                    this.ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+                    this.ctx.stroke();
                 }
             });
         });
-        // Reset shadow for other drawings.
-        this.ctx.shadowBlur = 0;
     }
 
     move(p) {
