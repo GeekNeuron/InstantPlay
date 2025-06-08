@@ -1,9 +1,13 @@
 const canvas = document.getElementById('tetris-canvas');
 const ctx = canvas.getContext('2d');
 const newGameButton = document.getElementById('new-game-button');
-const headerTitle = document.querySelector('header h1'); // MODIFIED
+const headerTitle = document.querySelector('header h1');
 const holdBox = document.getElementById('hold-box');
 const timerElement = document.getElementById('timer');
+const modal = document.getElementById('modal-overlay');
+const modalTitleElement = document.getElementById('modal-title');
+const modalTextElement = document.getElementById('modal-text');
+const modalButton = document.getElementById('modal-button');
 
 ctx.canvas.width = COLS * BLOCK_SIZE;
 ctx.canvas.height = ROWS * BLOCK_SIZE;
@@ -59,6 +63,7 @@ function stopTimer() { clearInterval(gameTimer); }
 // --- GAME LOGIC ---
 let time = { start: 0, elapsed: 0 };
 function play() {
+    hideModal();
     if (requestId) cancelAnimationFrame(requestId);
     stopTimer();
     startTimer();
@@ -68,6 +73,7 @@ function play() {
     gameLoop();
 }
 newGameButton.addEventListener('click', play);
+modalButton.addEventListener('click', play);
 
 function gameLoop(now = 0) {
     time.elapsed = now - time.start;
@@ -88,15 +94,31 @@ function drop() {
     return true;
 }
 
+function showModal(title, message, type = 'info') {
+    modalTitleElement.textContent = title;
+    modalTextElement.innerHTML = message;
+
+    modalTitleElement.className = ''; // Reset animations
+    if (type === 'error-continue') { 
+        modalTitleElement.classList.add('error-animated');
+    }
+    
+    modal.style.display = 'flex';
+    setTimeout(() => modal.classList.add('show'), 10);
+}
+
+function hideModal() {
+    modal.classList.remove('show');
+    setTimeout(() => {
+        modal.style.display = 'none';
+    }, 300); // Match CSS transition time
+}
+
 function gameOver() {
     cancelAnimationFrame(requestId);
     stopTimer();
-    ctx.fillStyle = 'rgba(0,0,0,0.7)';
-    ctx.fillRect(0, ctx.canvas.height/2 - 30, ctx.canvas.width, 60);
-    ctx.fillStyle = 'red';
-    ctx.font = 'bold 32px Vazirmatn, Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('Game Over', ctx.canvas.width/2, ctx.canvas.height/2);
+    const gameOverMessage = `Your Final Score: <strong>${game.score}</strong>`;
+    showModal('Game Over', gameOverMessage, 'error-continue');
 }
 
 // --- CONTROLS (Keyboard & Touch) ---
