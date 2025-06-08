@@ -172,5 +172,5 @@ body.dark-theme .modal-content {
 }
 /* Class to trigger the animation */
 .modal-content h2.error-animated {
-    animation: buzz 0.5s linear 3;
+    animation: buzz 0.5s linear infinite;
 }
