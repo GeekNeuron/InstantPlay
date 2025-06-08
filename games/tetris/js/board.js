@@ -1,6 +1,6 @@
 // --- NEW: Control the size of pieces in Hold/Next boxes here ---
 // Smaller number = BIGGER piece. Bigger number = SMALLER piece.
-const SIDE_PANEL_PADDING = 1.2; 
+const SIDE_PANEL_PADDING = 2.2; 
 
 class Board {
     constructor(ctx) {
