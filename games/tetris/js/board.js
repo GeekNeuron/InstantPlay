@@ -1,7 +1,7 @@
 class Board {
-    constructor(ctx, nextCtx) {
+    constructor(ctx) {
         this.ctx = ctx;
-        this.nextCtx = nextCtx;
+        this.nextCtx = document.getElementById('next-canvas').getContext('2d');
         this.holdCtx = document.getElementById('hold-canvas').getContext('2d');
         
         this.grid = this.getEmptyGrid();
@@ -14,7 +14,7 @@ class Board {
     getEmptyGrid() {
         return Array.from({ length: ROWS }, () => Array(COLS).fill(0));
     }
-
+    
     reset() {
         this.grid = this.getEmptyGrid();
         this.heldPiece = null;
@@ -25,13 +25,41 @@ class Board {
         this.draw();
     }
 
+    // --- NEW: Draws the background grid ---
+    drawGrid() {
+        this.ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--grid-line-color');
+        this.ctx.lineWidth = 1;
+
+        // Draw vertical lines
+        for (let i = 1; i < COLS; i++) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(i * BLOCK_SIZE, 0);
+            this.ctx.lineTo(i * BLOCK_SIZE, this.ctx.canvas.height);
+            this.ctx.stroke();
+        }
+
+        // Draw horizontal lines
+        for (let i = 1; i < ROWS; i++) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(0, i * BLOCK_SIZE);
+            this.ctx.lineTo(this.ctx.canvas.width, i * BLOCK_SIZE);
+            this.ctx.stroke();
+        }
+    }
+
     draw() {
+        // Clear canvas with the theme's grid background color
+        this.ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--grid-bg');
+        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        
+        this.drawGrid();
         this.drawGhostPiece();
 
+        // Draw the frozen pieces on the board
         this.grid.forEach((row, y) => {
             row.forEach((value, x) => {
                 if (value > 0) {
-                    this.drawBlock(this.ctx, x, y, COLORS[value], BLOCK_SIZE);
+                    this.drawBlock(this.ctx, x, y, value, BLOCK_SIZE);
                 }
             });
         });
@@ -41,15 +69,14 @@ class Board {
         this.drawHeldPiece();
     }
 
-    // --- MODIFIED FUNCTION TO DRAW ROUNDED BLOCKS ---
-    drawBlock(context, x, y, color, size) {
-        const radius = 5; // The roundness of the corners
+    // --- MODIFIED: Draws rounded blocks using CSS variables for color ---
+    drawBlock(context, x, y, value, size) {
+        const color = getComputedStyle(document.documentElement).getPropertyValue(`--piece-color-${value}`).trim();
+        const radius = 5;
         const blockX = x * size;
         const blockY = y * size;
 
         context.fillStyle = color;
-        
-        // Draw the rounded rectangle path
         context.beginPath();
         context.moveTo(blockX + radius, blockY);
         context.lineTo(blockX + size - radius, blockY);
@@ -61,17 +88,11 @@ class Board {
         context.lineTo(blockX, blockY + radius);
         context.arcTo(blockX, blockY, blockX + radius, blockY, radius);
         context.closePath();
-        
-        context.fill(); // Fill the shape
-
-        // Optional: add a border
-        context.strokeStyle = 'rgba(0,0,0,0.2)';
-        context.stroke();
+        context.fill();
     }
     
-    // --- Ghost Piece Methods ---
     calculateGhostPosition() {
-        let ghost = JSON.parse(JSON.stringify(this.piece)); // Deep copy
+        let ghost = JSON.parse(JSON.stringify(this.piece));
         while (this.isValid(ghost)) {
             ghost.y++;
         }
@@ -81,18 +102,17 @@ class Board {
 
     drawGhostPiece() {
         const ghost = this.calculateGhostPosition();
-        this.ctx.globalAlpha = 0.3;
+        this.ctx.globalAlpha = 0.2;
         ghost.shape.forEach((row, y) => {
             row.forEach((value, x) => {
                 if (value > 0) {
-                    this.drawBlock(this.ctx, ghost.x + x, ghost.y + y, COLORS[value], BLOCK_SIZE);
+                    this.drawBlock(this.ctx, ghost.x + x, ghost.y + y, value, BLOCK_SIZE);
                 }
             });
         });
         this.ctx.globalAlpha = 1.0;
     }
 
-    // --- Hold Piece Methods ---
     drawHeldPiece() {
         this.holdCtx.clearRect(0, 0, this.holdCtx.canvas.width, this.holdCtx.canvas.height);
         if (this.heldPiece) {
@@ -103,7 +123,6 @@ class Board {
 
     hold() {
         if (!this.canHold) return;
-
         if (this.heldPiece) {
             [this.piece, this.heldPiece] = [this.heldPiece, this.piece];
             this.piece.ctx = this.ctx;
@@ -112,15 +131,15 @@ class Board {
             this.heldPiece = this.piece;
             this.getNewPiece();
         }
-        
         this.canHold = false;
     }
     
-    // --- Next Piece Methods ---
     drawNextPiece() {
         this.nextCtx.clearRect(0, 0, this.nextCtx.canvas.width, this.nextCtx.canvas.height);
-        this.nextPiece.ctx = this.nextCtx;
-        this.nextPiece.draw(NEXT_CANVAS_BLOCK_SIZE, true);
+        if (this.nextPiece) {
+            this.nextPiece.ctx = this.nextCtx;
+            this.nextPiece.draw(NEXT_CANVAS_BLOCK_SIZE, true);
+        }
     }
 
     getNewPiece() {
@@ -128,10 +147,9 @@ class Board {
         this.piece.ctx = this.ctx;
         this.piece.setStartingPosition();
         this.nextPiece = new Piece(this.nextCtx);
-        this.canHold = true; // Allow holding again
+        this.canHold = true;
     }
 
-    // --- Core Logic ---
     isValid(p) {
         return p.shape.every((row, dy) => {
             return row.every((value, dx) => {
