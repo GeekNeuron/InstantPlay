@@ -3,6 +3,7 @@ class Board {
         this.ctx = ctx;
         this.nextCtx = document.getElementById('next-canvas').getContext('2d');
         this.holdCtx = document.getElementById('hold-canvas').getContext('2d');
+        
         this.grid = this.getEmptyGrid();
         this.piece = null;
         this.nextPiece = null;
@@ -77,20 +78,20 @@ class Board {
     drawHeldPiece() {
         this.holdCtx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--grid-bg');
         this.holdCtx.fillRect(0, 0, this.holdCtx.canvas.width, this.holdCtx.canvas.height);
-        this.drawGrid(this.holdCtx, 4, 4);
+        // Grid drawing is removed from here
         if (this.heldPiece) {
             this.heldPiece.ctx = this.holdCtx;
-            this.heldPiece.draw(0, true);
+            this.heldPiece.draw(BLOCK_SIZE, true); // Pass a block size and center flag
         }
     }
 
     drawNextPiece() {
         this.nextCtx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--grid-bg');
         this.nextCtx.fillRect(0, 0, this.nextCtx.canvas.width, this.nextCtx.canvas.height);
-        this.drawGrid(this.nextCtx, 4, 4);
+        // Grid drawing is removed from here
         if (this.nextPiece) {
             this.nextPiece.ctx = this.nextCtx;
-            this.nextPiece.draw(0, true);
+            this.nextPiece.draw(BLOCK_SIZE, true); // Pass a block size and center flag
         }
     }
 
