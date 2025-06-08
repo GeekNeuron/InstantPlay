@@ -1,7 +1,7 @@
 const canvas = document.getElementById('tetris-canvas');
 const ctx = canvas.getContext('2d');
 const newGameButton = document.getElementById('new-game-button');
-const headerTitle = document.querySelector('header h1'); // MODIFIED: Selects the h1 directly
+const headerTitle = document.querySelector('header h1'); // MODIFIED
 const holdBox = document.getElementById('hold-box');
 const timerElement = document.getElementById('timer');
 
@@ -33,7 +33,7 @@ function toggleTheme() {
     localStorage.setItem('tetrisTheme', newTheme);
     applyTheme(newTheme);
 }
-headerTitle.addEventListener('click', toggleTheme); // MODIFIED: Listener attached to h1
+headerTitle.addEventListener('click', toggleTheme); // MODIFIED
 
 document.addEventListener('DOMContentLoaded', () => {
     const savedTheme = localStorage.getItem('tetrisTheme') || 'dark';
