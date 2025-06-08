@@ -1,6 +1,6 @@
 // --- NEW: Independent controls for Width and Height in Hold/Next boxes ---
 // Control the piece's Width (پهنا)
-const SIDE_PANEL_SCALE_X = 2.0; 
+const SIDE_PANEL_SCALE_X = 0.5; 
 // Control the piece's Height (طول)
 const SIDE_PANEL_SCALE_Y = 3.0;
 
