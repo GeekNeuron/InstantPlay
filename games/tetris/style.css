@@ -63,11 +63,11 @@ header h1:hover { opacity: 1; }
 .game-area { display: flex; gap: 20px; margin-top: 10px; }
 #tetris-canvas { border-radius: var(--border-radius); background-color: var(--grid-bg); }
 
-/* --- FINAL DESKTOP-FOCUSED SIDE PANEL LAYOUT --- */
+/* Desktop-Focused Side Panel Layout */
 .side-panel {
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* This pushes the timer to the bottom */
+    justify-content: space-between;
     width: 150px;
 }
 .side-panel-top {
@@ -81,15 +81,14 @@ header h1:hover { opacity: 1; }
     width: 100%;
 }
 .side-panel-top .side-box {
-    aspect-ratio: 1 / 1; /* Keep Hold and Next square */
+    aspect-ratio: 1 / 1;
     display: flex; flex-direction: column; justify-content: center; align-items: center;
 }
 .side-box h3 { margin: 0 0 5px 0; font-size: 1.1em; }
 .side-box canvas { background-color: transparent; width: 100%; height: 100%; }
 #hold-box { cursor: pointer; }
-
 #timer-box {
-    aspect-ratio: auto; /* Make timer box rectangular */
+    aspect-ratio: auto;
     height: auto;
     padding: 15px 10px;
 }
@@ -101,7 +100,35 @@ header h1:hover { opacity: 1; }
 
 footer { margin-top: 25px; font-size: 0.9em; font-weight: 700; opacity: 0.8; }
 
-/*
-   NO MOBILE STYLES - The @media block has been removed to ensure
-   the desktop layout is shown on all screen sizes.
-*/
+/* --- RE-INTRODUCED & OPTIMIZED MOBILE STYLES --- */
+@media (max-width: 768px) {
+    body { padding: 10px; min-height: 100vh; }
+    .container { padding: 10px; width: 100%; }
+    header h1 { font-size: 2.5em; }
+    .game-controls-wrapper { flex-direction: column; gap: 10px; }
+    .game-area { flex-direction: column-reverse; align-items: center; }
+    
+    .side-panel {
+        flex-direction: row;
+        flex-wrap: wrap;
+        width: 100%;
+        max-width: 302px; /* Match canvas width */
+        justify-content: space-between;
+        gap: 10px 0; /* Add vertical gap for rows */
+    }
+    .side-panel-top {
+        order: 1; /* Show Hold/Next first */
+        width: 100%;
+        flex-direction: row;
+        gap: 10px;
+        justify-content: space-between;
+    }
+    .side-panel-top .side-box {
+        width: calc(50% - 5px);
+    }
+    #timer-box {
+        order: 2; /* Show timer after */
+        width: 100%;
+    }
+    .side-box h3 { font-size: 1em; margin-bottom: 5px; }
+}
