@@ -1,18 +1,13 @@
+// --- NEW: Control the size of pieces in Hold/Next boxes here ---
+// Control the piece's Width (پهنا)
+const SIDE_PANEL_SCALE_X = 2.0; 
+// Control the piece's Height (طول)
+const SIDE_PANEL_SCALE_Y = 2.0;
+
+
 const COLS = 10;
 const ROWS = 20;
 const BLOCK_SIZE = 30;
-const NEXT_CANVAS_BLOCK_SIZE = 25;
-
-const COLORS = [
-    null,
-    '#FF0D72', // T-piece (Magenta)
-    '#0DC2FF', // I-piece (Cyan)
-    '#0DFF72', // S-piece (Green)
-    '#F538FF', // Z-piece (Purple)
-    '#FF8E0D', // L-piece (Orange)
-    '#FFE138', // J-piece (Yellow)
-    '#3877FF'  // O-piece (Blue)
-];
 
 const SHAPES = [
     [], // Empty shape
