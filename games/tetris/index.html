@@ -24,14 +24,17 @@
         <main class="game-area">
             <canvas id="tetris-canvas"></canvas>
             <div class="side-panel">
-                <div id="hold-box" class="side-box">
-                    <h3>Hold</h3>
-                    <canvas id="hold-canvas"></canvas>
+                <div class="side-panel-top">
+                    <div id="hold-box" class="side-box">
+                        <h3>Hold</h3>
+                        <canvas id="hold-canvas"></canvas>
+                    </div>
+                    <div class="side-box">
+                        <h3>Next</h3>
+                        <canvas id="next-canvas"></canvas>
+                    </div>
                 </div>
-                <div class="side-box">
-                    <h3>Next</h3>
-                    <canvas id="next-canvas"></canvas>
-                </div>
+                
                 <div id="timer-box" class="side-box">
                     <h3>Time</h3>
                     <p id="timer">00:00:00</p>
@@ -40,7 +43,7 @@
         </main>
     </div>
     
-    <footer>Created by GeekNeuron.</footer>
+    <footer>Created by GeekNeuron</footer>
 
     <script src="js/constants.js"></script>
     <script src="js/piece.js"></script>
