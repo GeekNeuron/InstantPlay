@@ -15,7 +15,7 @@ const COLORS = [
 ];
 
 const SHAPES = [
-    [], // Empty shape.
+    [], // Empty shape
     [[1, 1, 1], [0, 1, 0]],                                 // T
     [[2, 2, 2, 2]],                                        // I
     [[0, 3, 3], [3, 3, 0]],                                 // S
@@ -30,7 +30,8 @@ const KEY = {
     RIGHT: 39,
     DOWN: 40,
     UP: 38,    // For rotation
-    SPACE: 32  // For hard drop
+    SPACE: 32, // For hard drop
+    C: 67      // For Hold
 };
 
 const POINTS = {
