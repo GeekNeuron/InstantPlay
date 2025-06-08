@@ -6,36 +6,27 @@
     <title>Tetris by GeekNeuron</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="top-bar">
-        <button id="theme-switcher" title="Change Theme">☀️</button>
-    </div>
-
-    <div class="container">
-        <header>
-            <h1>Tetris</h1>
-            <div class="game-controls-wrapper">
-                <div class="scores-container">
-                    <div class="score-box">Score: <span id="score">0</span></div>
-                    <div class="score-box">Lines: <span id="lines">0</span></div>
-                    <div class="score-box">Level: <span id="level">1</span></div>
-                </div>
-                <button id="new-game-button" class="btn">New Game</button>
-            </div>
-        </header>
-
-        <main class="tetris-game-area">
-            <canvas id="tetris-canvas"></canvas>
-            <div class="side-panel">
-                <h3>Next</h3>
+    <h1>Tetris</h1>
+    <div class="game-container">
+        <canvas id="tetris-canvas"></canvas>
+        <div class="side-panel">
+            <h2>Score</h2>
+            <p id="score">0</p>
+            <h2>Lines</h2>
+            <p id="lines">0</p>
+            <h2>Level</h2>
+            <p id="level">1</p>
+            <div class="next-piece-container">
+                <h2>Next</h2>
                 <canvas id="next-canvas"></canvas>
             </div>
-        </main>
+             <button id="new-game-button" class="btn">New Game</button>
+        </div>
     </div>
-
     <footer>
         Created by GeekNeuron
     </footer>
