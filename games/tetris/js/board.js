@@ -44,7 +44,7 @@ class Board {
     draw() {
         this.ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--grid-bg');
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-        this.drawGrid(this.ctx, COLS, ROWS); // Grid only for main canvas
+        this.drawGrid(this.ctx, COLS, ROWS);
         this.drawGhostPiece();
         this.grid.forEach((row, y) => { row.forEach((value, x) => { if (value > 0) this.drawBlock(this.ctx, x, y, value, BLOCK_SIZE); }); });
         this.piece.draw();
@@ -54,7 +54,7 @@ class Board {
 
     drawBlock(context, x, y, value, size) {
         const color = getComputedStyle(document.documentElement).getPropertyValue(`--piece-color-${value}`).trim();
-        const radius = 5;
+        const radius = size / 6;
         const blockX = x * size;
         const blockY = y * size;
         context.fillStyle = color;
@@ -72,29 +72,51 @@ class Board {
         context.fill();
     }
     
-    calculateGhostPosition() { let ghost = JSON.parse(JSON.stringify(this.piece)); while (this.isValid(ghost)) ghost.y++; ghost.y--; return ghost; }
-    drawGhostPiece() { const ghost = this.calculateGhostPosition(); this.ctx.globalAlpha = 0.2; ghost.shape.forEach((row, y) => { row.forEach((value, x) => { if (value > 0) this.drawBlock(this.ctx, ghost.x + x, ghost.y + y, value, BLOCK_SIZE); }); }); this.ctx.globalAlpha = 1.0; }
+    // --- NEW: DEDICATED FUNCTION FOR SIDE PANELS (REWRITTEN FROM SCRATCH) ---
+    drawPieceOnSideCanvas(context, piece) {
+        context.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--grid-bg');
+        context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+        
+        if (!piece) return;
 
-    drawHeldPiece() {
-        this.holdCtx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--grid-bg');
-        this.holdCtx.fillRect(0, 0, this.holdCtx.canvas.width, this.holdCtx.canvas.height);
-        // Grid drawing is REMOVED from here
-        if (this.heldPiece) {
-            this.heldPiece.ctx = this.holdCtx;
-            this.heldPiece.draw(BLOCK_SIZE, true);
+        // 1. Determine the best block size to fit the piece perfectly
+        const matrix = piece.shape;
+        const matrixWidth = matrix[0].length;
+        const matrixHeight = matrix.length;
+        const maxDimension = Math.max(matrixWidth, matrixHeight);
+        const blockSize = context.canvas.width / (maxDimension + 1); // +1 adds padding
+
+        // 2. Calculate offsets to center the piece
+        const piecePixelWidth = matrixWidth * blockSize;
+        const piecePixelHeight = matrixHeight * blockSize;
+        const offsetX = (context.canvas.width - piecePixelWidth) / 2;
+        const offsetY = (context.canvas.height - piecePixelHeight) / 2;
+        
+        // 3. Draw the piece with the calculated size and offset
+        const typeId = SHAPES.findIndex(shape => JSON.stringify(shape) === JSON.stringify(piece.shape));
+        if (typeId > 0) {
+            matrix.forEach((row, y) => {
+                row.forEach((value, x) => {
+                    if (value > 0) {
+                        this.drawBlock(context, (offsetX / blockSize) + x, (offsetY / blockSize) + y, value, blockSize);
+                    }
+                });
+            });
         }
+    }
+
+    // --- SIMPLIFIED Methods using the new function ---
+    drawHeldPiece() {
+        this.drawPieceOnSideCanvas(this.holdCtx, this.heldPiece);
     }
 
     drawNextPiece() {
-        this.nextCtx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--grid-bg');
-        this.nextCtx.fillRect(0, 0, this.nextCtx.canvas.width, this.nextCtx.canvas.height);
-        // Grid drawing is REMOVED from here
-        if (this.nextPiece) {
-            this.nextPiece.ctx = this.nextCtx;
-            this.nextPiece.draw(BLOCK_SIZE, true);
-        }
+        this.drawPieceOnSideCanvas(this.nextCtx, this.nextPiece);
     }
-
+    
+    // --- All other methods remain the same ---
+    calculateGhostPosition() { let ghost = JSON.parse(JSON.stringify(this.piece)); while (this.isValid(ghost)) ghost.y++; ghost.y--; return ghost; }
+    drawGhostPiece() { const ghost = this.calculateGhostPosition(); this.ctx.globalAlpha = 0.2; ghost.shape.forEach((row, y) => { row.forEach((value, x) => { if (value > 0) this.drawBlock(this.ctx, ghost.x + x, ghost.y + y, value, BLOCK_SIZE); }); }); this.ctx.globalAlpha = 1.0; }
     hold() { if (!this.canHold) return; if (this.heldPiece) { [this.piece, this.heldPiece] = [this.heldPiece, this.piece]; this.piece.ctx = this.ctx; this.piece.setStartingPosition(); } else { this.heldPiece = this.piece; this.getNewPiece(); } this.canHold = false; }
     getNewPiece() { this.piece = this.nextPiece; this.piece.ctx = this.ctx; this.piece.setStartingPosition(); this.nextPiece = new Piece(this.nextCtx); this.canHold = true; }
     isValid(p) { return p.shape.every((row, dy) => { return row.every((value, dx) => { let x = p.x + dx; let y = p.y + dy; return (value === 0 || (this.isInsideWalls(x) && this.isAboveFloor(y) && this.isNotOccupied(x, y))); }); }); }
