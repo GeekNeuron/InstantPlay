@@ -3,27 +3,33 @@ class Piece {
         this.ctx = ctx;
         const typeId = this.randomizeTetrominoType(COLORS.length - 1);
         this.shape = SHAPES[typeId];
-        this.color = COLORS[typeId];
+        this.color = getComputedStyle(document.documentElement).getPropertyValue(`--piece-color-${typeId}`).trim();
         this.x = 0;
         this.y = 0;
     }
 
-    // --- MODIFIED FUNCTION TO DRAW ROUNDED BLOCKS ---
+    // --- MODIFIED & FINAL DRAW METHOD ---
     draw(blockSize = BLOCK_SIZE, center = false) {
         this.ctx.fillStyle = this.color;
-        const radius = blockSize / 6; // Make radius proportional to the block size
+        const radius = blockSize / 6;
 
         this.shape.forEach((row, y) => {
             row.forEach((value, x) => {
                 if (value > 0) {
-                    let drawX = (this.x + x) * blockSize;
-                    let drawY = (this.y + y) * blockSize;
-                    
+                    let drawX, drawY;
+
                     if (center) {
-                       const centeredX = x + (4 - this.shape[0].length) / 2;
-                       const centeredY = y + (4 - this.shape.length) / 2;
-                       drawX = centeredX * blockSize;
-                       drawY = centeredY * blockSize;
+                        // New logic for perfect centering in side boxes
+                        const pieceWidth = this.shape[0].length * blockSize;
+                        const pieceHeight = this.shape.length * blockSize;
+                        const offsetX = (this.ctx.canvas.width - pieceWidth) / 2;
+                        const offsetY = (this.ctx.canvas.height - pieceHeight) / 2;
+                        drawX = offsetX + (x * blockSize);
+                        drawY = offsetY + (y * blockSize);
+                    } else {
+                        // Default drawing on the main game board
+                        drawX = (this.x + x) * blockSize;
+                        drawY = (this.y + y) * blockSize;
                     }
                     
                     // Draw the rounded rectangle path
@@ -38,12 +44,7 @@ class Piece {
                     this.ctx.lineTo(drawX, drawY + radius);
                     this.ctx.arcTo(drawX, drawY, drawX + radius, drawY, radius);
                     this.ctx.closePath();
-                    
                     this.ctx.fill();
-
-                    // Optional border
-                    this.ctx.strokeStyle = 'rgba(0,0,0,0.2)';
-                    this.ctx.stroke();
                 }
             });
         });
@@ -64,9 +65,16 @@ class Piece {
     }
 
     rotate() {
-        // Transpose and reverse rows to rotate
         const newShape = this.shape[0].map((_, colIndex) => this.shape.map(row => row[colIndex]));
         newShape.forEach(row => row.reverse());
         this.shape = newShape;
+    }
+    
+    // Update color when theme changes
+    updateColor() {
+        const typeId = SHAPES.findIndex(shape => JSON.stringify(shape) === JSON.stringify(this.shape));
+        if (typeId !== -1) {
+            this.color = getComputedStyle(document.documentElement).getPropertyValue(`--piece-color-${typeId}`).trim();
+        }
     }
 }
