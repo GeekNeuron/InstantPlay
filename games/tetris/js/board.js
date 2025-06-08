@@ -50,7 +50,7 @@ class Board {
 
         const trailLength = endY - startY;
         
-        // Draw the trail of the piece
+        // Draw the trail of the piece.
         for (let y = startY; y < endY; y++) {
             const progress = (y - startY) / trailLength;
             const alpha = 0.3 * (1 - progress); // Fades out along the trail
