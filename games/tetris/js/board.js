@@ -88,7 +88,6 @@ class Board {
     drawNextPiece() {
         this.nextCtx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--grid-bg');
         this.nextCtx.fillRect(0, 0, this.nextCtx.canvas.width, this.nextCtx.canvas.height);
-        // Grid drawing is removed from here
         if (this.nextPiece) {
             this.nextPiece.ctx = this.nextCtx;
             this.nextPiece.draw(BLOCK_SIZE, true); // Pass a block size and center flag
