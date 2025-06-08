@@ -9,12 +9,11 @@ class Piece {
         this.y = 0;
     }
 
-    // --- FINALIZED DRAW METHOD with new logic for side panels ---
     draw(blockSize = BLOCK_SIZE, center = false) {
         this.ctx.fillStyle = this.color;
         
-        // Use a smaller, consistent block size for side panels for a better look
-        const renderBlockSize = center ? blockSize * 0.75 : blockSize;
+        // Use a smaller, consistent block size for side panels
+        const renderBlockSize = center ? 20 : blockSize;
         const radius = renderBlockSize / 6;
 
         this.shape.forEach((row, y) => {
@@ -23,22 +22,17 @@ class Piece {
                     let drawX, drawY;
 
                     if (center) {
-                        // --- NEW ROBUST CENTERING LOGIC ---
-                        // 1. Calculate the piece's dimensions in pixels
+                        // --- ROBUST CENTERING LOGIC ---
                         const piecePixelWidth = this.shape[0].length * renderBlockSize;
                         const piecePixelHeight = this.shape.length * renderBlockSize;
-
-                        // 2. Calculate the offset needed to center it in the canvas
                         const offsetX = (this.ctx.canvas.width - piecePixelWidth) / 2;
                         const offsetY = (this.ctx.canvas.height - piecePixelHeight) / 2;
-                        
-                        // 3. Set the final drawing coordinates
                         drawX = offsetX + (x * renderBlockSize);
                         drawY = offsetY + (y * renderBlockSize);
                     } else {
                         // Default drawing on the main game board
-                        drawX = (this.x + x) * renderBlockSize;
-                        drawY = (this.y + y) * renderBlockSize;
+                        drawX = (this.x + x) * blockSize;
+                        drawY = (this.y + y) * blockSize;
                     }
                     
                     this.ctx.beginPath();
