@@ -41,13 +41,32 @@ class Board {
         this.drawHeldPiece();
     }
 
+    // --- MODIFIED FUNCTION TO DRAW ROUNDED BLOCKS ---
     drawBlock(context, x, y, color, size) {
+        const radius = 5; // The roundness of the corners
+        const blockX = x * size;
+        const blockY = y * size;
+
         context.fillStyle = color;
-        // --- Glow effect lines are removed ---
-        context.fillRect(x * size, y * size, size, size);
         
-        context.strokeStyle = 'rgba(0,0,0,0.5)';
-        context.strokeRect(x * size, y * size, size, size);
+        // Draw the rounded rectangle path
+        context.beginPath();
+        context.moveTo(blockX + radius, blockY);
+        context.lineTo(blockX + size - radius, blockY);
+        context.arcTo(blockX + size, blockY, blockX + size, blockY + radius, radius);
+        context.lineTo(blockX + size, blockY + size - radius);
+        context.arcTo(blockX + size, blockY + size, blockX + size - radius, blockY + size, radius);
+        context.lineTo(blockX + radius, blockY + size);
+        context.arcTo(blockX, blockY + size, blockX, blockY + size - radius, radius);
+        context.lineTo(blockX, blockY + radius);
+        context.arcTo(blockX, blockY, blockX + radius, blockY, radius);
+        context.closePath();
+        
+        context.fill(); // Fill the shape
+
+        // Optional: add a border
+        context.strokeStyle = 'rgba(0,0,0,0.2)';
+        context.stroke();
     }
     
     // --- Ghost Piece Methods ---
