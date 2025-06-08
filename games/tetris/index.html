@@ -4,51 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tetris by GeekNeuron</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Tetris</h1>
-    <div class="game-container">
-        <canvas id="tetris-canvas"></canvas>
-        <div class="side-panel">
-            <h2>Score</h2>
-            <p id="score">0</p>
-            <h2>Lines</h2>
-            <p id="lines">0</p>
-            <h2>Level</h2>
-            <p id="level">1</p>
-            
-            <div class="hold-container">
-                <h2>Hold</h2>
-                <canvas id="hold-canvas"></canvas>
+    <div class="top-bar">
+        <button id="theme-switcher" title="Change Theme">🌓</button>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>Tetris</h1>
+            <div class="game-controls-wrapper">
+                <div class="scores-container">
+                    <div class="score-box">Score: <span id="score">0</span></div>
+                    <div class="score-box">Lines: <span id="lines">0</span></div>
+                    <div class="score-box">Level: <span id="level">1</span></div>
+                </div>
+                <button id="new-game-button" class="btn">New Game</button>
             </div>
-            
-            <div class="next-piece-container">
-                <h2>Next</h2>
-                <canvas id="next-canvas"></canvas>
+        </header>
+
+        <main class="game-area">
+            <canvas id="tetris-canvas"></canvas>
+            <div class="side-panel">
+                <div class="side-box">
+                    <h3>Hold</h3>
+                    <canvas id="hold-canvas"></canvas>
+                </div>
+                <div class="side-box">
+                    <h3>Next</h3>
+                    <canvas id="next-canvas"></canvas>
+                </div>
             </div>
-            
-            <button id="new-game-button" class="btn">New Game</button>
+        </main>
+    </div>
+    
+    <div class="touch-controls">
+        <div class="touch-row">
+            <button id="btn-hold" class="ctrl-btn">Hold</button>
+            <button id="btn-rotate" class="ctrl-btn">⬆️</button>
+            <button id="btn-drop" class="ctrl-btn">Drop</button>
+        </div>
+        <div class="touch-row">
+            <button id="btn-left" class="ctrl-btn">⬅️</button>
+            <button id="btn-down" class="ctrl-btn">⬇️</button>
+            <button id="btn-right" class="ctrl-btn">➡️</button>
         </div>
     </div>
-    <div class="touch-controls">
-    <div class="touch-row">
-        <button id="btn-hold" class="ctrl-btn">Hold</button>
-        <button id="btn-rotate" class="ctrl-btn">⬆️</button>
-        <button id="btn-drop" class="ctrl-btn">Drop</button>
-    </div>
-    <div class="touch-row">
-        <button id="btn-left" class="ctrl-btn">⬅️</button>
-        <button id="btn-down" class="ctrl-btn">⬇️</button>
-        <button id="btn-right" class="ctrl-btn">➡️</button>
-    </div>
-</div>
-    <footer>
-        Created by GeekNeuron
-    </footer>
+    
+    <footer>Created by GeekNeuron</footer>
 
     <script src="js/constants.js"></script>
     <script src="js/piece.js"></script>
