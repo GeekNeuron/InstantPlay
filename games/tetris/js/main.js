@@ -110,3 +110,56 @@ document.addEventListener('keyup', event => {
 
 // Start the game
 play();
+
+// =================================
+//  Touch Controls Logic
+// =================================
+const btnLeft = document.getElementById('btn-left');
+const btnRight = document.getElementById('btn-right');
+const btnDown = document.getElementById('btn-down');
+const btnRotate = document.getElementById('btn-rotate');
+const btnDrop = document.getElementById('btn-drop');
+const btnHold = document.getElementById('btn-hold');
+
+// Use 'touchstart' for immediate response on mobile
+const eventType = 'touchstart';
+
+btnLeft.addEventListener(eventType, (e) => {
+    e.preventDefault();
+    let p = { ...board.piece, x: board.piece.x - 1 };
+    if (board.isValid(p)) board.piece.move(p);
+});
+
+btnRight.addEventListener(eventType, (e) => {
+    e.preventDefault();
+    let p = { ...board.piece, x: board.piece.x + 1 };
+    if (board.isValid(p)) board.piece.move(p);
+});
+
+btnRotate.addEventListener(eventType, (e) => {
+    e.preventDefault();
+    let p = { ...board.piece };
+    p.shape = p.shape[0].map((_, colIndex) => p.shape.map(row => row[colIndex]).reverse());
+    if (board.isValid(p)) board.piece.move(p);
+});
+
+btnDown.addEventListener(eventType, (e) => {
+    e.preventDefault();
+    drop();
+});
+
+btnDrop.addEventListener(eventType, (e) => {
+    e.preventDefault();
+    let p = { ...board.piece };
+    while (board.isValid(p)) {
+        board.piece.move(p);
+        p.y++;
+    }
+    board.freeze();
+    if (board.piece.y > 0) board.getNewPiece();
+});
+
+btnHold.addEventListener(eventType, (e) => {
+    e.preventDefault();
+    board.hold();
+});
