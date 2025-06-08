@@ -71,7 +71,7 @@ function gameOver() {
 
 // --- Controls ---
 document.addEventListener('keydown', event => {
-    if ([KEY.LEFT, KEY.RIGHT, KEY.DOWN, KEY.UP, KEY.SPACE].includes(event.keyCode)) {
+    if ([KEY.LEFT, KEY.RIGHT, KEY.DOWN, KEY.UP, KEY.SPACE, KEY.C].includes(event.keyCode)) {
         event.preventDefault();
     }
     let p = { ...board.piece };
@@ -97,6 +97,8 @@ document.addEventListener('keydown', event => {
         }
         board.freeze();
         if (board.piece.y > 0) board.getNewPiece();
+    } else if (event.keyCode === KEY.C) {
+        board.hold();
     }
 });
 
