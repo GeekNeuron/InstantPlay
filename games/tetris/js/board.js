@@ -44,7 +44,7 @@ class Board {
     draw() {
         this.ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--grid-bg');
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-        this.drawGrid(this.ctx, COLS, ROWS);
+        this.drawGrid(this.ctx, COLS, ROWS); // Grid only for main canvas
         this.drawGhostPiece();
         this.grid.forEach((row, y) => { row.forEach((value, x) => { if (value > 0) this.drawBlock(this.ctx, x, y, value, BLOCK_SIZE); }); });
         this.piece.draw();
@@ -78,19 +78,20 @@ class Board {
     drawHeldPiece() {
         this.holdCtx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--grid-bg');
         this.holdCtx.fillRect(0, 0, this.holdCtx.canvas.width, this.holdCtx.canvas.height);
-        // Grid drawing is removed from here
+        // Grid drawing is REMOVED from here
         if (this.heldPiece) {
             this.heldPiece.ctx = this.holdCtx;
-            this.heldPiece.draw(BLOCK_SIZE, true); // Pass a block size and center flag
+            this.heldPiece.draw(BLOCK_SIZE, true);
         }
     }
 
     drawNextPiece() {
         this.nextCtx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--grid-bg');
         this.nextCtx.fillRect(0, 0, this.nextCtx.canvas.width, this.nextCtx.canvas.height);
+        // Grid drawing is REMOVED from here
         if (this.nextPiece) {
             this.nextPiece.ctx = this.nextCtx;
-            this.nextPiece.draw(BLOCK_SIZE, true); // Pass a block size and center flag
+            this.nextPiece.draw(BLOCK_SIZE, true);
         }
     }
 
