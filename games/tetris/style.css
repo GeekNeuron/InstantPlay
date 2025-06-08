@@ -38,7 +38,7 @@ canvas {
 
 .side-panel h2 {
     font-size: 1.5rem;
-    margin: 1.5rem 0 0.5rem 0;
+    margin: 1rem 0 0.5rem 0;
 }
 
 .side-panel p {
@@ -50,7 +50,11 @@ canvas {
     border: 1px solid #00a1ff;
 }
 
-#next-canvas {
+.hold-container, .next-piece-container {
+    text-align: left;
+}
+
+#hold-canvas, #next-canvas {
     width: 120px;
     height: 120px;
     border-width: 2px;
