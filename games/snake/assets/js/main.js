@@ -64,7 +64,7 @@ function populateDifficultyOptions() {
     });
 
     const savedDifficulty = localStorage.getItem('snakeGameDifficulty');
-    if (savedDifficulty && DIFFICULTY_SETTINGS[savedDifficulty]) {
+    if (savedDifficulty && DIFFICULTY_LEVELS[savedDifficulty]) {
         difficultySelectMenu.value = savedDifficulty;
     } else {
         difficultySelectMenu.value = DIFFICULTY_LEVELS.MEDIUM;
@@ -167,7 +167,7 @@ function initApp() {
     
     // Game Instance and Feature Initialization
     try {
-        const initialDifficultyKey = difficultySelectMenu ? difficultySelectMenu.value : DIFFICULTY_LEVELS.MEDIUM;
+        const initialDifficultyKey = difficultySelectMenu ? difficultySelectElement.value : DIFFICULTY_LEVELS.MEDIUM;
         const initialGameMode = modeSelectElement ? modeSelectElement.value : GAME_MODES.CLASSIC;
         
         gameInstance = new Game(
@@ -177,7 +177,7 @@ function initApp() {
             initialGameMode
         );
 
-        populateLegend(); // Populate legend after game instance is created
+        populateLegend();
         
         tutorialManager = new TutorialManager();
         tutorialManager.start(); // Will only show if not completed before
