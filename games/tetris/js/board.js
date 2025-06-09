@@ -63,23 +63,19 @@ class Board {
         context.fill();
     }
     
-    // --- REWRITTEN FROM SCRATCH - The Professional Way ---
-    drawPieceOnSideCanvas(context, piece) {
-        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-        
-        // Draw faint 4x4 grid
-        this.ctx.globalAlpha = 0.2;
-        this.drawGrid(context, 4, 4);
-        this.ctx.globalAlpha = 1.0;
+    // --- FINAL PROFESSIONAL REWRITE for Hold/Next ---
+drawPieceOnSideCanvas(context, piece) {
+    // Clear the canvas first
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
-        if (!piece) return;
+    // Grid drawing code is now removed.
 
-        // Calculate a standard, non-stretched block size based on a 4x4 grid concept
-        const blockSize = context.canvas.width / 4.5; // 4.5 gives some padding
+    if (!piece) return;
 
-        piece.ctx = context;
-        piece.draw(blockSize, true);
-    }
+    // The stable rendering logic for the piece itself remains.
+    piece.ctx = context;
+    piece.draw(BLOCK_SIZE, true);
+}
 
     drawHeldPiece() { this.drawPieceOnSideCanvas(this.holdCtx, this.heldPiece); }
     drawNextPiece() { this.drawPieceOnSideCanvas(this.nextCtx, this.nextPiece); }
