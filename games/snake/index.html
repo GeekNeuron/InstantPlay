@@ -2,30 +2,45 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=550, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title id="game-title-tag">Snake by GeekNeuron</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/light-theme.css" id="theme-link">
 </head>
 <body>
-    <div class="page-wrapper">
+
+    <div id="main-menu-overlay" class="main-menu">
+        <div class="main-menu-content">
+            <h1 class="main-menu-title">Snake Game</h1>
+            <div class="menu-settings">
+                <div class="control-group">
+                    <label for="difficulty-select-menu">Difficulty:</label>
+                    <select id="difficulty-select-menu" name="difficulty"></select>
+                </div>
+                <div class="control-group">
+                    <label for="mode-select-menu">Mode:</label>
+                    <select id="mode-select-menu" name="mode"></select>
+                </div>
+            </div>
+            <button id="start-game-btn" class="menu-button">Start Game</button>
+            <div class="menu-secondary-actions">
+                <button id="achievements-btn" class="menu-button-secondary">Achievements</button>
+                <button id="legend-btn" class="menu-button-secondary">Items Guide</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="page-wrapper hidden" id="game-page-wrapper">
         <header class="settings-box">
             <h1 id="page-title-clickable" class="game-title-header" title="Click to toggle theme">Snake Game</h1>
             
             <div class="controls-panel">
                 <div class="scores-group-left">
                     <div class="score-box" id="current-score-box">Score: <span id="score">0</span></div>
-                    <div class="score-box" id="high-score-box">High Score: <span id="highscore">0</span></div>
+                    <div class.score-box" id="high-score-box">High Score: <span id="highscore">0</span></div>
                 </div>
-                <div class="settings-selectors-right">
-                    <div class="control-group">
-                        <select id="difficulty-select" name="difficulty" aria-label="Select Difficulty"></select>
-                    </div>
-                    <div class="control-group">
-                        <select id="mode-select" name="mode" aria-label="Select Game Mode"></select>
-                    </div>
                 </div>
-            </div>
 
             <div class="game-container">
                 <div class="game-header-combo">
@@ -37,16 +52,15 @@
             </div>
 
             <div id="game-legend" class="game-legend">
-                <div class="legend-items-container">
-                    </div>
+                <div class="legend-items-container"></div>
             </div>
 
             <footer>
                 <p>Created by GeekNeuron</p>
             </footer>
         </header>
-
     </div>
+
 
     <div id="achievement-notification" class="achievement-popup"></div>
     <div id="legend-info-bubble" class.legend-info-bubble" style="display: none; position: absolute;">
