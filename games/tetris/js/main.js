@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 1. Element Selectors ---
     const canvas = document.getElementById('tetris-canvas');
     if (!canvas) {
-        console.error("Fatal Error: Canvas element not found!");
+        console.error("Fatal Error: Canvas element with ID 'tetris-canvas' not found.");
         return;
     }
     const ctx = canvas.getContext('2d');
@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
             historyContainer.classList.add('hidden');
         }
     }
-
+    
     function applyTheme(theme) {
         if (theme === 'dark') {
             document.body.classList.add('dark-theme');
@@ -117,6 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let startTime = Date.now();
         timerElement.textContent = '00:00:00';
         gameTimer = setInterval(() => {
+            if (isPaused) return; // Don't update timer if paused
             const elapsedTime = Date.now() - startTime;
             const seconds = Math.floor((elapsedTime / 1000) % 60);
             const minutes = Math.floor((elapsedTime / (1000 * 60)) % 60);
@@ -140,6 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
         pauseButton.textContent = 'Pause';
         game.reset();
         game.highScore = localStorage.getItem('tetrisHighScore') || 0;
+        board.initNextQueue();
         board.reset();
         updateDisplays();
         time.start = performance.now();
@@ -147,10 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function gameLoop(now = 0) {
-        if (isPaused) {
-            requestId = requestAnimationFrame(gameLoop);
-            return;
-        }
+        if (isPaused) return;
         time.elapsed = now - time.start;
         const currentLevelTime = 1000 / game.level;
         const dropInterval = softDropping ? 50 : currentLevelTime;
@@ -222,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
             historyContainer.classList.add('hidden');
         }
     });
-
+    
     // --- CONTROLS (Keyboard & Touch) ---
     document.addEventListener('keydown', event => {
         if (event.keyCode === KEY.P) { togglePause(); return; }
@@ -255,4 +254,20 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         if (!board.piece) return;
         const deltaX = e.changedTouches[0].screenX - touchStartX;
-        const deltaY = e.changedTouches
+        const deltaY = e.changedTouches[0].screenY - touchStartY;
+        let p = { ...board.piece };
+        if (Math.abs(deltaX) > Math.abs(deltaY)) {
+            if (Math.abs(deltaX) > swipeThreshold) { p.x += (deltaX > 0 ? 1 : -1); if (board.isValid(p)) board.piece.move(p); }
+        } else {
+            if (deltaY > swipeThreshold) { drop(); } 
+            else if (deltaY < -swipeThreshold) { while (board.isValid(p)) { board.piece.move(p); p.y++; } drop(); } 
+            else { p.shape = p.shape[0].map((_, colIndex) => p.shape.map(row => row[colIndex]).reverse()); if (board.isValid(p)) board.piece.move(p); }
+        }
+    });
+    holdBox.addEventListener('touchstart', e => { if (isPaused) return; e.preventDefault(); board.hold(); });
+    
+    // --- 6. Initial Game Start ---
+    const savedTheme = localStorage.getItem('tetrisTheme') || 'dark';
+    applyTheme(savedTheme);
+    play();
+});
