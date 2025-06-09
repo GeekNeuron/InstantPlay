@@ -1,50 +1,43 @@
-/* assets/css/dark-theme.css */
 :root {
     /* General Page & Text */
     --bg-color: #0d1117;
     --text-color-primary: #c9d1d9;
     --text-color-muted: #8b949e;
-    --header-text-color: var(--text-color-primary);
+    --header-text-color: #c9d1d9;
     --accent-color: #3282b8;
     --accent-color-translucent: rgba(50, 130, 184, 0.3);
-
     /* Containers and Borders */
     --container-bg: #161b22;
     --game-bg-color: var(--container-bg);
-    --canvas-bg-color: #1e2732; /* Was --grid-bg */
-    --border-color: #30363d; /* Slightly lighter than background */
+    --canvas-bg-color: #1e2732;
+    --border-color: #30363d;
     --grid-line-color: rgba(139, 148, 158, 0.2);
-
     /* Score Boxes */
     --score-box-bg: #274c77;
     --score-box-text: #e0e6eb;
-
     /* Buttons */
     --button-bg: #3282b8;
     --button-text: #ffffff;
     --button-hover-bg: #1d4357;
-
     /* Modals & Overlays */
-    --modal-overlay-bg: rgba(10, 10, 15, 0.7);
+    --modal-overlay-bg: rgba(10, 10, 15, 0.75);
     --modal-content-bg: #161b22;
     --modal-text-color: #c9d1d9;
     --text-color-on-overlay: #FFFFFF;
-
     /* Game Specific Elements */
     --snake-head-color: #50fa7b;
     --snake-body-color: #8be9fd;
-    --snake-eye-color: #0d1117; /* Dark eyes on light head */
-    --snake-body-highlight-rgb: "173, 216, 230"; /* Light blueish highlight */
-
+    --snake-eye-color: #0d1117;
+    --snake-body-highlight-rgb: "173, 216, 230";
     --food-color: #ff5555;
     --food-color-golden: #f1c40f;
     --food-color-speed: #3498db;
     --food-color-slow: #e67e22;
     --food-color-grow: #9b59b6;
-    --obstacle-color: #7f8c8d; /* A distinct gray for obstacles */
-
+    --obstacle-color: #7f8c8d;
+    /* Power-ups */
     --powerup-color-shield: #3282b8;
     --powerup-color-scoreboost: #2ecc71;
     --powerup-color-score-multiplier: #f1c40f;
-    --text-color-on-accent: #000000; /* Text on bright yellow powerup */
+    --text-color-on-accent: #000000;
 }
