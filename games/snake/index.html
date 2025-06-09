@@ -11,6 +11,7 @@
     <div class="page-wrapper">
         <header class="settings-box">
             <h1 id="page-title-clickable" class="game-title-header" title="Click to toggle theme">Snake Game</h1>
+            
             <div class="controls-panel">
                 <div class="scores-group-left">
                     <div class="score-box" id="current-score-box">Score: <span id="score">0</span></div>
@@ -25,28 +26,35 @@
                     </div>
                 </div>
             </div>
+
             <div class="game-container">
                 <div class="game-header-combo">
                     <div class="combo-container">
-                        <span id="combo-display" style="visibility: hidden;"></span>
+                        <span id="combo-display"></span>
                     </div>
                 </div>
                 <canvas id="gameCanvas"></canvas>
             </div>
+
             <div id="game-legend" class="game-legend">
-                <div class="legend-items-container"></div>
+                <div class="legend-items-container">
+                    </div>
             </div>
+
             <footer>
                 <p>Created by GeekNeuron</p>
             </footer>
         </header>
+
     </div>
+
     <div id="achievement-notification" class="achievement-popup"></div>
-    <div id="legend-info-bubble" class="legend-info-bubble" style="display: none; position: absolute;">
+    <div id="legend-info-bubble" class.legend-info-bubble" style="display: none; position: absolute;">
         <div class="bubble-arrow"></div>
         <strong id="bubble-title" class="bubble-title">Item Name</strong>
         <p id="bubble-description" class="bubble-description">Item description here.</p>
     </div>
+
     <script src="assets/js/main.js" type="module"></script>
 </body>
 </html>
