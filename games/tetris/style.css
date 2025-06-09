@@ -221,8 +221,3 @@ body.dark-theme .modal-content {
 #timer:hover {
     opacity: 0.9;
 }
-
-.game-buttons { 
-    display: flex; 
-    gap: 10px; 
-}
