@@ -1,34 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>T-Rex Runner</title>
-    <meta charset="UTF-8" />
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
-    <div id="main-frame-error" class="interstitial-wrapper">
-        <div id="main-content">
-            <div class="icon-container">
-                <div id="offline-resources-1x" class="icon"></div>
-                <div id="offline-resources-2x" class="icon"></div>
-            </div>
-            <div id="error-information">
-                <h1 id="error-heading"></h1>
-                <p id="error-body"></p>
-            </div>
-        </div>
-        <div id="buttons">
-            <button id="reload-button" class="blue-button"></button>
-        </div>
+    <div class="interstitial-wrapper">
+        <div id="offline-resources-1x" class="icon-offline" style="display: none;"></div>
+        <div id="offline-resources-2x" class="icon-offline" style="display: none;"></div>
     </div>
 
-    <div id="runner-container">
-        <canvas class="runner-canvas" width="600" height="150"></canvas>
-        <div class="vignette"></div>
-    </div>
+    <template id="audio-resources">
+        <audio id="offline-sound-press" src="data:audio/mpeg;base64, ..."></audio>
+        <audio id="offline-sound-hit" src="data:audio/mpeg;base64, ..."></audio>
+        <audio id="offline-sound-reached" src="data:audio/mpeg;base64, ..."></audio>
+    </template>
 
-    <script src="js/offline.js"></script>
-    <script src="js/index.js"></script>
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>
