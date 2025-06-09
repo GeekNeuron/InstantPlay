@@ -90,8 +90,9 @@ header h1:hover { opacity: 1; }
     width: 100%;
 }
 .side-panel-top .side-box {
-    aspect-ratio: 1 / 1; /* Keep Hold and Next square */
-    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    display: flex;
+    flex-direction: column;
+    /* justify-content and aspect-ratio removed */
 }
 .side-box h3 { margin: 0 0 5px 0; font-size: 1.1em; }
 .side-box canvas { background-color: transparent; width: 100%; height: 100%; }
