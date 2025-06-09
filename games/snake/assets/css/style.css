@@ -34,7 +34,7 @@ body {
     transform: scale(1);
 }
 .page-wrapper.hidden {
-    display: none; /* Can be changed to flex for transitions. */
+    display: none;
     opacity: 0;
     transform: scale(0.98);
     pointer-events: none;
