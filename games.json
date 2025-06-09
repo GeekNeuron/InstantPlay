@@ -49,9 +49,9 @@
     "name_fa": "بازی دایناسور تی-رکس",
     "description_en": "Control the running T-Rex dinosaur, jump over cacti and avoid flying pterodactyls. The endless runner game from Chrome's offline page.",
     "description_fa": "دایناسور تی-رکس را کنترل کنید، از روی کاکتوس‌ها بپرید و از پتروداکتیل‌های پرنده دوری کنید. بازی بی‌پایان دونده از صفحه آفلاین کروم.",
-    "thumbnail_url": "assets/images/t-rex_thumb.png",
+    "thumbnail_url": "assets/images/trex_thumb.png",
     "game_url": "games/T-Rex/index.html",
-    "genre_en": "arcade",
+    "genre_en": "Arcade",
     "genre_fa": "آرکید"
     },
     {
