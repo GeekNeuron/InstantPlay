@@ -1,6 +1,4 @@
-// js/utils.js
-import { IS_IOS, IS_MOBILE } from './constants.js';
-import { Classes } from './constants.js';
+import { IS_IOS, IS_MOBILE, Classes } from './constants.js';
 
 export function getRandomNum(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -42,7 +40,8 @@ export function getTimeStamp() {
 export function updateCanvasScaling(canvas, opt_width, opt_height) {
     const context = canvas.getContext('2d');
     const devicePixelRatio = Math.floor(window.devicePixelRatio) || 1;
-    const backingStoreRatio = Math.floor(context.webkitBackingStorePixelRatio) || 1;
+    const backingStoreRatio =
+        Math.floor(context.webkitBackingStorePixelRatio) || 1;
     const ratio = devicePixelRatio / backingStoreRatio;
 
     if (devicePixelRatio !== backingStoreRatio) {
