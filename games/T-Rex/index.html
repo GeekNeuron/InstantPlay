@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>T-Rex Runner</title>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div id="main-frame-error" class="interstitial-wrapper">
+        <div id="main-content">
+            <div class="icon-container">
+                <div id="offline-resources-1x" class="icon"></div>
+                <div id="offline-resources-2x" class="icon"></div>
+            </div>
+            <div id="error-information">
+                <h1 id="error-heading"></h1>
+                <p id="error-body"></p>
+            </div>
+        </div>
+        <div id="buttons">
+            <button id="reload-button" class="blue-button"></button>
+        </div>
+    </div>
+
+    <div id="runner-container">
+        <canvas class="runner-canvas" width="600" height="150"></canvas>
+        <div class="vignette"></div>
+    </div>
+
+    <script src="js/offline.js"></script>
+    <script src="js/index.js"></script>
+</body>
+</html>
