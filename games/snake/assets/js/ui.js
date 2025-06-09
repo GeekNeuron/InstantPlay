@@ -1,5 +1,3 @@
-// assets/js/ui.js
-
 export class UIManager {
     constructor(uiElements, gameInstance = null) {
         this.scoreElement = uiElements.score;
