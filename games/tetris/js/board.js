@@ -68,14 +68,11 @@ drawPieceOnSideCanvas(context, piece) {
     // Clear the canvas first
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
-    // Draw the faint 4x4 grid
-    context.globalAlpha = 0.3;
-    this.drawGrid(context, 4, 4);
-    context.globalAlpha = 1.0;
+    // Grid drawing code is now removed.
 
     if (!piece) return;
 
-    // Use the stable rendering logic to draw the piece on top of the new grid
+    // The stable rendering logic for the piece itself remains.
     piece.ctx = context;
     piece.draw(BLOCK_SIZE, true);
 }
