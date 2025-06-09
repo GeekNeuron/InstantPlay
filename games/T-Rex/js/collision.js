@@ -1,28 +1,54 @@
 // js/collision.js
+import { DefaultDimensions } from './constants.js';
+import { Trex } from './components/Trex.js'; // Note: Used for static properties
 
-// A simple class for representing a collision box.
+/**
+ * Collision box object.
+ * @param {number} x X position.
+ * @param {number} y Y Position.
+ * @param {number} w Width.
+ * @param {number} h Height.
+ */
 export class CollisionBox {
-    constructor(x, y, width, height) {
+    constructor(x, y, w, h) {
         this.x = x;
         this.y = y;
-        this.width = width;
-        this.height = height;
+        this.width = w;
+        this.height = h;
     }
 }
 
+/**
+ * Compare two collision boxes for a collision.
+ * @param {CollisionBox} tRexBox
+ * @param {CollisionBox} obstacleBox
+ * @return {boolean} Whether the boxes intersected.
+ */
 function boxCompare(tRexBox, obstacleBox) {
     let crashed = false;
+    const tRexBoxX = tRexBox.x;
+    const tRexBoxY = tRexBox.y;
+    const obstacleBoxX = obstacleBox.x;
+    const obstacleBoxY = obstacleBox.y;
+
     if (
-        tRexBox.x < obstacleBox.x + obstacleBox.width &&
-        tRexBox.x + tRexBox.width > obstacleBox.x &&
+        tRexBox.x < obstacleBoxX + obstacleBox.width &&
+        tRexBox.x + tRexBox.width > obstacleBoxX &&
         tRexBox.y < obstacleBox.y + obstacleBox.height &&
         tRexBox.height + tRexBox.y > obstacleBox.y
     ) {
         crashed = true;
     }
+
     return crashed;
 }
 
+/**
+ * Adjust the collision box.
+ * @param {!CollisionBox} box The original box.
+ * @param {!CollisionBox} adjustment Adjustment box.
+ * @return {CollisionBox} The adjusted collision box object.
+ */
 function createAdjustedCollisionBox(box, adjustment) {
     return new CollisionBox(
         box.x + adjustment.x,
@@ -32,8 +58,15 @@ function createAdjustedCollisionBox(box, adjustment) {
     );
 }
 
+/**
+ * Check for a collision.
+ * @param {!Obstacle} obstacle
+ * @param {!Trex} tRex T-rex object.
+ * @return {Array<CollisionBox>|false}
+ */
 export function checkForCollision(obstacle, tRex) {
-    // Trex outer box
+    const obstacleBoxXPos = DefaultDimensions.WIDTH + obstacle.xPos;
+
     const tRexBox = new CollisionBox(
         tRex.xPos + 1,
         tRex.yPos + 1,
@@ -41,7 +74,6 @@ export function checkForCollision(obstacle, tRex) {
         tRex.config.HEIGHT - 2
     );
 
-    // Obstacle outer box
     const obstacleBox = new CollisionBox(
         obstacle.xPos + 1,
         obstacle.yPos + 1,
@@ -66,7 +98,9 @@ export function checkForCollision(obstacle, tRex) {
                     obstacleBox
                 );
 
-                if (boxCompare(adjTrexBox, adjObstacleBox)) {
+                const crashed = boxCompare(adjTrexBox, adjObstacleBox);
+
+                if (crashed) {
                     return [adjTrexBox, adjObstacleBox];
                 }
             }
