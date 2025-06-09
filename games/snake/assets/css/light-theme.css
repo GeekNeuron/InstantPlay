@@ -1,49 +1,42 @@
-/* assets/css/light-theme.css */
 :root {
     /* General Page & Text */
     --bg-color: #ffffff;
     --text-color-primary: #333333;
     --text-color-muted: #6c757d;
-    --header-text-color: var(--text-color-primary);
-    --accent-color: #6c757d; /* From your button style */
+    --header-text-color: #333333;
+    --accent-color: #6c757d;
     --accent-color-translucent: rgba(108, 117, 125, 0.25);
-
     /* Containers and Borders */
     --container-bg: #f7f7f7;
-    --game-bg-color: var(--container-bg);
+    --game-bg-color: #f7f7f7;
     --canvas-bg-color: #e0e0e0;
     --border-color: #e0e0e0;
-    --grid-line-color: #d1d5da; /* A visible gray for grid lines */
-
+    --grid-line-color: #d1d5da;
     /* Score Boxes */
     --score-box-bg: #e9e9e9;
     --score-box-text: #333333;
-
     /* Buttons */
     --button-bg: #6c757d;
     --button-text: #ffffff;
     --button-hover-bg: #5a6268;
-
     /* Modals & Overlays */
     --modal-overlay-bg: rgba(0,0,0,0.6);
     --modal-content-bg: #ffffff;
     --modal-text-color: #333333;
     --text-color-on-overlay: #FFFFFF;
-
     /* Game Specific Elements */
-    --snake-head-color: #4CAF50; /* A clear, pleasant green */
-    --snake-body-color: #8BC34A; /* A lighter green for the body */
+    --snake-head-color: #4CAF50;
+    --snake-body-color: #8BC34A;
     --snake-eye-color: #FFFFFF;
     --snake-body-highlight-rgb: "255, 255, 255";
-
     --food-color: #f44336;
     --food-color-golden: #FFEB3B;
     --food-color-speed: #2196F3;
     --food-color-slow: #FF9800;
     --food-color-grow: #9C27B0;
-    --obstacle-color: #795548; /* Brownish, distinct from grays */
-
-    --powerup-color-shield: #2196F3; /* Using a consistent blue */
+    --obstacle-color: #795548;
+    /* Power-ups */
+    --powerup-color-shield: #2196F3;
     --powerup-color-scoreboost: #4CAF50;
     --powerup-color-score-multiplier: #FFC107;
     --text-color-on-accent: #FFFFFF;
