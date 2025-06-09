@@ -2,21 +2,18 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>T-Rex Runner</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="interstitial-wrapper">
-        <div id="offline-resources-1x" class="icon-offline" style="display: none;"></div>
-        <div id="offline-resources-2x" class="icon-offline" style="display: none;"></div>
-    </div>
 
-    <template id="audio-resources">
-        <audio id="offline-sound-press" src="data:audio/mpeg;base64, ..."></audio>
-        <audio id="offline-sound-hit" src="data:audio/mpeg;base64, ..."></audio>
-        <audio id="offline-sound-reached" src="data:audio/mpeg;base64, ..."></audio>
-    </template>
+    <div class="interstitial-wrapper"></div>
+    
+    <img id="offline-resources-1x" src="images/offline-resources-1x.png" style="display: none;">
+    <img id="offline-resources-2x" src="images/offline-resources-2x.png" style="display: none;">
 
     <script type="module" src="js/main.js"></script>
+
 </body>
 </html>
