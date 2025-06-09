@@ -63,7 +63,7 @@ class Board {
         context.fill();
     }
     
-    // --- FINAL PROFESSIONAL REWRITE for Hold/Next ---
+    // --- FINAL PROFESSIONAL REWRITE for Hold/Next. ---
 drawPieceOnSideCanvas(context, piece) {
     // Clear the canvas first
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
