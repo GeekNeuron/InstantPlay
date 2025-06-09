@@ -2,6 +2,7 @@ const canvas = document.getElementById('tetris-canvas');
 const ctx = canvas.getContext('2d');
 const newGameButton = document.getElementById('new-game-button');
 const pauseButton = document.getElementById('pause-button');
+const pauseButton = document.getElementById('pause-button');
 const headerTitle = document.querySelector('header h1');
 const holdBox = document.getElementById('hold-box');
 const timerElement = document.getElementById('timer');
@@ -23,6 +24,7 @@ let game = new Game();
 let requestId;
 let gameTimer;
 let softDropping = false;
+let isPaused = false;
 
 function updateDisplays() {
     scoreElement.textContent = game.score;
@@ -75,7 +77,26 @@ function stopTimer() { clearInterval(gameTimer); }
 
 // --- GAME LOGIC ---
 let time = { start: 0, elapsed: 0 };
+function togglePause() {
+    // Prevent pausing on the Game Over screen
+    if (modalTitleElement.textContent === 'Game Over') return;
+
+    isPaused = !isPaused;
+    if (isPaused) {
+        cancelAnimationFrame(requestId);
+        stopTimer();
+        // We don't change the main button's text anymore
+        showModal('Game Paused', `Your current score is ${game.score}`, 'Resume');
+    } else {
+        hideModal();
+        // Recalibrate time to prevent jump
+        time.start = performance.now() - time.elapsed;
+        startTimer();
+        gameLoop();
+    }
+}
 function play() {
+    isPaused = false;
     hideModal();
     if (requestId) cancelAnimationFrame(requestId);
     stopTimer();
@@ -88,9 +109,17 @@ updateDisplays();
     gameLoop();
 }
 newGameButton.addEventListener('click', play);
-modalButton.addEventListener('click', play);
+pauseButton.addEventListener('click', togglePause);
+modalButton.addEventListener('click', () => {
+    if (isPaused) {
+        togglePause(); // If paused, the button resumes
+    } else { // Otherwise (on Game Over screen), it starts a new game
+        play();
+    }
+});
 
 function gameLoop(now = 0) {
+    if (isPaused) return;
     time.elapsed = now - time.start;
     const currentLevelTime = 1000 / game.level;
     const dropInterval = softDropping ? 50 : currentLevelTime;
@@ -144,6 +173,8 @@ showModal(`Your Score: ${game.score}`, gameOverMessage, 'Play Again');
 
 // --- CONTROLS (Keyboard & Touch) ---
 document.addEventListener('keydown', event => {
+    if (event.keyCode === KEY.P) { togglePause(); return; }
+if (isPaused) return;
     if ([37, 38, 39, 40, 32, 67].includes(event.keyCode)) event.preventDefault();
     let p = { ...board.piece };
     if (event.keyCode === 37) p.x -= 1;
@@ -159,8 +190,10 @@ document.addEventListener('keyup', event => { if (event.keyCode === 40) softDrop
 let touchStartX = 0, touchStartY = 0;
 const swipeThreshold = 30;
 canvas.addEventListener('touchstart', e => { e.preventDefault(); touchStartX = e.changedTouches[0].screenX; touchStartY = e.changedTouches[0].screenY; }, { passive: false });
+if (isPaused) return;
 canvas.addEventListener('touchmove', e => { e.preventDefault(); }, { passive: false });
 canvas.addEventListener('touchend', e => {
+    if (isPaused) return;
     e.preventDefault();
     const deltaX = e.changedTouches[0].screenX - touchStartX;
     const deltaY = e.changedTouches[0].screenY - touchStartY;
@@ -177,3 +210,4 @@ canvas.addEventListener('touchend', e => {
     }
 });
 holdBox.addEventListener('touchstart', e => { e.preventDefault(); board.hold(); });
+if (isPaused) return;
