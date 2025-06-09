@@ -23,7 +23,6 @@ let game = new Game();
 let requestId;
 let gameTimer;
 let softDropping = false;
-let isPaused = false;
 
 function updateDisplays() {
     scoreElement.textContent = game.score;
@@ -76,28 +75,7 @@ function stopTimer() { clearInterval(gameTimer); }
 
 // --- GAME LOGIC ---
 let time = { start: 0, elapsed: 0 };
-function togglePause() {
-    // Prevent pausing on the Game Over screen
-    if (modalTitle.textContent === 'Game Over') return;
-
-    isPaused = !isPaused;
-    if (isPaused) {
-        cancelAnimationFrame(requestId);
-        stopTimer();
-        pauseButton.textContent = 'Resume';
-        showModal('Game Paused', `Your current score is ${game.score}`, 'Resume');
-    } else {
-        hideModal();
-        pauseButton.textContent = 'Pause';
-        time.start = performance.now() - time.elapsed; // Recalibrate time to prevent jump
-        startTimer();
-        gameLoop();
-    }
-}
-
 function play() {
-    isPaused = false;
-pauseButton.textContent = 'Pause';
     hideModal();
     if (requestId) cancelAnimationFrame(requestId);
     stopTimer();
@@ -110,14 +88,9 @@ updateDisplays();
     gameLoop();
 }
 newGameButton.addEventListener('click', play);
-pauseButton.addEventListener('click', togglePause);
 modalButton.addEventListener('click', play);
 
 function gameLoop(now = 0) {
-    if (isPaused) {
-    requestId = requestAnimationFrame(gameLoop); // Keep the loop alive to unpause
-    return;
-}
     time.elapsed = now - time.start;
     const currentLevelTime = 1000 / game.level;
     const dropInterval = softDropping ? 50 : currentLevelTime;
@@ -171,8 +144,6 @@ showModal(`Your Score: ${game.score}`, gameOverMessage, 'Play Again');
 
 // --- CONTROLS (Keyboard & Touch) ---
 document.addEventListener('keydown', event => {
-    if (event.keyCode === KEY.P) { togglePause(); return; }
-if (isPaused) return;
     if ([37, 38, 39, 40, 32, 67].includes(event.keyCode)) event.preventDefault();
     let p = { ...board.piece };
     if (event.keyCode === 37) p.x -= 1;
@@ -188,10 +159,8 @@ document.addEventListener('keyup', event => { if (event.keyCode === 40) softDrop
 let touchStartX = 0, touchStartY = 0;
 const swipeThreshold = 30;
 canvas.addEventListener('touchstart', e => { e.preventDefault(); touchStartX = e.changedTouches[0].screenX; touchStartY = e.changedTouches[0].screenY; }, { passive: false });
-if (isPaused) return;
 canvas.addEventListener('touchmove', e => { e.preventDefault(); }, { passive: false });
 canvas.addEventListener('touchend', e => {
-    if (isPaused) return;
     e.preventDefault();
     const deltaX = e.changedTouches[0].screenX - touchStartX;
     const deltaY = e.changedTouches[0].screenY - touchStartY;
@@ -208,5 +177,3 @@ canvas.addEventListener('touchend', e => {
     }
 });
 holdBox.addEventListener('touchstart', e => { e.preventDefault(); board.hold(); });
-if (isPaused) return;
-
