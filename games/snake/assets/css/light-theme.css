@@ -1,18 +1,19 @@
+/* assets/css/light-theme.css */
 :root {
-    /* Light Theme Palette (from your example :root) */
-    --bg-color: #ffffff;                            /* Was --body-bg */
-    --text-color-primary: #333333;                  /* Was --text-color-primary */
-    --text-color-muted: #6c757d;                    /* Kept, good for muted text */
-    --header-text-color: var(--text-color-primary); /* Title text color */
-    --accent-color: #6c757d;                        /* Using your --button-bg as accent */
-    --accent-color-translucent: rgba(108, 117, 125, 0.25); /* Translucent version of accent */
+    /* General Page & Text */
+    --bg-color: #ffffff;
+    --text-color-primary: #333333;
+    --text-color-muted: #6c757d;
+    --header-text-color: var(--text-color-primary);
+    --accent-color: #6c757d; /* From your button style */
+    --accent-color-translucent: rgba(108, 117, 125, 0.25);
 
     /* Containers and Borders */
-    --settings-box-bg: #f7f7f7;                   /* Was --container-bg, for the main settings/game box */
-    --game-bg-color: transparent;                   /* Inner game container is transparent */
-    --canvas-bg-color: #e0e0e0;                     /* Was --grid-bg, for canvas actual background */
-                                                    /* --grid-cell-bg: #f0f0f0; // For legend item hover? */
-    --border-color: var(--canvas-bg-color);         /* Was --border-color: var(--grid-bg) */
+    --container-bg: #f7f7f7;
+    --game-bg-color: var(--container-bg);
+    --canvas-bg-color: #e0e0e0;
+    --border-color: #e0e0e0;
+    --grid-line-color: #d1d5da; /* A visible gray for grid lines */
 
     /* Score Boxes */
     --score-box-bg: #e9e9e9;
@@ -27,37 +28,23 @@
     --modal-overlay-bg: rgba(0,0,0,0.6);
     --modal-content-bg: #ffffff;
     --modal-text-color: #333333;
-    --text-color-on-overlay: #FFFFFF; /* For text on dark canvas overlays (Ready, Paused, Game Over) */
+    --text-color-on-overlay: #FFFFFF;
 
-    /* Game Specific Elements - Adjusted for new light palette */
-    --snake-head-color: #4CAF50;                    /* A clear green */
-    --snake-body-color: #8BC34A;                    /* A lighter green */
+    /* Game Specific Elements */
+    --snake-head-color: #4CAF50; /* A clear, pleasant green */
+    --snake-body-color: #8BC34A; /* A lighter green for the body */
     --snake-eye-color: #FFFFFF;
     --snake-body-highlight-rgb: "255, 255, 255";
 
-    --food-color: #f44336;                          /* Red */
-    --food-color-golden: #FFEB3B;                   /* Yellow */
-    --food-color-speed: #2196F3;                    /* Blue */
-    --food-color-slow: #FF9800;                     /* Orange */
-    --food-color-grow: #9C27B0;                     /* Purple */
-    --obstacle-color: #795548;                      /* Brownish, distinct from grays */
+    --food-color: #f44336;
+    --food-color-golden: #FFEB3B;
+    --food-color-speed: #2196F3;
+    --food-color-slow: #FF9800;
+    --food-color-grow: #9C27B0;
+    --obstacle-color: #795548; /* Brownish, distinct from grays */
 
-    --powerup-color-shield: var(--accent-color);
+    --powerup-color-shield: #2196F3; /* Using a consistent blue */
     --powerup-color-scoreboost: #4CAF50;
     --powerup-color-score-multiplier: #FFC107;
-    --text-color-on-accent: #FFFFFF; /* For text on colored powerup icons / buttons */
-
-    /* Theme switcher appearance when light theme is active */
-    --theme-switcher-actual-bg: var(--button-bg); /* Using button bg for switcher */
-    --theme-switcher-actual-border: #4a4a4a;
-    --theme-switcher-icon-color: var(--button-text);
+    --text-color-on-accent: #FFFFFF;
 }
-
-/* Apply specific styles for theme switcher when light theme is active */
-/* The h1 itself is transparent, this would be for a dedicated button */
-/*
-#theme-switcher-button-id { 
-    background-color: var(--theme-switcher-bg-light-active);
-    border: 1px solid var(--theme-switcher-border-light-active);
-}
-*/
