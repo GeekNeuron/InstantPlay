@@ -15,7 +15,7 @@ const SHAPES = [
 
 const KEY = {
     LEFT: 37, RIGHT: 39, DOWN: 40, UP: 38,
-    SPACE: 32, C: 67
+    SPACE: 32, C: 67, P: 80 // P for Pause
 };
 
 const POINTS = {
