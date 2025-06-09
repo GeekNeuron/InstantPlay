@@ -62,10 +62,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isPaused) {
             cancelAnimationFrame(requestId);
             stopTimer();
-            // The main pause button text does not change
+            pauseButton.textContent = 'Resume';
             showModal('Game Paused', `Your current score is ${game.score}`, 'Resume');
         } else {
             hideModal();
+            pauseButton.textContent = 'Pause';
             time.start = performance.now() - time.elapsed;
             startTimer();
             gameLoop();
@@ -203,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('tetrisHistory', JSON.stringify(history));
         updateDisplays();
         const gameOverText = `High Score: <strong>${game.highScore}</strong>`;
-        showModal('Game Over', gameOverText, 'Play Again');
+        showModal(`Your Score: ${game.score}`, gameOverText, 'Play Again');
     }
 
     // --- 5. Event Listeners ---
