@@ -1,9 +1,15 @@
 const canvas = document.getElementById('tetris-canvas');
 const ctx = canvas.getContext('2d');
 const newGameButton = document.getElementById('new-game-button');
+const pauseButton = document.getElementById('pause-button');
 const headerTitle = document.querySelector('header h1');
 const holdBox = document.getElementById('hold-box');
 const timerElement = document.getElementById('timer');
+const timerBox = document.getElementById('timer-box');
+const scoreElement = document.getElementById('score');
+const highScoreElement = document.getElementById('high-score');
+const levelElement = document.getElementById('level-display');
+const linesElement = document.getElementById('lines-display');
 const modal = document.getElementById('modal-overlay');
 const modalTitleElement = document.getElementById('modal-title');
 const modalTextElement = document.getElementById('modal-text');
@@ -17,6 +23,13 @@ let game = new Game();
 let requestId;
 let gameTimer;
 let softDropping = false;
+
+function updateDisplays() {
+    scoreElement.textContent = game.score;
+    highScoreElement.textContent = game.highScore;
+    levelElement.textContent = `Level: ${game.level}`;
+    linesElement.textContent = `Lines: ${game.lines}`;
+}
 
 // --- THEME SWITCHING LOGIC ---
 function applyTheme(theme) {
@@ -68,6 +81,8 @@ function play() {
     stopTimer();
     startTimer();
     game.reset();
+game.highScore = localStorage.getItem('tetrisHighScore') || 0;
+updateDisplays();
     board.reset();
     time.start = performance.now();
     gameLoop();
@@ -91,6 +106,7 @@ function drop() {
     let p = { ...board.piece, y: board.piece.y + 1 };
     if (board.isValid(p)) { board.piece.move(p); }
     else { board.freeze(); if (board.piece.y === 0) return false; board.getNewPiece(); }
+    updateDisplays();
     return true;
 }
 
@@ -117,8 +133,13 @@ function hideModal() {
 function gameOver() {
     cancelAnimationFrame(requestId);
     stopTimer();
-    const gameOverMessage = `Your Final Score: <strong>${game.score}</strong>`;
-    showModal('Game Over', gameOverMessage, 'error-continue');
+    if (game.score > game.highScore) {
+    game.highScore = game.score;
+    localStorage.setItem('tetrisHighScore', game.highScore);
+}
+updateDisplays();
+    const gameOverMessage = `High Score: <strong>${game.highScore}</strong>`;
+showModal(`Your Score: ${game.score}`, gameOverMessage, 'Play Again');
 }
 
 // --- CONTROLS (Keyboard & Touch) ---
