@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=550, user-scalable=yes">
     <title id="game-title-tag">Snake by GeekNeuron</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/light-theme.css" id="theme-link">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐍</text></svg>">
 </head>
 <body>
-
     <div id="main-menu-overlay" class="main-menu">
         <div class="main-menu-content">
             <h1 class="main-menu-title">Snake Game</h1>
@@ -25,48 +25,59 @@
             <button id="start-game-btn" class="menu-button">Start Game</button>
             <div class="menu-secondary-actions">
                 <button id="achievements-btn" class="menu-button-secondary">Achievements</button>
-                <button id="legend-btn" class="menu-button-secondary">Items Guide</button>
             </div>
         </div>
     </div>
 
-
     <div class="page-wrapper hidden" id="game-page-wrapper">
         <header class="settings-box">
             <h1 id="page-title-clickable" class="game-title-header" title="Click to toggle theme">Snake Game</h1>
-            
             <div class="controls-panel">
                 <div class="scores-group-left">
                     <div class="score-box" id="current-score-box">Score: <span id="score">0</span></div>
-                    <div class.score-box" id="high-score-box">High Score: <span id="highscore">0</span></div>
+                    <div class="score-box" id="high-score-box">High Score: <span id="highscore">0</span></div>
                 </div>
                 </div>
-
             <div class="game-container">
                 <div class="game-header-combo">
                     <div class="combo-container">
                         <span id="combo-display"></span>
                     </div>
+                    <div class="level-info-container">
+                        <span id="level-info-display"></span>
+                    </div>
                 </div>
                 <canvas id="gameCanvas"></canvas>
             </div>
-
             <div id="game-legend" class="game-legend">
                 <div class="legend-items-container"></div>
             </div>
-
             <footer>
                 <p>Created by GeekNeuron</p>
             </footer>
         </header>
     </div>
 
+    <div id="achievements-modal" class="modal-overlay hidden">
+        <div class="modal-content achievements-modal-content">
+            <button class="modal-close-btn">&times;</button>
+            <h2>Achievements</h2>
+            <div id="achievements-list-container" class="achievements-list"></div>
+        </div>
+    </div>
+    
+    <div id="tutorial-overlay" class="tutorial-overlay hidden">
+        <div id="tutorial-tooltip" class="tutorial-tooltip">
+            <p id="tutorial-text"></p>
+            <button id="tutorial-next-btn">Next</button>
+        </div>
+    </div>
 
     <div id="achievement-notification" class="achievement-popup"></div>
-    <div id="legend-info-bubble" class.legend-info-bubble" style="display: none; position: absolute;">
+    <div id="legend-info-bubble" class="legend-info-bubble" style="display: none; position: absolute;">
         <div class="bubble-arrow"></div>
-        <strong id="bubble-title" class="bubble-title">Item Name</strong>
-        <p id="bubble-description" class="bubble-description">Item description here.</p>
+        <strong id="bubble-title" class="bubble-title"></strong>
+        <p id="bubble-description" class="bubble-description"></p>
     </div>
 
     <script src="assets/js/main.js" type="module"></script>
