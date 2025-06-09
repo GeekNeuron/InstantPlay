@@ -75,7 +75,7 @@ class Board {
         if (!piece) return;
 
         // Calculate a standard, non-stretched block size based on a 4x4 grid concept
-        const blockSize = context.canvas.width / 4.5; // 4.5 gives some padding
+        const blockSize = context.canvas.width / 4.5;
 
         piece.ctx = context;
         piece.draw(blockSize, true);
