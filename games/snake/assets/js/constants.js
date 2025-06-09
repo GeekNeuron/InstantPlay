@@ -39,7 +39,6 @@ export const BLINKING_OBSTACLE_OFF_DURATION = 2000;
 
 export const ACHIEVEMENT_STORAGE_KEY = 'snakeGameAchievements';
 export const TUTORIAL_COMPLETED_KEY = 'snakeGameTutorialCompleted_v1';
-
 export const ACHIEVEMENTS = {
     SCORE_500: { id: 'SCORE_500', icon: '⭐', name: 'Score Cadet', description: 'Reach 500 points in a single game.', criteria: { scoreInGame: 500 } },
     EAT_10_FOOD: { id: 'EAT_10_FOOD', icon: '🍎', name: 'Novice Eater', description: 'Eat 10 pieces of food in a single game.', criteria: { foodEatenInGame: 10 } },
@@ -59,16 +58,16 @@ export const SNAKE_SKINS = {
 export const DIFFICULTY_LEVELS = { EASY: 'EASY', MEDIUM: 'MEDIUM', HARD: 'HARD' };
 export const OBSTACLE_CONFIG = { NONE: 'NONE', STANDARD: 'STANDARD', CHALLENGING: 'CHALLENGING' };
 export const DIFFICULTY_SETTINGS = {
-    [DIFFICULTY_LEVELS.EASY]:   { name: "Easy", initialSpeed: 4, survivalStartSpeed: 3, survivalSpeedFactor: 0.7, obstacleConfig: OBSTACLE_CONFIG.NONE },
+    [DIFFICULTY_LEVELS.EASY]:   { name: "Easy",   initialSpeed: 4, survivalStartSpeed: 3, survivalSpeedFactor: 0.7, obstacleConfig: OBSTACLE_CONFIG.NONE },
     [DIFFICULTY_LEVELS.MEDIUM]: { name: "Medium", initialSpeed: 6, survivalStartSpeed: 4, survivalSpeedFactor: 1.0, obstacleConfig: OBSTACLE_CONFIG.STANDARD },
-    [DIFFICULTY_LEVELS.HARD]:   { name: "Hard", initialSpeed: 8, survivalStartSpeed: 5, survivalSpeedFactor: 1.3, obstacleConfig: OBSTACLE_CONFIG.CHALLENGING }
+    [DIFFICULTY_LEVELS.HARD]:   { name: "Hard",   initialSpeed: 8, survivalStartSpeed: 5, survivalSpeedFactor: 1.3, obstacleConfig: OBSTACLE_CONFIG.CHALLENGING }
 };
 
 export const CAMPAIGN_PROGRESS_STORAGE_KEY = 'snakeGameCampaignProgress';
 export const LEVELS = [
     { level: 1, displayName: "The Beginning", initialSpeed: 4, objective: { type: 'EAT_FOOD', amount: 5 }, obstacleMap: [] },
     { level: 2, displayName: "First Hurdles", initialSpeed: 5, objective: { type: 'EAT_FOOD', amount: 8 }, obstacleMap: [ {x: 5, y: 13}, {x: 6, y: 13}, {x: 7, y: 13}, {x: COLS - 8, y: 13}, {x: COLS - 7, y: 13}, {x: COLS - 6, y: 13} ] },
-    { level: 3, displayName: "Now You See Me", initialSpeed: 5.5, objective: { type: 'REACH_LENGTH', amount: 15 }, obstacleMap: [ { type: OBSTACLE_TYPES.BLINKING, x: Math.floor(COLS/2), y: 8 }, { type: OBSTACLE_TYPES.BLINKING, x: Math.floor(COLS/2), y: 9 }, { type: OBSTACLE_TYPES.BLINKING, x: Math.floor(COLS/2), y: 10 }, { type: OBSTACLE_TYPES.BLINKING, x: Math.floor(COLS/2), y: ROWS - 9 }, { type: OBSTACLE_TYPES.BLINKING, x: Math.floor(COLS/2), y: ROWS - 10 } ] }
+    { level: 3, displayName: "Now You See Me", initialSpeed: 5.5, objective: { type: 'REACH_LENGTH', amount: 15 }, obstacleMap: [ { type: OBSTACLE_TYPES.BLINKING, x: Math.floor(COLS/2), y: 8, onDuration: 2500, offDuration: 1500 }, { type: OBSTACLE_TYPES.BLINKING, x: Math.floor(COLS/2), y: 9, onDuration: 2500, offDuration: 1500 }, { type: OBSTACLE_TYPES.BLINKING, x: Math.floor(COLS/2), y: 10, onDuration: 2500, offDuration: 1500 }, { type: OBSTACLE_TYPES.BLINKING, x: Math.floor(COLS/2), y: ROWS - 9, onDuration: 2500, offDuration: 1500 }, { type: OBSTACLE_TYPES.BLINKING, x: Math.floor(COLS/2), y: ROWS - 10, onDuration: 2500, offDuration: 1500 } ] }
 ];
 
 export const KEYS = { /* ... as before ... */ };
