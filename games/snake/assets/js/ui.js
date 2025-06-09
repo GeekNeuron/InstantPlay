@@ -1,52 +1,25 @@
 // assets/js/ui.js
 
 export class UIManager {
-    /**
-     * @param {HTMLElement | null} scoreElement - The HTML element to display the current score.
-     * @param {HTMLElement | null} highScoreElement - The HTML element to display the high score.
-     * @param {HTMLElement | null} [comboDisplayElement=null] - Optional: an element for combo display.
-     * @param {HTMLElement | null} [messageOverlayElement=null] - Optional: an overlay DOM element for game messages.
-     * @param {Game} [gameInstance=null] - Optional: reference to the game for callbacks.
-     */
-    constructor(scoreElement, highScoreElement, comboDisplayElement = null, messageOverlayElement = null, gameInstance = null) {
-        this.scoreElement = scoreElement;
-        this.highScoreElement = highScoreElement;
-        this.comboDisplayElement = comboDisplayElement;
-        this.messageOverlayElement = messageOverlayElement;
+    constructor(uiElements, gameInstance = null) {
+        this.scoreElement = uiElements.score;
+        this.highScoreElement = uiElements.highScore;
+        this.comboDisplayElement = uiElements.comboDisplay;
+        this.levelInfoElement = uiElements.levelInfo;
+        this.achievementNotificationElement = uiElements.achievementNotification;
+        this.messageOverlayElement = uiElements.messageOverlay;
+        
         this.game = gameInstance;
-
         this.currentScore = 0;
         this.highScore = 0;
-
-        // --- Achievement Notification ---
-        this.achievementNotificationElement = document.getElementById('achievement-notification');
-        this.achievementTimeout = null; // To manage hiding the notification
+        this.lastComboCount = 0;
+        this.achievementTimeout = null;
 
         this.loadHighScore();
         this.updateScoreDisplay();
         this.updateHighScoreDisplay();
-        if (this.comboDisplayElement) { // Initialize combo display if element exists
-            this.updateComboDisplay(0, 1, 0); // Initial state: no combo
-        }
-
-        // Setup button listener for modal ONLY if messageOverlayElement is a valid DOM element
-        if (this.messageOverlayElement &&
-            typeof this.messageOverlayElement === 'object' &&
-            typeof this.messageOverlayElement.querySelector === 'function') {
-            
-            const messageButton = this.messageOverlayElement.querySelector('#messageButton');
-            if (messageButton) {
-                messageButton.addEventListener('click', () => {
-                    this.hideMessageOverlay();
-                });
-            }
-        } else if (this.messageOverlayElement) { // messageOverlayElement was truthy but not a valid DOM element
-            console.warn(
-                "UIManager Constructor: 'messageOverlayElement' was provided but it's not a valid DOM element with 'querySelector' method.",
-                "Value received:", this.messageOverlayElement,
-                "Type:", typeof this.messageOverlayElement
-            );
-        }
+        this.updateComboDisplay(0, 1);
+        this.hideLevelInfo();
     }
 
     updateScore(newScore) {
@@ -60,9 +33,7 @@ export class UIManager {
         }
     }
 
-    resetScore() {
-        this.updateScore(0);
-    }
+    resetScore() { this.updateScore(0); }
 
     updateHighScore() {
         if (this.currentScore > this.highScore) {
@@ -79,113 +50,65 @@ export class UIManager {
     }
 
     saveHighScore() {
-        try {
-            localStorage.setItem('snakeGameHighScore', this.highScore.toString());
-        } catch (e) {
-            console.warn("UIManager: Could not save high score to localStorage.", e);
-        }
+        try { localStorage.setItem('snakeGameHighScore', this.highScore.toString()); }
+        catch (e) { console.warn("Could not save high score:", e); }
     }
 
     loadHighScore() {
-        try {
-            const savedHighScore = localStorage.getItem('snakeGameHighScore');
-            this.highScore = parseInt(savedHighScore, 10) || 0;
-        } catch (e) {
-            this.highScore = 0; // Default to 0 on error
-            console.warn("UIManager: Could not load high score from localStorage.", e);
-        }
+        try { this.highScore = parseInt(localStorage.getItem('snakeGameHighScore'), 10) || 0; }
+        catch (e) { this.highScore = 0; }
     }
 
-    updateComboDisplay(count, multiplier, bonus) {
+    updateComboDisplay(count, multiplier) {
         if (this.comboDisplayElement) {
-            if (count > 1) { // Only show combo if count is 2 or more
-                let displayText = `Combo: ${count}x `;
-                if (multiplier > 1) {
-                    displayText += `(Score x${multiplier.toFixed(1)}) `;
-                }
-                if (bonus > 0 && count > 1) {
-                    displayText += `(+${bonus} pts)`;
-                }
-                this.comboDisplayElement.textContent = displayText.trim();
+            if (count > this.lastComboCount && count > 1) {
+                this.comboDisplayElement.classList.remove('combo-pop');
+                void this.comboDisplayElement.offsetWidth;
+                this.comboDisplayElement.classList.add('combo-pop');
+            }
+            if (count > 1) {
+                let displayText = `Combo: ${count}x`;
+                if (multiplier > 1) { displayText += ` (${multiplier.toFixed(1)}x)`; }
+                this.comboDisplayElement.textContent = displayText;
                 this.comboDisplayElement.style.visibility = 'visible';
             } else {
-                this.comboDisplayElement.textContent = ''; // Clear if no significant combo
+                this.comboDisplayElement.textContent = '';
                 this.comboDisplayElement.style.visibility = 'hidden';
             }
+            this.lastComboCount = count;
         }
     }
 
-    /**
-     * Shows a temporary notification when an achievement is unlocked.
-     * @param {string} name - The name of the achievement.
-     * @param {string} description - The description of the achievement.
-     * @param {string} icon - The icon/emoji for the achievement.
-     */
-    showAchievementUnlockedNotification(name, description, icon) {
-        if (!this.achievementNotificationElement) {
-            console.log(`Achievement Unlocked (UI element 'achievement-notification' not found): ${icon} ${name} - ${description}`);
-            return;
+    updateLevelInfo(levelNum, objective, progress) {
+        if (!this.levelInfoElement) return;
+        let objectiveText = '';
+        if (objective.type === 'EAT_FOOD') {
+            objectiveText = `Eat ${objective.amount} apples (${progress}/${objective.amount})`;
+        } else if (objective.type === 'REACH_LENGTH') {
+            objectiveText = `Reach length ${objective.amount} (${progress}/${objective.amount})`;
         }
+        this.levelInfoElement.innerHTML = `Level ${levelNum}: ${objectiveText}`;
+        this.levelInfoElement.style.visibility = 'visible';
+    }
 
-        // Sanitize inputs slightly if they were to come from less trusted sources (not an issue here)
-        const safeName = name || "Achievement Unlocked!";
-        const safeDescription = description || "";
-        const safeIcon = icon || '🏆';
+    hideLevelInfo() {
+        if (this.levelInfoElement) {
+            this.levelInfoElement.style.visibility = 'hidden';
+        }
+    }
 
+    showAchievementNotification(achievement) {
+        if (!this.achievementNotificationElement) return;
         this.achievementNotificationElement.innerHTML = `
-            <span class="achievement-icon">${safeIcon}</span>
+            <span class="achievement-icon">${achievement.icon || '🏆'}</span>
             <div class="achievement-text">
-                <div class="achievement-title">${safeName}</div>
-                <div class="achievement-desc">${safeDescription}</div>
-            </div>
-        `;
+                <div class="achievement-title">${achievement.name}</div>
+                <div class="achievement-desc">${achievement.description}</div>
+            </div>`;
         this.achievementNotificationElement.classList.add('show');
-
-        // Clear previous timeout if any, to prevent premature hiding if multiple achievements unlock quickly
-        if (this.achievementTimeout) {
-            clearTimeout(this.achievementTimeout);
-        }
-
-        // Hide notification after a few seconds
+        if (this.achievementTimeout) clearTimeout(this.achievementTimeout);
         this.achievementTimeout = setTimeout(() => {
-            if (this.achievementNotificationElement) { // Check if element still exists
-                 this.achievementNotificationElement.classList.remove('show');
-            }
-        }, 4000); // Show for 4 seconds
-    }
-
-    // showMessageOverlay and hideMessageOverlay methods remain for potential future modal use
-    showMessageOverlay(titleText, bodyText, buttonText = 'OK', buttonAction = null) {
-        if (!this.messageOverlayElement || typeof this.messageOverlayElement.querySelector !== 'function') {
-            // console.log(`UI Message (Overlay not available or invalid): ${titleText} - ${bodyText}`);
-            return;
-        }
-        const titleEl = this.messageOverlayElement.querySelector('#messageTitle');
-        const bodyEl = this.messageOverlayElement.querySelector('#messageTextBody');
-        const buttonEl = this.messageOverlayElement.querySelector('#messageButton');
-
-        if (titleEl) titleEl.textContent = titleText;
-        if (bodyEl) bodyEl.textContent = bodyText;
-
-        if (buttonEl) {
-            buttonEl.textContent = buttonText;
-            const newButton = buttonEl.cloneNode(true); 
-            if(buttonEl.parentNode) {
-                 buttonEl.parentNode.replaceChild(newButton, buttonEl);
-            }
-            newButton.addEventListener('click', () => {
-                if (buttonAction && typeof buttonAction === 'function') {
-                    buttonAction();
-                }
-                this.hideMessageOverlay();
-            });
-        }
-        this.messageOverlayElement.style.display = 'flex';
-    }
-
-    hideMessageOverlay() {
-        if (this.messageOverlayElement) {
-            this.messageOverlayElement.style.display = 'none';
-        }
+            this.achievementNotificationElement.classList.remove('show');
+        }, 4000);
     }
 }
