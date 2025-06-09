@@ -32,6 +32,15 @@ body {
     align-items: center; transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* Style for the new separator line */
+.separator {
+    width: 80%;
+    height: 1px;
+    background-color: var(--grid-line-color);
+    margin: 5px auto 10px auto;
+    opacity: 0.7;
+}
+
 .container {
     background-color: var(--container-bg); padding: 20px;
     border-radius: var(--border-radius);
