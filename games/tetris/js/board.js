@@ -70,7 +70,7 @@ drawPieceOnSideCanvas(context, piece) {
 
     // Draw the faint 4x4 grid
     context.globalAlpha = 0.3;
-    this.drawGrid(context, 4, 2);
+    this.drawGrid(context, 4, 4);
     context.globalAlpha = 1.0;
 
     if (!piece) return;
