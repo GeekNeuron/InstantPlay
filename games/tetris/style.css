@@ -32,15 +32,6 @@ body {
     align-items: center; transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Style for the new separator line */
-.separator {
-    width: 80%;
-    height: 1px;
-    background-color: var(--grid-line-color);
-    margin: 5px auto 10px auto;
-    opacity: 0.7;
-}
-
 .container {
     background-color: var(--container-bg); padding: 20px;
     border-radius: var(--border-radius);
@@ -76,7 +67,7 @@ header h1:hover { opacity: 1; }
 .side-panel {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-between; /* This pushes the timer to the bottom */
     width: 150px;
 }
 .side-panel-top {
@@ -90,18 +81,17 @@ header h1:hover { opacity: 1; }
     width: 100%;
 }
 .side-panel-top .side-box {
-    display: flex;
-    flex-direction: column;
-    /* justify-content and aspect-ratio removed */
+    aspect-ratio: 1 / 1; /* Keep Hold and Next square */
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
 }
 .side-box h3 { margin: 0 0 5px 0; font-size: 1.1em; }
 .side-box canvas { background-color: transparent; width: 100%; height: 100%; }
 #hold-box { cursor: pointer; }
 
 #timer-box {
-    background-color: transparent;
-    border: none;
-    padding-top: 15px;
+    aspect-ratio: auto; /* Make timer box rectangular */
+    height: auto;
+    padding: 15px 10px;
 }
 #timer {
     font-size: 1.2em; font-weight: bold;

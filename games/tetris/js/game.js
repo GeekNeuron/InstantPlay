@@ -24,9 +24,6 @@ class Game {
         this.scoreElement.textContent = this.score;
         this.linesElement.textContent = this.lines;
         this.levelElement.textContent = this.level;
-        this.highScoreElement = document.getElementById('high-score');
-this.highScore = 0;
-        this.highScoreElement.textContent = this.highScore;
     }
     
     reset() {
@@ -34,6 +31,5 @@ this.highScore = 0;
         this.lines = 0;
         this.level = 1;
         this.updateDOM();
-        // We don't reset highScore here, it persists across games.
     }
 }

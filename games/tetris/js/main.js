@@ -68,7 +68,6 @@ function play() {
     stopTimer();
     startTimer();
     game.reset();
-    game.highScore = localStorage.getItem('tetrisHighScore') || 0;
     board.reset();
     time.start = performance.now();
     gameLoop();
@@ -116,10 +115,6 @@ function hideModal() {
 }
 
 function gameOver() {
-    if (game.score > game.highScore) {
-    game.highScore = game.score;
-    localStorage.setItem('tetrisHighScore', game.highScore);
-}
     cancelAnimationFrame(requestId);
     stopTimer();
     const gameOverMessage = `Your Final Score: <strong>${game.score}</strong>`;
