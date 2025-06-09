@@ -22,25 +22,27 @@ class Board {
         this.draw();
     }
 
-    drawGrid() {
-        this.ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--grid-line-color');
-        this.ctx.lineWidth = 1;
-        for (let i = 1; i < COLS; i++) { this.ctx.beginPath(); this.ctx.moveTo(i * BLOCK_SIZE, 0); this.ctx.lineTo(i * BLOCK_SIZE, this.ctx.canvas.height); this.ctx.stroke(); }
-        for (let i = 1; i < ROWS; i++) { this.ctx.beginPath(); this.ctx.moveTo(0, i * BLOCK_SIZE); this.ctx.lineTo(this.ctx.canvas.width, i * BLOCK_SIZE); this.ctx.stroke(); }
-    }
-
     draw() {
         this.ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--grid-bg');
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-        this.drawGrid();
-        this.drawGhostPiece();
+        this.drawGrid(this.ctx, COLS, ROWS);
+        if (this.piece) {
+            this.drawGhostPiece();
+            this.piece.draw();
+        }
         this.grid.forEach((row, y) => { row.forEach((value, x) => { if (value > 0) this.drawBlock(this.ctx, x, y, value, BLOCK_SIZE, BLOCK_SIZE); }); });
-        this.piece.draw();
         this.drawNextPiece();
         this.drawHeldPiece();
     }
 
-    // --- MODIFIED: drawBlock now accepts width and height ---
+    drawGrid(context, columns, rows) {
+        const blockSize = context.canvas.width / columns;
+        context.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--grid-line-color');
+        context.lineWidth = 1;
+        for (let i = 1; i < columns; i++) { context.beginPath(); context.moveTo(i * blockSize, 0); context.lineTo(i * blockSize, context.canvas.height); context.stroke(); }
+        for (let i = 1; i < rows; i++) { context.beginPath(); context.moveTo(0, i * blockSize); context.lineTo(context.canvas.width, i * blockSize); context.stroke(); }
+    }
+    
     drawBlock(context, x, y, value, width, height) {
         const color = getComputedStyle(document.documentElement).getPropertyValue(`--piece-color-${value}`).trim();
         const radius = Math.min(width, height) / 6;
@@ -61,44 +63,32 @@ class Board {
         context.fill();
     }
     
-    // --- REWRITTEN FROM SCRATCH as requested ---
+    // --- REWRITTEN FROM SCRATCH - The Professional Way ---
     drawPieceOnSideCanvas(context, piece) {
         context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+        
+        // Draw faint 4x4 grid
+        this.ctx.globalAlpha = 0.2;
+        this.drawGrid(context, 4, 4);
+        this.ctx.globalAlpha = 1.0;
+
         if (!piece) return;
 
-        const matrix = piece.shape;
-        const baseBlockSize = 25; // A consistent base size for blocks
-        
-        // Use your custom scales from constants.js
-        const blockWidth = baseBlockSize * SIDE_PANEL_SCALE_X;
-        const blockHeight = baseBlockSize * SIDE_PANEL_SCALE_Y;
+        // Calculate a standard, non-stretched block size based on a 4x4 grid concept
+        const blockSize = context.canvas.width / 4.5; // 4.5 gives some padding
 
-        const piecePixelWidth = matrix[0].length * blockWidth;
-        const piecePixelHeight = matrix.length * blockHeight;
-        const offsetX = (context.canvas.width - piecePixelWidth) / 2;
-        const offsetY = (context.canvas.height - piecePixelHeight) / 2;
-        
-        const typeId = SHAPES.findIndex(shape => JSON.stringify(shape) === JSON.stringify(piece.shape));
-        if (typeId > 0) {
-            matrix.forEach((row, y) => {
-                row.forEach((value, x) => {
-                    if (value > 0) {
-                        // We now pass width and height separately to drawBlock
-                        this.drawBlock(context, (offsetX / blockWidth) + x, (offsetY / blockHeight) + y, value, blockWidth, blockHeight);
-                    }
-                });
-            });
-        }
+        piece.ctx = context;
+        piece.draw(blockSize, true);
     }
 
     drawHeldPiece() { this.drawPieceOnSideCanvas(this.holdCtx, this.heldPiece); }
     drawNextPiece() { this.drawPieceOnSideCanvas(this.nextCtx, this.nextPiece); }
     
-    calculateGhostPosition() { let ghost = JSON.parse(JSON.stringify(this.piece)); while (this.isValid(ghost)) ghost.y++; ghost.y--; return ghost; }
-    drawGhostPiece() { const ghost = this.calculateGhostPosition(); this.ctx.globalAlpha = 0.2; ghost.shape.forEach((row, y) => { row.forEach((value, x) => { if (value > 0) this.drawBlock(this.ctx, ghost.x + x, ghost.y + y, value, BLOCK_SIZE, BLOCK_SIZE); }); }); this.ctx.globalAlpha = 1.0; }
-    hold() { if (!this.canHold) return; if (this.heldPiece) { [this.piece, this.heldPiece] = [this.heldPiece, this.piece]; this.piece.ctx = this.ctx; this.piece.setStartingPosition(); } else { this.heldPiece = this.piece; this.getNewPiece(); } this.canHold = false; }
-    getNewPiece() { this.piece = this.nextPiece; this.piece.ctx = this.ctx; this.piece.setStartingPosition(); this.nextPiece = new Piece(this.nextCtx); this.canHold = true; }
-    isValid(p) { return p.shape.every((row, dy) => { return row.every((value, dx) => { let x = p.x + dx; let y = p.y + dy; return (value === 0 || (this.isInsideWalls(x) && this.isAboveFloor(y) && this.isNotOccupied(x, y))); }); }); }
+    calculateGhostPosition() { if(!this.piece) return null; let ghost = JSON.parse(JSON.stringify(this.piece)); while (this.isValid(ghost)) ghost.y++; ghost.y--; return ghost; }
+    drawGhostPiece() { const ghost = this.calculateGhostPosition(); if(!ghost) return; this.ctx.globalAlpha = 0.2; ghost.shape.forEach((row, y) => { row.forEach((value, x) => { if (value > 0) this.drawBlock(this.ctx, ghost.x + x, ghost.y + y, value, BLOCK_SIZE, BLOCK_SIZE); }); }); this.ctx.globalAlpha = 1.0; }
+    hold() { if (!this.canHold || !this.piece) return; if (this.heldPiece) { [this.piece, this.heldPiece] = [this.heldPiece, this.piece]; this.piece.ctx = this.ctx; this.piece.setStartingPosition(); } else { this.heldPiece = this.piece; this.getNewPiece(); } this.canHold = false; }
+    getNewPiece() { this.piece = this.nextPiece; if(this.piece) this.piece.ctx = this.ctx; this.piece.setStartingPosition(); this.nextPiece = new Piece(this.nextCtx); this.canHold = true; }
+    isValid(p) { if(!p) return false; return p.shape.every((row, dy) => { return row.every((value, dx) => { let x = p.x + dx; let y = p.y + dy; return (value === 0 || (this.isInsideWalls(x) && this.isAboveFloor(y) && this.isNotOccupied(x, y))); }); }); }
     isInsideWalls(x) { return x >= 0 && x < COLS; }
     isAboveFloor(y) { return y < ROWS; }
     isNotOccupied(x, y) { return this.grid[y] && this.grid[y][x] === 0; }
