@@ -33,6 +33,17 @@
         "genre_fa": "پازل"
     },
     {
+        "id": "game_trex",
+        "name_en": "T_Rex Dinasaur Game",
+        "name_fa": "تی-رکس (T-Rex)",
+        "description_en": "Arrange the falling tetrominoes to create complete horizontal lines without any gaps.",
+        "description_fa": "قطعات چهارخانه‌ای (تترومینوها) در حال سقوط را طوری بچینید که خطوط افقی کامل و بدون فاصله ایجاد کنید.",
+        "thumbnail_url": "assets/images/trex_thumb.png",
+        "game_url": "games/T-Rex/index.html",
+        "genre_en": "Arcade",
+        "genre_fa": "آرکید"
+    },
+    {
         "id": "game_sudoku",
         "name_en": "Sudoku",
         "name_fa": "سودوکو (Sudoku)",
