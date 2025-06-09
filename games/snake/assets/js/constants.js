@@ -1,5 +1,3 @@
-// assets/js/constants.js
-
 // --- Grid & Game Core ---
 export const GRID_SIZE = 15;
 export const ROWS = 26;
