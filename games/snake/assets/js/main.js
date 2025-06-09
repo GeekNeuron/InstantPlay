@@ -64,17 +64,17 @@ function populateDifficultyOptions() {
     });
 
     const savedDifficulty = localStorage.getItem('snakeGameDifficulty');
-    if (savedDifficulty && DIFFICULTY_LEVELS[savedDifficulty]) {
+    if (savedDifficulty && DIFFICULTY_SETTINGS[savedDifficulty]) {
         difficultySelectMenu.value = savedDifficulty;
     } else {
-        difficultySelectElement.value = DIFFICULTY_LEVELS.MEDIUM;
+        difficultySelectMenu.value = DIFFICULTY_LEVELS.MEDIUM;
         localStorage.setItem('snakeGameDifficulty', DIFFICULTY_LEVELS.MEDIUM);
     }
 }
 
 function populateModeOptions() {
-    if (!modeSelectElement) return;
-    modeSelectElement.innerHTML = '';
+    if (!modeSelectMenu) return;
+    modeSelectMenu.innerHTML = '';
     const modeOrder = [GAME_MODES.CLASSIC, GAME_MODES.SURVIVAL, GAME_MODES.CAMPAIGN]; 
     
     modeOrder.forEach(modeValue => {
@@ -109,7 +109,7 @@ function handleModeChange() {
 function populateAchievementsModal() {
     if (!gameInstance || !achievementsListContainer) return;
     
-    const achievements = gameInstance.achievementManager.getAllAchievementsStatus();
+    const achievements = gameInstance.achievementManager.getAllAchievementsWithStatus();
     achievementsListContainer.innerHTML = ''; 
     
     achievements.forEach(ach => {
@@ -131,7 +131,7 @@ function initApp() {
     populateDifficultyOptions();
     populateModeOptions();
     
-    // --- Event Listeners Setup ---
+    // Event Listeners Setup
     if (themeToggleElement) themeToggleElement.addEventListener('click', toggleTheme);
     if (difficultySelectMenu) difficultySelectMenu.addEventListener('change', handleDifficultyChange);
     if (modeSelectMenu) modeSelectElement.addEventListener('change', handleModeChange);
@@ -165,9 +165,9 @@ function initApp() {
         });
     }
     
-    // --- Game Instance and Feature Initialization ---
+    // Game Instance and Feature Initialization
     try {
-        const initialDifficultyKey = difficultySelectElement ? difficultySelectElement.value : DIFFICULTY_LEVELS.MEDIUM;
+        const initialDifficultyKey = difficultySelectMenu ? difficultySelectMenu.value : DIFFICULTY_LEVELS.MEDIUM;
         const initialGameMode = modeSelectElement ? modeSelectElement.value : GAME_MODES.CLASSIC;
         
         gameInstance = new Game(
@@ -177,7 +177,7 @@ function initApp() {
             initialGameMode
         );
 
-        populateLegend();
+        populateLegend(); // Populate legend after game instance is created
         
         tutorialManager = new TutorialManager();
         tutorialManager.start(); // Will only show if not completed before
