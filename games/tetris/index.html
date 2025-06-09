@@ -12,13 +12,15 @@
         <header>
             <h1>Tetris</h1>
             <div class="game-controls-wrapper">
-                <div class="scores-container">
-                    <div class="score-box">Score: <span id="score">0</span></div>
-                    <div class="score-box">Lines: <span id="lines">0</span></div>
-                    <div class="score-box">Level: <span id="level">1</span></div>
-                </div>
-                <button id="new-game-button" class="btn">New Game</button>
-            </div>
+    <div class="scores-container">
+        <div class="score-box">Score: <span id="score">0</span></div>
+        <div class="score-box">High Score: <span id="high-score">0</span></div>
+    </div>
+    <div class="game-buttons">
+        <button id="pause-button" class="btn">Pause</button>
+        <button id="new-game-button" class="btn">New Game</button>
+    </div>
+</div>
         </header>
 
         <main class="game-area">
@@ -36,6 +38,11 @@
                         <canvas id="next-canvas"></canvas>
                     </div>
                 </div>
+
+                <div id="level-lines-box">
+    <p id="level-display">Level: 1</p>
+    <p id="lines-display">Lines: 0</p>
+</div>
                 
                 <div id="timer-box" class="side-box">
                     <div class="separator"></div>
@@ -47,7 +54,7 @@
 
     <div id="modal-overlay" class="modal-overlay">
     <div class="modal-content">
-        <h2 id="modal-title"></h2>
+        <h2 id="modal-title" class=""></h2>
         <p id="modal-text"></p>
         <div class="modal-actions">
              <button id="modal-button" class="btn btn-primary">Play Again</button>
