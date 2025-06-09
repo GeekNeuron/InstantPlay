@@ -89,9 +89,9 @@ header h1:hover { opacity: 1; }
 #hold-box { cursor: pointer; }
 
 #timer-box {
-    aspect-ratio: auto; /* Make timer box rectangular */
-    height: auto;
-    padding: 15px 10px;
+    background-color: transparent;
+    border: none;
+    padding-top: 15px;
 }
 #timer {
     font-size: 1.2em; font-weight: bold;
