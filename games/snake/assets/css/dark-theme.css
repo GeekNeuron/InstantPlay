@@ -1,19 +1,19 @@
 /* assets/css/dark-theme.css */
 :root {
-    /* Dark Theme Palette (from your body.dark-theme) */
+    /* General Page & Text */
     --bg-color: #0d1117;
     --text-color-primary: #c9d1d9;
-    --text-color-muted: #8b949e; /* Chosen to complement primary text */
+    --text-color-muted: #8b949e;
     --header-text-color: var(--text-color-primary);
-    --accent-color: #3282b8; /* From your --button-bg */
+    --accent-color: #3282b8;
     --accent-color-translucent: rgba(50, 130, 184, 0.3);
 
     /* Containers and Borders */
-    --settings-box-bg: #161b22;                   /* Was --container-bg */
-    --game-bg-color: transparent;
-    --canvas-bg-color: #1e2732;                     /* Was --grid-bg */
-                                                    /* --grid-cell-bg: #2c3a47; // For legend item hover? */
-    --border-color: #161b22; /* Was --border-color: var(--container-bg) */
+    --container-bg: #161b22;
+    --game-bg-color: var(--container-bg);
+    --canvas-bg-color: #1e2732; /* Was --grid-bg */
+    --border-color: #30363d; /* Slightly lighter than background */
+    --grid-line-color: rgba(139, 148, 158, 0.2);
 
     /* Score Boxes */
     --score-box-bg: #274c77;
@@ -30,37 +30,21 @@
     --modal-text-color: #c9d1d9;
     --text-color-on-overlay: #FFFFFF;
 
-    /* Game Specific Elements - Adjusted for new dark palette */
-    --snake-head-color: #50fa7b;                    /* Bright green */
-    --snake-body-color: #8be9fd;                    /* Cyanish for body */
-    --snake-eye-color: #0d1117;                     /* Dark eyes on light head */
-    --snake-body-highlight-rgb: "173, 216, 230";    /* Light blueish highlight (rgb values as string) */
+    /* Game Specific Elements */
+    --snake-head-color: #50fa7b;
+    --snake-body-color: #8be9fd;
+    --snake-eye-color: #0d1117; /* Dark eyes on light head */
+    --snake-body-highlight-rgb: "173, 216, 230"; /* Light blueish highlight */
 
-    --food-color: #ff5555;                          /* Bright red */
-    --food-color-golden: #f1c40f;                   /* Your --tile-128-bg */
-    --food-color-speed: #3498db;                    /* Your --tile-32-bg */
-    --food-color-slow: #e67e22;                     /* Your --tile-256-bg */
-    --food-color-grow: #9b59b6;                     /* Your --tile-64-bg */
-    --obstacle-color: #7f8c8d;                      /* A distinct gray for obstacles */
+    --food-color: #ff5555;
+    --food-color-golden: #f1c40f;
+    --food-color-speed: #3498db;
+    --food-color-slow: #e67e22;
+    --food-color-grow: #9b59b6;
+    --obstacle-color: #7f8c8d; /* A distinct gray for obstacles */
 
-    --powerup-color-shield: var(--accent-color);
-    --powerup-color-scoreboost: #2ecc71;            /* Your --tile-16-bg */
-    --powerup-color-score-multiplier: #f1c40f;      /* Your --tile-128-bg */
-    --text-color-on-accent: #FFFFFF; /* For text on colored powerup icons / accent buttons */
-
-    /* Theme switcher appearance when dark theme is active */
-    --theme-switcher-actual-bg: var(--button-text); /* Light background for switcher button */
-    --theme-switcher-actual-border: #8b949e;       /* Muted border */
-    --theme-switcher-icon-color: var(--bg-color);   /* Dark icon on light button */
-}
-
-/* Apply specific styles for theme switcher (which is h1) when dark theme is active */
-/* This overrides the default transparent background set in style.css for h1 */
-h1.game-title-header {
-    color: var(--header-text-color); /* Text color remains as per dark theme */
-    background-color: var(--theme-switcher-actual-bg) !important; /* Use theme switcher specific variables for its background */
-    border: 1px solid var(--theme-switcher-actual-border) !important;
-    /* The icon/text color inside the switcher button itself would be --theme-switcher-icon-color if it were an icon */
-    /* For h1, its text color is already --header-text-color, if that needs to change for the "button" look: */
-    color: var(--theme-switcher-text-dark-active, var(--bg-color)) !important; /* Using your original intent from example file */
+    --powerup-color-shield: #3282b8;
+    --powerup-color-scoreboost: #2ecc71;
+    --powerup-color-score-multiplier: #f1c40f;
+    --text-color-on-accent: #000000; /* Text on bright yellow powerup */
 }
